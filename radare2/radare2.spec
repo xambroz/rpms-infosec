@@ -1,28 +1,23 @@
 %global         gituser         radare
 %global         gitname         radare2
-%global         commit          a093958b6d24015d82782eb20a2e10d8f4afcd85
+%global         commit          b559833a0064efd09d4050490ff07dd70975ba6a
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 Name:           radare2
-Version:        0.9.9
+Version:        0.10.1
 Release:        1%{?dist}
 Summary:        The %{name} reverse engineering framework
 Group:          Applications/Engineering
 License:        LGPLv3
 URL:            http://radare.org/
+#Source0:        http://radare.org/get/\{name}-\{version}.tar.gz
+#Source0:        http://radare.org/get/\{name}-\{version}.tar.xz
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
-#Source0:        http://radare.org/get/%{name}-%{version}.tar.gz
-#Source0:        http://radare.org/get/%{name}-%{version}.tar.xz
 
 
 BuildRequires:  file-devel
 BuildRequires:  libzip-devel
-BuildRequires:  libewf-devel
-BuildRequires:  vala-devel
-BuildRequires:  valabind
-BuildRequires:  gmp-devel
-BuildRequires:  lua-devel
-BuildRequires:  capstone-devel >= 3.0.4
+#BuildRequires:  capstone-devel >= 3.0.4
 
 
 %description
@@ -44,11 +39,12 @@ information.
 
 
 %prep
+#%setup -q -n %{name}-%{version}
 %setup -q -n %{gitname}-%{commit}
 
 
 %build
-%configure --enable-cparse --with-sysmagic --with-syszip --with-openssl --with-syscapstone
+%configure --with-sysmagic --with-syszip #--with-syscapstone
 CFLAGS="%{optflags} -fPIC -I../include" make %{?_smp_mflags} LIBDIR=%{_libdir} PREFIX=%{_prefix} DATADIR=%{DATADIR}
 
 # Do not run the testsuite yet
@@ -66,32 +62,37 @@ cp shlr/sdb/src/libsdb.a %{buildroot}/%{_libdir}/libsdb.a
 
 
 %files
-%doc AUTHORS.md CONTRIBUTING.md DEVELOPERS.md README.md TODO.md
+%doc AUTHORS.md CONTRIBUTING.md DEVELOPERS.md README.md TODO.md doc/*
 %license COPYING
 %{_bindir}/r*
 %{_libdir}/libr*
 %dir %{_libdir}/%{name}
-%dir %{_libdir}/%{name}/%{version}-git
+%dir %{_libdir}/%{name}/%{version}
 %{_libdir}/%{name}/last
-%{_libdir}/%{name}/%{version}-git/*.so
-%{_libdir}/%{name}/%{version}-git/hud
-%{_libdir}/%{name}/%{version}-git/syscall
-%{_libdir}/%{name}/%{version}-git/opcodes
-%dir %{_prefix}/lib/%{name}
-%dir %{_prefix}/lib/%{name}/%{version}-git
-%dir %{_prefix}/lib/%{name}/%{version}-git/magic
-%{_prefix}/lib/%{name}/%{version}-git/magic/*
+%{_libdir}/%{name}/%{version}/*.so
+%dir %{_libdir}/%{name}/%{version}/fcnsign
+%{_libdir}/%{name}/%{version}/fcnsign/*.sdb
+%dir %{_libdir}/%{name}/%{version}/hud
+%{_libdir}/%{name}/%{version}/hud/*
+%dir %{_libdir}/%{name}/%{version}/magic
+%{_libdir}/%{name}/%{version}/magic/*
+%dir %{_libdir}/%{name}/%{version}/opcodes
+%{_libdir}/%{name}/%{version}/opcodes/*.sdb
+%dir %{_libdir}/%{name}/%{version}/syscall
+%{_libdir}/%{name}/%{version}/syscall/*.sdb
 %{_mandir}/man1/r*.1.*
+%{_mandir}/man7/esil.7.*
 %dir %{_datadir}/%{name}
-%dir %{_datadir}/%{name}/%{version}-git
-%dir %{_datadir}/%{name}/%{version}-git/cons
-%{_datadir}/%{name}/%{version}-git/cons/*
-%dir %{_datadir}/%{name}/%{version}-git/format
-%{_datadir}/%{name}/%{version}-git/format/*
-%dir %{_prefix}/%{name}/%{version}-git/r2pm
-%{_prefix}/%{name}/%{version}-git/r2pm/*
-%dir %{_datadir}/%{name}/%{version}-git/www
-%{_datadir}/%{name}/%{version}-git/www/*
+%dir %{_datadir}/%{name}/%{version}
+%dir %{_datadir}/%{name}/%{version}/cons
+%{_datadir}/%{name}/last
+%{_datadir}/%{name}/%{version}/cons/*
+%dir %{_datadir}/%{name}/%{version}/format
+%{_datadir}/%{name}/%{version}/format/*
+%dir %{_datadir}/%{name}/%{version}/r2pm
+%{_datadir}/%{name}/%{version}/r2pm/*
+%dir %{_datadir}/%{name}/%{version}/www
+%{_datadir}/%{name}/%{version}/www/*
 
 
 %files devel
@@ -104,7 +105,13 @@ cp shlr/sdb/src/libsdb.a %{buildroot}/%{_libdir}/libsdb.a
 
 
 %changelog
-* Sat Oct 10 2015 Michal Ambroz <rebus at, seznam.cz> 0.9.9-1
+* Tue Mar 01 2016 Michal Ambroz <rebus at, seznam.cz> 0.10.1-1
+- build for Fedora for release of 0.10.1
+
+* Thu Jan 21 2016 Michal Ambroz <rebus at, seznam.cz> 0.10.0-2
+- build for Fedora for release of 0.10.0
+
+* Sat Oct 10 2015 Michal Ambroz <rebus at, seznam.cz> 0.10.0-1
 - build for Fedora for alpha of 0.10.0
 
 * Sun Nov 09 2014 Pavel Odvody <podvody@redhat.com> 0.9.8rc3-0
