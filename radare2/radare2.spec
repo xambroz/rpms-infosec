@@ -1,50 +1,64 @@
+%global         gituser         radare
+%global         gitname         radare2
+%global         commit          a093958b6d24015d82782eb20a2e10d8f4afcd85
+%global         shortcommit     %(c=%{commit}; echo ${c:0:7})
+
 Name:           radare2
-Version:        0.9.8
+Version:        0.9.9
 Release:        1%{?dist}
-Summary:        The reverse engineering framework
-
+Summary:        The %{name} reverse engineering framework
+Group:          Applications/Engineering
 License:        LGPLv3
-URL:            http://radare.org/y/
+URL:            http://radare.org/
+Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 #Source0:        http://radare.org/get/%{name}-%{version}.tar.gz
-Source0:        http://radare.org/get/%{name}-%{version}.tar.xz
+#Source0:        http://radare.org/get/%{name}-%{version}.tar.xz
 
-BuildRequires:  vala-devel
-BuildRequires:  valabind
-BuildRequires:	file-devel
+
+BuildRequires:  file-devel
 BuildRequires:  libzip-devel
 BuildRequires:  libewf-devel
+BuildRequires:  vala-devel
+BuildRequires:  valabind
 BuildRequires:  gmp-devel
 BuildRequires:  lua-devel
+BuildRequires:  capstone-devel >= 3.0.4
 
-
-#Requires:       
 
 %description
-Opensource tools to disasm, debug, analyze, manipulate binary files and more...
+The %{name} is a reverse-engineering framework that is multi-architecture,
+multi-platform, and highly scriptable.  %{name} provides a hexadecimal
+editor, wrapped I/O, file system support, debugger support, diffing
+between two functions or binaries, and code analysis at opcode,
+basic block, and function levels.
 
 
 %package devel
-Summary:        Development files for radare2
+Summary:        Development files for the %{name} package
 Group:          Development/Libraries
 Requires:       %{name}%{?_isa} = %{version}-%{release}
 
 %description devel
-Development libraries and headers for use with  %{name}.
+Development files for the %{name} package. See %{name} package for more
+information.
 
 
 %prep
-%setup -q
+%setup -q -n %{gitname}-%{commit}
 
 
 %build
-%configure --with-syszip --with-sysmagic --with-openssl 
-CFLAGS="%{optflags} -fPIC -I../include" make %{?_smp_mflags} LIBDIR=%{_libdir}
+%configure --enable-cparse --with-sysmagic --with-syszip --with-openssl --with-syscapstone
+CFLAGS="%{optflags} -fPIC -I../include" make %{?_smp_mflags} LIBDIR=%{_libdir} PREFIX=%{_prefix} DATADIR=%{DATADIR}
 
+# Do not run the testsuite yet
+# %check
+# make tests
 
 
 %install
 rm -rf %{buildroot}
-NOSUDO=1 make install DESTDIR=%{buildroot} LIBDIR=%{_libdir}
+NOSUDO=1 make install DESTDIR=%{buildroot} LIBDIR=%{_libdir} PREFIX=%{_prefix}
 cp shlr/sdb/src/libsdb.a %{buildroot}/%{_libdir}/libsdb.a
 
 %post -p /sbin/ldconfig
@@ -52,31 +66,32 @@ cp shlr/sdb/src/libsdb.a %{buildroot}/%{_libdir}/libsdb.a
 
 
 %files
-%doc %{_datadir}/doc/%{name}
-%{_bindir}/r2
-%{_bindir}/rabin2
-%{_bindir}/r2agent
-%{_bindir}/radare2
-%{_bindir}/radiff2
-%{_bindir}/rafind2
-%{_bindir}/ragg2
-%{_bindir}/ragg2-cc
-%{_bindir}/rahash2
-#%{_bindir}/ranal2
-%{_bindir}/rarun2
-%{_bindir}/rasm2
-%{_bindir}/rax2
+%doc AUTHORS.md CONTRIBUTING.md DEVELOPERS.md README.md TODO.md
+%license COPYING
+%{_bindir}/r*
 %{_libdir}/libr*
-%{_libdir}/%{name}/%{version}/*.so
-#%{_libdir}/%{name}/%{version}/*.py*
-#%{_libdir}/%{name}/%{version}/*.lua
-#%{_libdir}/%{name}/%{version}/*.rb
-%{_libdir}/%{name}/%{version}/syscall
-%{_libdir}/%{name}/%{version}/opcodes
-%{_libdir}/%{name}/%{version}/magic
+%dir %{_libdir}/%{name}
+%dir %{_libdir}/%{name}/%{version}-git
+%{_libdir}/%{name}/last
+%{_libdir}/%{name}/%{version}-git/*.so
+%{_libdir}/%{name}/%{version}-git/hud
+%{_libdir}/%{name}/%{version}-git/syscall
+%{_libdir}/%{name}/%{version}-git/opcodes
+%dir %{_prefix}/lib/%{name}
+%dir %{_prefix}/lib/%{name}/%{version}-git
+%dir %{_prefix}/lib/%{name}/%{version}-git/magic
+%{_prefix}/lib/%{name}/%{version}-git/magic/*
 %{_mandir}/man1/r*.1.*
-%dir %{_datadir}/%{name}/%{version}/www
-%{_datadir}/%{name}/%{version}/www/*
+%dir %{_datadir}/%{name}
+%dir %{_datadir}/%{name}/%{version}-git
+%dir %{_datadir}/%{name}/%{version}-git/cons
+%{_datadir}/%{name}/%{version}-git/cons/*
+%dir %{_datadir}/%{name}/%{version}-git/format
+%{_datadir}/%{name}/%{version}-git/format/*
+%dir %{_prefix}/%{name}/%{version}-git/r2pm
+%{_prefix}/%{name}/%{version}-git/r2pm/*
+%dir %{_datadir}/%{name}/%{version}-git/www
+%{_datadir}/%{name}/%{version}-git/www/*
 
 
 %files devel
@@ -84,9 +99,14 @@ cp shlr/sdb/src/libsdb.a %{buildroot}/%{_libdir}/libsdb.a
 %{_libdir}/libsdb.a
 %{_libdir}/pkgconfig/*.pc
 
+%post -n %{name}-devel -p /sbin/ldconfig
+%postun -n %{name}-devel -p /sbin/ldconfig
 
 
 %changelog
-* Sun Mar 11 2012 Michal Ambroz <rebus at, seznam.cz> 0.9-1
-- Initial build for Fedora
+* Sat Oct 10 2015 Michal Ambroz <rebus at, seznam.cz> 0.9.9-1
+- build for Fedora for alpha of 0.10.0
+
+* Sun Nov 09 2014 Pavel Odvody <podvody@redhat.com> 0.9.8rc3-0
+- Initial tito package
 
