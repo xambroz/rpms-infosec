@@ -1,11 +1,11 @@
 %global         gituser         radare
 %global         gitname         radare2
-%global         commit          4b77cb2c36f8c99d09d14ee411e9c5c14b55c609
+%global         commit          91daa516ebf44f0bc422c1f6054a1938df16e25f
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
 Name:           radare2
-Version:        1.4.0
+Version:        1.5.0
 #Release:       1.git%{shortcommit}%{?dist}
 Release:        1%{?dist}
 Summary:        The radare2 reverse engineering framework
@@ -132,6 +132,9 @@ NOSUDO=1 make install DESTDIR=%{buildroot} LIBDIR=%{_libdir} PREFIX=%{_prefix}
 
 
 %changelog
+* Thu Jun 08 2017 Michal Ambroz <rebus at, seznam.cz> 1.5.0-1
+- bump to 1.5.0 release
+
 * Sun Apr 23 2017 Michal Ambroz <rebus at, seznam.cz> 1.4.0-1
 - bump to 1.4.0 release
 
