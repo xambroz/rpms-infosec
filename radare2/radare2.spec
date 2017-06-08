@@ -1,25 +1,27 @@
 %global         gituser         radare
 %global         gitname         radare2
-#global         commit          a093958b6d24015d82782eb20a2e10d8f4afcd85
-#global        commit          5a3dab0a86e1452c0bb0c13d869f95b41f50b9a9
-%global         commit          9c39df6806b09306ebb102b1c41de8367ac1a7c9
+%global         commit          940f2d311d8e011ad76ed54122d46beea4b6db90
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
+%global		sdbgitname	sdb
+%global		sdbcommit	bf6575a2828c50e4540eeccd36b8e05729649dcf
+%global		sdbshort	%(c=%{sdbcommit}; echo ${c:0:7})
 
 Name:           radare2
-Version:        0.10.0
-Release:        2%{?dist}
+Version:        0.10.5
+Release:        1%{?dist}
 Summary:        The %{name} reverse engineering framework
 Group:          Applications/Engineering
 License:        LGPLv3
 URL:            http://radare.org/
-#Source0:        http://radare.org/get/\{name}-\{version}.tar.gz
-#Source0:        http://radare.org/get/\{name}-\{version}.tar.xz
+#URL:           https://github.com/radare/radare2
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
+Source1:        https://github.com/%{gituser}/%{sdbgitname}/archive/%{sdbcommit}/%{sdbgitname}-%{version}-%{sdbshort}.tar.gz
 
 
+BuildRequires:  pkgconfig
 BuildRequires:  file-devel
 BuildRequires:  libzip-devel
-#BuildRequires:  capstone-devel >= 3.0.4
+BuildRequires:  capstone-devel >= 3.0.4
 
 
 %description
@@ -41,15 +43,14 @@ information.
 
 
 %prep
-#%setup -q -n %{name}-%{version}
 %setup -q -n %{gitname}-%{commit}
 
 
 %build
-%configure --with-sysmagic --with-syszip #--with-syscapstone
+%configure --with-sysmagic --with-syszip --with-syscapstone
 CFLAGS="%{optflags} -fPIC -I../include" make %{?_smp_mflags} LIBDIR=%{_libdir} PREFIX=%{_prefix} DATADIR=%{DATADIR}
 
-# Do not run the testsuite yet
+# Do not run the testsuite yet - it pulls another package https://github.com/radare/radare2-regressions from github
 # %check
 # make tests
 
@@ -65,6 +66,7 @@ cp shlr/sdb/src/libsdb.a %{buildroot}/%{_libdir}/libsdb.a
 
 %files
 %doc AUTHORS.md CONTRIBUTING.md DEVELOPERS.md README.md TODO.md doc/*
+%doc %{_datadir}/doc/%{name}
 %license COPYING
 %{_bindir}/r*
 %{_libdir}/libr*
@@ -91,8 +93,6 @@ cp shlr/sdb/src/libsdb.a %{buildroot}/%{_libdir}/libsdb.a
 %{_datadir}/%{name}/%{version}/cons/*
 %dir %{_datadir}/%{name}/%{version}/format
 %{_datadir}/%{name}/%{version}/format/*
-%dir %{_datadir}/%{name}/%{version}/r2pm
-%{_datadir}/%{name}/%{version}/r2pm/*
 %dir %{_datadir}/%{name}/%{version}/www
 %{_datadir}/%{name}/%{version}/www/*
 
@@ -107,6 +107,18 @@ cp shlr/sdb/src/libsdb.a %{buildroot}/%{_libdir}/libsdb.a
 
 
 %changelog
+* Sun Aug 21 2016 Michal Ambroz <rebus at, seznam.cz> 0.10.5-1
+- bump to 0.10.5
+
+* Mon Aug 01 2016 Michal Ambroz <rebus at, seznam.cz> 0.10.4-1
+- bump to 0.10.4
+
+* Sun Jun 05 2016 Michal Ambroz <rebus at, seznam.cz> 0.10.3-1
+- build for Fedora for release of 0.10.3
+
+* Mon Apr 25 2016 Michal Ambroz <rebus at, seznam.cz> 0.10.2-1
+- build for Fedora for release of 0.10.2
+
 * Thu Jan 21 2016 Michal Ambroz <rebus at, seznam.cz> 0.10.0-2
 - build for Fedora for release of 0.10.0
 
