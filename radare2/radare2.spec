@@ -1,11 +1,13 @@
 %global         gituser         radare
 %global         gitname         radare2
-%global         commit          b559833a0064efd09d4050490ff07dd70975ba6a
+#global         commit          a093958b6d24015d82782eb20a2e10d8f4afcd85
+#global        commit          5a3dab0a86e1452c0bb0c13d869f95b41f50b9a9
+%global         commit          9c39df6806b09306ebb102b1c41de8367ac1a7c9
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 Name:           radare2
-Version:        0.10.1
-Release:        1%{?dist}
+Version:        0.10.0
+Release:        2%{?dist}
 Summary:        The %{name} reverse engineering framework
 Group:          Applications/Engineering
 License:        LGPLv3
@@ -105,9 +107,6 @@ cp shlr/sdb/src/libsdb.a %{buildroot}/%{_libdir}/libsdb.a
 
 
 %changelog
-* Tue Mar 01 2016 Michal Ambroz <rebus at, seznam.cz> 0.10.1-1
-- build for Fedora for release of 0.10.1
-
 * Thu Jan 21 2016 Michal Ambroz <rebus at, seznam.cz> 0.10.0-2
 - build for Fedora for release of 0.10.0
 
