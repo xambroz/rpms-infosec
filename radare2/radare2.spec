@@ -1,15 +1,39 @@
 %global         gituser         radare
 %global         gitname         radare2
-%global         commit          8f323094916a221648f9c12814baa027f203d3b4
+%global         commit          4b77cb2c36f8c99d09d14ee411e9c5c14b55c609
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
 Name:           radare2
-Version:        1.3.0
+Version:        1.4.0
 #Release:       1.git%{shortcommit}%{?dist}
 Release:        1%{?dist}
 Summary:        The radare2 reverse engineering framework
 Group:          Development/Tools
+
+# Whole package is licensed as GPLv3+, some code has originally different license:
+# shlr/grub/grubfs.c - LGPL
+# shlr/java - Apache 2.0
+# shlr/sdb/src - MIT
+# shlr/spp - MIT
+# shlr/squashfs/src - GPLv2+
+# shlr/tcc - LGPLv2+
+# shlr/udis86 - 2 clause BSD
+# shlr/www/m - Apache-2.0
+# shlr/www/enyo/vendors/jquery-ui.min.js - GPL + MIT
+# shlr/www/enyo/vendors/jquery.layout-latest.min.js - GPL + MIT
+# shlr/www/enyo/vendors/jquery.scrollTo.min.js - MIT
+# shlr/www/enyo/vendors/lodash.min.js - lodash license
+# shlr/www/enyo/vendors/joint.* - Mozilla MPL 2.0
+# shlr/www/enyo/vendors/jquery.min.js - Aplache License version 2.0
+# shlr/www/p/vendors/jquery* - GPL + MIT
+# shlr/www/p/vendors/dagre*|graphlib* - 3 clause BSD
+# shlr/www/p/vendors/jquery.onoff.min.js - MIT
+# shlr/wind - LGPL v3+
+# shlr/spp - MIT
+# shlr/zip/zlib - 3 clause BSD (system installed sared zlib is used instead)
+
+
 License:        GPLv3+
 URL:            http://radare.org/
 #URL:           https://github.com/radare/radare2
@@ -48,7 +72,7 @@ information.
 %prep
 #setup -q -n %{gitname}-%{commit}
 %setup -q -n %{gitname}-%{version}
-%patch0 -p 1 -b .capstone4
+#%patch0 -p 1 -b .capstone4
 
 
 %build
@@ -108,6 +132,9 @@ NOSUDO=1 make install DESTDIR=%{buildroot} LIBDIR=%{_libdir} PREFIX=%{_prefix}
 
 
 %changelog
+* Sun Apr 23 2017 Michal Ambroz <rebus at, seznam.cz> 1.4.0-1
+- bump to 1.4.0 release
+
 * Sat Mar 18 2017 Michal Ambroz <rebus at, seznam.cz> 1.3.0-1
 - bump to 1.3.0 release
 
