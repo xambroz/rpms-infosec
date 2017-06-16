@@ -1,0 +1,13 @@
+diff -ru radare2-1.3.0/libr/anal/p/anal_x86_cs.c radare2-1.3.0.new/libr/anal/p/anal_x86_cs.c
+--- radare2-1.3.0/libr/anal/p/anal_x86_cs.c	2017-03-13 03:50:26.000000000 +0100
++++ radare2-1.3.0.new/libr/anal/p/anal_x86_cs.c	2017-03-19 01:16:57.848345218 +0100
+@@ -72,7 +72,9 @@
+ 			r_strbuf_append (buf, ",");
+ 		}
+ 		r_strbuf_appendf (buf, "{\"size\":%d", op->size);
++#if CS_API_MAJOR >= 4
+ 		r_strbuf_appendf (buf, ",\"rw\":%d", op->access); // read , write, read|write
++#endif
+ 		switch (op->type) {
+ 		case X86_OP_REG:
+ 			r_strbuf_appendf (buf, ",\"type\":\"reg\"");
