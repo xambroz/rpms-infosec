@@ -4,17 +4,27 @@
 #%global        commit          54b0eada69defd015c49e4e1e1e4e26a27409ba3
 #git commit for 20160424
 #%global        commit          93751847e334ea033a0871a65f5aa901782a2276
-#20160802
-#%global        commit          986cfbe60b306778e8fbe93e4864c628871659a8
 #20160519
-%global         commit          62ba5f578c9ffb0c651b82e06bb99a54a8f07af0
+#%global        commit          62ba5f578c9ffb0c651b82e06bb99a54a8f07af0
+#20160802
+#%global         commit          986cfbe60b306778e8fbe93e4864c628871659a8
+#20160802
+%global         commit          716431f3c33a649598c2d333e8430c13a7c18ea7
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
+
+%global         pythonopts      -enable-python2
+
+%if 0%{?fedora}
+%global         with_python3    1
+%global         pythonopts      -enable-python2 --enable-python3
+%endif
+
 
 
 
 Name:           libewf
-Version:        20160519
-Release:        1%{?dist}
+Version:        20160802
+Release:        2%{?dist}
 Summary:        Libyal library for the Expert Witness Compression Format (EWF)
 
 Group:          System Environment/Libraries
@@ -40,8 +50,8 @@ BuildRequires:  fuse-devel
 BuildRequires:  libuuid-devel
 BuildRequires:  openssl-devel
 BuildRequires:  zlib-devel
+BuildRequires:  bzip2-devel
 #Needed for mount.ewf(.py) support
-BuildRequires:  python-devel
 BuildRequires:  libcstring-devel
 BuildRequires:  libcerror-devel
 BuildRequires:  libcthreads-devel
@@ -55,6 +65,7 @@ BuildRequires:  libcfile-devel
 BuildRequires:  libcpath-devel
 BuildRequires:  libbfio-devel
 BuildRequires:  libfcache-devel
+BuildRequires:  libfguid-devel
 BuildRequires:  libfdata-devel
 BuildRequires:  libfvalue-devel
 BuildRequires:  libhmac-devel
@@ -64,6 +75,13 @@ BuildRequires:  libsmdev-devel
 BuildRequires:  libsmraw-devel
 BuildRequires:  libcsystem-devel
 
+BuildRequires:  python-devel
+BuildRequires:  python-setuptools
+
+%if 0%{?with_python3}
+BuildRequires:  python3-devel
+BuildRequires:  python3-setuptools
+%endif # if with_python3
 
 
 %description
@@ -75,7 +93,7 @@ Libewf allows you to read and write media information within the EWF files.
 %package -n     ewftools
 Summary:        Utilities for the Expert Witness Compression Format (EWF)
 Group:          Applications/System
-Requires:       %{name} = %{version}-%{release}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
 Provides:       %{name}-tools = %{version}-%{release}
 Obsoletes:      %{name}-tools <= %{version}-%{release}
 Requires:       fuse-python >= 0.2
@@ -88,7 +106,7 @@ It contains tools to acquire, verify and export EWF files.
 %package        devel
 Summary:        Development files for %{name}
 Group:          Development/Libraries
-Requires:       %{name} = %{version}-%{release}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
 Requires:       zlib-devel
 Requires:       pkgconfig
 
@@ -97,18 +115,49 @@ The %{name}-devel package contains libraries and header files for
 developing applications that use %{name}.
 
 
+
+%package python2
+Summary:        Python2 extension that gives access to %{name} library
+Group:          Development/Libraries
+%{?python_provide:%python_provide python2-%{name}}
+
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
+%description python2
+This is a Python module that gives access to %{name} library
+from Python scripts.
+
+
+
+%if 0%{?with_python3}
+%package python3
+Summary:        Python3 extension that gives access to %{name} library
+Group:          Development/Libraries
+%{?python_provide:%python_provide python%{python3_pkgversion}-%{name}}
+
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
+
+%description python3
+This is a Python3 module that gives access to %{name} library
+from Python scripts.
+%endif # with_python3
+
+
+
+
 %prep
 %setup -qn %{gitname}-%{commit}
 #exit 1
 %patch0 -p 1 -b .libs
-%patch1 -p 1 -b .libcstrings
+#%patch1 -p 1 -b .libcstrings
 ./autogen.sh
 
 
 %build
-%configure --disable-static \
-  --enable-wide-character-type \
-  --enable-python
+%configure --disable-static --enable-wide-character-type \
+  --enable-multi-threading-support --enable-verbose-output \
+  %{pythonopts}
 
 
 # Remove rpath from libtool
@@ -148,7 +197,23 @@ find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
 %{_libdir}/pkgconfig/libewf.pc
 %{_mandir}/man3/%{name}.3*
 
+%files python2
+%{python2_sitearch}/pyewf*
+
+%if 0%{?with_python3}
+%files python3
+%{python3_sitearch}/pyewf*
+%endif # with_python3
+
+
+
 %changelog
+* Mon Aug 01 2016 Michal Ambroz <rebus AT seznam.cz> - 20160802-2
+- bugfix
+
+* Mon Aug 01 2016 Michal Ambroz <rebus AT seznam.cz> - 20160802-1
+- bump to 20160802
+
 * Mon Aug 01 2016 Michal Ambroz <rebus AT seznam.cz> - 20160519-1
 - bump to 20160519
 
