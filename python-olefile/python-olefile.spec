@@ -12,7 +12,7 @@
 
 Name:           python-%{gitname}
 Version:        0.45
-Release:        0.1.git%{shortcommit}%{?dist}
+Release:        0.2.git%{shortcommit}%{?dist}
 Summary:        %{sum}
 
 License:        BSD
@@ -24,7 +24,9 @@ Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{nam
 
 
 BuildArch:      noarch
-BuildRequires:  python2-devel python3-devel
+BuildRequires:  python2-devel
+
+BuildRequires:  python%{python3_pkgversion}-devel
 # needed to generate documentation man-page
 BuildRequires:  python-sphinx
 
@@ -57,11 +59,12 @@ See http://www.decalage.info/olefile for more info.
 
 
 
-%package -n python3-%{gitname}
+%package -n python%{python3_pkgversion}-%{gitname}
 Summary:        %{sum}
-%{?python_provide:%python_provide python3-%{gitname}}
+%{?python_provide:%python_provide python%{python3_pkgversion}-%{gitname}}
 
-%description -n python3-%{gitname}
+
+%description -n python%{python3_pkgversion}-%{gitname}
 The olefile is a Python package from Philippe Lagadec (decalage2)
 to parse, read and write Microsoft OLE2 files (also called Structured
 Storage, Compound File Binary Format or Compound Document File
@@ -71,13 +74,6 @@ messages, StickyNotes, several Microscopy file formats,
 McAfee antivirus quarantine files, etc.
 See http://www.decalage.info/olefile for more info.
 
-
-
-%package -n python-%{gitname}-doc
-%{?python_provide:%python_provide python2-%{gitname}-doc}
-%{?python_provide:%python_provide python3-%{gitname}-doc}
-Summary:        %{sum}
-%description -n python-%{gitname}-doc
 
 
 %prep
@@ -110,7 +106,7 @@ install -D -m644 doc/_build/man/olefile.1 %{buildroot}%{_mandir}/man1/%{name}.1
 %{python2_sitelib}/*
 
 
-%files -n python3-%{gitname}
+%files -n python%{python3_pkgversion}-%{gitname}
 %license olefile/LICENSE.txt
 %doc olefile/README.html olefile/README.rst
 %{python3_sitelib}/*
@@ -119,5 +115,5 @@ install -D -m644 doc/_build/man/olefile.1 %{buildroot}%{_mandir}/man1/%{name}.1
 
 
 %changelog
-* Thu Jun 15 2017 Michal Ambroz <rebus at, seznam.cz> 0.45-0.1.dev1.53c619f4
+* Thu Jun 15 2017 Michal Ambroz <rebus at, seznam.cz> 0.45-0.2.dev1.53c619f4
 - initial version
