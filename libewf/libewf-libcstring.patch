@@ -1,0 +1,11 @@
+diff -ru libewf-62ba5f578c9ffb0c651b82e06bb99a54a8f07af0/libewf/libewf_hash_sections.c libewf-62ba5f578c9ffb0c651b82e06bb99a54a8f07af0.new/libewf/libewf_hash_sections.c
+--- libewf-62ba5f578c9ffb0c651b82e06bb99a54a8f07af0/libewf/libewf_hash_sections.c	2016-05-19 06:01:52.000000000 +0200
++++ libewf-62ba5f578c9ffb0c651b82e06bb99a54a8f07af0.new/libewf/libewf_hash_sections.c	2016-08-02 10:08:11.985820386 +0200
+@@ -24,6 +24,7 @@
+ 
+ #include "libewf_libcerror.h"
+ #include "libewf_hash_sections.h"
++#include "libewf_libcstring.h"
+ #include "libewf_hash_values.h"
+ 
+ /* Creates hash sections
