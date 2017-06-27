@@ -1,0 +1,21 @@
+diff -ru libesedb-20120102/libuna/libuna_inline.h libesedb-20120102.new/libuna/libuna_inline.h
+--- libesedb-20120102/libuna/libuna_inline.h	2012-01-02 16:08:00.000000000 +0100
++++ libesedb-20120102.new/libuna/libuna_inline.h	2016-08-01 11:25:55.000000000 +0200
+@@ -1,7 +1,7 @@
+ /*
+  * The internal inline definition
+  *
+- * Copyright (c) 2008-2012, Joachim Metz <jbmetz@users.sourceforge.net>
++ * Copyright (C) 2008-2016, Joachim Metz <joachim.metz@gmail.com>
+  *
+  * Refer to AUTHORS for acknowledgements.
+  *
+@@ -27,7 +27,7 @@
+ #if defined( _MSC_VER )
+ #define LIBUNA_INLINE _inline
+ 
+-#elif defined( __BORLANDC__ ) || defined( __clang__ )
++#elif defined( __BORLANDC__ ) || defined( __clang__ ) || ( defined( __GNUC__ ) && __GNUC__ >= 5 )
+ #define LIBUNA_INLINE /* inline */
+ 
+ #else
