@@ -1,20 +1,37 @@
-%define debug_package %{nil}
+%global         gituser         libyal
+%global         gitname         libevtx
+%global         commit          58e44893ceeaca57dff7380d0f7110caf660b92d
+%global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
-Name: libevtx
-Version: 20160421
-Release: 1%{?dist}
-Summary: Library to access the Windows XML Event Log (EVTX) format
-Group: System Environment/Libraries
-License: LGPL
-Source: %{name}-alpha-%{version}.tar.gz
-%if 0%{?centos} == 5
-Patch1: %{name}-%{version}-patch-001
+%global         pythonopts      -enable-python2
+
+%if 0%{?fedora}
+%global         with_python3    1
+%global         pythonopts      -enable-python2 --enable-python3
 %endif
-URL: http://code.google.com/p/libevtx/
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+
+
+Name:           libevtx
+Version:        20160421
+Release:        1.alpha%{?dist}
+Summary:        Library to access the Windows XML Event Log (EVTX) format
+Group:          System Environment/Libraries
+License:        LGPLv3+
+URL:            https://github.com/libyal/libevtx/
+Source:         https://github.com/%{gituser}/%{gitname}/releases/download/%{version}/%{name}-alpha-%{version}.tar.gz
+
+BuildRequires:  python-devel
+BuildRequires:  python-setuptools
+
+%if 0%{?with_python3}
+BuildRequires:  python3-devel
+BuildRequires:  python3-setuptools
+%endif # if with_python3
+
 
 %description
 libevtx is a library to access the Windows XML Event Log (EVTX) format
+Part of Joachim Metz's libyal set of forensics tools and libraries.
 
 %package devel
 Summary: Header files and libraries for developing applications for libevtx
@@ -27,7 +44,7 @@ Header files and libraries for developing applications for libevtx.
 %package tools
 Summary: Several tools for reading Windows XML Event Log (EVTX) files
 Group: Applications/System
-Requires: libevtx = %{version}-%{release}     
+Requires: libevtx = %{version}-%{release}
 
 %description tools
 Several tools for reading Windows XML Event Log (EVTX) files
@@ -43,20 +60,19 @@ Python bindings for libevtx
 
 %prep
 %setup -q
-%if 0%{?centos} == 5
-%patch1 -p1
-%endif
 
 %build
-%configure --prefix=/usr --libdir=%{_libdir} --mandir=%{_mandir} --enable-python
-%if 0%{?rhel} == 5
-sed --in-place 's/^CC.*=.*gcc$/CC = gcc -std=c99/' pyevtx/Makefile
-%endif
+%configure --prefix=/usr --libdir=%{_libdir} --mandir=%{_mandir} %{pythonopts}
 make %{?_smp_mflags}
 
 %install
 rm -rf ${RPM_BUILD_ROOT}
 make DESTDIR=${RPM_BUILD_ROOT} install
+
+#Fedora not shipping static libraries
+find %{buildroot} -name '*.la' -delete
+find %{buildroot} -name '*.a' -delete
+
 
 %clean
 rm -rf ${RPM_BUILD_ROOT}
@@ -66,163 +82,83 @@ rm -rf ${RPM_BUILD_ROOT}
 %postun -p /sbin/ldconfig
 
 %files
-%defattr(644,root,root,755)
 %doc AUTHORS COPYING NEWS README
-%attr(755,root,root) %{_libdir}/*.so.*
+%{_libdir}/*.so.*
 
 %files devel
-%defattr(644,root,root,755)
 %doc AUTHORS COPYING NEWS README ChangeLog
-%{_libdir}/*.a
-%{_libdir}/*.la
 %{_libdir}/*.so
 %{_libdir}/pkgconfig/libevtx.pc
 %{_includedir}/*
 %{_mandir}/man3/*
 
 %files tools
-%defattr(644,root,root,755)
 %doc AUTHORS COPYING NEWS README
-%attr(755,root,root) %{_bindir}/evtxexport
-%attr(755,root,root) %{_bindir}/evtxinfo
+%{_bindir}/evtxexport
+%{_bindir}/evtxinfo
 %{_mandir}/man1/*
 
 %files python
-%defattr(644,root,root,755)
 %doc AUTHORS COPYING NEWS README
-%{_libdir}/python*/site-packages/*.a
-%{_libdir}/python*/site-packages/*.la
 %{_libdir}/python*/site-packages/*.so
 
 %changelog
-* Thu Apr 21 2016 Lawrence R. Rogers <lrr@cert.org> 20160421-1
-* Release 20160421-1
-	20160126
-	* applied updates
-	* worked on tests
+* Tue Jun 27 2017 Michal Ambroz <rebus _AT seznam.cz> 20160421-2.alpha
+- clean-up for Fedora
 
-	20160109
-	* fixes for rpmbuild
+* Thu Apr 21 2016 Lawrence R. Rogers <lrr@cert.org> 20160421-1
+- applied updates
+- worked on tests
+- 20160109 fixes for rpmbuild
 
 * Thu Jan  7 2016 Lawrence R. Rogers <lrr@cert.org> 20160107-1
-* Release 20160107-1
-	20160107
-	* worked on Python 3 support
+- worked on Python 3 support
 
 * Sun Jan  3 2016 Lawrence R. Rogers <lrr@cert.org> 20160103-1
-* Release 20160103-1
-	20160103
-	* 2016 update
-	* Worked on format support
-
-	20151221
-	* applied updates
-
-	20151206
-	* updated libfwnt
-
-	20151205
-	* worked on Python bindings
+- Worked on format support
+- updated libfwnt
+- worked on Python bindings
 
 * Mon Sep 28 2015 Lawrence R. Rogers <lrr@cert.org> 20150928-1
-* Release 20150928-1
-	20150929
-	* updated m4 scripts
-	* updated dependencies
-
-	20150823
-	* changed version for pypi repacking
-
-	20150822
-	* worked on setup.py
+- updated m4 scripts
+- updated dependencies
+- changed version for pypi repacking
+- worked on setup.py
 
 * Sat May 30 2015 Lawrence R. Rogers <lrr@cert.org> 20150105-2
-* Release 20150105-2
-	Libuna GCC-5 Patch
+- Libuna GCC-5 Patch
 
 * Mon Jan  5 2015 Lawrence R. Rogers <lrr@cert.org> 20150105-1
-* Release 20150105-1
-	20150105
-	* 2015 update
+- updated dependencies
+- updated version for release
+- worked on Python 3 support
+- worked on tests
+- code clean up
 
-	20141229
-	* updated dependencies
-	* updated version for release
-
-	20141228
-	* updated dpkg files
-
-	20141222
-	* worked on Python 3 support
-
-	20141220
-	* worked on Python 3 support
-	* worked on tests
-
-	20141117
-	* code clean up
-
-* Mon Nov 12 2014 Lawrence R. Rogers <lrr@cert.org> 20141112-1
-* Release 20141112-1
-	20141112
-	* changes to expose the event identifier qualifiers in the python bindings
-
+* Wed Nov 12 2014 Lawrence R. Rogers <lrr@cert.org> 20141112-1
+- changes to expose the event identifier qualifiers in the python bindings
 
 * Sun Oct 26 2014 Lawrence R. Rogers <lrr@cert.org> 20141026-1
-* Release 20141026-1
-	20141026
-	* changes for deployment
-
-	20141019
-	* changes for deployment
-
-	20141009
-	* updated dependencies and corresponding changes
-
-	20141004
-	* update Python-bindings tests
-
-	20140929
-	* removed README.macosx
-	* changes for project site move
+- changes for deployment
+- updated dependencies and corresponding changes
+- update Python-bindings tests
+- removed README.macosx
+- changes for project site move
 
 * Mon Sep  1 2014 Lawrence R. Rogers <lrr@cert.org> 20140901-01
-* Release 20140901-1
-	20140901
-	* bug fix in Python-bindings
+- bug fix in Python-bindings
 
 * Thu Jul 31 2014 Lawrence R. Rogers <lrr@cert.org> 20140731-01
-* Release 20140731-1
-	20140731
-	* bug fix in Python-bindings
-
-	20140723
-	* worked on dpkg debug packages support
-
-	20140531
-	* updated msvscpp files
-
-	20140530
-	* updated dependencies
-	* worked on Python-bindings
-	* replaced PackageMaker for pkgbuild
-
-	20140402
-	* code clean up
-
-	20140323
-	* worked on Python-bindings
-
-	20140317
-	* updated dependencies
-	* worked on setup.py
-	* worked on Python-bindings
-
-	20140210
-	* added evtxexport man page
-
-	20140131
-	* removed examples
+- bug fix in Python-bindings
+- updated msvscpp files
+- updated dependencies
+- worked on Python-bindings
+- replaced PackageMaker for pkgbuild
+- code clean up
+- worked on setup.py
+- worked on Python-bindings
+- added evtxexport man page
+- removed examples
 
 * Sun Jan 12 2014 Joachim Metz <joachim.metz@gmail.com> 20140112-1
 - Auto-generated
