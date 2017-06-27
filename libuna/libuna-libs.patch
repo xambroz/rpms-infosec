@@ -1,0 +1,63 @@
+diff -ru libuna-b9129d8786bf86d67c945df5ebc370a3455e07ca.orig/configure.ac libuna-b9129d8786bf86d67c945df5ebc370a3455e07ca.new/configure.ac
+--- libuna-b9129d8786bf86d67c945df5ebc370a3455e07ca.orig/configure.ac	2015-01-01 15:58:06.000000000 +0100
++++ libuna-b9129d8786bf86d67c945df5ebc370a3455e07ca.new/configure.ac	2015-06-08 03:55:52.911703082 +0200
+@@ -154,14 +154,7 @@
+ AC_CONFIG_FILES([Makefile])
+ AC_CONFIG_FILES([include/Makefile])
+ AC_CONFIG_FILES([common/Makefile])
+-AC_CONFIG_FILES([libcstring/Makefile])
+-AC_CONFIG_FILES([libcerror/Makefile])
+ AC_CONFIG_FILES([libuna/Makefile])
+-AC_CONFIG_FILES([libcdatetime/Makefile])
+-AC_CONFIG_FILES([libclocale/Makefile])
+-AC_CONFIG_FILES([libcnotify/Makefile])
+-AC_CONFIG_FILES([libcfile/Makefile])
+-AC_CONFIG_FILES([libcsystem/Makefile])
+ AC_CONFIG_FILES([unatools/Makefile])
+ AC_CONFIG_FILES([po/Makefile.in])
+ AC_CONFIG_FILES([po/Makevars])
+Only in libuna-b9129d8786bf86d67c945df5ebc370a3455e07ca.new: libcfile
+Only in libuna-b9129d8786bf86d67c945df5ebc370a3455e07ca.new: libcsystem
+diff -ru libuna-b9129d8786bf86d67c945df5ebc370a3455e07ca.orig/Makefile.am libuna-b9129d8786bf86d67c945df5ebc370a3455e07ca.new/Makefile.am
+--- libuna-b9129d8786bf86d67c945df5ebc370a3455e07ca.orig/Makefile.am	2015-01-01 15:58:06.000000000 +0100
++++ libuna-b9129d8786bf86d67c945df5ebc370a3455e07ca.new/Makefile.am	2015-06-08 03:55:30.992039964 +0200
+@@ -3,15 +3,7 @@
+ SUBDIRS = \
+ 	include \
+ 	common \
+-	libcstring \
+-	libcerror \
+ 	libuna \
+-	libcdatetime \
+-	libclocale \
+-	libcnotify \
+-	libcfile \
+-	libcsystem \
+-	unatools \
+ 	po \
+ 	documents \
+ 	manuals \
+@@ -63,8 +55,6 @@
+ 
+ library:
+ 	cd $(srcdir)/common && $(MAKE) $(AM_MAKEFLAGS)
+-	cd $(srcdir)/libcstring && $(MAKE) $(AM_MAKEFLAGS)
+-	cd $(srcdir)/libcerror && $(MAKE) $(AM_MAKEFLAGS)
+ 	cd $(srcdir)/libuna && $(MAKE) $(AM_MAKEFLAGS)
+ 	cd $(srcdir)/po && $(MAKE) $(AM_MAKEFLAGS)
+ 
+@@ -81,14 +71,7 @@
+ 	done && test -z "$$fail"
+ 
+ splint:
+-	(cd $(srcdir)/libcstring && $(MAKE) splint $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcerror && $(MAKE) splint $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/libuna && $(MAKE) splint $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcdatetime && $(MAKE) splint $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libclocale && $(MAKE) splint $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcnotify && $(MAKE) splint $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcfile && $(MAKE) splint $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcsystem && $(MAKE) splint $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/unatools && $(MAKE) splint $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/po && $(MAKE) splint $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/tests && $(MAKE) splint $(AM_MAKEFLAGS))

@@ -1,0 +1,54 @@
+diff -ru libcpath-626f55595a0d9129930c3c421e9b27a36a67b0f2.orig/configure.ac libcpath-626f55595a0d9129930c3c421e9b27a36a67b0f2.new/configure.ac
+--- libcpath-626f55595a0d9129930c3c421e9b27a36a67b0f2.orig/configure.ac	2015-01-01 19:18:45.000000000 +0100
++++ libcpath-626f55595a0d9129930c3c421e9b27a36a67b0f2.new/configure.ac	2015-06-08 01:32:20.123900167 +0200
+@@ -137,11 +137,6 @@
+ AC_CONFIG_FILES([Makefile])
+ AC_CONFIG_FILES([include/Makefile])
+ AC_CONFIG_FILES([common/Makefile])
+-AC_CONFIG_FILES([libcstring/Makefile])
+-AC_CONFIG_FILES([libcerror/Makefile])
+-AC_CONFIG_FILES([libclocale/Makefile])
+-AC_CONFIG_FILES([libcsplit/Makefile])
+-AC_CONFIG_FILES([libuna/Makefile])
+ AC_CONFIG_FILES([libcpath/Makefile])
+ AC_CONFIG_FILES([po/Makefile.in])
+ AC_CONFIG_FILES([po/Makevars])
+diff -ru libcpath-626f55595a0d9129930c3c421e9b27a36a67b0f2.orig/Makefile.am libcpath-626f55595a0d9129930c3c421e9b27a36a67b0f2.new/Makefile.am
+--- libcpath-626f55595a0d9129930c3c421e9b27a36a67b0f2.orig/Makefile.am	2015-01-01 19:18:45.000000000 +0100
++++ libcpath-626f55595a0d9129930c3c421e9b27a36a67b0f2.new/Makefile.am	2015-06-08 01:31:58.642242580 +0200
+@@ -3,11 +3,6 @@
+ SUBDIRS = \
+ 	include \
+ 	common \
+-	libcstring \
+-	libcerror \
+-	libclocale \
+-	libcsplit \
+-	libuna \
+ 	libcpath \
+ 	po \
+ 	manuals \
+@@ -58,11 +53,6 @@
+ 
+ library:
+ 	cd $(srcdir)/common && $(MAKE) $(AM_MAKEFLAGS)
+-	cd $(srcdir)/libcstring && $(MAKE) $(AM_MAKEFLAGS)
+-	cd $(srcdir)/libcerror && $(MAKE) $(AM_MAKEFLAGS)
+-	cd $(srcdir)/libclocale && $(MAKE) $(AM_MAKEFLAGS)
+-	cd $(srcdir)/libcsplit && $(MAKE) $(AM_MAKEFLAGS)
+-	cd $(srcdir)/libuna && $(MAKE) $(AM_MAKEFLAGS)
+ 	cd $(srcdir)/libcpath && $(MAKE) $(AM_MAKEFLAGS)
+ 	cd $(srcdir)/po && $(MAKE) $(AM_MAKEFLAGS)
+ 
+@@ -79,11 +69,6 @@
+ 	done && test -z "$$fail"
+ 
+ splint:
+-	(cd $(srcdir)/libcstring && $(MAKE) splint $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcerror && $(MAKE) splint $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libclocale && $(MAKE) splint $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcsplit && $(MAKE) splint $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libuna && $(MAKE) splint $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/libcpath && $(MAKE) splint $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/po && $(MAKE) splint $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/tests && $(MAKE) splint $(AM_MAKEFLAGS))

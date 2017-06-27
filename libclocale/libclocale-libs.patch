@@ -1,0 +1,42 @@
+diff -ru libclocale-4b9d689df91619703ee745687b7d12c4b7dd0185.orig/configure.ac libclocale-4b9d689df91619703ee745687b7d12c4b7dd0185.new/configure.ac
+--- libclocale-4b9d689df91619703ee745687b7d12c4b7dd0185.orig/configure.ac	2015-01-01 12:59:40.000000000 +0100
++++ libclocale-4b9d689df91619703ee745687b7d12c4b7dd0185.new/configure.ac	2015-06-07 22:08:19.159993703 +0200
+@@ -128,8 +128,6 @@
+ AC_CONFIG_FILES([Makefile])
+ AC_CONFIG_FILES([include/Makefile])
+ AC_CONFIG_FILES([common/Makefile])
+-AC_CONFIG_FILES([libcstring/Makefile])
+-AC_CONFIG_FILES([libcerror/Makefile])
+ AC_CONFIG_FILES([libclocale/Makefile])
+ AC_CONFIG_FILES([po/Makefile.in])
+ AC_CONFIG_FILES([po/Makevars])
+diff -ru libclocale-4b9d689df91619703ee745687b7d12c4b7dd0185.orig/Makefile.am libclocale-4b9d689df91619703ee745687b7d12c4b7dd0185.new/Makefile.am
+--- libclocale-4b9d689df91619703ee745687b7d12c4b7dd0185.orig/Makefile.am	2015-01-01 12:59:40.000000000 +0100
++++ libclocale-4b9d689df91619703ee745687b7d12c4b7dd0185.new/Makefile.am	2015-06-07 22:08:06.651323013 +0200
+@@ -3,8 +3,6 @@
+ SUBDIRS = \
+ 	include \
+ 	common \
+-	libcstring \
+-	libcerror \
+ 	libclocale \
+ 	po \
+ 	manuals \
+@@ -55,8 +53,6 @@
+ 
+ library:
+ 	cd $(srcdir)/common && $(MAKE) $(AM_MAKEFLAGS)
+-	cd $(srcdir)/libcstring && $(MAKE) $(AM_MAKEFLAGS)
+-	cd $(srcdir)/libcerror && $(MAKE) $(AM_MAKEFLAGS)
+ 	cd $(srcdir)/libclocale && $(MAKE) $(AM_MAKEFLAGS)
+ 	cd $(srcdir)/po && $(MAKE) $(AM_MAKEFLAGS)
+ 
+@@ -73,8 +69,6 @@
+ 	done && test -z "$$fail"
+ 
+ splint:
+-	(cd $(srcdir)/libcstring && $(MAKE) splint $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcerror && $(MAKE) splint $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/libclocale && $(MAKE) splint $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/po && $(MAKE) splint $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/tests && $(MAKE) splint $(AM_MAKEFLAGS))

@@ -1,0 +1,51 @@
+diff -ru libcdatetime-e9c72df9c0d7bbd3054fd1b7950bc76a9dee2003.orig/configure.ac libcdatetime-e9c72df9c0d7bbd3054fd1b7950bc76a9dee2003.new/configure.ac
+--- libcdatetime-e9c72df9c0d7bbd3054fd1b7950bc76a9dee2003.orig/configure.ac	2015-01-01 10:20:17.000000000 +0100
++++ libcdatetime-e9c72df9c0d7bbd3054fd1b7950bc76a9dee2003.new/configure.ac	2015-06-07 10:40:51.156142766 +0200
+@@ -128,8 +128,8 @@
+ AC_CONFIG_FILES([Makefile])
+ AC_CONFIG_FILES([include/Makefile])
+ AC_CONFIG_FILES([common/Makefile])
+-AC_CONFIG_FILES([libcstring/Makefile])
+-AC_CONFIG_FILES([libcerror/Makefile])
++dnl AC_CONFIG_FILES([libcstring/Makefile])
++dnl AC_CONFIG_FILES([libcerror/Makefile])
+ AC_CONFIG_FILES([libcdatetime/Makefile])
+ AC_CONFIG_FILES([po/Makefile.in])
+ AC_CONFIG_FILES([po/Makevars])
+diff -ru libcdatetime-e9c72df9c0d7bbd3054fd1b7950bc76a9dee2003.orig/Makefile.am libcdatetime-e9c72df9c0d7bbd3054fd1b7950bc76a9dee2003.new/Makefile.am
+--- libcdatetime-e9c72df9c0d7bbd3054fd1b7950bc76a9dee2003.orig/Makefile.am	2015-01-01 10:20:17.000000000 +0100
++++ libcdatetime-e9c72df9c0d7bbd3054fd1b7950bc76a9dee2003.new/Makefile.am	2015-06-07 10:53:48.336837332 +0200
+@@ -3,14 +3,13 @@
+ SUBDIRS = \
+ 	include \
+ 	common \
+-	libcstring \
+-	libcerror \
+ 	libcdatetime \
+ 	po \
+ 	manuals \
+ 	tests \
+ 	msvscpp
+ 
++
+ DPKG_FILES = \
+ 	dpkg/changelog \
+ 	dpkg/changelog.in \
+@@ -55,8 +54,6 @@
+ 
+ library:
+ 	cd $(srcdir)/common && $(MAKE) $(AM_MAKEFLAGS)
+-	cd $(srcdir)/libcstring && $(MAKE) $(AM_MAKEFLAGS)
+-	cd $(srcdir)/libcerror && $(MAKE) $(AM_MAKEFLAGS)
+ 	cd $(srcdir)/libcdatetime && $(MAKE) $(AM_MAKEFLAGS)
+ 	cd $(srcdir)/po && $(MAKE) $(AM_MAKEFLAGS)
+ 
+@@ -73,8 +70,6 @@
+ 	done && test -z "$$fail"
+ 
+ splint:
+-	(cd $(srcdir)/libcstring && $(MAKE) splint $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcerror && $(MAKE) splint $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/libcdatetime && $(MAKE) splint $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/po && $(MAKE) splint $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/tests && $(MAKE) splint $(AM_MAKEFLAGS))

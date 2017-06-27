@@ -1,0 +1,54 @@
+diff -ru libcfile-9a0dd17f31db245b1b2e33e854f791ad307f4604.orig/configure.ac libcfile-9a0dd17f31db245b1b2e33e854f791ad307f4604.new/configure.ac
+--- libcfile-9a0dd17f31db245b1b2e33e854f791ad307f4604.orig/configure.ac	2015-01-01 16:06:37.000000000 +0100
++++ libcfile-9a0dd17f31db245b1b2e33e854f791ad307f4604.new/configure.ac	2015-06-08 04:08:37.732941904 +0200
+@@ -143,11 +143,6 @@
+ AC_CONFIG_FILES([Makefile])
+ AC_CONFIG_FILES([include/Makefile])
+ AC_CONFIG_FILES([common/Makefile])
+-AC_CONFIG_FILES([libcstring/Makefile])
+-AC_CONFIG_FILES([libcerror/Makefile])
+-AC_CONFIG_FILES([libclocale/Makefile])
+-AC_CONFIG_FILES([libcnotify/Makefile])
+-AC_CONFIG_FILES([libuna/Makefile])
+ AC_CONFIG_FILES([libcfile/Makefile])
+ AC_CONFIG_FILES([po/Makefile.in])
+ AC_CONFIG_FILES([po/Makevars])
+diff -ru libcfile-9a0dd17f31db245b1b2e33e854f791ad307f4604.orig/Makefile.am libcfile-9a0dd17f31db245b1b2e33e854f791ad307f4604.new/Makefile.am
+--- libcfile-9a0dd17f31db245b1b2e33e854f791ad307f4604.orig/Makefile.am	2015-01-01 16:06:37.000000000 +0100
++++ libcfile-9a0dd17f31db245b1b2e33e854f791ad307f4604.new/Makefile.am	2015-06-08 04:08:18.714236198 +0200
+@@ -3,11 +3,6 @@
+ SUBDIRS = \
+ 	include \
+ 	common \
+-	libcstring \
+-	libcerror \
+-	libclocale \
+-	libcnotify \
+-	libuna \
+ 	libcfile \
+ 	po \
+ 	manuals \
+@@ -58,11 +53,6 @@
+ 
+ library:
+ 	cd $(srcdir)/common && $(MAKE) $(AM_MAKEFLAGS)
+-	cd $(srcdir)/libcstring && $(MAKE) $(AM_MAKEFLAGS)
+-	cd $(srcdir)/libcerror && $(MAKE) $(AM_MAKEFLAGS)
+-	cd $(srcdir)/libclocale && $(MAKE) $(AM_MAKEFLAGS)
+-	cd $(srcdir)/libcnotify && $(MAKE) $(AM_MAKEFLAGS)
+-	cd $(srcdir)/libuna && $(MAKE) $(AM_MAKEFLAGS)
+ 	cd $(srcdir)/libcfile && $(MAKE) $(AM_MAKEFLAGS)
+ 	cd $(srcdir)/po && $(MAKE) $(AM_MAKEFLAGS)
+ 
+@@ -79,11 +69,6 @@
+ 	done && test -z "$$fail"
+ 
+ splint:
+-	(cd $(srcdir)/libcstring && $(MAKE) splint $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcerror && $(MAKE) splint $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libclocale && $(MAKE) splint $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcnotify && $(MAKE) splint $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libuna && $(MAKE) splint $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/libcfile && $(MAKE) splint $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/po && $(MAKE) splint $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/tests && $(MAKE) splint $(AM_MAKEFLAGS))

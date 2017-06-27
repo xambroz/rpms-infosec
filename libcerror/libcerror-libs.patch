@@ -1,0 +1,39 @@
+diff -ru libcerror-99cd8c5cde340ee87c636e67e7599ca873fcc2ca.orig/configure.ac libcerror-99cd8c5cde340ee87c636e67e7599ca873fcc2ca.new/configure.ac
+--- libcerror-99cd8c5cde340ee87c636e67e7599ca873fcc2ca.orig/configure.ac	2015-04-07 06:34:43.000000000 +0200
++++ libcerror-99cd8c5cde340ee87c636e67e7599ca873fcc2ca.new/configure.ac	2015-06-07 10:32:24.962480206 +0200
+@@ -118,7 +118,7 @@
+ AC_CONFIG_FILES([Makefile])
+ AC_CONFIG_FILES([include/Makefile])
+ AC_CONFIG_FILES([common/Makefile])
+-AC_CONFIG_FILES([libcstring/Makefile])
++dnl AC_CONFIG_FILES([libcstring/Makefile])
+ AC_CONFIG_FILES([libcerror/Makefile])
+ AC_CONFIG_FILES([po/Makefile.in])
+ AC_CONFIG_FILES([po/Makevars])
+diff -ru libcerror-99cd8c5cde340ee87c636e67e7599ca873fcc2ca.orig/Makefile.am libcerror-99cd8c5cde340ee87c636e67e7599ca873fcc2ca.new/Makefile.am
+--- libcerror-99cd8c5cde340ee87c636e67e7599ca873fcc2ca.orig/Makefile.am	2015-04-07 06:34:43.000000000 +0200
++++ libcerror-99cd8c5cde340ee87c636e67e7599ca873fcc2ca.new/Makefile.am	2015-06-07 10:27:34.308690742 +0200
+@@ -3,7 +3,6 @@
+ SUBDIRS = \
+ 	include \
+ 	common \
+-	libcstring \
+ 	libcerror \
+ 	po \
+ 	manuals \
+@@ -54,7 +53,6 @@
+ 
+ library:
+ 	cd $(srcdir)/common && $(MAKE) $(AM_MAKEFLAGS)
+-	cd $(srcdir)/libcstring && $(MAKE) $(AM_MAKEFLAGS)
+ 	cd $(srcdir)/libcerror && $(MAKE) $(AM_MAKEFLAGS)
+ 	cd $(srcdir)/po && $(MAKE) $(AM_MAKEFLAGS)
+ 
+@@ -71,7 +69,6 @@
+ 	done && test -z "$$fail"
+ 
+ splint:
+-	(cd $(srcdir)/libcstring && $(MAKE) splint $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/libcerror && $(MAKE) splint $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/po && $(MAKE) splint $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/tests && $(MAKE) splint $(AM_MAKEFLAGS))

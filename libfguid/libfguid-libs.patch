@@ -1,0 +1,42 @@
+diff -ru libfguid-7f870ba9795389d3293f21ce956e34ee40f416d0.orig/configure.ac libfguid-7f870ba9795389d3293f21ce956e34ee40f416d0.new/configure.ac
+--- libfguid-7f870ba9795389d3293f21ce956e34ee40f416d0.orig/configure.ac	2015-01-04 12:19:26.000000000 +0100
++++ libfguid-7f870ba9795389d3293f21ce956e34ee40f416d0.new/configure.ac	2015-06-08 03:17:38.912086799 +0200
+@@ -121,8 +121,6 @@
+ AC_CONFIG_FILES([Makefile])
+ AC_CONFIG_FILES([include/Makefile])
+ AC_CONFIG_FILES([common/Makefile])
+-AC_CONFIG_FILES([libcstring/Makefile])
+-AC_CONFIG_FILES([libcerror/Makefile])
+ AC_CONFIG_FILES([libfguid/Makefile])
+ AC_CONFIG_FILES([po/Makefile.in])
+ AC_CONFIG_FILES([po/Makevars])
+diff -ru libfguid-7f870ba9795389d3293f21ce956e34ee40f416d0.orig/Makefile.am libfguid-7f870ba9795389d3293f21ce956e34ee40f416d0.new/Makefile.am
+--- libfguid-7f870ba9795389d3293f21ce956e34ee40f416d0.orig/Makefile.am	2015-01-04 12:19:26.000000000 +0100
++++ libfguid-7f870ba9795389d3293f21ce956e34ee40f416d0.new/Makefile.am	2015-06-08 03:17:27.820313510 +0200
+@@ -3,8 +3,6 @@
+ SUBDIRS = \
+ 	include \
+ 	common \
+-	libcstring \
+-	libcerror \
+ 	libfguid \
+ 	po \
+ 	manuals \
+@@ -55,8 +53,6 @@
+ 
+ library:
+ 	(cd $(srcdir)/common && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcstring && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcerror && $(MAKE) $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/libfguid && $(MAKE) $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/po && $(MAKE) $(AM_MAKEFLAGS))
+ 
+@@ -73,8 +69,6 @@
+ 	done && test -z "$$fail"
+ 
+ splint:
+-	(cd $(srcdir)/libcstring && $(MAKE) splint $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcerror && $(MAKE) splint $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/libfguid && $(MAKE) splint $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/po && $(MAKE) splint $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/tests && $(MAKE) splint $(AM_MAKEFLAGS))

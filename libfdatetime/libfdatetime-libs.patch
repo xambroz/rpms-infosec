@@ -1,0 +1,43 @@
+diff -ru libfdatetime-284b8418ef4649b5b775cef8074d52cde9e43fb6.orig/configure.ac libfdatetime-284b8418ef4649b5b775cef8074d52cde9e43fb6.new/configure.ac
+--- libfdatetime-284b8418ef4649b5b775cef8074d52cde9e43fb6.orig/configure.ac	2015-05-07 09:23:00.000000000 +0200
++++ libfdatetime-284b8418ef4649b5b775cef8074d52cde9e43fb6.new/configure.ac	2015-06-08 03:28:17.182040922 +0200
+@@ -121,8 +121,6 @@
+ AC_CONFIG_FILES([Makefile])
+ AC_CONFIG_FILES([include/Makefile])
+ AC_CONFIG_FILES([common/Makefile])
+-AC_CONFIG_FILES([libcstring/Makefile])
+-AC_CONFIG_FILES([libcerror/Makefile])
+ AC_CONFIG_FILES([libfdatetime/Makefile])
+ AC_CONFIG_FILES([po/Makefile.in])
+ AC_CONFIG_FILES([po/Makevars])
+Only in libfdatetime-284b8418ef4649b5b775cef8074d52cde9e43fb6.new: libfdatetime-284b8418ef4649b5b775cef8074d52cde9e43fb6.orig
+diff -ru libfdatetime-284b8418ef4649b5b775cef8074d52cde9e43fb6.orig/Makefile.am libfdatetime-284b8418ef4649b5b775cef8074d52cde9e43fb6.new/Makefile.am
+--- libfdatetime-284b8418ef4649b5b775cef8074d52cde9e43fb6.orig/Makefile.am	2015-05-07 09:23:00.000000000 +0200
++++ libfdatetime-284b8418ef4649b5b775cef8074d52cde9e43fb6.new/Makefile.am	2015-06-08 03:27:53.126532604 +0200
+@@ -3,8 +3,6 @@
+ SUBDIRS = \
+ 	include \
+ 	common \
+-	libcstring \
+-	libcerror \
+ 	libfdatetime \
+ 	po \
+ 	tests \
+@@ -55,8 +53,6 @@
+ 
+ library:
+ 	(cd $(srcdir)/common && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcstring && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcerror && $(MAKE) $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/libfdatetime && $(MAKE) $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/po && $(MAKE) $(AM_MAKEFLAGS))
+ 
+@@ -73,8 +69,6 @@
+ 	done && test -z "$$fail"
+ 
+ splint:
+-	(cd $(srcdir)/libcstring && $(MAKE) splint $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcerror && $(MAKE) splint $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/libfdatetime && $(MAKE) splint $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/po && $(MAKE) splint $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/tests && $(MAKE) splint $(AM_MAKEFLAGS))

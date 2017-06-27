@@ -1,0 +1,66 @@
+diff -ru libhmac-fbead9cf8d5c62cebdcab0a3bcef60eba20f3e4a.orig/configure.ac libhmac-fbead9cf8d5c62cebdcab0a3bcef60eba20f3e4a.new/configure.ac
+--- libhmac-fbead9cf8d5c62cebdcab0a3bcef60eba20f3e4a.orig/configure.ac	2015-01-04 12:36:00.000000000 +0100
++++ libhmac-fbead9cf8d5c62cebdcab0a3bcef60eba20f3e4a.new/configure.ac	2015-06-08 04:58:58.715736230 +0200
+@@ -160,16 +160,7 @@
+ AC_CONFIG_FILES([Makefile])
+ AC_CONFIG_FILES([include/Makefile])
+ AC_CONFIG_FILES([common/Makefile])
+-AC_CONFIG_FILES([libcstring/Makefile])
+-AC_CONFIG_FILES([libcerror/Makefile])
+ AC_CONFIG_FILES([libhmac/Makefile])
+-AC_CONFIG_FILES([libclocale/Makefile])
+-AC_CONFIG_FILES([libcnotify/Makefile])
+-AC_CONFIG_FILES([libcsplit/Makefile])
+-AC_CONFIG_FILES([libuna/Makefile])
+-AC_CONFIG_FILES([libcfile/Makefile])
+-AC_CONFIG_FILES([libcpath/Makefile])
+-AC_CONFIG_FILES([libcsystem/Makefile])
+ AC_CONFIG_FILES([hmactools/Makefile])
+ AC_CONFIG_FILES([po/Makefile.in])
+ AC_CONFIG_FILES([po/Makevars])
+diff -ru libhmac-fbead9cf8d5c62cebdcab0a3bcef60eba20f3e4a.orig/Makefile.am libhmac-fbead9cf8d5c62cebdcab0a3bcef60eba20f3e4a.new/Makefile.am
+--- libhmac-fbead9cf8d5c62cebdcab0a3bcef60eba20f3e4a.orig/Makefile.am	2015-01-04 12:36:00.000000000 +0100
++++ libhmac-fbead9cf8d5c62cebdcab0a3bcef60eba20f3e4a.new/Makefile.am	2015-06-08 04:58:38.859048977 +0200
+@@ -3,16 +3,7 @@
+ SUBDIRS = \
+ 	include \
+ 	common \
+-	libcstring \
+-	libcerror \
+ 	libhmac \
+-	libclocale \
+-	libcnotify \
+-	libcsplit \
+-	libuna \
+-	libcfile \
+-	libcpath \
+-	libcsystem \
+ 	hmactools \
+ 	po \
+ 	manuals \
+@@ -64,8 +55,6 @@
+ 
+ library:
+ 	(cd $(srcdir)/common && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcstring && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcerror && $(MAKE) $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/libhmac && $(MAKE) $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/po && $(MAKE) $(AM_MAKEFLAGS))
+ 
+@@ -82,16 +71,7 @@
+ 	done && test -z "$$fail"
+ 
+ splint:
+-	(cd $(srcdir)/libcstring && $(MAKE) splint $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcerror && $(MAKE) splint $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/libhmac && $(MAKE) splint $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libclocale && $(MAKE) splint $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcnotify && $(MAKE) splint $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcsplit && $(MAKE) splint $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libuna && $(MAKE) splint $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcfile && $(MAKE) splint $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcpath && $(MAKE) splint $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcsystem && $(MAKE) splint $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/hmactools && $(MAKE) splint $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/po && $(MAKE) splint $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/tests && $(MAKE) splint $(AM_MAKEFLAGS))
