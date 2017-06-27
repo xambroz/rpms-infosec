@@ -1,21 +1,69 @@
+%global         gituser         libyal
+%global         gitname         libewf
+#%global        commit          5e47a75e30a4dd3068f8210f0a62c37b58329d7f
+#%global        commit          54b0eada69defd015c49e4e1e1e4e26a27409ba3
+#git commit for 20160424
+#%global        commit          93751847e334ea033a0871a65f5aa901782a2276
+#20160802
+#%global        commit          986cfbe60b306778e8fbe93e4864c628871659a8
+#20160519
+%global         commit          62ba5f578c9ffb0c651b82e06bb99a54a8f07af0
+%global         shortcommit     %(c=%{commit}; echo ${c:0:7})
+
+
+
 Name:           libewf
-Version:        20140608
+Version:        20160519
 Release:        1%{?dist}
-Summary:        Library for the Expert Witness Compression Format (EWF)
+Summary:        Libyal library for the Expert Witness Compression Format (EWF)
 
 Group:          System Environment/Libraries
 License:        LGPLv3+
-URL:            http://sourceforge.net/projects/libewf/
-#Source0:        http://libewf.googlecode.com/files/libewf-%{version}.tar.gz
-Source0:        https://53efc0a7187d0baa489ee347026b8278fe4020f6.googledrive.com/host/0B3fBvzttpiiSMTdoaVExWWNsRjg/libewf-%{version}.tar.gz
+#URL:           https://github.com/libyal/libewf
+#URL:           http://sourceforge.net/projects/libewf/
+URL:            https://github.com/%{gituser}/%{gitname}
+#Source0:       http://libewf.googlecode.com/files/libewf-%{version}.tar.gz
+#Source0:       https://53efc0a7187d0baa489ee347026b8278fe4020f6.googledrive.com/host/0B3fBvzttpiiSMTdoaVExWWNsRjg/%{name}-%{version}.tar.gz
+Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
+#Patch build to use the shared system libraries rather than using embedded ones
+Patch0:         %{name}-libs.patch
+#./libewf/.libs/libewf.so: undefined reference to `libcstring_narrow_string_compare'
+#https://github.com/libyal/libewf/issues/51
+Patch1:         %{name}-libcstring.patch
 
 
+BuildRequires:  pkgconfig
+BuildRequires:  automake
+BuildRequires:  libtool
+BuildRequires:  gettext-devel
 BuildRequires:  fuse-devel
 BuildRequires:  libuuid-devel
 BuildRequires:  openssl-devel
 BuildRequires:  zlib-devel
 #Needed for mount.ewf(.py) support
 BuildRequires:  python-devel
+BuildRequires:  libcstring-devel
+BuildRequires:  libcerror-devel
+BuildRequires:  libcthreads-devel
+BuildRequires:  libcdata-devel
+BuildRequires:  libcdatetime-devel
+BuildRequires:  libclocale-devel
+BuildRequires:  libcnotify-devel
+BuildRequires:  libcsplit-devel
+BuildRequires:  libuna-devel
+BuildRequires:  libcfile-devel
+BuildRequires:  libcpath-devel
+BuildRequires:  libbfio-devel
+BuildRequires:  libfcache-devel
+BuildRequires:  libfdata-devel
+BuildRequires:  libfvalue-devel
+BuildRequires:  libhmac-devel
+BuildRequires:  libcaes-devel
+BuildRequires:  libodraw-devel
+BuildRequires:  libsmdev-devel
+BuildRequires:  libsmraw-devel
+BuildRequires:  libcsystem-devel
+
 
 
 %description
@@ -50,7 +98,11 @@ developing applications that use %{name}.
 
 
 %prep
-%setup -q
+%setup -qn %{gitname}-%{commit}
+#exit 1
+%patch0 -p 1 -b .libs
+%patch1 -p 1 -b .libcstrings
+./autogen.sh
 
 
 %build
@@ -94,11 +146,23 @@ find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
 %{_includedir}/libewf/
 %{_libdir}/*.so
 %{_libdir}/pkgconfig/libewf.pc
-%{_mandir}/man3/*.gz
+%{_mandir}/man3/%{name}.3*
 
 %changelog
-* Sat Aug 16 2014 Michal Ambroz <rebus AT seznam.cz> - 20140608-1
+* Mon Aug 01 2016 Michal Ambroz <rebus AT seznam.cz> - 20160519-1
+- bump to 20160519
+
+* Mon Jun 20 2016 Michal Ambroz <rebus AT seznam.cz> - 20160424-1
+- Update to 20160424
+
+* Mon Jun 08 2015 Michal Ambroz <rebus AT seznam.cz> - 20150608-1
+- Update to 20150608
+
+* Mon Aug 25 2014 Michal Ambroz <rebus AT seznam.cz> - 20140608-1
 - Update to 20140608
+
+* Sun Aug 17 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 20130416-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
 
 * Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 20130416-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
