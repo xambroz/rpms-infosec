@@ -1,12 +1,12 @@
 %global         gituser         libyal
 %global         gitname         libesedb
-%global         commit          1fc13b4cad3c783cc5d21cdab7ce244d786cb8de
+%global         commit          a349807aa4dbdd0bf46bed24af9c8a93ce02f9a5
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
 
 Name:           libesedb
-Version:        20140406
+Version:        20150409
 Release:        1%{?dist}
 Summary:        Libyal library to access the Extensible Storage Engine (ESE) Database File (EDB) format
 
@@ -14,12 +14,10 @@ License:        GPLv3+
 #URL:           https://github.com/libyal/libesedb
 URL:            https://github.com/%{gituser}/%{gitname}
 #Source0:        http://libesedb.googlecode.com/files/%{name}-alpha-%{version}.tar.gz
-Source0:       https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
-#Source0:        https://github.com/%{gituser}/%{gitname}/releases/download/%{version}/%{gitname}-experimental-%{version}.tar.gz
+Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 #Patch build to use the shared system libraries rather than using embedded ones
-#Patch0:         %{name}-libs.patch
+Patch0:         %{name}-libs.patch
 
-BuildRequires:  autoconf
 
 
 %description
@@ -32,7 +30,6 @@ Windows Mail, Exchange, Active Directory, etc.
 Summary:        Development files for %{name}
 Requires:       %{name}%{?_isa} = %{version}-%{release}
 
-
 %description    devel
 The %{name}-devel package contains libraries and header files for
 developing applications that use %{name}.
@@ -40,11 +37,8 @@ developing applications that use %{name}.
 
 %prep
 %setup -qn %{gitname}-%{commit}
-#setup -qn %{gitname}-%{version}
-#patch0 -p 1 -b .libs
-#./autogen.sh
-autoreconf --force --install
-aclocal
+%patch0 -p 1 -b .libs
+./autogen.sh
 
 
 %build
