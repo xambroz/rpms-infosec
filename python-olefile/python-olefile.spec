@@ -1,9 +1,9 @@
 %global         gituser         decalage2
 %global         gitname         olefile
 # v0.44
-#%global         commit          3397e5ea9172c26fca35fb45175fde170c277e3d
+#global         commit          3397e5ea9172c26fca35fb45175fde170c277e3d
 # v0.45dev1
-%global         commit          53c619f4c68ee226b57c07a3956efcc814a548f0
+%global         commit          e7eb5aae11e99a30ba1bdf3982413edd3bee2874
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 %global         sum             Tools to analyze Microsoft OLE2 files
@@ -12,15 +12,16 @@
 
 Name:           python-%{gitname}
 Version:        0.45
-Release:        0.2.git%{shortcommit}%{?dist}
+Release:        0.3.git%{shortcommit}%{?dist}
 Summary:        %{sum}
 
 License:        BSD
-URL:            https://www.decalage.info/olefile
 # URL:          https://github.com/decalage2/olefile
+URL:            https://www.decalage.info/olefile
+# Source used for clean release
 #Source0:       https://github.com/%{gituser}/%{gitname}/archive/v%{version}/%{gitname}-%{version}.tar.gz
+# Source used for snapshot based on the git commit
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
-#Patch0:        %{name}-thirdparty.patch
 
 
 BuildArch:      noarch
@@ -115,5 +116,8 @@ install -D -m644 doc/_build/man/olefile.1 %{buildroot}%{_mandir}/man1/%{name}.1
 
 
 %changelog
+* Thu Jun 15 2017 Michal Ambroz <rebus at, seznam.cz> 0.45-0.3.dev1.53c619f4
+- update from git
+
 * Thu Jun 15 2017 Michal Ambroz <rebus at, seznam.cz> 0.45-0.2.dev1.53c619f4
 - initial version
