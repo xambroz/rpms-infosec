@@ -1,9 +1,7 @@
 %global         gituser         decalage2
 %global         gitname         oletools
-# v0.50
-#%global         commit          3397e5ea9172c26fca35fb45175fde170c277e3d
-# v0.51dev11
-%global         commit          b4b52d224d2fce4dafbcc1dca158cdd9ff2710f9
+# v0.51
+%global         commit          3681c317fa9ebc5102064070dea3f3b293119509
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 %global         sum             Tools to analyze Microsoft OLE2 files
@@ -12,14 +10,17 @@
 
 Name:           python-%{gitname}
 Version:        0.51
-Release:        0.3.%{shortcommit}%{?dist}
+#Release:       0.3.%{shortcommit}%{?dist}
+Release:        1%{?dist}
 Summary:        %{sum}
 
 License:        BSD
 URL:            https://www.decalage.info/python/oletools
-# URL:		https://github.com/decalage2/oletools
-#Source0:       https://github.com/%{gituser}/%{gitname}/archive/v%{version}/%{gitname}-%{version}.tar.gz
-Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
+# URL:          https://github.com/decalage2/oletools
+# Source used for the version release
+Source0:       https://github.com/%{gituser}/%{gitname}/archive/v%{version}/%{gitname}-%{version}.tar.gz
+# Source based on git commit
+#Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 Patch0:         %{name}-thirdparty.patch
 
 
@@ -88,13 +89,13 @@ Summary:        %{sum}
 
 
 %prep
-#autosetup -n %{gitname}-%{version}
-%autosetup -n %{gitname}-%{commit}
+%autosetup -n %{gitname}-%{version}
+#autosetup -n %{gitname}-%{commit}
 
 
 #Use globally installed python-modules instead
 for I in colorclass easygui olefile prettytable pyparsing ; do
-	rm -rf "oletools/thirdparty/${I}"
+    rm -rf "oletools/thirdparty/${I}"
 done
 
 sed -i -e '
@@ -183,7 +184,7 @@ popd
 %{_bindir}/oleobj3
 %{_bindir}/oletimes3
 %{_bindir}/olevba3
-# mraptor wont work for python3 probably
+# mraptor probably wont work for python3
 %{_bindir}/mraptor3
 %{_bindir}/pyxswf3
 %{_bindir}/rtfobj3
@@ -194,6 +195,9 @@ popd
 %doc cheatsheet
 
 %changelog
+* Thu Jun 22 2017 Michal Ambroz <rebus at, seznam.cz> 0.51-1
+- bump to 0.51 release
+
 * Thu Jun 22 2017 Michal Ambroz <rebus at, seznam.cz> 0.51-0.3.dev11.b4b52d22
 - gaps in python3 detected, using python2 as default
 
