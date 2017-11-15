@@ -1,17 +1,19 @@
 %global         gituser         radare
 %global         gitname         radare2
-%global         commit          91daa516ebf44f0bc422c1f6054a1938df16e25f
+%global         commit          81aee52168e1b33fd35753bc696693d626b5456c
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
 Name:           radare2
-Version:        1.5.0
+Version:        2.0.1
 #Release:       1.git%{shortcommit}%{?dist}
 Release:        1%{?dist}
-Summary:        The radare2 reverse engineering framework
+Summary:        The reverse engineering framework
 Group:          Development/Tools
 
-# Whole package is licensed as GPLv3+, some code has originally different license:
+# Whole package targets to be possibly compiled/licensed as LGPLv3+
+# during build for Fedora the GPL code is not omitted so effectively GPLv2+
+# some code has originally different license:
 # shlr/grub/grubfs.c - LGPL
 # shlr/java - Apache 2.0
 # shlr/sdb/src - MIT
@@ -33,16 +35,11 @@ Group:          Development/Tools
 # shlr/spp - MIT
 # shlr/zip/zlib - 3 clause BSD (system installed sared zlib is used instead)
 
-
-License:        GPLv3+
+License:        LGPLv3+ and GPLv2+ and BSD and MIT and ASL2.0 and MPL2
 URL:            http://radare.org/
-#URL:           https://github.com/radare/radare2
+#               https://github.com/radare/radare2
 #Source0:       https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
-
-#Backport from git https://github.com/radare/radare2/commit/d9d5f79278c0413582e056850184cb5ee0767727?diff=unified
-#will be in 1.4.0
-Patch0:         %{name}-capstone4.patch
 
 
 BuildRequires:  pkgconfig
@@ -72,15 +69,15 @@ information.
 %prep
 #setup -q -n %{gitname}-%{commit}
 %setup -q -n %{gitname}-%{version}
-#%patch0 -p 1 -b .capstone4
 
 
 %build
+# Whereever possible use the system-wide libraries instead of bundles
 %configure --with-sysmagic --with-syszip --with-syscapstone
 CFLAGS="%{optflags} -fPIC -I../include" make %{?_smp_mflags} LIBDIR=%{_libdir} PREFIX=%{_prefix} DATADIR=%{_datadir}
 
+%check
 # Do not run the testsuite yet - it pulls another package https://github.com/radare/radare2-regressions from github
-# %check
 # make tests
 
 
@@ -132,6 +129,12 @@ NOSUDO=1 make install DESTDIR=%{buildroot} LIBDIR=%{_libdir} PREFIX=%{_prefix}
 
 
 %changelog
+* Tue Nov 14 2017 Michal Ambroz <rebus at, seznam.cz> 2.0.1-1
+- bump to 2.0.1 release
+
+* Fri Aug 04 2017 Michal Ambroz <rebus at, seznam.cz> 1.6.0-1
+- bump to 1.6.0 release
+
 * Thu Jun 08 2017 Michal Ambroz <rebus at, seznam.cz> 1.5.0-1
 - bump to 1.5.0 release
 
@@ -170,5 +173,5 @@ NOSUDO=1 make install DESTDIR=%{buildroot} LIBDIR=%{_libdir} PREFIX=%{_prefix}
 - build for Fedora for alpha of 0.10.0
 
 * Sun Nov 09 2014 Pavel Odvody <podvody@redhat.com> 0.9.8rc3-0
-- Initial tito package
+- Initial radare2 package
 
