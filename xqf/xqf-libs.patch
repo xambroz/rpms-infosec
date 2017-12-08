@@ -1,0 +1,24 @@
+diff -ru xqf-1.0.5/src/Makefile.am xqf-1.0.5.new/src/Makefile.am
+--- xqf-1.0.5/src/Makefile.am	2006-10-28 15:12:09.000000000 +0200
++++ xqf-1.0.5.new/src/Makefile.am	2014-04-30 05:49:56.784717463 +0200
+@@ -32,7 +32,7 @@
+ 	    $(GEOIP_LIB) \
+ 	    $(PACKAGE_LIBS) \
+ 	    $(GDK_PIXBUF_LIBS) \
+-	    -lz
++	    -lz -ldl -lX11
+ 
+ xqf_LDFLAGS = -Wl,-rpath,$(pkglibdir) -Wl,--export-dynamic -Wl,--version-script=$(top_srcdir)/src/xqf.map
+ 
+diff -ru xqf-1.0.5/src/Makefile.in xqf-1.0.5.new/src/Makefile.in
+--- xqf-1.0.5/src/Makefile.in	2006-11-04 13:44:12.000000000 +0100
++++ xqf-1.0.5.new/src/Makefile.in	2014-04-30 05:50:19.507145005 +0200
+@@ -311,7 +311,7 @@
+ 	    $(GEOIP_LIB) \
+ 	    $(PACKAGE_LIBS) \
+ 	    $(GDK_PIXBUF_LIBS) \
+-	    -lz
++	    -lz -ldl -lX11
+ 
+ xqf_LDFLAGS = -Wl,-rpath,$(pkglibdir) -Wl,--export-dynamic -Wl,--version-script=$(top_srcdir)/src/xqf.map
+ 

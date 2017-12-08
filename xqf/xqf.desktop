@@ -1,0 +1,8 @@
+[Desktop Entry] 
+Encoding=UTF-8
+Name=XQF
+Comment=Locate and connect to game servers
+Exec=xqf
+Icon=xqf
+Type=Application
+Categories=GTK;Game;ActionGame;

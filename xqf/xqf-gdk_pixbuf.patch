@@ -1,0 +1,12 @@
+--- xqf-1.0.3/src/Makefile.am.orig	2005-06-04 18:02:52.000000000 +0200
++++ xqf-1.0.3/src/Makefile.am	2005-06-04 18:01:57.000000000 +0200
+@@ -32,7 +32,8 @@
+ 	    $(GEOIP_LIB) \
+ 	    $(PACKAGE_LIBS) \
+ 	    $(GDK_PIXBUF_LIBS) \
+-	    -lz
++	    -lz \
++	    -lgdk_pixbuf
+ 
+ 
+ xqf_LDFLAGS = #-Wl,-rpath,\$$ORIGIN
