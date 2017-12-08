@@ -1,0 +1,128 @@
+Patch makefiles to build udf plugins for Fedora, do not strip and separate target for install
+Michal Ambroz <rebus AT, seznam.cz>
+diff -ru sqlmap/extra/udfhack/linux/32/lib_mysqludf_sys/Makefile sqlmap.new/extra/udfhack/linux/32/lib_mysqludf_sys/Makefile
+--- sqlmap/extra/udfhack/linux/32/lib_mysqludf_sys/Makefile	2011-02-17 10:14:36.000000000 +0100
++++ sqlmap.new/extra/udfhack/linux/32/lib_mysqludf_sys/Makefile	2012-02-04 22:31:44.000000000 +0100
+@@ -1,9 +1,17 @@
++CC=gcc
++CFLAGS=-Wall -m32 -fPIC
++
+ # For MySQL < 5.1
+-LIBDIR=/usr/lib
++#LIBDIR=/usr/lib
+ # For MySQL >= 5.1
+ #LIBDIR=/usr/lib/mysql/plugin
++LIBDIR=/usr/share/sqlmap/udf
++
++all:
++	$(CC) $(CFLAGS) -I/usr/include/mysql -Os -shared lib_mysqludf_sys.c -o lib_mysqludf_sys.so
+ 
+ install:
+-	gcc-4.3 -Wall -I/usr/include/mysql -Os -shared lib_mysqludf_sys.c -o lib_mysqludf_sys.so
+-	strip -sx lib_mysqludf_sys.so
+-	cp -f lib_mysqludf_sys.so $(LIBDIR)/lib_mysqludf_sys.so
++	mkdir -p $(DESTDIR)$(LIBDIR)
++	install -m 755 lib_mysqludf_sys.so  $(DESTDIR)$(LIBDIR)/
++	install -m 644 lib_mysqludf_sys.sql $(DESTDIR)$(LIBDIR)/
++	install -m 755 install.sh           $(DESTDIR)$(LIBDIR)/mysql_install.sh
+diff -ru sqlmap/extra/udfhack/linux/32/lib_postgresqludf_sys/Makefile sqlmap.new/extra/udfhack/linux/32/lib_postgresqludf_sys/Makefile
+--- sqlmap/extra/udfhack/linux/32/lib_postgresqludf_sys/Makefile	2011-02-17 10:14:36.000000000 +0100
++++ sqlmap.new/extra/udfhack/linux/32/lib_postgresqludf_sys/Makefile	2012-02-04 22:35:06.399284452 +0100
+@@ -1,16 +1,31 @@
+ LIBDIR=/tmp
++CC=gcc
++
++LIBDIR=/usr/share/sqlmap/udf
++CFLAGS=-Wall -m32 -fPIC
++INCLUDE=/usr/include/pgsql/server/
++
++all:
++	$(CC) $(CFLAGS) -I $(INCLUDE) -Os -shared lib_postgresqludf_sys.c -o lib_postgresqludf_sys.so
++
++install:
++	mkdir -p $(DESTDIR)$(LIBDIR)
++	install -m 755 lib_postgresqludf_sys.so  $(DESTDIR)$(LIBDIR)/
++	install -m 644 lib_postgresqludf_sys.sql $(DESTDIR)$(LIBDIR)/
++	install -m 755 install.sh                $(DESTDIR)$(LIBDIR)/pgsql_install.sh
++
+ 
+ 8.4:
+-	gcc-4.3 -Wall -I/usr/include/postgresql/8.4/server -Os -shared lib_postgresqludf_sys.c -o lib_postgresqludf_sys.so
++	$(CC) -Wall -I/usr/include/postgresql/8.4/server -Os -shared lib_postgresqludf_sys.c -o lib_postgresqludf_sys.so
+ 	strip -sx lib_postgresqludf_sys.so
+ 	cp -f lib_postgresqludf_sys.so $(LIBDIR)/lib_postgresqludf_sys.so
+ 
+ 8.3:
+-	gcc-4.3 -Wall -I/usr/include/postgresql/8.3/server -Os -shared lib_postgresqludf_sys.c -o lib_postgresqludf_sys.so
++	$(CC)  -Wall -I/usr/include/postgresql/8.3/server -Os -shared lib_postgresqludf_sys.c -o lib_postgresqludf_sys.so
+ 	strip -sx lib_postgresqludf_sys.so
+ 	cp -f lib_postgresqludf_sys.so $(LIBDIR)/lib_postgresqludf_sys.so
+ 
+ 8.2:
+-	gcc-4.3 -Wall -I/usr/include/postgresql/8.2/server -Os -shared lib_postgresqludf_sys.c -o lib_postgresqludf_sys.so
++	$(CC)  -Wall -I/usr/include/postgresql/8.2/server -Os -shared lib_postgresqludf_sys.c -o lib_postgresqludf_sys.so
+ 	strip -sx lib_postgresqludf_sys.so
+ 	cp -f lib_postgresqludf_sys.so $(LIBDIR)/lib_postgresqludf_sys.so
+diff -ru sqlmap/extra/udfhack/linux/64/lib_mysqludf_sys/Makefile sqlmap.new/extra/udfhack/linux/64/lib_mysqludf_sys/Makefile
+--- sqlmap/extra/udfhack/linux/64/lib_mysqludf_sys/Makefile	2011-02-17 10:14:36.000000000 +0100
++++ sqlmap.new/extra/udfhack/linux/64/lib_mysqludf_sys/Makefile	2012-02-04 22:31:44.970094028 +0100
+@@ -1,9 +1,17 @@
++CC=gcc
++CFLAGS=-Wall -m64 -fPIC
++
+ # For MySQL < 5.1
+-LIBDIR=/usr/lib
++#LIBDIR=/usr/lib
+ # For MySQL >= 5.1
+ #LIBDIR=/usr/lib/mysql/plugin
++LIBDIR=/usr/share/sqlmap/udf
++
++all:
++	$(CC) $(CFLAGS) -I/usr/include/mysql -Os -shared lib_mysqludf_sys.c -o lib_mysqludf_sys.so
+ 
+ install:
+-	gcc-4.3 -Wall -I/usr/include/mysql -Os -shared lib_mysqludf_sys.c -fPIC -o lib_mysqludf_sys.so
+-	strip -sx lib_mysqludf_sys.so
+-	cp -f lib_mysqludf_sys.so $(LIBDIR)/lib_mysqludf_sys.so
++	mkdir -p $(DESTDIR)$(LIBDIR)
++	install -m 755 lib_mysqludf_sys.so  $(DESTDIR)$(LIBDIR)/
++	install -m 644 lib_mysqludf_sys.sql $(DESTDIR)$(LIBDIR)/
++	install -m 755 install.sh           $(DESTDIR)$(LIBDIR)/mysql_install.sh
+diff -ru sqlmap/extra/udfhack/linux/64/lib_postgresqludf_sys/Makefile sqlmap.new/extra/udfhack/linux/64/lib_postgresqludf_sys/Makefile
+--- sqlmap/extra/udfhack/linux/64/lib_postgresqludf_sys/Makefile	2011-02-17 10:14:36.000000000 +0100
++++ sqlmap.new/extra/udfhack/linux/64/lib_postgresqludf_sys/Makefile	2012-02-04 22:36:54.478240383 +0100
+@@ -1,16 +1,31 @@
+ LIBDIR=/tmp
++CC=gcc
++
++LIBDIR=/usr/share/sqlmap/udf
++CFLAGS=-Wall -m64 -fPIC
++INCLUDE=/usr/include/pgsql/server/
++
++all:
++	$(CC) $(CFLAGS) -I $(INCLUDE) -Os -shared lib_postgresqludf_sys.c -o lib_postgresqludf_sys.so
++
++install:
++	mkdir -p $(DESTDIR)$(LIBDIR)
++	install -m 755 lib_postgresqludf_sys.so  $(DESTDIR)$(LIBDIR)/
++	install -m 644 lib_postgresqludf_sys.sql $(DESTDIR)$(LIBDIR)/
++	install -m 755 install.sh                $(DESTDIR)$(LIBDIR)/pgsql_install.sh
++
+ 
+ 8.4:
+-	gcc-4.2 -Wall -I/usr/include/postgresql/8.4/server -Os -shared lib_postgresqludf_sys.c -fPIC -o lib_postgresqludf_sys.so
++	$(CC) -Wall -I/usr/include/postgresql/8.4/server -Os -shared lib_postgresqludf_sys.c -o lib_postgresqludf_sys.so
+ 	strip -sx lib_postgresqludf_sys.so
+ 	cp -f lib_postgresqludf_sys.so $(LIBDIR)/lib_postgresqludf_sys.so
+ 
+ 8.3:
+-	gcc-4.2 -Wall -I/usr/include/postgresql/8.3/server -Os -shared lib_postgresqludf_sys.c -fPIC -o lib_postgresqludf_sys.so
++	$(CC)  -Wall -I/usr/include/postgresql/8.3/server -Os -shared lib_postgresqludf_sys.c -o lib_postgresqludf_sys.so
+ 	strip -sx lib_postgresqludf_sys.so
+ 	cp -f lib_postgresqludf_sys.so $(LIBDIR)/lib_postgresqludf_sys.so
+ 
+ 8.2:
+-	gcc-4.2 -Wall -I/usr/include/postgresql/8.2/server -Os -shared lib_postgresqludf_sys.c -fPIC -o lib_postgresqludf_sys.so
++	$(CC)  -Wall -I/usr/include/postgresql/8.2/server -Os -shared lib_postgresqludf_sys.c -o lib_postgresqludf_sys.so
+ 	strip -sx lib_postgresqludf_sys.so
+ 	cp -f lib_postgresqludf_sys.so $(LIBDIR)/lib_postgresqludf_sys.so
