@@ -1,6 +1,6 @@
 %global         gituser         urbanadventurer
 %global         gitname         WhatWeb
-%global         commit          039768f41a6cd45ec70c89b81616b669bc92ac0f
+%global         commit          f67c0513a9ba84764fdae6afde5aa7fa4627ed63
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 Name:           whatweb
@@ -39,6 +39,16 @@ these hints and reports what it finds.
 sed -i -e 's/\r//' README
 sed -i -e 's/\r//' whatweb.xsl
 
+# Shabang in non-executable/library file
+sed -i -e 's|#!/usr/bin/env ruby|#/usr/bin/ruby|; s|#!/bin/env ruby|#/usr/bin/ruby|;' \
+    lib/tld.rb
+
+# Fedora using Rubypick
+sed -i -e 's|#!/usr/bin/env ruby|#!/usr/bin/ruby|; s|#!/bin/env ruby|#!/usr/bin/ruby|;' \
+    whatweb plugin-development/find-common-stuff plugin-development/get-pattern
+
+# Unknown macros in manpage
+sed -i -e 's|^.ni||; s|^\./plugins-disabled|+\./plugins-disabled|' whatweb.1
 
 %build
 echo "Nothing to build."
@@ -51,7 +61,7 @@ rm -rf %{buildroot}%{_datadir}/doc/%{name}
 
 %files
 %doc CHANGELOG README whatweb.xsl
-%license LICENSE 
+%license LICENSE
 %{_bindir}/%{name}
 %dir %{_datadir}/%{name}
 %dir %{_datadir}/%{name}/addons
@@ -70,6 +80,9 @@ rm -rf %{buildroot}%{_datadir}/doc/%{name}
 
 
 %changelog
+* Sat Dec 9 2017 Michal Ambroz <rebus at, seznam.cz> - 0.4.9-1
+- bump to 0.4.9
+
 * Wed Nov 23 2016 Michal Ambroz <rebus at, seznam.cz> - 0.4.8-0.git20161009.1
 - bump to current git snapshot of 0.4.8 - 039768f41a6cd45ec70c89b81616b669bc92ac0f
 
