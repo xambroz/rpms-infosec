@@ -1,0 +1,48 @@
+diff -ru urbanadventurer-WhatWeb-1dc2cff.orig/whatweb urbanadventurer-WhatWeb-1dc2cff.new/whatweb
+--- urbanadventurer-WhatWeb-1dc2cff.orig/whatweb	2012-06-09 18:25:47.000000000 +0200
++++ urbanadventurer-WhatWeb-1dc2cff.new/whatweb	2012-07-08 17:02:02.027010512 +0200
+@@ -42,12 +42,15 @@
+ require 'open-uri'
+ require 'cgi'
+ require 'thread'
+-require 'iconv'
+ require 'tempfile'
+ require 'rbconfig'  # detect environment, e.g. windows or linux
+ require 'resolv'
+ require 'resolv-replace' # asynchronous DNS
+ 
++#Suppres deprecation warning for ruby 1.9
++oldverb = $VERBOSE; $VERBOSE = nil
++require 'iconv'
++$VERBOSE = oldverb
+ 
+ ### ruby 1.9 changes
+ if RUBY_VERSION =~ /^1\.9/
+@@ -59,16 +62,11 @@
+ 
+ ### gem detection & loading
+ def gem_available?(gemname)
+-  gem_available_new_rubygems?(gemname) or gem_available_old_rubygems?(gemname)
+-end
+-
+-def gem_available_old_rubygems?(gemname)
++  Gem::Specification.methods.include?(:find_by_name) and not Gem::Specification.find_all_by_name(gemname).empty?
++rescue
+   Gem.available?(gemname)
+ end
+ 
+-def gem_available_new_rubygems?(gemname)
+-  Gem::Specification.methods.include?(:find_all_by_name) and not Gem::Specification.find_all_by_name(gemname).empty?
+- end
+ 
+ gems = %w|json mongo rchardet |
+ 
+@@ -832,7 +830,7 @@
+ end
+ 
+ # sanity check # Disable colours in Windows environments
+-if Config::CONFIG['host_os'] =~ /mswin|mingw/
++if RbConfig::CONFIG['host_os'] =~ /mswin|mingw/
+ 	$use_colour = false
+ end
+ 

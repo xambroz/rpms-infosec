@@ -1,0 +1,11 @@
+diff -ru whatweb-0.4.6/Makefile whatweb-0.4.6.new/Makefile
+--- whatweb-0.4.6/Makefile	2011-03-25 04:12:45.000000000 +0100
++++ whatweb-0.4.6.new/Makefile	2011-03-28 00:41:41.000000000 +0200
+@@ -10,6 +10,7 @@
+ 	install -p -D -m 644 $(NAME).1 $(DESTDIR)$(MANPATH)/man1/$(NAME).1
+ 	gzip -f $(DESTDIR)$(MANPATH)/man1/$(NAME).1
+ 	install -d $(DESTDIR)$(LIBPATH)/$(NAME)
++	install -d $(DESTDIR)$(DOCPATH)/$(NAME)
+ 	cp -p -r my-plugins plugins-disabled plugins lib plugin-development $(DESTDIR)$(LIBPATH)/$(NAME)/
+ 	cp -p -r CHANGELOG INSTALL LICENSE README TODO whatweb.xsl $(DESTDIR)$(DOCPATH)/$(NAME)/
+ 

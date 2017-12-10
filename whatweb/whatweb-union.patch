@@ -1,0 +1,12 @@
+diff -bru whatweb-0.4.5.new/whatweb whatweb-0.4.5/whatweb
+--- whatweb-0.4.5.new/whatweb	2010-08-23 00:22:11.000000000 +0200
++++ whatweb-0.4.5/whatweb	2010-08-17 11:53:41.000000000 +0200
+@@ -812,7 +812,7 @@
+ 
+ # set up ANEMONE skip regex
+ # turn an array of extensions into a regexp
+-$ANEMONE_SKIP_REGEX=Regexp.union($ANEMONE_SKIP_EXTENSIONS.map {|x| /\.#{x}$/  })
++$ANEMONE_SKIP_REGEX=Regexp.union($ANEMONE_SKIP_EXTENSIONS.map{|x| "/\.#{" + x + "}$/"  }.to_s())
+ 
+ 
+ # clean up urls, add example urls if needed

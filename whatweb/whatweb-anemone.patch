@@ -1,0 +1,16 @@
+Patch to use system-wide anemone rubygems library rather than anemone library 
+distributed together with whatweb.
+diff -ru whatweb-0.4.5.new/whatweb whatweb-0.4.5/whatweb
+--- whatweb-0.4.5.new/whatweb	2010-08-23 00:22:11.000000000 +0200
++++ whatweb-0.4.5/whatweb	2010-09-12 00:30:31.000000000 +0200
+@@ -45,7 +45,9 @@
+ 
+ require 'lib/output.rb'
+ require 'lib/colour.rb'
+-require 'lib/anemone/anemone.rb'
++#require 'lib/anemone/anemone.rb'
++require 'rubygems'
++require 'anemone'
+ require 'tempfile'
+ 
+ $VERSION="0.4.5"
