@@ -1,6 +1,6 @@
-diff -ru techtonik-hexdump-66325cb5fed8/hexdump.py techtonik-hexdump-66325cb5fed8.new/hexdump.py
---- techtonik-hexdump-66325cb5fed8/hexdump.py	2016-08-18 09:36:52.000000000 +0200
-+++ techtonik-hexdump-66325cb5fed8.new/hexdump.py	2017-11-22 05:30:41.880473233 +0100
+diff -ru techtonik-hexdump-66325cb5fed8.orig/hexdump.py techtonik-hexdump-66325cb5fed8.new/hexdump.py
+--- techtonik-hexdump-66325cb5fed8.orig/hexdump.py	2018-01-04 23:00:28.831522944 +0100
++++ techtonik-hexdump-66325cb5fed8.new/hexdump.py	2018-01-04 23:00:58.018100187 +0100
 @@ -23,7 +23,7 @@
  
  """
@@ -10,9 +10,10 @@ diff -ru techtonik-hexdump-66325cb5fed8/hexdump.py techtonik-hexdump-66325cb5fed
  __author__  = 'anatoly techtonik <techtonik@gmail.com>'
  __license__ = 'Public Domain'
  
-diff -ru techtonik-hexdump-66325cb5fed8/setup.py techtonik-hexdump-66325cb5fed8.new/setup.py
---- techtonik-hexdump-66325cb5fed8/setup.py	2016-08-18 09:36:52.000000000 +0200
-+++ techtonik-hexdump-66325cb5fed8.new/setup.py	2017-11-22 05:36:02.719920011 +0100
+Only in techtonik-hexdump-66325cb5fed8.new: hexdump.py.setup
+diff -ru techtonik-hexdump-66325cb5fed8.orig/setup.py techtonik-hexdump-66325cb5fed8.new/setup.py
+--- techtonik-hexdump-66325cb5fed8.orig/setup.py	2016-08-18 09:36:52.000000000 +0200
++++ techtonik-hexdump-66325cb5fed8.new/setup.py	2018-01-04 23:10:29.006829691 +0100
 @@ -43,7 +43,12 @@
  import os
  import textwrap
@@ -27,7 +28,7 @@ diff -ru techtonik-hexdump-66325cb5fed8/setup.py techtonik-hexdump-66325cb5fed8.
  from distutils import log
  from distutils import archive_util
  
-@@ -91,29 +96,43 @@
+@@ -91,29 +96,44 @@
  
  # /-- distutils config
  
@@ -73,8 +74,9 @@ diff -ru techtonik-hexdump-66325cb5fed8/setup.py techtonik-hexdump-66325cb5fed8.
 +            #'Topic :: Utilities',
 +        ],
 +
-+        py_modules=['hexdump'],
-+        data_files=[('data', ['data/hexfile.bin'])],
++        packages=['hexdump'],
++        package_dir={'hexdump': '.'},
++        package_data={'hexdump': ['data/hexfile.bin']},
 +
 +        long_description=get_description('README.txt'),
 +
@@ -94,3 +96,4 @@ diff -ru techtonik-hexdump-66325cb5fed8/setup.py techtonik-hexdump-66325cb5fed8.
 +if __name__ == "__main__":
 +    main()
 +
+Only in techtonik-hexdump-66325cb5fed8.new: setup.py.setup

@@ -8,7 +8,7 @@
 
 Name:           python-hexdump
 Version:        3.4
-Release:        0.1.%{commitdate}hg%{shortcommit}%{?dist}
+Release:        0.2.%{commitdate}hg%{shortcommit}%{?dist}
 Summary:        Dump binary data to hex format and restore from there
 
 License:        Public Domain
@@ -86,7 +86,7 @@ install -m 644 %{SOURCE1} %{buildroot}%{_mandir}/man1/hexdumpy.1
 
 
 %changelog
-* Wed Dec 12 2017 Michal Ambroz <rebus _AT seznam.cz> - 3.4-0.1.20160818hg66325cb5fed8
+* Wed Dec 13 2017 Michal Ambroz <rebus _AT seznam.cz> - 3.4-0.1.20160818hg66325cb5fed8
 - fixes during the package review, fix versioning, add manpage
 
 * Wed Oct 04 2017 Michal Ambroz <rebus _AT seznam.cz> - 3.3-1
