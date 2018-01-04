@@ -86,6 +86,9 @@ install -m 644 %{SOURCE1} %{buildroot}%{_mandir}/man1/hexdumpy.1
 
 
 %changelog
+* Thu Jan 4 2017 Michal Ambroz <rebus _AT seznam.cz> - 3.4-0.2.20160818hg66325cb5fed8
+- fix python package directory based on package review
+
 * Wed Dec 13 2017 Michal Ambroz <rebus _AT seznam.cz> - 3.4-0.1.20160818hg66325cb5fed8
 - fixes during the package review, fix versioning, add manpage
 
