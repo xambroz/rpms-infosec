@@ -1,13 +1,13 @@
 %global         _binaries_in_noarch_packages_terminate_build 0
 %global         gituser         sqlmapproject
 %global         gitname         sqlmap
-%global         commit          e7268ffb4d47a6b6bb2e50278c01ead3602eab62
+%global         commit          165b275fd7fc09b4b248651f95914fbeaba0ca88
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
 
 Name:           sqlmap
-Version:        1.1.12
+Version:        1.2
 Release:        1%{?dist}
 Summary:        Penetration testing tool detecting and exploiting SQL injection flaws
 
@@ -17,9 +17,10 @@ Group:          Development/Languages
 # cloak.py licensed with LGPLv2.1+
 License:        GPLv2 and LGPLv2+
 URL:            http://sqlmap.org/
+#               https://github.com/sqlmapproject/sqlmap
 # Source0:       https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
-# Generated with help2man --no-info sqlmap > ../SOURCES/sqlmap.1
+# Generated with help2man via script sqlmap-genmanpage.sh
 Source1:        sqlmap.1
 # Generated with help2man --no-info --no-discard-stderr sqlmapapi > ../SOURCES/sqlmapapi.1
 Source2:        sqlmapapi.1
@@ -107,7 +108,6 @@ find ./ -name ".svn" |xargs rm -rf
 
 
 %install
-rm -rf %{buildroot}
 install -d %{buildroot}%{_datadir}/%{name}
 install -d %{buildroot}%{_bindir}
 install -d %{buildroot}%{_sysconfdir}/%{name}
@@ -129,17 +129,13 @@ install -m 644 %{SOURCE2} %{buildroot}%{_mandir}/man1/
 find %{buildroot}%{_datadir}/%{name} -name *.c|xargs rm
 
 
-%clean
-rm -rf %{buildroot}
-
 
 %files
-%defattr(-,root,root,-)
-%doc doc/[A-Z]*
 %license LICENSE
+%doc doc/[A-Z]*
+%dir %{_datadir}/%{name}
 %{_bindir}/%{name}
 %{_bindir}/%{name}api
-%dir %{_datadir}/%{name}
 %{_datadir}/%{name}/*
 %{_sysconfdir}/%{name}/%{name}.conf
 %{_mandir}/man1/%{name}.1*
@@ -147,6 +143,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Thu Jan 4 2018 Michal Ambroz <rebus AT seznam.cz> - 1.2-1
+- Update to 1.2
+
 * Thu Dec 7 2017 Michal Ambroz <rebus AT seznam.cz> - 1.1.12-1
 - Update to 1.1.12
 
