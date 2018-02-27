@@ -1,0 +1,30 @@
+diff -up qpdf-4.1.0/manual/fix-qdf.1.in.doc qpdf-4.1.0/manual/fix-qdf.1.in
+--- qpdf-4.1.0/manual/fix-qdf.1.in.doc	2013-04-14 21:03:51.000000000 +0200
++++ qpdf-4.1.0/manual/fix-qdf.1.in	2013-05-23 18:12:21.506581935 +0200
+@@ -14,5 +14,4 @@ the same file with stream lengths, cross
+ object stream offset tables regenerated.
+ .PP
+ For details about fix-qdf and about PDF files in QDF mode, please see
+-the qpdf manual, which can be found in @docdir@/qpdf-manual.html or
+-@docdir@/qpdf-manual.pdf.
++the qpdf manual, which can be found in qpdf-doc package.
+diff -up qpdf-4.1.0/manual/qpdf.1.in.doc qpdf-4.1.0/manual/qpdf.1.in
+--- qpdf-4.1.0/manual/qpdf.1.in.doc	2013-04-14 21:03:51.000000000 +0200
++++ qpdf-4.1.0/manual/qpdf.1.in	2013-05-23 18:12:13.723690019 +0200
+@@ -16,4 +16,4 @@ useful primarily to PDF developers.
+ .PP
+ For a summary of qpdf's options, please run
+ \fBqpdf --help\fR.  A complete manual can be found in
+-@docdir@/qpdf-manual.html or @docdir@/qpdf-manual.pdf.
++qpdf-doc package.
+diff -up qpdf-4.1.0/manual/zlib-flate.1.in.doc qpdf-4.1.0/manual/zlib-flate.1.in
+--- qpdf-4.1.0/manual/zlib-flate.1.in.doc	2013-04-14 21:03:51.000000000 +0200
++++ qpdf-4.1.0/manual/zlib-flate.1.in	2013-05-23 18:12:07.571775453 +0200
+@@ -21,6 +21,6 @@ This program should not be used as a gen
+ tool.  Use something like gzip(1) instead.
+ .PP
+ For details about qpdf, please see the qpdf manual, which can be found
+-in @docdir@/qpdf-manual.html or @docdir@/qpdf-manual.pdf.
++in qpdf-doc package.
+ .SH "SEE ALSO"
+ qpdf(1), gzip(1)
