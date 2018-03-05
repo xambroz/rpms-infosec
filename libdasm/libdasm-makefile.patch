@@ -1,0 +1,100 @@
+Only in libdasm-1.5.new/examples: das
+Only in libdasm-1.5.new/examples: das.o
+diff -ru libdasm-1.5.orig/examples/Makefile libdasm-1.5.new/examples/Makefile
+--- libdasm-1.5.orig/examples/Makefile	2006-01-09 08:52:20.000000000 +0100
++++ libdasm-1.5.new/examples/Makefile	2012-07-15 13:21:13.281829846 +0200
+@@ -6,13 +6,16 @@
+ 
+ CC      = gcc
+ CFLAGS  = -Wall -O3
++BINDIR  = /usr/local/bin
+ 
+ all: das simple 
+ 
+ das: das.o
+-	$(CC) $(CFLAGS) -o das das.o ../libdasm.a
++	$(CC) $(CFLAGS) -o das das.o -l dasm -L ../
+ simple: simple.o
+-	$(CC) $(CFLAGS) -o simple simple.o ../libdasm.a
++	$(CC) $(CFLAGS) -o simple simple.o -l dasm -L ../
++install: das
++	install -p -D das $(DESTDIR)$(BINDIR)/das
+ clean:
+ 	rm -f das simple *.o
+ 
+Only in libdasm-1.5.new/examples: simple
+Only in libdasm-1.5.new/examples: simple.o
+Only in libdasm-1.5.new: libdasm.a
+Only in libdasm-1.5.new: libdasm.o
+Only in libdasm-1.5.new: libdasm.so
+diff -ru libdasm-1.5.orig/Makefile libdasm-1.5.new/Makefile
+--- libdasm-1.5.orig/Makefile	2006-01-09 08:52:21.000000000 +0100
++++ libdasm-1.5.new/Makefile	2012-07-15 12:52:11.384261882 +0200
+@@ -6,25 +6,35 @@
+ CC     = gcc
+ CFLAGS = -Wall -O3 -fPIC
+ PREFIX = /usr/local
++LIBDIR = $(PREFIX)/lib
++INCDIR = $(PREFIX)/include
++DESTDIR = /
+ 
+ 
+ all: libdasm.o
+-	$(CC) $(CFLAGS) -shared -o libdasm.so libdasm.c
++	$(CC) $(CFLAGS) -shared -fPIC -Wl,-soname,libdasm.so.1 -o libdasm.so libdasm.c
+ 	ar rc libdasm.a libdasm.o && ranlib libdasm.a
+-	cd examples && make
++	make -C examples
++	make -C pydasm
+ 
+ install:
+-	cp libdasm.h  $(PREFIX)/include/
+-	cp libdasm.a  $(PREFIX)/lib/
+-	cp libdasm.so $(PREFIX)/lib/
+-	cp libdasm.so $(PREFIX)/lib/libdasm.so.1.0
++	install -p -D libdasm.so $(DESTDIR)$(LIBDIR)/libdasm.so.1.0
++	ln -s "libdasm.so.1.0" $(DESTDIR)$(LIBDIR)/libdasm.so.1
++	install -d $(DESTDIR)$(INCDIR)
++	install -m 644 -p libdasm.h  $(DESTDIR)$(INCDIR)/libdasm.h
++	install -m 644 -p -D libdasm.a  $(DESTDIR)$(LIBDIR)/libdasm.a
++	ln -s "libdasm.so.1.0" $(DESTDIR)$(LIBDIR)/libdasm.so
++	make -C examples install DESTDIR=$(DESTDIR)
++	make -C pydasm install DESTDIR=$(DESTDIR)
+ 
+ uninstall:
+-	rm -f $(PREFIX)/include/libdasm.h
+-	rm -f $(PREFIX)/lib/libdasm.a
+-	rm -f $(PREFIX)/lib/libdasm.so.1.0 $(PREFIX)/lib/libdasm.so
++	rm -f $(DESTDIR)$(INCDIR)/libdasm.h
++	rm -f $(DESTDIR)$(LIBDIR)/libdasm.a
++	rm -f $(DESTDIR)$(LIBDIR)/libdasm.so.1.0 $(DESTDIR)$(LIBDIR)/libdasm.so
+ 
+ clean:
+ 	rm -f libdasm.o libdasm.so libdasm.a
+-	cd examples && make clean
++	make -C examples clean
++	make -C pydasm clean
++
+ 
+diff -ru libdasm-1.5.orig/pydasm/das.py libdasm-1.5.new/pydasm/das.py
+--- libdasm-1.5.orig/pydasm/das.py	2006-01-09 08:52:20.000000000 +0100
++++ libdasm-1.5.new/pydasm/das.py	2012-07-15 13:59:31.660724338 +0200
+@@ -1,4 +1,4 @@
+-
++#!/usr/bin/env python
+ #
+ # das.py -- simple 32-bit example disassembler program
+ # (c) 2004  jt / nologin.org
+diff -ru libdasm-1.5.orig/pydasm/Makefile libdasm-1.5.new/pydasm/Makefile
+--- libdasm-1.5.orig/pydasm/Makefile	2012-07-15 12:47:12.503890773 +0200
++++ libdasm-1.5.new/pydasm/Makefile	2012-07-15 13:55:16.483365534 +0200
+@@ -0,0 +1,9 @@
++DESTDIR=/
++BINDIR=/usr/local/bin
++
++all:
++	python setup.py build
++
++install:
++	python setup.py install --skip-build --root $(DESTDIR)
++	install -m 755 -p -D das.py $(DESTDIR)$(BINDIR)/das.py

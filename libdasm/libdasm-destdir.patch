@@ -1,0 +1,45 @@
+Only in libdasm-1.5.new/examples: das
+Only in libdasm-1.5.new/examples: das.o
+Only in libdasm-1.5.new/examples: simple
+Only in libdasm-1.5.new/examples: simple.o
+Only in libdasm-1.5.new: libdasm.a
+Only in libdasm-1.5.new: libdasm.o
+Only in libdasm-1.5.new: libdasm.so
+diff -ru libdasm-1.5.orig/Makefile libdasm-1.5.new/Makefile
+--- libdasm-1.5.orig/Makefile	2006-01-09 08:52:21.000000000 +0100
++++ libdasm-1.5.new/Makefile	2012-07-14 23:40:44.558968045 +0200
+@@ -6,6 +6,9 @@
+ CC     = gcc
+ CFLAGS = -Wall -O3 -fPIC
+ PREFIX = /usr/local
++LIBDIR = $(PREFIX)/lib
++INCDIR = $(PREFIX)/include
++DESTDIR = /
+ 
+ 
+ all: libdasm.o
+@@ -14,15 +17,17 @@
+ 	cd examples && make
+ 
+ install:
+-	cp libdasm.h  $(PREFIX)/include/
+-	cp libdasm.a  $(PREFIX)/lib/
+-	cp libdasm.so $(PREFIX)/lib/
+-	cp libdasm.so $(PREFIX)/lib/libdasm.so.1.0
++	install -p -D libdasm.so $(DESTDIR)$(LIBDIR)/libdasm.so.1.0
++	ln -s "libdasm.so.1.0" $(DESTDIR)$(LIBDIR)/libdasm.so.1
++	install -d $(DESTDIR)$(INCDIR)
++	install -m 644 -p libdasm.h  $(DESTDIR)$(INCDIR)/libdasm.h
++	install -m 644 -p -D libdasm.a  $(DESTDIR)$(LIBDIR)/libdasm.a
++	ln -s "libdasm.so.1.0" $(DESTDIR)$(LIBDIR)/libdasm.so
+ 
+ uninstall:
+-	rm -f $(PREFIX)/include/libdasm.h
+-	rm -f $(PREFIX)/lib/libdasm.a
+-	rm -f $(PREFIX)/lib/libdasm.so.1.0 $(PREFIX)/lib/libdasm.so
++	rm -f $(DESTDIR)$(INCDIR)/libdasm.h
++	rm -f $(DESTDIR)$(LIBDIR)/libdasm.a
++	rm -f $(DESTDIR)$(LIBDIR)/libdasm.so.1.0 $(DESTDIR)$(LIBDIR)/libdasm.so
+ 
+ clean:
+ 	rm -f libdasm.o libdasm.so libdasm.a
