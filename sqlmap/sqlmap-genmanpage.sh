@@ -1,7 +1,7 @@
 #!/bin/bash
 
 help2man --no-info \
-    --source="sqlmap help" \
+    --source="FEDORA" \
     --name="penetration testing tool for sql injection in web applications" \
     --output=sqlmap.1 \
     --include=sqlmap.1.template \
