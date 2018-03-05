@@ -1,0 +1,17 @@
+Description: Don't use rpath in the Python bindings.
+ The Python bindings insist on using an rpath on /usr/lib.  Nuke it.
+Author: David Martínez Moreno <ender@debian.org>
+Forwarded: no
+Last-Update: 2012-10-01
+
+--- libemu-0.2.0+git20120122.orig/bindings/python/setup.py.in
++++ libemu-0.2.0+git20120122/bindings/python/setup.py.in
+@@ -6,7 +6,7 @@ libemu = Extension('libemu',
+                     sources = ['libemu_module.c'],
+                     include_dirs = ['../../include'],
+                     library_dirs = ['../../src/.libs'],
+-                    extra_link_args=['-Wl,-rpath=@LIBDIR@'],
++                    #extra_link_args=['-Wl,-rpath=@LIBDIR@'],
+                     libraries = ['emu'],
+                     )
+ 

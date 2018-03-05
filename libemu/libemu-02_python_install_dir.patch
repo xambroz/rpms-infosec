@@ -1,0 +1,17 @@
+Description: Force installation of the Python module in debian/tmp.
+ Debian-centric patch to force the installation of this module into debian/tmp.
+Author: David Martínez Moreno <ender@debian.org>
+Forwarded: not-needed
+Last-Update: 2012-10-12
+
+--- libemu-0.2.0+git20120122.orig/bindings/python/Makefile.am
++++ libemu-0.2.0+git20120122/bindings/python/Makefile.am
+@@ -6,7 +6,7 @@ all:
+ 	python setup.py build
+ 
+ install: all
+-	python setup.py install
++	python setup.py install --prefix=$(DESTDIR)$(prefix)
+ 
+ clean:
+ 	python setup.py clean

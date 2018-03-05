@@ -1,0 +1,25 @@
+Index: libemu/configure.ac
+===================================================================
+--- libemu.orig/configure.ac	2013-07-10 19:47:55.333908583 +0200
++++ libemu/configure.ac	2013-07-10 19:49:52.310985538 +0200
+@@ -19,15 +19,15 @@
+ 
+ dnl Check for some target-specific stuff
+ case "$host" in
+-*-*-freebsd*)
+-  #CPPFLAGS="$CPPFLAGS -I/usr/local/include -I/usr/src/contrib/file/"
+-  #LDFLAGS="$LDFLAGS -L/usr/local/lib -Wl,-rpath,/usr/local/lib"
+-  ;;
+-*-*-linux*)
++*-*-linux*|*-*-gnu*)
+   #CPPFLAGS="$CPPFLAGS -D _GNU_SOURCE -I/usr/local/include"
+   CPPFLAGS="$CPPFLAGS -D _GNU_SOURCE"
+   #LDFLAGS="$LDFLAGS -L/usr/local/lib -Wl,-rpath,/usr/local/lib"
+   ;;
++*-*-freebsd*)
++  #CPPFLAGS="$CPPFLAGS -I/usr/local/include -I/usr/src/contrib/file/"
++  #LDFLAGS="$LDFLAGS -L/usr/local/lib -Wl,-rpath,/usr/local/lib"
++  ;;
+ *-*-darwin*)
+   CPPFLAGS="$CPPFLAGS -I/opt/local/include"
+   LDFLAGS="$LDFLAGS -L/opt/local/lib"
