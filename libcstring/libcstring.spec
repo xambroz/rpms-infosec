@@ -1,14 +1,14 @@
 %global         gituser         libyal
 %global         gitname         libcstring
 #%global        commit          e4d51d13148780502371622f778b2e639f7cbf11
-#20160425 from 20160427
-%global         commit          95a21c3347a14f7f10350cea88285c1319ee6229
+#20160425 from git commit from 20170304
+%global         commit          284f0aced7694cb79870757de5082a65947b65af
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
 Name:           libcstring
 Version:        20160425
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Libyal library for cross-platform C string functions
 
 Group:          System Environment/Libraries
@@ -69,6 +69,9 @@ find %{buildroot} -name '*.la' -exec rm -f {} ';'
 %{_mandir}/man3/%{name}.3*
 
 %changelog
+* Mon Jul 03 2017 Michal Ambroz <rebus AT seznam.cz> - 20160425-3
+- rebuild on bump for libevtx 2017
+
 * Mon Jun 20 2016 Michal Ambroz <rebus AT seznam.cz> - 20160425-2
 - bump for libewf 20160425
 
