@@ -63,6 +63,8 @@ developing applications that use %{name}.
 Summary:        Python interface to the libemu x86 emulator.
 Group:          Development/Libraries
 Requires:       %{name}%{?_isa} = %{version}-%{release}
+%{?python_provide:%python_provide python2-%{name}}
+
 
 %description    -n libemu-python2
 Python interface to the libemu x86 emulator.
