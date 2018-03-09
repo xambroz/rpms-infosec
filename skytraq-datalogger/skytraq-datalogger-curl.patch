@@ -1,0 +1,12 @@
+diff -ru skytraq-datalogger-0.5-1/agps-download.c skytraq-datalogger-0.5-1.new/agps-download.c
+--- skytraq-datalogger-0.5-1/agps-download.c	2009-09-09 13:06:16.000000000 +0200
++++ skytraq-datalogger-0.5-1.new/agps-download.c	2011-11-22 23:44:54.087441139 +0100
+@@ -3,7 +3,7 @@
+ #include <string.h>
+ 
+ #include <curl/curl.h>
+-#include <curl/types.h>
++//#include <curl/types.h>
+ #include <curl/easy.h>
+ 
+ #define EPHERMIS_URL "ftp://skytraq:skytraq@60.250.205.31/ephemeris/Eph.dat"
