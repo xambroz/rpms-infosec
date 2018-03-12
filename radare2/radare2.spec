@@ -1,11 +1,11 @@
 %global         gituser         radare
 %global         gitname         radare2
-%global         commit          f45a3b8804aabd8a797efd11f15860c4059a6e28
+%global         commit          cf72ffdc8007a24725b928e7c65da3b71d417a6a
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
 Name:           radare2
-Version:        2.3.0
+Version:        2.4.0
 #Release:       1.git%{shortcommit}%{?dist}
 Release:        1%{?dist}
 Summary:        The reverse engineering framework
@@ -38,7 +38,7 @@ Group:          Development/Tools
 # shlr/www/p/vendors/dagre*|graphlib* - 3 clause BSD
 # shlr/www/p/vendors/jquery.onoff.min.js - MIT
 
-License:        LGPLv3+ and GPLv2+ and BSD and MIT and ASL2.0 and MPL2
+License:        LGPLv3+ and GPLv2+ and BSD and MIT and ASLv2.0 and MPLv2.0
 URL:            http://radare.org/
 #               https://github.com/radare/radare2
 #Source0:       https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
@@ -62,6 +62,16 @@ BuildRequires:  capstone-devel >= 3.0.4
 # ./shlr/capstone.sh
 # compiled with --with-syscapstone instead
 
+# ./shlr/sdb/README.md
+# sdb is a simple string key/value database based on djb's cdb
+# https://github.com/radare/sdb
+Provides:       bundled(sdb)
+
+# ./shlr/sdb/src/json/README
+# https://github.com/quartzjer/js0n
+# JSON support for sdb
+Provides:       bundled(js0n)
+
 # libr/util/regex/README
 # Modified OpenBSD regex to be portable
 # cvs -qd anoncvs@anoncvs.ca.openbsd.org:/cvs get -P src/lib/libc/regex
@@ -72,15 +82,6 @@ Provides:       bundled(openbsdregex)
 # This is a stripped down version of tcc without the code generators.
 Provides:       bundled(tcc)
 
-# ./shlr/sdb/src/json/README
-# https://github.com/quartzjer/js0n
-# JSON support for sdb
-Provides:       bundled(js0n)
-
-# ./shlr/sdb/README.md
-# sdb is a simple string key/value database based on djb's cdb
-Provides:       bundled(sdb)
-
 # ./shlr/lz4/README.md
 Provides:       bundled(lz4)
 
@@ -90,11 +91,11 @@ Provides:       bundled(lz4)
 # ./libr/asm/arch/ppc/gnu/
 # part of binutils to read machine code for ppc architecture
 # ./libr/asm/arch/arm/gnu/
-Provides:       bundled(binutils)
+Provides:       bundled(binutils) = 2.13
 
 # ./libr/asm/arch/avr/README
 # * This code has been ripped from vavrdisasm 1.6
-Provides:       bundled(vavrdisasm)
+Provides:       bundled(vavrdisasm) = 1.6
 
 
 
@@ -149,6 +150,9 @@ CFLAGS="%{optflags} -fPIC -I../include" make %{?_smp_mflags} \
 %install
 NOSUDO=1 make install DESTDIR=%{buildroot} LIBDIR=%{_libdir} PREFIX=%{_prefix}
 
+# *.a files not allowed for fedora
+find %{buildroot} -name '*.a' -delete
+
 
 %post -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
@@ -200,6 +204,9 @@ NOSUDO=1 make install DESTDIR=%{buildroot} LIBDIR=%{_libdir} PREFIX=%{_prefix}
 
 
 %changelog
+* Sun Feb 11 2018 Michal Ambroz <rebus at, seznam.cz> 2.4.0-1
+- bump to 2.4.0 release
+
 * Mon Feb 05 2018 Michal Ambroz <rebus at, seznam.cz> 2.3.0-1
 - bump to 2.3.0 release
 - drop the web-interface for now
