@@ -6,13 +6,15 @@
 
 Name:           radare2
 Version:        2.4.0
+# Build from git commit
 #Release:       0.1.git%{shortcommit}%{?dist}
+# Build from git release version
 Release:        1%{?dist}
 Summary:        The reverse engineering framework
 Group:          Development/Tools
 
-# Whole package targets to be possibly compiled/licensed as LGPLv3+
-# during build for Fedora the GPL code is not omitted so effectively GPLv2+
+# Radare2 as a package is targeting to be licensed/compiled as LGPLv3+
+# during build for Fedora the GPL code is not omitted so effectively it is GPLv2+
 # some code has originally different license:
 # shlr/grub/grubfs.c - LGPL
 # shlr/java - Apache 2.0
@@ -41,10 +43,14 @@ Group:          Development/Tools
 License:        LGPLv3+ and GPLv2+ and BSD and MIT and ASLv2.0 and MPLv2.0
 URL:            http://radare.org/
 #               https://github.com/radare/radare2
+# Build from git commit
 #Source0:       https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
+# Build from git release version
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
-
+BuildRequires:  gcc
+BuildRequires:  make
+BuildRequires:  sed
 BuildRequires:  pkgconfig
 BuildRequires:  file-devel
 BuildRequires:  libzip-devel
@@ -119,7 +125,9 @@ information.
 
 
 %prep
+# Build from git commit
 #setup -q -n %{gitname}-%{commit}
+# Build from git release version
 %setup -q -n %{gitname}-%{version}
 
 # Webui contains pre-build and/or minimized versions of JS libraries without source code
@@ -129,6 +137,8 @@ echo "The radare2 source usually comes with a pre-built version of the web-inter
 echo "This has been removed in the Fedora package to follow the Fedora Packaging Guidelines." >> ./shlr/www/README.Fedora
 echo "Available under https://github.com/radare/radare2-webui" >>                        ./shlr/www/README.Fedora
 
+# Rename "version-git" to "version" if needed
+sed -i -e "s|%{version}-git|%{version}|g;" configure
 
 %build
 # Options based on the sys/user.sh and sys/install.sh
