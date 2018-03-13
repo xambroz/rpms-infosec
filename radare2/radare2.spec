@@ -6,7 +6,7 @@
 
 Name:           radare2
 Version:        2.4.0
-#Release:       1.git%{shortcommit}%{?dist}
+#Release:       0.1.git%{shortcommit}%{?dist}
 Release:        1%{?dist}
 Summary:        The reverse engineering framework
 Group:          Development/Tools
