@@ -1,0 +1,23 @@
+diff -ru grpc-1.10.0/src/ruby/ext/grpc/extconf.rb grpc-1.10.0.new/src/ruby/ext/grpc/extconf.rb
+--- grpc-1.10.0/src/ruby/ext/grpc/extconf.rb	2018-03-14 03:48:39.317585150 +0100
++++ grpc-1.10.0.new/src/ruby/ext/grpc/extconf.rb	2018-03-14 03:51:50.504013138 +0100
+@@ -94,7 +94,6 @@
+ $CFLAGS << ' -Wall '
+ $CFLAGS << ' -Wextra '
+ $CFLAGS << ' -pedantic '
+-$CFLAGS << ' -Wno-format '
+ 
+ output = File.join('grpc', 'grpc_c')
+ puts 'Generating Makefile for ' + output
+diff -ru grpc-1.10.0/src/ruby/ext/grpc/rb_compression_options.c grpc-1.10.0.new/src/ruby/ext/grpc/rb_compression_options.c
+--- grpc-1.10.0/src/ruby/ext/grpc/rb_compression_options.c	2018-03-14 03:48:39.321585096 +0100
++++ grpc-1.10.0.new/src/ruby/ext/grpc/rb_compression_options.c	2018-03-14 03:52:11.703716933 +0100
+@@ -186,7 +186,7 @@
+     error_message_ruby_str =
+         rb_str_new(error_message_str, strlen(error_message_str));
+     gpr_free(error_message_str);
+-    rb_raise(rb_eNameError, StringValueCStr(error_message_ruby_str));
++    rb_raise(rb_eNameError, "%s", StringValueCStr(error_message_ruby_str));
+   }
+ 
+   grpc_slice_unref(name_slice);
