@@ -39,7 +39,21 @@ Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{nam
 %endif #build_release
 
 
-Patch0:         %{name}-warnerror.patch
+# Use the glib CFLAGS and LDFLAGS during build where necessary
+Patch0:         %{name}-glib.patch
+
+# Get rid of the warning about not used return value from chdir.
+Patch1:         %{name}-warnerror.patch
+
+# ipv6 structures in <netinet/in.h> are used by the <sys/socket.h>
+# ipv6 structures needs explicit CFLAGS " -D_GNU_SOURCE" to compile on linux
+Patch2:         %{name}-in6_pktinfo.patch
+
+# Unbundle the pyev library and use the system one
+Patch3:         %{name}-pyev.patch
+
+# Have a dedicated variable for the python sitelib, so it can be easily changed externally when building the system package.
+Patch4:         %{name}-sitelib.patch
 
 BuildRequires:  autoconf
 BuildRequires:  automake
@@ -124,6 +138,8 @@ This is a Python3 library that gives access to dionaea honeypot functionality.
 %autosetup -p 1 -n %{gitname}-%{commit}
 %endif
 
+# Unbundle the pyev library and use the system one
+rm -rf modules/python/pyev
 
 #Fix paths - remove the hardcoded prefix /opt/dionaea
 sed -i -e "s|/opt/dionaea[/]*|/|g;" \
