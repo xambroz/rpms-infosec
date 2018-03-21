@@ -1,0 +1,234 @@
+diff -ru dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.orig/include/connection.h dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.new/include/connection.h
+--- dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.orig/include/connection.h	2018-03-21 04:21:30.193354693 +0100
++++ dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.new/include/connection.h	2018-03-21 04:46:46.450694148 +0100
+@@ -28,11 +28,11 @@
+ #ifndef HAVE_CONNECTION_H
+ #define HAVE_CONNECTION_H
+ 
++#include <netinet/in.h>
+ #include <sys/socket.h>
+ #include <stdbool.h>
+ #include <stdint.h>
+ 
+-#include <netinet/in.h>
+ //#include <linux/if.h>
+ #include <ev.h>
+ #include <glib.h>
+diff -ru dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.orig/modules/curl/Makefile.am dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.new/modules/curl/Makefile.am
+--- dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.orig/modules/curl/Makefile.am	2018-03-21 04:21:30.194354679 +0100
++++ dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.new/modules/curl/Makefile.am	2018-03-21 05:07:00.433158346 +0100
+@@ -5,9 +5,12 @@
+ AM_CFLAGS = -I$(top_srcdir)/include -I$(top_srcdir)/src
+ AM_CFLAGS += -fno-strict-aliasing
+ 
+-AM_CFLAGS += $(LIB_CURL_CFLAGS) 
++AM_CFLAGS += $(LIB_CURL_CFLAGS)
+ AM_LDFLAGS = $(LIB_CURL_LIBS)
+ 
++AM_CFLAGS += $(LIB_GLIB_CFLAGS)
++AM_LDFLAGS = $(LIB_GLIB_LDFLAGS)
++
+ pkglib_LTLIBRARIES = curl.la
+ 
+ curl_la_SOURCES = module.c module.h
+diff -ru dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.orig/modules/emu/Makefile.am dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.new/modules/emu/Makefile.am
+--- dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.orig/modules/emu/Makefile.am	2018-03-21 04:21:30.194354679 +0100
++++ dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.new/modules/emu/Makefile.am	2018-03-21 05:05:29.891391260 +0100
+@@ -8,9 +8,13 @@
+ AM_CFLAGS += $(LIB_EMU_CFLAGS)
+ AM_LDFLAGS = $(LIB_EMU_LIBS)
+ 
++AM_CFLAGS += $(LIB_GLIB_CFLAGS)
++AM_LDFLAGS = $(LIB_GLIB_LDFLAGS)
++
++
+ 
+ pkglib_LTLIBRARIES = emu.la
+ 
+ emu_la_SOURCES = module.c module.h detect.c emulate.c profile.c hooks.c
+ 
+-emu_la_LDFLAGS = -module -no-undefined -avoid-version ${AM_LDFLAGS} 
++emu_la_LDFLAGS = -module -no-undefined -avoid-version ${AM_LDFLAGS}
+diff -ru dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.orig/modules/nc/Makefile.am dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.new/modules/nc/Makefile.am
+--- dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.orig/modules/nc/Makefile.am	2018-03-21 04:21:30.194354679 +0100
++++ dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.new/modules/nc/Makefile.am	2018-03-21 05:03:15.365223113 +0100
+@@ -2,10 +2,10 @@
+ 
+ AUTOMAKE_OPTIONS = foreign
+ 
+-AM_CFLAGS = -I$(top_srcdir)/include -I$(top_srcdir)/src
++AM_CFLAGS = -I$(top_srcdir)/include -I$(top_srcdir)/src 
+ 
+-AM_CFLAGS += 
+-AM_LDFLAGS = 
++AM_CFLAGS += $(LIB_GLIB_CFLAGS)
++AM_LDFLAGS = $(LIB_GLIB_LDFLAGS)
+ 
+ 
+ pkglib_LTLIBRARIES = nc.la
+diff -ru dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.orig/modules/nfq/Makefile.am dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.new/modules/nfq/Makefile.am
+--- dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.orig/modules/nfq/Makefile.am	2018-03-21 04:21:30.194354679 +0100
++++ dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.new/modules/nfq/Makefile.am	2018-03-21 09:02:59.660380597 +0100
+@@ -5,8 +5,8 @@
+ AM_CFLAGS = -I$(top_srcdir)/include -I$(top_srcdir)/src -pipe -D _GNU_SOURCE -fno-strict-aliasing
+ AM_CFLAGS += -Wall -Werror
+ 
+-AM_CFLAGS += ${LIB_GLIB_CFLAGS} 
+-AM_LDFLAGS = ${LIB_GLIB_LIBS} 
++AM_CFLAGS += ${LIB_GLIB_CFLAGS}
++AM_LDFLAGS = ${LIB_GLIB_LIBS}
+ 
+ 
+ pkglib_LTLIBRARIES = nfq.la
+diff -ru dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.orig/modules/nl/Makefile.am dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.new/modules/nl/Makefile.am
+--- dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.orig/modules/nl/Makefile.am	2018-03-21 04:21:30.194354679 +0100
++++ dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.new/modules/nl/Makefile.am	2018-03-21 05:19:34.694889435 +0100
+@@ -10,6 +10,8 @@
+ #AM_LDFLAGS = -Wl,-rpath,/opt/dionaea/lib -L/opt/dionaea/lib -lnl -lnl-route -lnl-genl -lnl-nf
+ AM_LDFLAGS = $(LIB_NL_LIBS)
+ 
++AM_CFLAGS += $(LIB_GLIB_CFLAGS)
++AM_LDFLAGS = $(LIB_GLIB_LDFLAGS)
+ 
+ pkglib_LTLIBRARIES = nl.la
+ 
+diff -ru dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.orig/modules/pcap/Makefile.am dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.new/modules/pcap/Makefile.am
+--- dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.orig/modules/pcap/Makefile.am	2018-03-21 04:21:30.195354666 +0100
++++ dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.new/modules/pcap/Makefile.am	2018-03-21 05:07:59.968347682 +0100
+@@ -8,6 +8,9 @@
+ AM_CFLAGS += $(LIB_PCAP_CFLAGS)
+ AM_LDFLAGS = $(LIB_PCAP_LIBS)
+ 
++AM_CFLAGS += $(LIB_GLIB_CFLAGS)
++AM_LDFLAGS = $(LIB_GLIB_LDFLAGS)
++
+ pkglib_LTLIBRARIES = pcap.la
+ 
+ pcap_la_SOURCES = pcap.c
+diff -ru dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.orig/modules/python/dionaea/hpfeeds.py dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.new/modules/python/dionaea/hpfeeds.py
+--- dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.orig/modules/python/dionaea/hpfeeds.py	2018-03-21 04:21:30.195354666 +0100
++++ dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.new/modules/python/dionaea/hpfeeds.py	2018-03-21 06:59:11.422191102 +0100
+@@ -38,7 +38,7 @@
+ from time import gmtime, strftime
+ 
+ try:
+-    from dionaea import pyev
++    import pyev
+ except ImportError:
+     pyev = None
+ 
+diff -ru dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.orig/modules/python/dionaea/Makefile.am dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.new/modules/python/dionaea/Makefile.am
+--- dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.orig/modules/python/dionaea/Makefile.am	2018-03-21 04:21:30.195354666 +0100
++++ dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.new/modules/python/dionaea/Makefile.am	2018-03-21 07:36:59.780218852 +0100
+@@ -2,6 +2,9 @@
+ 
+ AUTOMAKE_OPTIONS = foreign
+ 
++PYTHON_SITELIB=$(pkglibdir)"/python"
++
++
+ PYSCRIPTS = blackhole.py
+ PYSCRIPTS += emu_scripts/__init__.py
+ PYSCRIPTS += emu_scripts/handler.py
+@@ -83,11 +86,11 @@
+ 
+ 
+ all: $(PYSCRIPTS)
+-	
++
+ 
+ install-data-am: all
+ 	for i in $(PYSCRIPTS); do \
+-		location=$(DESTDIR)$(pkglibdir)"/python/dionaea/$$i"; \
++		location=$(DESTDIR)$(PYTHON_SITELIB)"/dionaea/$$i"; \
+ 		scriptdir=`dirname "$$location"`; \
+ 		if [ ! -d $$scriptdir ]; then \
+ 			$(mkinstalldirs) $$scriptdir; \
+diff -ru dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.orig/modules/python/dionaea/sip/__init__.py dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.new/modules/python/dionaea/sip/__init__.py
+--- dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.orig/modules/python/dionaea/sip/__init__.py	2018-03-21 04:21:30.198354625 +0100
++++ dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.new/modules/python/dionaea/sip/__init__.py	2018-03-21 07:00:05.553401019 +0100
+@@ -36,9 +36,10 @@
+ import os
+ import datetime
+ import tempfile
++import pyev
+ 
+ from dionaea.core import connection, g_dionaea, incident
+-from dionaea import pyev, ServiceLoader
++from dionaea import ServiceLoader
+ 
+ from dionaea.sip.extras import msg_to_icd, SipConfig, ErrorWithResponse
+ 
+diff -ru dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.orig/modules/python/dionaea/submit_http.py dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.new/modules/python/dionaea/submit_http.py
+--- dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.orig/modules/python/dionaea/submit_http.py	2018-03-21 04:21:30.196354652 +0100
++++ dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.new/modules/python/dionaea/submit_http.py	2018-03-21 06:58:39.522656697 +0100
+@@ -1,7 +1,8 @@
+ from dionaea.core import ihandler, incident, g_dionaea
+ from dionaea.util import md5file, sha512file
+-from dionaea import pyev, IHandlerLoader
++from dionaea import IHandlerLoader
+ 
++import pyev
+ import logging
+ import uuid
+ import struct
+diff -ru dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.orig/modules/python/dionaea/virustotal.py dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.new/modules/python/dionaea/virustotal.py
+--- dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.orig/modules/python/dionaea/virustotal.py	2018-03-21 04:21:30.196354652 +0100
++++ dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.new/modules/python/dionaea/virustotal.py	2018-03-21 06:59:41.793747808 +0100
+@@ -32,7 +32,7 @@
+ import json
+ import uuid
+ import sqlite3
+-from dionaea import pyev
++import pyev
+ 
+ logger = logging.getLogger('virustotal')
+ logger.setLevel(logging.DEBUG)
+diff -ru dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.orig/modules/python/Makefile.am dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.new/modules/python/Makefile.am
+--- dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.orig/modules/python/Makefile.am	2018-03-21 04:21:30.195354666 +0100
++++ dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.new/modules/python/Makefile.am	2018-03-21 07:14:31.670155062 +0100
+@@ -10,13 +10,11 @@
+ 	$(PYTHON) setup.py build
+ 
+ install-exec-am: all
+-	cp build/*/dionaea/*.so $(DESTDIR)$(pkglibdir)/python.so
+-	(cd $(DESTDIR)$(pkglibdir)/python/dionaea && rm -f core.so && ln -s ../../python.so core.so)
+-	(cd $(DESTDIR)$(pkglibdir)/python/dionaea && rm -f pyev.so && ln -s ../../python.so pyev.so)
++	$(PYTHON) setup.py install -O1 --skip-build --root $(DESTDIR)/
+ 
+ clean:
+ 	$(PYTHON) setup.py clean
+-	rm -rf ./build binding.{c,h} 
++	rm -rf ./build binding.{c,h}
+ 
+ dist-clean: clean
+ 
+Only in dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.orig/modules/python: pyev
+diff -ru dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.orig/modules/xmatch/Makefile.am dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.new/modules/xmatch/Makefile.am
+--- dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.orig/modules/xmatch/Makefile.am	2018-03-21 04:21:30.200354598 +0100
++++ dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.new/modules/xmatch/Makefile.am	2018-03-21 09:02:44.747583251 +0100
+@@ -8,6 +8,9 @@
+ AM_CFLAGS += $(LIB_XMATCH_CFLAGS)
+ AM_LDFLAGS = $(LIB_XMATCH_LIBS)
+ 
++AM_CFLAGS += $(LIB_GLIB_CFLAGS)
++AM_LDFLAGS = $(LIB_GLIB_LDFLAGS)
++
+ pkglib_LTLIBRARIES = xmatch.la
+ 
+ xmatch_la_SOURCES = module.c xmatch.c
+diff -ru dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.orig/src/dionaea.c dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.new/src/dionaea.c
+--- dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.orig/src/dionaea.c	2018-03-21 04:21:30.201354584 +0100
++++ dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.new/src/dionaea.c	2018-03-21 04:22:07.529846514 +0100
+@@ -723,7 +723,10 @@
+ 			g_error("Could not chroot(\"%s\") (%s)", opt->root, strerror(errno));
+ 		} else
+ 		{
+-			chdir("/");
++			if ( chdir("/") != 0 ) {
++				g_error("Could change to root directory '/' ... this shuoldn't happen exitting.\nErr: (%s)", strerror(errno));
++				return EXIT_FAILURE;
++			}
+ 		}
+ 	}
+ 
