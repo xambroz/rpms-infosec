@@ -1,0 +1,37 @@
+
+
+#Replace embedded jquery with the link to system one
+JQUERY="./shlr/www/m/vendors/jquery.min.js
+./shlr/www/enyo/vendors/jquery.min.js
+./shlr/www/p/vendors/jquery.min.js"
+
+for I in $JQUERY ; do
+    rm -f "$I"
+    ln -s /usr/share/javascript/jquery/latest/jquery.min.js "$I"
+done
+
+#Replace embedded jquery-ui with the link to system one
+JQUERYUI="./shlr/www/enyo/vendors/jquery-ui.min.js
+./shlr/www/p/vendors/jquery-ui.min.js"
+
+for I in $JQUERYUI ; do
+    rm -f "$I"
+    ln -s /usr/share/javascript/jquery/latest/jquery.min.js "$I"
+done
+
+#Replace embedded jquery-datatables with the link to system one
+rm -f ./shlr/www/m/vendors/jquery.dataTables.min.js
+ln -s /usr/share/javascript/datatables/js/jquery.dataTables.min.js \
+    ./shlr/www/m/vendors/jquery.dataTables.min.js
+
+
+#Replace embedded d3.js with the system one
+rm ./shlr/www/d3/d3.js
+ln -s /usr/share/javascript/d3/d3.js ./shlr/www/d3/d3.js
+
+
+# TODO - check with upstream on the update process
+%dir %{_datadir}/%{name}/%{version}/www
+%{_datadir}/%{name}/%{version}/www/*
+
+

@@ -1,0 +1,12 @@
+diff -up aircrack-ng-1.0-20081108/src/Makefile.parallel_make aircrack-ng-1.0-20081108/src/Makefile
+--- aircrack-ng-1.0-20081108/src/Makefile.parallel_make	2008-11-06 03:37:14.000000000 +0100
++++ aircrack-ng-1.0-20081108/src/Makefile	2008-11-10 00:05:35.000000000 +0100
+@@ -86,7 +86,7 @@ else
+ 	endif
+ endif
+ 
+-all: osd userland $(SBINFILES)
++all: userland $(SBINFILES)
+ 
+ userland: $(BINFILES)
+ 

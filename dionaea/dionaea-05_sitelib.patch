@@ -1,0 +1,28 @@
+Have a dedicated variable for the python sitelib, so it can be easily changed externally when building the system package.
+diff -ru dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.orig/modules/python/dionaea/Makefile.am dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.new/modules/python/dionaea/Makefile.am
+--- dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.orig/modules/python/dionaea/Makefile.am	2018-03-21 04:21:30.195354666 +0100
++++ dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.new/modules/python/dionaea/Makefile.am	2018-03-21 07:36:59.780218852 +0100
+@@ -2,6 +2,9 @@
+ 
+ AUTOMAKE_OPTIONS = foreign
+ 
++PYTHON_SITELIB=$(pkglibdir)"/python"
++
++
+ PYSCRIPTS = blackhole.py
+ PYSCRIPTS += emu_scripts/__init__.py
+ PYSCRIPTS += emu_scripts/handler.py
+@@ -83,11 +86,11 @@
+ 
+ 
+ all: $(PYSCRIPTS)
+-	
++
+ 
+ install-data-am: all
+ 	for i in $(PYSCRIPTS); do \
+-		location=$(DESTDIR)$(pkglibdir)"/python/dionaea/$$i"; \
++		location=$(DESTDIR)$(PYTHON_SITELIB)"/dionaea/$$i"; \
+ 		scriptdir=`dirname "$$location"`; \
+ 		if [ ! -d $$scriptdir ]; then \
+ 			$(mkinstalldirs) $$scriptdir; \
