@@ -7,7 +7,7 @@ Group:          Applications/System
 License:        GPLv2 with exceptions
 URL:            https://dionaea.readthedocs.io/
 #    Current source:
-#		https://github.com/DinoTools/dionaea
+#               https://github.com/DinoTools/dionaea
 #    Original site (dissappeared in 2013, but still available from archives):
 #               https://dionaea.carnivore.it
 #    Another forks:
@@ -16,13 +16,13 @@ URL:            https://dionaea.readthedocs.io/
 #               https://github.com/devwerks/dionaea
 #               https://github.com/RootingPuntoEs/DionaeaFR/
 #    Installation:
-#		https://www.aldeid.com/wiki/Dionaea/Installation
+#               https://www.aldeid.com/wiki/Dionaea/Installation
 
 # Specification of the used GIT commit
 %global         gituser         DinoTools
 %global         gitname         dionaea
-%global         commit          793accd84432a77309fa8b81e1f5e9b5bd9ee7a3
-%global         gitdate         20161114
+%global         commit          d2efb768e753a7f1ddca6dbf402548d741f33574
+%global         gitdate         20180313
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
@@ -34,26 +34,35 @@ URL:            https://dionaea.readthedocs.io/
 Release:        1%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
 %else
-Release:        0.1.%{gitdate}git%{shortcommit}%{?dist}
+Release:        0.2.%{gitdate}git%{shortcommit}%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 %endif #build_release
 
 
 # Use the glib CFLAGS and LDFLAGS during build where necessary
+# https://github.com/DinoTools/dionaea/issues/161
 Patch0:         %{name}-glib.patch
 
 # Get rid of the warning about not used return value from chdir.
+# https://github.com/DinoTools/dionaea/issues/162
 Patch1:         %{name}-warnerror.patch
 
 # ipv6 structures in <netinet/in.h> are used by the <sys/socket.h>
 # ipv6 structures needs explicit CFLAGS " -D_GNU_SOURCE" to compile on linux
+# just cosmetics - not reported yet to upstream
 Patch2:         %{name}-in6_pktinfo.patch
 
 # Unbundle the pyev library and use the system one
+# https://github.com/DinoTools/dionaea/issues/166
 Patch3:         %{name}-pyev.patch
 
 # Have a dedicated variable for the python sitelib, so it can be easily changed externally when building the system package.
+# https://github.com/DinoTools/dionaea/issues/164
 Patch4:         %{name}-sitelib.patch
+
+# Fix warnings during the generation of documentation
+Patch5:         %{name}-docswarn.patch
+
 
 BuildRequires:  autoconf
 BuildRequires:  automake
@@ -139,9 +148,12 @@ This is a Python3 library that gives access to dionaea honeypot functionality.
 %endif
 
 # Unbundle the pyev library and use the system one
+# https://github.com/DinoTools/dionaea/issues/169
 rm -rf modules/python/pyev
 
-#Fix paths - remove the hardcoded prefix /opt/dionaea
+
+# Fix paths - remove the hardcoded prefix /opt/dionaea
+# https://github.com/DinoTools/dionaea/issues/168
 sed -i -e "s|/opt/dionaea[/]*|/|g;" \
     modules/python/util/readlogsqltree.py \
     modules/python/util/logsql2postgres.py \
@@ -152,24 +164,28 @@ sed -i -e "s|/opt/dionaea[/]*|/|g;" \
 
 
 # replace in documentation the prefix/destdir /opt/dionaea with variable ${DESTDIR}
+# https://github.com/DinoTools/dionaea/issues/168
 sed -i -e "s|/opt/dionaea/var/dionaea|${DESTDIR}/var/lib/dionaea|g;" \
     doc/html/index.html \
-    doc/source/old/run.rst \
+    doc/source/tips_and_tricks.rst \
     doc/source/old/configuration.rst \
     doc/source/old/utils.rst \
     modules/python/util/readlogsqltree.py
 
 
 # move /var/dionaea to /var/lib/dionaea according to LFS
+# Fedora specific - not reported upstream
 sed -i -e "s|/var/dionaea|/var/lib/dionaea|g;" \
     modules/python/util/readlogsqltree.py \
     modules/python/util/gnuplotsql.py
 
 # move /var/dionaea to /var/lib/dionaea according to LFS
+# Fedora specific - not reported upstream
 sed -i -e 's|\$(localstatedir)/dionaea/|\$(localstatedir)/lib/dionaea/|g;' \
     Makefile.am
 
 # move /var/dionaea to /var/lib/dionaea according to LFS
+# Fedora specific - not reported upstream
 sed -i -e 's|@LOCALESTATEDIR@/dionaea/|@LOCALESTATEDIR@/lib/dionaea/|g;' \
     conf/dionaea.cfg.in \
     conf/services/sip.yaml.in \
@@ -182,10 +198,10 @@ sed -i -e 's|@LOCALESTATEDIR@/dionaea/|@LOCALESTATEDIR@/lib/dionaea/|g;' \
     conf/ihandlers/log_json.yaml.in
 
 # Change the hardoced minor python3.2 version especially in shabang to python3
+# https://github.com/DinoTools/dionaea/issues/169
 sed -i -e 's|python3.2|python3|g;' \
     m4/az_python.m4 \
     doc/html/index.html \
-    doc/source/old/development.rst \
     modules/python/util/readlogsqltree.py
 
 
@@ -257,6 +273,13 @@ rm -rf %{buildroot}
 
 
 %changelog
-* Thu Dec 28 2017 Michal Ambroz <rebus at, seznam.cz> 0.6.0-1
+* Wed Mar 21 2018 Michal Ambroz <rebus at, seznam.cz> 0.6.0-0.2.20180313gitd2efb76
+- bump to commit d2efb768e753a7f1ddca6dbf402548d741f33574
+- unbundle pyev and refer to system-installed pyev
+- remove the hardcoded default prefix /opt/dionaea
+- move from /var/dionaea to /var/lib/dionaea
+- fix the doc generation warnings
+
+* Thu Dec 28 2017 Michal Ambroz <rebus at, seznam.cz> 0.6.0-0.1
 - initial package
 
