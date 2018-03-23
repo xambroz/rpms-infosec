@@ -41,27 +41,27 @@ Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{nam
 
 # Use the glib CFLAGS and LDFLAGS during build where necessary
 # https://github.com/DinoTools/dionaea/issues/161
-Patch0:         %{name}-glib.patch
+Patch1:         dionaea-01_glib.patch
 
 # Get rid of the warning about not used return value from chdir.
 # https://github.com/DinoTools/dionaea/issues/162
-Patch1:         %{name}-warnerror.patch
+Patch2:         dionaea-02_warnerror.patch
 
 # ipv6 structures in <netinet/in.h> are used by the <sys/socket.h>
 # ipv6 structures needs explicit CFLAGS " -D_GNU_SOURCE" to compile on linux
 # just cosmetics - not reported yet to upstream
-Patch2:         %{name}-in6_pktinfo.patch
+Patch3:         dionaea-03_in6_pktinfo.patch
 
 # Unbundle the pyev library and use the system one
 # https://github.com/DinoTools/dionaea/issues/166
-Patch3:         %{name}-pyev.patch
+Patch4:         dionaea-04_pyev.patch
 
 # Have a dedicated variable for the python sitelib, so it can be easily changed externally when building the system package.
 # https://github.com/DinoTools/dionaea/issues/164
-Patch4:         %{name}-sitelib.patch
+Patch5:         dionaea-05_sitelib.patch
 
 # Fix warnings during the generation of documentation
-Patch5:         %{name}-docswarn.patch
+Patch6:         dionaea-06_docswarn.patch
 
 
 BuildRequires:  autoconf
