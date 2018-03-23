@@ -1,0 +1,343 @@
+From 6c1a774e6d342912d646935432b426b4da6d3c93 Mon Sep 17 00:00:00 2001
+From: tpltnt <tpltnt.github@dropcut.net>
+Date: Sat, 13 Aug 2016 20:31:07 +0200
+Subject: [PATCH] fixing potential NULL pointer dereferences
+
+---
+ tools/sctest/nanny.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/tools/sctest/nanny.c b/tools/sctest/nanny.c
+index 7d41264..ee14dd9 100644
+--- a/tools/sctest/nanny.c
++++ b/tools/sctest/nanny.c
+@@ -9,6 +9,10 @@
+ struct nanny *nanny_new(void)
+ {
+ 	struct nanny *na = malloc(sizeof(struct nanny));
++	if (NULL == na)
++	{
++		return NULL;
++	}
+ 	memset(na, 0, sizeof(struct nanny));
+ 
+ 	na->files = emu_hashtable_new(16, emu_hashtable_ptr_hash, emu_hashtable_ptr_cmp);
+@@ -19,6 +23,10 @@ struct nanny *nanny_new(void)
+ struct nanny_file *nanny_add_file(struct nanny *na, const char *path, uint32_t *emu_file, FILE *real_file)
+ {
+ 	struct nanny_file *file = malloc(sizeof(struct nanny_file));
++	if (NULL == file)
++	{
++		return NULL;
++	}
+ 	memset(file, 0, sizeof(struct nanny_file));
+ 
+ 	*emu_file = rand();
+From c3fb84dc99b01805c7f01d52527339dd58ceabbe Mon Sep 17 00:00:00 2001
+From: tpltnt <tpltnt.github@dropcut.net>
+Date: Sat, 13 Aug 2016 20:37:05 +0200
+Subject: [PATCH] fixing potential NULL pointer dereferences
+
+---
+ src/environment/emu_env.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/src/environment/emu_env.c b/src/environment/emu_env.c
+index 0183c80..02b9128 100644
+--- a/src/environment/emu_env.c
++++ b/src/environment/emu_env.c
+@@ -5,7 +5,8 @@
+  *
+  *
+  * Copyright (C) 2008  Paul Baecher & Markus Koetter
+- * 
++ * Copyright (C) 2016  tpltnt
++ *
+  * This program is free software; you can redistribute it and/or
+  * modify it under the terms of the GNU General Public License
+  * as published by the Free Software Foundation; either version 2
+@@ -34,6 +35,10 @@
+ struct emu_env *emu_env_new(struct emu *e)
+ {
+ 	struct emu_env *env = malloc(sizeof(struct emu_env));
++	if (NULL == env)
++	{
++		return NULL;
++	}
+ 	memset(env, 0, sizeof(struct emu_env));
+ 	env->env.lin = emu_env_linux_new(e);
+ 	env->env.win = emu_env_w32_new(e);
+From 5d88320054b642c6388a6af05cf397895b82e2d5 Mon Sep 17 00:00:00 2001
+From: tpltnt <tpltnt.github@dropcut.net>
+Date: Sat, 13 Aug 2016 20:44:55 +0200
+Subject: [PATCH] fixing potential NULL pointer dereference
+
+---
+ src/emu_cpu.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/src/emu_cpu.c b/src/emu_cpu.c
+index c244bf5..e95eb03 100644
+--- a/src/emu_cpu.c
++++ b/src/emu_cpu.c
+@@ -5,6 +5,7 @@
+  *
+  *
+  * Copyright (C) 2007  Paul Baecher & Markus Koetter
++ * Copyright (C) 2016  tpltnt
+  * 
+  * This program is free software; you can redistribute it and/or
+  * modify it under the terms of the GNU General Public License
+@@ -209,6 +210,11 @@ void emu_cpu_debug_print(struct emu_cpu *c)
+ 
+ 	char *fmsg;
+ 	fmsg = (char *)malloc(32*3+1);
++	if (NULL == fmsg)
++	{
++		logDebug(c->emu, "allocating memory failed in emu_cpu_debug_print(struct emu_cpu *c)");
++		return;
++	}
+ 	memset(fmsg, 0, 32*3+1);
+ 	int i;
+ 	for ( i=0;i<32;i++ )
+From b8c35bf2c3704fb8acc0501abc33be0a4d146c1c Mon Sep 17 00:00:00 2001
+From: tpltnt <tpltnt.github@dropcut.net>
+Date: Sat, 13 Aug 2016 21:25:01 +0200
+Subject: [PATCH] fixing potential NULL pointer dereference
+
+---
+ src/emu_stack.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/src/emu_stack.c b/src/emu_stack.c
+index 770ac4e..7370156 100644
+--- a/src/emu_stack.c
++++ b/src/emu_stack.c
+@@ -5,6 +5,7 @@
+  *
+  *
+  * Copyright (C) 2008  Paul Baecher & Markus Koetter
++ * Copyright (C) 2016  tpltnt
+  * 
+  * This program is free software; you can redistribute it and/or
+  * modify it under the terms of the GNU General Public License
+@@ -35,6 +36,10 @@
+ struct emu_stack *emu_stack_new(void)
+ {
+ 	struct emu_stack *es = malloc(sizeof(struct emu_stack));
++	if (NULL == es)
++	{
++		return NULL;
++	}
+ 	memset(es, 0, sizeof(struct emu_stack));
+ 	return es;
+ }
+From d41a3737ab62e9aaaabb791f8959c7cbd9d77a7a Mon Sep 17 00:00:00 2001
+From: tpltnt <tpltnt.github@dropcut.net>
+Date: Sat, 13 Aug 2016 21:28:54 +0200
+Subject: [PATCH] fixing potential NULL pointer dereference
+
+---
+ src/emu_memory.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/src/emu_memory.c b/src/emu_memory.c
+index c2f2642..d396ebe 100644
+--- a/src/emu_memory.c
++++ b/src/emu_memory.c
+@@ -5,6 +5,7 @@
+  *
+  *
+  * Copyright (C) 2007  Paul Baecher & Markus Koetter
++ * Copyright (C) 2016  tpltnt
+  * 
+  * This program is free software; you can redistribute it and/or
+  * modify it under the terms of the GNU General Public License
+@@ -368,6 +369,10 @@ int32_t emu_memory_read_string(struct emu_memory *m, uint32_t addr, struct emu_s
+ 	}
+ 
+ 	s->data = malloc(i + 1);
++	if (NULL == s->data)
++	{
++		return -1;
++	}
+ 	memset(s->data, 0, i + 1);
+ 	s->size = i;
+ 
+From 23117b2b9cff6346feb944611c05cc723820a3ba Mon Sep 17 00:00:00 2001
+From: tpltnt <tpltnt.github@dropcut.net>
+Date: Sat, 13 Aug 2016 21:33:28 +0200
+Subject: [PATCH] fixing potential NULL pointer dereferences
+
+---
+ tools/sctest/dot.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/tools/sctest/dot.c b/tools/sctest/dot.c
+index 0d53dfa..dc4d579 100644
+--- a/tools/sctest/dot.c
++++ b/tools/sctest/dot.c
+@@ -5,6 +5,7 @@
+  *
+  *
+  * Copyright (C) 2007  Paul Baecher & Markus Koetter
++ * Copyright (C) 2016  tpltnt
+  * 
+  * This program is free software; you can redistribute it and/or
+  * modify it under the terms of the GNU General Public License
+@@ -75,6 +76,10 @@
+ struct instr_vertex *instr_vertex_new(uint32_t theeip, const char *instr_string)
+ {
+ 	struct instr_vertex *iv = (struct instr_vertex *)malloc(sizeof(struct instr_vertex));
++	if (NULL == iv)
++	{
++		return NULL;
++	}
+ 	memset(iv, 0, sizeof(struct instr_vertex));
+ 	iv->eip = theeip;
+ 	iv->instr_string = emu_string_new();
+@@ -91,6 +96,10 @@ void instr_vertex_free(struct instr_vertex *iv)
+ struct instr_vertex *instr_vertex_copy(struct instr_vertex *from)
+ {
+ 	struct instr_vertex *iv = (struct instr_vertex *)malloc(sizeof(struct instr_vertex));
++	if (NULL == iv)
++	{
++		return NULL;
++	}
+ 	memset(iv, 0, sizeof(struct instr_vertex));
+ 	iv->eip = from->eip;
+ 	iv->instr_string = emu_string_new();
+From 0267a6f003b5e08069d8e266826865f42f939025 Mon Sep 17 00:00:00 2001
+From: tpltnt <tpltnt.github@dropcut.net>
+Date: Sat, 13 Aug 2016 21:51:23 +0200
+Subject: [PATCH] fixing a potential NULL pointer dereference
+
+---
+ src/emu_memory.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/src/emu_memory.c b/src/emu_memory.c
+index d396ebe..632a608 100644
+--- a/src/emu_memory.c
++++ b/src/emu_memory.c
+@@ -368,6 +368,10 @@ int32_t emu_memory_read_string(struct emu_memory *m, uint32_t addr, struct emu_s
+ 		i++;
+ 	}
+ 
++	if (NULL == s)
++	{
++		return -1;
++	}
+ 	s->data = malloc(i + 1);
+ 	if (NULL == s->data)
+ 	{
+From d15e16cee40898dd035537a47b5e97c404387b83 Mon Sep 17 00:00:00 2001
+From: tpltnt <tpltnt.github@dropcut.net>
+Date: Sat, 13 Aug 2016 21:56:23 +0200
+Subject: [PATCH] fixing potential NULL pointer dereference
+
+---
+ src/environment/win32/emu_env_w32_dll_export.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/src/environment/win32/emu_env_w32_dll_export.c b/src/environment/win32/emu_env_w32_dll_export.c
+index ee5798c..29347b5 100644
+--- a/src/environment/win32/emu_env_w32_dll_export.c
++++ b/src/environment/win32/emu_env_w32_dll_export.c
+@@ -5,6 +5,7 @@
+  *
+  *
+  * Copyright (C) 2007  Paul Baecher & Markus Koetter
++ * Copyright (C) 2016  tpltnt
+  * 
+  * This program is free software; you can redistribute it and/or
+  * modify it under the terms of the GNU General Public License
+@@ -52,6 +53,10 @@
+ struct emu_env_w32_dll_export *emu_env_w32_dll_export_new(void)
+ {
+ 	struct emu_env_w32_dll_export *exp = (struct emu_env_w32_dll_export *)malloc(sizeof(struct emu_env_w32_dll_export));
++	if (NULL == exp)
++	{
++		return NULL;
++	}
+ 	memset(exp,0,sizeof(struct emu_env_w32_dll_export));
+ 	return exp;
+ }
+From 56ff307ea36b938a11151bb22432b1ab561d71ea Mon Sep 17 00:00:00 2001
+From: tpltnt <tpltnt.github@dropcut.net>
+Date: Sat, 13 Aug 2016 21:59:06 +0200
+Subject: [PATCH] fixing potential NULL pointer dereference
+
+---
+ src/environment/win32/emu_env_w32_dll.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/src/environment/win32/emu_env_w32_dll.c b/src/environment/win32/emu_env_w32_dll.c
+index 378431d..59dd280 100644
+--- a/src/environment/win32/emu_env_w32_dll.c
++++ b/src/environment/win32/emu_env_w32_dll.c
+@@ -5,6 +5,7 @@
+  *
+  *
+  * Copyright (C) 2007  Paul Baecher & Markus Koetter
++ * Copyright (C) 2016  tpltnt
+  * 
+  * This program is free software; you can redistribute it and/or
+  * modify it under the terms of the GNU General Public License
+@@ -37,8 +38,12 @@
+ struct emu_env_w32_dll *emu_env_w32_dll_new(void)
+ {
+ 	struct emu_env_w32_dll *dll = (struct emu_env_w32_dll *)malloc(sizeof(struct emu_env_w32_dll));
++	if (NULL == dll)
++	{
++		return NULL;
++	}
+ 	memset(dll,0,sizeof(struct emu_env_w32_dll));
+-    return dll;
++	return dll;
+ }
+ 
+ void emu_env_w32_dll_free(struct emu_env_w32_dll *dll)
+From bdb14b443ff1b5294ecbc1ab7ba9b430b7ab2d50 Mon Sep 17 00:00:00 2001
+From: tpltnt <tpltnt.github@dropcut.net>
+Date: Sat, 13 Aug 2016 22:05:00 +0200
+Subject: [PATCH] fixing potential NULL pointer dereferences
+
+---
+ src/emu_track.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/src/emu_track.c b/src/emu_track.c
+index 79a2545..e8749f1 100644
+--- a/src/emu_track.c
++++ b/src/emu_track.c
+@@ -5,6 +5,7 @@
+  *
+  *
+  * Copyright (C) 2007  Paul Baecher & Markus Koetter
++ * Copyright (C) 2016  tpltnt
+  * 
+  * This program is free software; you can redistribute it and/or
+  * modify it under the terms of the GNU General Public License
+@@ -40,6 +41,10 @@
+ struct emu_track_and_source *emu_track_and_source_new(void)
+ {
+ 	struct emu_track_and_source *et = (struct emu_track_and_source *)malloc(sizeof(struct emu_track_and_source));
++	if (NULL == et)
++	{
++		return NULL;
++	}
+ 	memset(et, 0, sizeof(struct emu_track_and_source));
+ 	et->track.reg[esp] = 0xffffffff;
+ 	return et;
+@@ -185,6 +190,10 @@ void emu_tracking_info_diff(struct emu_tracking_info *a, struct emu_tracking_inf
+ struct emu_tracking_info *emu_tracking_info_new(void)
+ {
+ 	struct emu_tracking_info *eti = malloc(sizeof(struct emu_tracking_info));
++	if (NULL == eti)
++	{
++		return NULL;
++	}    
+ 	memset(eti, 0, sizeof(struct emu_tracking_info));
+ 	eti->reg[esp] = 0xffffffff;
+ 	return eti;

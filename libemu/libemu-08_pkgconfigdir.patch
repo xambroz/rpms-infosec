@@ -1,0 +1,41 @@
+diff -ru libemu-ab48695b7113db692982a1839e3d6eb9e73e90a9.orig/configure.ac libemu-ab48695b7113db692982a1839e3d6eb9e73e90a9.new/configure.ac
+--- libemu-ab48695b7113db692982a1839e3d6eb9e73e90a9.orig/configure.ac	2018-03-22 21:48:54.248095763 +0100
++++ libemu-ab48695b7113db692982a1839e3d6eb9e73e90a9.new/configure.ac	2018-03-22 21:59:57.434006728 +0100
+@@ -23,21 +23,26 @@
+ *-*-freebsd*)
+   #CPPFLAGS="$CPPFLAGS -I/usr/local/include -I/usr/src/contrib/file/"
+   #LDFLAGS="$LDFLAGS -L/usr/local/lib -Wl,-rpath,/usr/local/lib"
++  PKGCONFIGDIR="/usr/lib/pkgconfig"
+   ;;
+ *-*-linux*)
+   #CPPFLAGS="$CPPFLAGS -D _GNU_SOURCE -I/usr/local/include"
+   CPPFLAGS="$CPPFLAGS -D _GNU_SOURCE"
+   #LDFLAGS="$LDFLAGS -L/usr/local/lib -Wl,-rpath,/usr/local/lib"
++  PKGCONFIGDIR="/usr/lib/pkgconfig"
+   ;;
+ *-*-darwin*)
+   CPPFLAGS="$CPPFLAGS -I/opt/local/include"
+   LDFLAGS="$LDFLAGS -L/opt/local/lib"
++  PKGCONFIGDIR="/usr/local/lib/pkgconfig"
+   if test "$GCC" = "yes"; then
+           CFLAGS="$CFLAGS -no-cpp-precomp"
+   fi
+   ;;
+ esac
+ 
++AC_SUBST([PKGCONFIGDIR])
++
+ # Checks for programs.
+ AC_PROG_CC
+ AC_PROG_MAKE_SET
+diff -ru libemu-ab48695b7113db692982a1839e3d6eb9e73e90a9.orig/Makefile.am libemu-ab48695b7113db692982a1839e3d6eb9e73e90a9.new/Makefile.am
+--- libemu-ab48695b7113db692982a1839e3d6eb9e73e90a9.orig/Makefile.am	2018-03-22 21:48:54.247095778 +0100
++++ libemu-ab48695b7113db692982a1839e3d6eb9e73e90a9.new/Makefile.am	2018-03-22 21:50:15.297893338 +0100
+@@ -9,6 +9,6 @@
+ 
+ EXTRA_DIST = configure.ac CHANGES libemu.pc.in
+ 
+-pkgconfigdir = /usr/lib/pkgconfig/
++pkgconfigdir = @PKGCONFIGDIR@
+ pkgconfig_DATA = libemu.pc
+ 

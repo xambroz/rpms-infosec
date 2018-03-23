@@ -1,0 +1,44 @@
+From d424e097b2a08fd0b837756192bc257344782009 Mon Sep 17 00:00:00 2001
+From: bwall <bwall9809@gmail.com>
+Date: Wed, 14 Oct 2015 21:45:56 -0700
+Subject: [PATCH] Resolving issue of single byte buffers causing floating point
+ exception
+
+---
+ src/emu_hashtable.c | 5 +++++
+ src/emu_shellcode.c | 6 ++++++
+ 2 files changed, 11 insertions(+)
+
+diff --git a/src/emu_hashtable.c b/src/emu_hashtable.c
+index 19d0cc1..416ec86 100644
+--- a/src/emu_hashtable.c
++++ b/src/emu_hashtable.c
+@@ -93,6 +93,11 @@ void emu_hashtable_free(struct emu_hashtable *eh)
+ 
+ struct emu_hashtable_item *emu_hashtable_search(struct emu_hashtable *eh, void *key)
+ {
++	if(eh->size == 0)
++	{
++		return NULL;
++	}
++
+ 	uint32_t first_hash = eh->hash(key) % eh->size;
+ 
+ 	struct emu_hashtable_bucket *ehb = 	eh->buckets[first_hash];
+diff --git a/src/emu_shellcode.c b/src/emu_shellcode.c
+index 50041b4..21f143b 100644
+--- a/src/emu_shellcode.c
++++ b/src/emu_shellcode.c
+@@ -475,6 +475,12 @@ int32_t emu_shellcode_test(struct emu *e, uint8_t *data, uint16_t size)
+ 
+ 	uint32_t best_eip=0;
+ */
++	// This check avoids a floating point exception further down the line
++	if(size < 2)
++	{
++		return -1;
++	}
++
+ 	uint32_t offset;
+ 	struct emu_list_root *el;
+ 	el = emu_list_create();

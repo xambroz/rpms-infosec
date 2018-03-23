@@ -1,0 +1,22 @@
+From 910f39fa0d9a18fc07ba2541c3757cc616d0ffeb Mon Sep 17 00:00:00 2001
+From: tpltnt <tpltnt.github@dropcut.net>
+Date: Tue, 13 May 2014 17:54:18 +0200
+Subject: [PATCH] removed tautological condition
+
+---
+ src/environment/win32/env_w32_dll_export_ws2_32_hooks.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/environment/win32/env_w32_dll_export_ws2_32_hooks.c b/src/environment/win32/env_w32_dll_export_ws2_32_hooks.c
+index 3f9fe42..9bc7057 100644
+--- a/src/environment/win32/env_w32_dll_export_ws2_32_hooks.c
++++ b/src/environment/win32/env_w32_dll_export_ws2_32_hooks.c
+@@ -369,7 +369,7 @@ int recv(
+ 	POP_DWORD(c, &flags);
+ 
+ 	uint32_t xlen = len;
+-	if (xlen < 0 || xlen > 4096)
++	if (xlen > 4096)
+ 	{
+ 
+ 		printf("BUG\n");
