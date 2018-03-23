@@ -1,22 +1,26 @@
-%{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
-
-# we don't want to provide private python extension libs
-%{?filter_setup:
-%filter_provides_in %{python_sitearch}/.*\.so$ 
-%filter_setup
-}
-
-
 Name:           libdasm
 Version:        1.5
 Release:        4%{?dist}
 Summary:        Simple x86 disassembly library
 
 License:        Public Domain
-URL:            http://code.google.com/p/libdasm/
-#Source0:        http://libdasm.googlecode.com/files/%{name}-%{version}.tar.gz
+URL:            https://code.google.com/archive/p/libdasm/
+#Source0:       http://libdasm.googlecode.com/files/%{name}-%{version}.tar.gz
 Source0:        https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/%{name}/%{name}-%{version}.tar.gz
-Patch0:         %{name}-makefile.patch
+
+# Fix up the Makefiles to remove upstream compilation flags, install to destdir:
+Patch0:         %{name}-destdir.patch
+
+
+%{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
+
+# we don't want to provide private python extension libs
+%{?filter_setup:
+%filter_provides_in %{python_sitearch}/.*\.so$
+%filter_setup
+}
+
+
 
 BuildRequires:  pkgconfig
 BuildRequires:  automake
@@ -46,33 +50,35 @@ The %{name}-devel package contains libraries and header files for
 developing applications that use %{name}.
 
 
-
-# We use the upstream name for the Python module:
-%package        -n pydasm
+# We use here the upstream name for the python module - pydasm
+%package        -n python2-pydasm
 Summary:        Python module for disassembling x86 machine code
 Group:          Development/Libraries
 Requires:       %{name}%{?_isa} = %{version}-%{release}
-%{?python_provide:%python_provide python2-%{srcname}}
+%{?python_provide:%python_provide python2-%{name}}
 %{?python_provide:%python_provide python2-pydasm}
 
 
-%description    -n pydasm
-pydasm is a python module for disassembling x86 machine code.  It is a
-wrapper for libdasm.
+%description    -n python2-pydasm
+pydasm is a python module for disassembling x86 machine code.
+It is a wrapper for libdasm.
 
 
 %prep
-%setup -q
+%autosetup -p 1 -n %{name}-%{version}
 
-# Fixup the Makefiles to remove upstream compilation flags, install to destdir:
-%patch0 -p 1 -b .libs
+#Use explicitly versioned python2 shabang
+sed -i -e 's|#!/usr/bin/env.*|#!/usr/bin/python2|;' pydasm/das.py
+
+
+
 
 # Remove prebuilt Win32 DLLs from the tarball:
 rm -rf bin
 
 
 %build
-make %{?_smp_mflags} CFLAGS="%{optflags}" PREFIX=/usr LIBDIR=%{_libdir} BINDIR=%{_bindir}
+make %{?_smp_mflags} CFLAGS="%{optflags} -fPIC" PREFIX=/usr LIBDIR=%{_libdir} BINDIR=%{_bindir}
 
 
 %install
@@ -96,7 +102,7 @@ find %{buildroot} -name '*.a' -exec rm -f {} ';'
 %{_includedir}/*
 %{_libdir}/*.so
 
-%files -n pydasm
+%files -n python2-pydasm
 %{python_sitearch}/*
 %{_bindir}/das.py
 
