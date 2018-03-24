@@ -4,7 +4,7 @@ Summary:        The x86 shell-code detection and emulation
 Group:          Applications/System
 
 # libemu package licensed with GPLv2+
-# libdasm.c libdasm.h licensed as public domain do whatever
+# libdasm.c libdasm.h licensed as public domain do whatever - being bundled with libemu since at least 2006 effectively GPLv2+
 License:        GPLv2+
 URL:            https://github.com/DinoTools/libemu/
 # Other information sources:
@@ -30,7 +30,8 @@ URL:            https://github.com/DinoTools/libemu/
 #    Paul Baecher
 #               https://baecher.github.io/
 #    Markus Koetter
-#               
+#		https://www2.honeynet.org/2009/06/05/iteolih-is-this-worth-your-time/
+#		https://www.honeynet.org/node/485
 #    Articles
 #               http://resources.infosecinstitute.com/shellcode-detection-emulation-libemu/
 #               https://www.aldeid.com/wiki/Dionaea/Installation
@@ -39,6 +40,7 @@ URL:            https://github.com/DinoTools/libemu/
 # http://http.debian.net/debian/pool/main/libe/libemu/libemu_0.2.0+git20120122.orig.tar.gz
 #global         gitdate         20120122
 #global         commit          09bbeb583be41b96b9e8a5876a18ac698a77abfa
+
 
 
 %global         gituser         DinoTools
@@ -54,12 +56,12 @@ URL:            https://github.com/DinoTools/libemu/
 
 %if 0%{?build_release}  > 0
 # Build from the targball release
-Release:        4%{?dist}
+Release:        5%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
 %else
 # Build from the git commit snapshot
-Release:        0.4.%{gitdate}git%{shortcommit}%{?dist}
+Release:        0.5.%{gitdate}git%{shortcommit}%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 %endif #build_release
 
@@ -140,7 +142,6 @@ Patch12:        libemu-12_nullpointer.patch
 
 
 
-
 BuildRequires:  pkgconfig
 BuildRequires:  automake
 BuildRequires:  autoconf
@@ -148,6 +149,8 @@ BuildRequires:  libtool
 BuildRequires:  gettext-devel
 BuildRequires:  python2-devel
 BuildRequires:  python2-setuptools
+BuildRequires:  python3-devel
+BuildRequires:  python3-setuptools
 
 Requires(post): /sbin/ldconfig
 Requires(postun): /sbin/ldconfig
@@ -231,7 +234,7 @@ popd
 
 # Ignore the python3 build at this point
 pushd bindings/python3
-%py3_build || true
+%py3_build || touch python3_build_failed
 popd
 
 
@@ -246,7 +249,9 @@ popd
 
 # Ignore the python3 build at this point
 pushd bindings/python3
-%py3_install || true
+mkdir -p %{buildroot}/%{python3_sitearch}
+%py3_install || touch %{buildroot}/%{python3_sitearch}/python3_install_failed
+[ -f python3_build_failed ] && touch %{buildroot}/%{python3_sitearch}/python3_build_failed
 popd
 
 # No static building allowed for Fedora
@@ -280,6 +285,9 @@ find %{buildroot} -name '*.a' -exec rm -f {} ';'
 %{python3_sitearch}/*
 
 %changelog
+* Fri Mar 22 2018 Michal Ambroz <rebus at, seznam.cz> - 0.2.0-0.5.20130410gitab48695
+- added missing dependency to python3-devel
+
 * Thu Mar 22 2018 Michal Ambroz <rebus at, seznam.cz> - 0.2.0-0.4.20130410gitab48695
 - spec clean-up
 - prepare for the python3 support
