@@ -8,6 +8,11 @@ URL:            https://code.google.com/archive/p/libdasm/
 #Source0:       http://libdasm.googlecode.com/files/%{name}-%{version}.tar.gz
 Source0:        https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/%{name}/%{name}-%{version}.tar.gz
 
+#               https://github.com/nkzxw/libdasm
+#               https://github.com/jtpereyda/libdasm
+#               https://github.com/whb224117/libdasm
+
+
 # Fix up the Makefiles to remove upstream compilation flags, install to destdir:
 Patch0:         %{name}-destdir.patch
 
