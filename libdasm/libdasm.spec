@@ -1,29 +1,71 @@
 Name:           libdasm
 Version:        1.5
-Release:        4%{?dist}
 Summary:        Simple x86 disassembly library
 
+# Original author Jarkko Turkulainen <jt () klake org> put the code into public domain
+# http://www.klake.org/~jt/misc/libdasm-1.4.tar.gz -> https://web.archive.org/web/20060718012748/http://www.klake.org/~jt/misc/libdasm-1.4.tar.gz
+# http://www.klake.org/~jt/misc/libdasm-1.5.tar.gz -> https://web.archive.org/web/20120119123445/http://www.klake.org/~jt/misc/libdasm-1.5.tar.gz
+# https://labsblog.f-secure.com/author/turkja/
+# http://en.gravatar.com/turkja
+# There was another fork on https://code.google.com/archive/p/libdasm/ by Ange Albertini
+# Current code being maintained on github by Joshua Pereyda
 License:        Public Domain
-URL:            https://code.google.com/archive/p/libdasm/
-#Source0:       http://libdasm.googlecode.com/files/%{name}-%{version}.tar.gz
-Source0:        https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/%{name}/%{name}-%{version}.tar.gz
+URL:            https://github.com/jtpereyda/libdasm
 
+
+# Other resources:
+#               https://code.google.com/archive/p/libdasm/
+#               https://github.com/axcheron/libdasm
+#               https://github.com/axcheron/pydasm
 #               https://github.com/nkzxw/libdasm
 #               https://github.com/jtpereyda/libdasm
 #               https://github.com/whb224117/libdasm
-
+#               https://github.com/Starwarsfan2099/PyDasm-3.5
+#               https://github.com/gdbinit/pydbg64/tree/master/libdasm-beta
 
 # Fix up the Makefiles to remove upstream compilation flags, install to destdir:
 Patch0:         %{name}-destdir.patch
 
 
-%{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
+%if 0%{?rhel} && 0%{?rhel} <= 6
+%{!?__python2:        %global __python2 /usr/bin/python2}
+%{!?python2_sitelib:  %global python2_sitelib %(%{__python2} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
+%{!?python2_sitearch: %global python2_sitearch %(%{__python2} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
+%endif
+
 
 # we don't want to provide private python extension libs
 %{?filter_setup:
 %filter_provides_in %{python_sitearch}/.*\.so$
 %filter_setup
 }
+
+
+%global         gituser         jtpereyda
+%global         gitname         libdasm
+# Current version
+%global         gitdate         20151201
+%global         commit          c1afd03c1e5d2ec2f39ede9849a0fa32f0ac4bf8
+%global         shortcommit     %(c=%{commit}; echo ${c:0:7})
+
+
+# Build source is tarball release=1 or git commit=0
+%global         build_release    0
+
+%if 0%{?build_release}  > 0
+# Build from the targball release
+Release:        5%{?dist}
+#Source0:       http://libdasm.googlecode.com/files/%{name}-%{version}.tar.gz
+#Source0:       https://github.com/%{gituser}/%{gitname}/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
+Source0:        https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/%{name}/%{name}-%{version}.tar.gz
+
+%else
+# Build from the git commit snapshot
+# Release is not starting with 0 as usual, because the next release will be 1.6
+Release:        5.%{gitdate}git%{shortcommit}%{?dist}
+Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
+%endif #build_release
+
 
 
 
@@ -70,13 +112,18 @@ It is a wrapper for libdasm.
 
 
 %prep
-%autosetup -p 1 -n %{name}-%{version}
+# ======================= prep =======================================
+%if 0%{?build_release} > 0
+# Build from tarball release version
+%autosetup -p 1 -n %{gitname}-%{version}
+
+%else
+# Build from git commit
+%autosetup -p 1 -n %{gitname}-%{commit}
+%endif
 
 #Use explicitly versioned python2 shabang
 sed -i -e 's|#!/usr/bin/env.*|#!/usr/bin/python2|;' pydasm/das.py
-
-
-
 
 # Remove prebuilt Win32 DLLs from the tarball:
 rm -rf bin
@@ -112,6 +159,9 @@ find %{buildroot} -name '*.a' -exec rm -f {} ';'
 %{_bindir}/das.py
 
 %changelog
+* Sun Mar 25 2018 Michal Ambroz <rebus at, seznam.cz> - 1.5-5.20151201gitc1afd03
+- switch to github snapshot
+
 * Sun Mar 04 2018 Michal Ambroz <rebus at, seznam.cz> - 1.5-4
 - remove *.a files
 
