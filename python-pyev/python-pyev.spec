@@ -1,7 +1,7 @@
 Name:           python-pyev
 Version:        0.9.0
 License:        GPLv3+
-Summary:        Python binding for the YARA pattern matching tool
+Summary:        Python binding for the libev library
 Group:          Development/Libraries
 URL:            https://github.com/gabrielfalcao/pyev
 #               https://code.google.com/archive/p/pyev/
@@ -44,19 +44,14 @@ Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{nam
 
 
 BuildRequires:  gcc
-BuildRequires:  pkgconfig(yara)
 BuildRequires:  libtool
-BuildRequires:  yara-devel
+BuildRequires:  libev-devel
 BuildRequires:  python2
 BuildRequires:  python2-devel
-BuildRequires:  python-libs
-BuildRequires:  python-nose
-BuildRequires:  python-setuptools
+BuildRequires:  python2-setuptools
 
 %if 0%{?with_python3}
 BuildRequires:  python%{python3_pkgversion}-devel
-BuildRequires:  python%{python3_pkgversion}-libs
-BuildRequires:  python%{python3_pkgversion}-nose
 BuildRequires:  python%{python3_pkgversion}-setuptools
 %endif # if with_python3
 
