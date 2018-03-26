@@ -41,6 +41,15 @@ URL:            https://github.com/DinoTools/libemu/
 #global         gitdate         20120122
 #global         commit          09bbeb583be41b96b9e8a5876a18ac698a77abfa
 
+%if 0%{?fedora} || ( 0%{?rhel} && 0%{?rhel} >= 7 )
+%global with_python3 1
+%endif
+
+%if 0%{?rhel} && 0%{?rhel} <= 6
+%{!?__python2:        %global __python2 /usr/bin/python2}
+%{!?python2_sitelib:  %global python2_sitelib %(%{__python2} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
+%{!?python2_sitearch: %global python2_sitearch %(%{__python2} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
+%endif
 
 
 %global         gituser         DinoTools
@@ -149,8 +158,11 @@ BuildRequires:  libtool
 BuildRequires:  gettext-devel
 BuildRequires:  python2-devel
 BuildRequires:  python2-setuptools
-BuildRequires:  python3-devel
-BuildRequires:  python3-setuptools
+
+%if 0%{?with_python3}
+BuildRequires:  python%{python3_pkgversion}-devel
+BuildRequires:  python%{python3_pkgversion}-setuptools
+%endif
 
 Requires(post): /sbin/ldconfig
 Requires(postun): /sbin/ldconfig
@@ -190,7 +202,7 @@ Requires:       %{name}%{?_isa} = %{version}-%{release}
 Python2 binding to the libemu x86 emulator.
 
 
-
+%if 0%{?with_python3}
 %package        -n python3-libemu
 # ======================= python3-libemu =============================
 Summary:        Python3 binding to the libemu x86 emulator
@@ -201,6 +213,7 @@ Requires:       %{name}%{?_isa} = %{version}-%{release}
 %description    -n python3-libemu
 Python3 binding to the libemu x86 emulator.
 
+%endif #with_python3
 
 
 
@@ -232,11 +245,12 @@ pushd bindings/python
 %py2_build
 popd
 
+%if 0%{?with_python3}
 # Ignore the python3 build at this point
 pushd bindings/python3
 %py3_build || touch python3_build_failed
 popd
-
+%endif #with_python3
 
 %install
 # ======================= install ====================================
@@ -247,12 +261,14 @@ pushd bindings/python
 %py2_install
 popd
 
+%if 0%{?with_python3}
 # Ignore the python3 build at this point
 pushd bindings/python3
 mkdir -p %{buildroot}/%{python3_sitearch}
 %py3_install || touch %{buildroot}/%{python3_sitearch}/python3_install_failed
 [ -f python3_build_failed ] && touch %{buildroot}/%{python3_sitearch}/python3_build_failed
 popd
+%endif
 
 # No static building allowed for Fedora
 find %{buildroot} -name '*.la' -exec rm -f {} ';'
@@ -281,12 +297,16 @@ find %{buildroot} -name '*.a' -exec rm -f {} ';'
 %files -n python2-libemu
 %{python2_sitearch}/*
 
+%if 0%{?with_python3}
 %files -n python3-libemu
 %{python3_sitearch}/*
+%endif #with_python3
 
 %changelog
-* Fri Mar 22 2018 Michal Ambroz <rebus at, seznam.cz> - 0.2.0-0.5.20130410gitab48695
+* Fri Mar 23 2018 Michal Ambroz <rebus at, seznam.cz> - 0.2.0-0.5.20130410gitab48695
 - added missing dependency to python3-devel
+- use the python%{python3_pkgversion}-devel/setuptools to enable EPEL7 build
+
 
 * Thu Mar 22 2018 Michal Ambroz <rebus at, seznam.cz> - 0.2.0-0.4.20130410gitab48695
 - spec clean-up
