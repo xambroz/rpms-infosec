@@ -164,8 +164,8 @@ BuildRequires:  python%{python3_pkgversion}-devel
 BuildRequires:  python%{python3_pkgversion}-setuptools
 %endif
 
-Requires(post): /sbin/ldconfig
-Requires(postun): /sbin/ldconfig
+Requires(post): ldconfig
+Requires(postun): ldconfig
 
 # libemu contains modified version of libdasm 1.4
 # libdasm licensed as public domain do whatever
@@ -306,7 +306,7 @@ find %{buildroot} -name '*.a' -exec rm -f {} ';'
 * Fri Mar 23 2018 Michal Ambroz <rebus at, seznam.cz> - 0.2.0-0.5.20130410gitab48695
 - added missing dependency to python3-devel
 - use the python%{python3_pkgversion}-devel/setuptools to enable EPEL7 build
-
+- fix ldconfig requirement to align with the glibc provide
 
 * Thu Mar 22 2018 Michal Ambroz <rebus at, seznam.cz> - 0.2.0-0.4.20130410gitab48695
 - spec clean-up
