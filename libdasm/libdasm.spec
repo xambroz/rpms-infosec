@@ -9,21 +9,24 @@ Summary:        Simple x86 disassembly library
 # http://en.gravatar.com/turkja
 # There was another fork on https://code.google.com/archive/p/libdasm/ by Ange Albertini
 # Current code being maintained on github by Joshua Pereyda
-License:        Public Domain
+License:        BSD
 URL:            https://github.com/jtpereyda/libdasm
 
 
 # Other resources:
+#               https://github.com/jtpereyda/libdasm
 #               https://code.google.com/archive/p/libdasm/
 #               https://github.com/axcheron/libdasm
 #               https://github.com/axcheron/pydasm
 #               https://github.com/nkzxw/libdasm
-#               https://github.com/jtpereyda/libdasm
 #               https://github.com/whb224117/libdasm
 #               https://github.com/Starwarsfan2099/PyDasm-3.5
 #               https://github.com/gdbinit/pydbg64/tree/master/libdasm-beta
+#               https://github.com/gunmetalbackupgooglecode/libdasm
 
-# Fix up the Makefiles to remove upstream compilation flags, install to destdir:
+# Fix up the Makefiles to remove upstream compilation flags, install to destdir
+# https://github.com/jtpereyda/libdasm/issues/6
+# https://github.com/jtpereyda/libdasm/pull/5
 Patch0:         %{name}-destdir.patch
 
 
@@ -44,8 +47,8 @@ Patch0:         %{name}-destdir.patch
 %global         gituser         jtpereyda
 %global         gitname         libdasm
 # Current version
-%global         gitdate         20151201
-%global         commit          c1afd03c1e5d2ec2f39ede9849a0fa32f0ac4bf8
+%global         gitdate         20180328
+%global         commit          c315f8d9107566efc8ffde74270ed9031db65c28
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
@@ -54,7 +57,7 @@ Patch0:         %{name}-destdir.patch
 
 %if 0%{?build_release}  > 0
 # Build from the targball release
-Release:        5%{?dist}
+Release:        6%{?dist}
 #Source0:       http://libdasm.googlecode.com/files/%{name}-%{version}.tar.gz
 #Source0:       https://github.com/%{gituser}/%{gitname}/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
 Source0:        https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/%{name}/%{name}-%{version}.tar.gz
@@ -62,10 +65,9 @@ Source0:        https://storage.googleapis.com/google-code-archive-downloads/v2/
 %else
 # Build from the git commit snapshot
 # Release is not starting with 0 as usual, because the next release will be 1.6
-Release:        5.%{gitdate}git%{shortcommit}%{?dist}
+Release:        6.%{gitdate}git%{shortcommit}%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 %endif #build_release
-
 
 
 
@@ -75,6 +77,12 @@ BuildRequires:  libtool
 BuildRequires:  gettext-devel
 BuildRequires:  python2-devel
 BuildRequires:  python2-setuptools
+
+# ldconfig is provided by glibc
+Requires(post): ldconfig
+Requires(postun): ldconfig
+
+
 
 %description
 libdasm is a C-library that tries to provide simple and convenient
