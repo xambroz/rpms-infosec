@@ -1,10 +1,12 @@
 Name:           libemu
 Version:        0.2.0
 Summary:        The x86 shell-code detection and emulation
+# Group needed for EPEL
 Group:          Applications/System
 
 # libemu package licensed with GPLv2+
 # libdasm.c libdasm.h licensed as public domain do whatever - being bundled with libemu since at least 2006 effectively GPLv2+
+# the code is removed during build and unbundled libdasm library is used instead.
 License:        GPLv2+
 URL:            https://github.com/DinoTools/libemu/
 # Other information sources:
@@ -30,8 +32,8 @@ URL:            https://github.com/DinoTools/libemu/
 #    Paul Baecher
 #               https://baecher.github.io/
 #    Markus Koetter
-#		https://www2.honeynet.org/2009/06/05/iteolih-is-this-worth-your-time/
-#		https://www.honeynet.org/node/485
+#               https://www2.honeynet.org/2009/06/05/iteolih-is-this-worth-your-time/
+#               https://www.honeynet.org/node/485
 #    Articles
 #               http://resources.infosecinstitute.com/shellcode-detection-emulation-libemu/
 #               https://www.aldeid.com/wiki/Dionaea/Installation
@@ -42,9 +44,11 @@ URL:            https://github.com/DinoTools/libemu/
 #global         commit          09bbeb583be41b96b9e8a5876a18ac698a77abfa
 
 %if 0%{?fedora} || ( 0%{?rhel} && 0%{?rhel} >= 7 )
-%global with_python3 1
+# libemu currently doesn't work with python3
+%global         with_python3    0
 %endif
 
+# This stanza is needed for RHEL6
 %if 0%{?rhel} && 0%{?rhel} <= 6
 %{!?__python2:        %global __python2 /usr/bin/python2}
 %{!?python2_sitelib:  %global python2_sitelib %(%{__python2} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
@@ -65,12 +69,14 @@ URL:            https://github.com/DinoTools/libemu/
 
 %if 0%{?build_release}  > 0
 # Build from the targball release
-Release:        5%{?dist}
+Release:        7%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
 %else
 # Build from the git commit snapshot
-Release:        0.5.%{gitdate}git%{shortcommit}%{?dist}
+# Not using the 0. on the beginning of release version as these are patches past version 0.2.0
+# Next release should be probably 0.3.0
+Release:        7.%{gitdate}git%{shortcommit}%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 %endif #build_release
 
@@ -149,6 +155,9 @@ Patch11:        libemu-11_tautology.patch
 # https://github.com/tpltnt/libemu/commit/bdb14b443ff1b5294ecbc1ab7ba9b430b7ab2d50.patch
 Patch12:        libemu-12_nullpointer.patch
 
+# Unbundle the libdasm library and use the system-installed patch
+# https://github.com/DinoTools/libemu/issues/24
+Patch13:        libemu-13_unbundle_libdasm.patch
 
 
 BuildRequires:  pkgconfig
@@ -156,6 +165,7 @@ BuildRequires:  automake
 BuildRequires:  autoconf
 BuildRequires:  libtool
 BuildRequires:  gettext-devel
+BuildRequires:  libdasm-devel
 BuildRequires:  python2-devel
 BuildRequires:  python2-setuptools
 
@@ -164,6 +174,7 @@ BuildRequires:  python%{python3_pkgversion}-devel
 BuildRequires:  python%{python3_pkgversion}-setuptools
 %endif
 
+# ldconfig is provided by glibc
 Requires(post): ldconfig
 Requires(postun): ldconfig
 
@@ -276,9 +287,9 @@ find %{buildroot} -name '*.a' -exec rm -f {} ';'
 
 
 
-%post -p /usr/sbin/ldconfig
+%post -p /sbin/ldconfig
 
-%postun -p /usr/sbin/ldconfig
+%postun -p /sbin/ldconfig
 
 %files
 # ======================= files ======================================
@@ -303,10 +314,16 @@ find %{buildroot} -name '*.a' -exec rm -f {} ';'
 %endif #with_python3
 
 %changelog
+* Mon Apr 02 2018 Michal Ambroz <rebus at, seznam.cz> - 0.2.0-0.7.20130410gitab48695
+- unbundle the libdasm library and use system-installed one
+- disable the python3 build for now
+
+* Mon Mar 26 2018 Michal Ambroz <rebus at, seznam.cz> - 0.2.0-0.6.20130410gitab48695
+- fix ldconfig requirement to align with the glibc provide
+
 * Fri Mar 23 2018 Michal Ambroz <rebus at, seznam.cz> - 0.2.0-0.5.20130410gitab48695
 - added missing dependency to python3-devel
-- use the python%{python3_pkgversion}-devel/setuptools to enable EPEL7 build
-- fix ldconfig requirement to align with the glibc provide
+- use the python{python3_pkgversion}-devel/setuptools to enable EPEL7 build
 
 * Thu Mar 22 2018 Michal Ambroz <rebus at, seznam.cz> - 0.2.0-0.4.20130410gitab48695
 - spec clean-up

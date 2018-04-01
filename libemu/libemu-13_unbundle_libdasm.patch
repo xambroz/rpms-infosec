@@ -1,0 +1,58 @@
+Unbundle the libdasm library and use the system library instead.
+Author: Michal Ambroz <rebus / seznam.cz>
+diff -ru libemu-ab48695b7113db692982a1839e3d6eb9e73e90a9/src/emu_cpu.c libemu-ab48695b7113db692982a1839e3d6eb9e73e90a9.new/src/emu_cpu.c
+--- libemu-ab48695b7113db692982a1839e3d6eb9e73e90a9/src/emu_cpu.c	2018-04-01 02:33:17.777374148 +0200
++++ libemu-ab48695b7113db692982a1839e3d6eb9e73e90a9.new/src/emu_cpu.c	2018-04-02 01:18:43.558830128 +0200
+@@ -438,7 +438,7 @@
+ 
+ #undef PREFIX_LOCK
+ 
+-#include "libdasm.h"
++#include <libdasm.h>
+ uint32_t dasm_print_instruction(uint32_t eip, uint8_t *data, uint32_t size, char *str)
+ {
+ 	INSTRUCTION inst;
+diff -ru libemu-ab48695b7113db692982a1839e3d6eb9e73e90a9/src/Makefile.am libemu-ab48695b7113db692982a1839e3d6eb9e73e90a9.new/src/Makefile.am
+--- libemu-ab48695b7113db692982a1839e3d6eb9e73e90a9/src/Makefile.am	2013-04-10 21:32:25.000000000 +0200
++++ libemu-ab48695b7113db692982a1839e3d6eb9e73e90a9.new/src/Makefile.am	2018-04-01 02:38:30.224711454 +0200
+@@ -78,7 +78,7 @@
+ libemu_la_SOURCES += functions/xchg.c
+ libemu_la_SOURCES += functions/xor.c
+ 
+-libemu_la_SOURCES += libdasm.c libdasm.h opcode_tables.h
++#libemu_la_SOURCES += libdasm.c libdasm.h opcode_tables.h
+ 
+ libemu_la_SOURCES += environment/emu_env.c
+ libemu_la_SOURCES += environment/emu_profile.c
+@@ -96,4 +96,4 @@
+ libemu_la_SOURCES += environment/linux/env_linux_syscall_hooks.c
+ 
+ 
+-libemu_la_LDFLAGS = -no-undefined -version-info @libemu_soname@ -export-symbols-regex "^emu_"
++libemu_la_LDFLAGS = -no-undefined -version-info @libemu_soname@ -export-symbols-regex "^emu_" -ldasm
+diff -ru libemu-ab48695b7113db692982a1839e3d6eb9e73e90a9/testsuite/instrtree.c libemu-ab48695b7113db692982a1839e3d6eb9e73e90a9.new/testsuite/instrtree.c
+--- libemu-ab48695b7113db692982a1839e3d6eb9e73e90a9/testsuite/instrtree.c	2013-04-10 21:32:25.000000000 +0200
++++ libemu-ab48695b7113db692982a1839e3d6eb9e73e90a9.new/testsuite/instrtree.c	2018-04-01 02:44:22.130650811 +0200
+@@ -28,9 +28,9 @@
+ 
+ 
+ #include <stdint.h>
++#include <stdio.h>
+ 
+-#include "../src/libdasm.c"
+-#include "../src/libdasm.h"
++#include <libdasm.h>
+ /* JMPCall 
+ const char scode[] = "\xfc\xbb\xbf\x05\xeb\xd0\xeb\x0c\x5e\x56\x31\x1e\xad\x01\xc3"
+ "\x85\xc0\x75\xf7\xc3\xe8\xef\xff\xff\xff\x43\x6f\x00\x97\x53";
+diff -ru libemu-ab48695b7113db692982a1839e3d6eb9e73e90a9/testsuite/Makefile.am libemu-ab48695b7113db692982a1839e3d6eb9e73e90a9.new/testsuite/Makefile.am
+--- libemu-ab48695b7113db692982a1839e3d6eb9e73e90a9/testsuite/Makefile.am	2013-04-10 21:32:25.000000000 +0200
++++ libemu-ab48695b7113db692982a1839e3d6eb9e73e90a9.new/testsuite/Makefile.am	2018-04-01 02:42:41.528096139 +0200
+@@ -18,6 +18,7 @@
+ 
+ #instrtree_LDADD = ../src/libemu.la
+ instrtree_SOURCES = instrtree.c
++instrtree_LDADD = -ldasm
+ 
+ hashtest_LDADD = ../src/libemu.la
+ hashtest_SOURCES = hashtest.c
