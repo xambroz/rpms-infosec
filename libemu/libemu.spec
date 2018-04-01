@@ -239,6 +239,9 @@ Python3 binding to the libemu x86 emulator.
 %autosetup -p 1 -n %{gitname}-%{commit}
 %endif
 
+# Unbundle the libdasm library
+rm -f src/libdasm.c src/libdasm.h src/opcode_tables.h
+
 
 
 %build
