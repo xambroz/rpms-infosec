@@ -157,6 +157,7 @@ Patch12:        libemu-12_nullpointer.patch
 
 # Unbundle the libdasm library and use the system-installed patch
 # https://github.com/DinoTools/libemu/issues/24
+# https://github.com/DinoTools/libemu/pull/25
 Patch13:        libemu-13_unbundle_libdasm.patch
 
 
