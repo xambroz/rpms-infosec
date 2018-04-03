@@ -43,10 +43,19 @@ URL:            https://github.com/DinoTools/libemu/
 #global         gitdate         20120122
 #global         commit          09bbeb583be41b96b9e8a5876a18ac698a77abfa
 
+
+
 %if 0%{?fedora} || ( 0%{?rhel} && 0%{?rhel} >= 7 )
 # libemu currently doesn't work with python3
 %global         with_python3    0
 %endif
+
+# Exclude the private libemu in python sitearch dir
+%global __provides_exclude_from ^(%{python2_sitearch}/.*\\.so$
+%if 0%{?with_python3} >= 0
+%global __provides_exclude_from ^(%{python2_sitearch}|%{python%{python3_pkgversion}_sitearch})/.*\\.so$
+%endif
+
 
 # This stanza is needed for RHEL6
 %if 0%{?rhel} && 0%{?rhel} <= 6
@@ -64,19 +73,20 @@ URL:            https://github.com/DinoTools/libemu/
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
+
 # Build source is tarball release=1 or git commit=0
 %global         build_release    0
 
 %if 0%{?build_release}  > 0
 # Build from the targball release
-Release:        7%{?dist}
+Release:        8%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
 %else
 # Build from the git commit snapshot
 # Not using the 0. on the beginning of release version as these are patches past version 0.2.0
 # Next release should be probably 0.3.0
-Release:        7.%{gitdate}git%{shortcommit}%{?dist}
+Release:        8.%{gitdate}git%{shortcommit}%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 %endif #build_release
 
@@ -160,11 +170,16 @@ Patch12:        libemu-12_nullpointer.patch
 # https://github.com/DinoTools/libemu/pull/25
 Patch13:        libemu-13_unbundle_libdasm.patch
 
+# Review found obsolete macros used
+# https://github.com/DinoTools/libemu/issues/26
+# https://github.com/DinoTools/libemu/pull/27
+Patch14:        libemu-14_obsolete_m4.patch
 
 BuildRequires:  pkgconfig
 BuildRequires:  automake
 BuildRequires:  autoconf
 BuildRequires:  libtool
+BuildRequires:  git
 BuildRequires:  gettext-devel
 BuildRequires:  libdasm-devel
 BuildRequires:  python2-devel
@@ -175,13 +190,6 @@ BuildRequires:  python%{python3_pkgversion}-devel
 BuildRequires:  python%{python3_pkgversion}-setuptools
 %endif
 
-# ldconfig is provided by glibc
-Requires(post): ldconfig
-Requires(postun): ldconfig
-
-# libemu contains modified version of libdasm 1.4
-# libdasm licensed as public domain do whatever
-Provides:       bundled(libdasm) = 1.4
 
 
 %description
@@ -222,6 +230,7 @@ Group:          Development/Libraries
 Requires:       %{name}%{?_isa} = %{version}-%{release}
 %{?python_provide:%python_provide python%{python3_pkgversion}-%{name}}
 
+
 %description    -n python3-libemu
 Python3 binding to the libemu x86 emulator.
 
@@ -235,19 +244,24 @@ Python3 binding to the libemu x86 emulator.
 
 # Build from tarball release version
 %if 0%{?build_release} > 0
-%autosetup -p 1 -n %{gitname}-%{version}
+%autosetup -p 1 -n %{gitname}-%{version} -S git
 
 %else
 # Build from git commit
-%autosetup -p 1 -n %{gitname}-%{commit}
+%autosetup -p 1 -n %{gitname}-%{commit} -S git
 %endif
 
 # Unbundle the libdasm library - rest is in patch13
 rm -f src/libdasm.c src/libdasm.h src/opcode_tables.h
 
+git commit -q -a -m "unbundle libdasm"
+
 # changes in macros in autoconf versions <= rhel6
 %if ( 0%{?rhel} && 0%{?rhel} <= 6 )
-sed -i 's|AC_CONFIG_MACRO_DIRS|AC_CONFIG_MACRO_DIR|' configure.ac
+sed -i 's|AC_CONFIG_MACRO_DIRS|AC_CONFIG_MACRO_DIR|;
+    ' configure.ac
+
+git commit -q -a -m "downgrade autoconf for rhel6"
 %endif
 
 
@@ -257,7 +271,7 @@ sed -i 's|AC_CONFIG_MACRO_DIRS|AC_CONFIG_MACRO_DIR|' configure.ac
 # Create m4 directory if missing
 [ -d m4 ] || mkdir m4
 
-autoreconf -v -i
+autoreconf --verbose --install --warnings=all
 %configure --enable-python-bindings
 
 #Build also for python3
@@ -300,10 +314,7 @@ find %{buildroot} -name '*.la' -exec rm -f {} ';'
 find %{buildroot} -name '*.a' -exec rm -f {} ';'
 
 
-
-%post -p /sbin/ldconfig
-
-%postun -p /sbin/ldconfig
+%ldconfig_scriptlets
 
 %files
 # ======================= files ======================================
@@ -328,6 +339,13 @@ find %{buildroot} -name '*.a' -exec rm -f {} ';'
 %endif #with_python3
 
 %changelog
+* Tue Apr 03 2018 Michal Ambroz <rebus at, seznam.cz> - 0.2.0-8.20130410gitab48695
+- use ldconfig_scriptlets
+- fix release version number in the changelog
+- Exclude the private libemu in python sitearch dir
+- show all warnings to autoreconf
+- use autosetup+git for troubleshooting the patches
+
 * Mon Apr 02 2018 Michal Ambroz <rebus at, seznam.cz> - 0.2.0-0.7.20130410gitab48695
 - unbundle the libdasm library and use system-installed one
 - disable the python3 build for now
