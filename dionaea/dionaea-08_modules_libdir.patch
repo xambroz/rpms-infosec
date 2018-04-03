@@ -1,0 +1,33 @@
+diff -ru dionaea-d2efb768e753a7f1ddca6dbf402548d741f33574.orig/modules/python/module.c dionaea-d2efb768e753a7f1ddca6dbf402548d741f33574.new/modules/python/module.c
+--- dionaea-d2efb768e753a7f1ddca6dbf402548d741f33574.orig/modules/python/module.c	2018-03-26 22:14:31.519330709 +0200
++++ dionaea-d2efb768e753a7f1ddca6dbf402548d741f33574.new/modules/python/module.c	2018-03-26 22:15:40.311274663 +0200
+@@ -348,7 +348,7 @@
+ 
+ 	Py_Initialize();
+ 
+-	runtime.sys_path = g_string_new(PREFIX"/lib/dionaea/python/");
++	runtime.sys_path = g_string_new(LIBDIR"/dionaea/python/");
+ 
+ 	PyObject *name = PyUnicode_FromString("traceback");
+ 	runtime.traceback.module = PyImport_Import(name);
+@@ -366,7 +366,7 @@
+ 
+ 	for (sys_path = sys_paths; *sys_path; sys_path++) {
+ 		if( strcmp(*sys_path, "default") == 0 ) {
+-			sprintf(relpath, "sys.path.insert(%i, '%s/lib/dionaea/python/')", i, PREFIX);
++			sprintf(relpath, "sys.path.insert(%i, '%s/dionaea/python/')", i, LIBDIR);
+ 		} else {
+ 			// ToDO
+ 		/*	if( *sys_path == '/' )
+diff -ru dionaea-d2efb768e753a7f1ddca6dbf402548d741f33574.orig/src/modules.c dionaea-d2efb768e753a7f1ddca6dbf402548d741f33574.new/src/modules.c
+--- dionaea-d2efb768e753a7f1ddca6dbf402548d741f33574.orig/src/modules.c	2018-03-26 22:14:31.504330721 +0200
++++ dionaea-d2efb768e753a7f1ddca6dbf402548d741f33574.new/src/modules.c	2018-03-26 22:21:08.852001664 +0200
+@@ -114,7 +114,7 @@
+   for (name = names; *name; name++) {
+ 
+ 		gchar module_path[1024];
+-		if( g_snprintf(module_path, 1023, PREFIX"/lib/dionaea/%s.so", *name) == -1 )
++		if( g_snprintf(module_path, 1023, LIBDIR"/dionaea/%s.so", *name) == -1 )
+ 			return;
+ 
+ 		g_message("loading module %s (%s)", *name, module_path);

@@ -1,0 +1,12 @@
+diff -ru dionaea-d2efb768e753a7f1ddca6dbf402548d741f33574.orig/configure.ac dionaea-d2efb768e753a7f1ddca6dbf402548d741f33574.new/configure.ac
+--- dionaea-d2efb768e753a7f1ddca6dbf402548d741f33574.orig/configure.ac	2018-03-26 21:49:11.042568472 +0200
++++ dionaea-d2efb768e753a7f1ddca6dbf402548d741f33574.new/configure.ac	2018-03-26 21:49:29.854553159 +0200
+@@ -580,7 +580,7 @@
+ 				      [cython_dir="$withval"],[cython_dir=$PATH])
+ 
+ if test x$enable_cython = "xyes" ; then
+-	AC_PATH_PROGS(CYTHON_BIN, [cython3 cython], "no", $cython_dir)
++	AC_PATH_PROGS(CYTHON_BIN, [cython3.4 cython3 cython], "no", $cython_dir)
+ 	if test "x$CYTHON_BIN" == "xno" ; then
+ 		enable_cython="no"
+ 	fi

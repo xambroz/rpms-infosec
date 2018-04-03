@@ -18,6 +18,8 @@ URL:            https://dionaea.readthedocs.io/
 #    Installation:
 #               https://www.aldeid.com/wiki/Dionaea/Installation
 
+
+
 # Specification of the used GIT commit
 %global         gituser         DinoTools
 %global         gitname         dionaea
@@ -31,10 +33,11 @@ URL:            https://dionaea.readthedocs.io/
 %global         build_release    0
 
 %if 0%{?build_release}  > 0
-Release:        1%{?dist}
+Release:        3%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
 %else
-Release:        0.2.%{gitdate}git%{shortcommit}%{?dist}
+#               not using 0. on the beginning of release as this git snapshot is past the 0.6.0 release
+Release:        3.%{gitdate}git%{shortcommit}%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 %endif #build_release
 
@@ -61,7 +64,13 @@ Patch4:         dionaea-04_pyev.patch
 Patch5:         dionaea-05_sitelib.patch
 
 # Fix warnings during the generation of documentation
-Patch6:         dionaea-06_docswarn.patch
+# Patch6:         dionaea-06_docswarn.patch
+
+# Fix configure not finding the cython on RHEL7/Centos7
+Patch7:         dionaea-07_cython_el7.patch
+
+# Fix hardcoded lib dir
+Patch8:         dionaea-08_modules_libdir.patch
 
 
 BuildRequires:  autoconf
@@ -78,11 +87,17 @@ BuildRequires:  udns-devel
 BuildRequires:  libnl3-devel
 BuildRequires:  glib-devel
 BuildRequires:  curl-devel
-BuildRequires:  compat-openssl10-devel
 BuildRequires:  readline-devel
 BuildRequires:  libpcap-devel
 BuildRequires:  libsq3-devel
 BuildRequires:  sqlite
+
+%if 0%{?fedora} >= 26
+BuildRequires:  compat-openssl10-devel
+%else
+BuildRequires:  openssl-devel
+%endif
+
 
 # Optional dependencies
 BuildRequires:  loudmouth-devel
@@ -97,8 +112,11 @@ BuildRequires:  python%{python3_pkgversion}-Cython
 
 
 # Documentation generation
+%if  0%{?rhel} == 7
+BuildRequires:  python-sphinx
+%else
 BuildRequires:  python3-sphinx
-
+%endif
 
 
 %description
@@ -129,7 +147,7 @@ Group:          Development/Libraries
 
 # Runtime dependencies
 Requires:       python%{python3_pkgversion}-pyev
-
+Requires:       python%{python3_pkgversion}-bson
 
 %description -n python%{python3_pkgversion}-%{gitname}
 This is a Python3 library that gives access to dionaea honeypot functionality.
@@ -210,7 +228,7 @@ sed -i -e 's|python3.2|python3|g;' \
 %build
 autoreconf -vif
 %configure --enable-python --with-python=`which python3` --with-glib=glib --with-nl-include=/usr/include/libnl3
-make %{?_smp_mflags} CFLAGS="%{optflags} -Wno-error -D_GNU_SOURCE"
+make %{?_smp_mflags} CFLAGS="%{optflags} -Wno-error -D_GNU_SOURCE -std=c99"
 cd doc
 make html
 make man
@@ -223,11 +241,14 @@ cd ..
 %make_install PYTHON_SITELIB=%{python3_sitelib} PYTHON_SITEARCH=%{python3_sitearch}
 
 # *.a *.la files not allowed for fedora
-find %{buildroot} -name '*.a' -o -name '*.la' -delete
+find %{buildroot} '(' -name '*.a' -o -name '*.la' ')' -delete
 
 install -d %{buildroot}%{_mandir}/man1/
 install doc/build/man/%{name}.1 %{buildroot}%{_mandir}/man1/%{name}.1.gz
 mv doc/build/html/ ./html
+
+mkdir -p %{buildroot}/var/dionaea/roots/tftp
+
 
 
 
@@ -273,6 +294,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Wed Mar 21 2018 Michal Ambroz <rebus at, seznam.cz> 0.6.0-0.3.20180313gitd2efb76
+- fix openssl dependency for EPEL7 build
+
 * Wed Mar 21 2018 Michal Ambroz <rebus at, seznam.cz> 0.6.0-0.2.20180313gitd2efb76
 - bump to commit d2efb768e753a7f1ddca6dbf402548d741f33574
 - unbundle pyev and refer to system-installed pyev
