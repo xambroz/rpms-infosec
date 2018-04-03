@@ -231,8 +231,10 @@ Python3 binding to the libemu x86 emulator.
 
 %prep
 # ======================= prep =======================================
-%if 0%{?build_release} > 0
+
+
 # Build from tarball release version
+%if 0%{?build_release} > 0
 %autosetup -p 1 -n %{gitname}-%{version}
 
 %else
@@ -240,13 +242,21 @@ Python3 binding to the libemu x86 emulator.
 %autosetup -p 1 -n %{gitname}-%{commit}
 %endif
 
-# Unbundle the libdasm library
+# Unbundle the libdasm library - rest is in patch13
 rm -f src/libdasm.c src/libdasm.h src/opcode_tables.h
 
+# changes in macros in autoconf versions <= rhel6
+%if ( 0%{?rhel} && 0%{?rhel} <= 6 )
+sed -i 's|AC_CONFIG_MACRO_DIRS|AC_CONFIG_MACRO_DIR|' configure.ac
+%endif
 
 
 %build
 # ======================= build ======================================
+
+# Create m4 directory if missing
+[ -d m4 ] || mkdir m4
+
 autoreconf -v -i
 %configure --enable-python-bindings
 
