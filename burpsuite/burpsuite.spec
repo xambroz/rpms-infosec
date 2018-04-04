@@ -1,5 +1,5 @@
 Name:           burpsuite
-Version:        1.6
+Version:        1.7.06
 Release:        1%{?dist}
 Summary:        Security tool for analyzing web application security
 
@@ -8,8 +8,11 @@ License:        Burp License
 #License:        Proprietary Free to Use
 URL:            http://portswigger.net/suite/
 #http://portswigger.net/burp/burpsuite_free_v1.6.jar
-Source0:        http://portswigger.net/burp/burpsuite_free_v%{version}.jar
+#https://portswigger.net/Burp/Releases/Download?productId=100&version=1.7.06&type=Jar#burpsuite_free_v%{version}.jar
+#Source0:        http://portswigger.net/burp/burpsuite_free_v%{version}.jar
+Source0:        https://portswigger.net/Burp/Releases/Download?productId=100&version=1.7.06&type=Jar/burpsuite_free_v%{version}.jar
 Source1:        %{name}.in
+NoSource:       0
 BuildArch:      noarch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -66,12 +69,12 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/%{name}.desktop
 
 mkdir -p %{buildroot}/%{_datadir}/icons/hicolor/{16x16,20x20,28x28,32x32,64x64}/apps
 cd %{buildroot}/%{_datadir}/icons/hicolor
-jar xvf %{SOURCE0} burp/media/icon16.png burp/media/icon20.png burp/media/icon28.png burp/media/icon32.png burp/media/icon64.png
-mv burp/media/icon16.png ./16x16/apps/%{name}.png
-mv burp/media/icon20.png ./20x20/apps/%{name}.png
-mv burp/media/icon28.png ./28x28/apps/%{name}.png
-mv burp/media/icon32.png ./32x32/apps/%{name}.png
-mv burp/media/icon64.png ./64x64/apps/%{name}.png
+jar xvf %{SOURCE0} resources/Media/icon16.png resources/Media/icon20.png resources/Media/icon28.png resources/Media/icon32.png resources/Media/icon64.png
+mv resources/Media/icon16.png ./16x16/apps/%{name}.png
+mv resources/Media/icon20.png ./20x20/apps/%{name}.png
+mv resources/Media/icon28.png ./28x28/apps/%{name}.png
+mv resources/Media/icon32.png ./32x32/apps/%{name}.png
+mv resources/Media/icon64.png ./64x64/apps/%{name}.png
 rm -rf burp
 
 
@@ -109,5 +112,11 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Fri Sep 09 2016 Michal Ambroz <rebus at, seznam.cz> 1.7.06-1
+- bump to 1.7.06
+
+* Tue Jun 07 2016 Michal Ambroz <rebus at, seznam.cz> 1.7.03-1
+- bump to 1.7.03
+
 * Fri Jan 15 2010 Michal Ambroz <rebus at, seznam.cz> 1.3-1
 - Initial burpsuite package for Fedora
