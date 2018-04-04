@@ -1,5 +1,5 @@
 Name:           burpsuite
-Version:        1.3
+Version:        1.4.01
 Release:        1%{?dist}
 Summary:        Security tool for analyzing web application security
 
@@ -7,7 +7,7 @@ Group:          Applications/System
 License:        Burp License
 #License:        Proprietary Free to Use
 URL:            http://portswigger.net/suite/
-Source0:        http://portswigger.net/suite/burpsuite_v1.3.zip
+Source0:        http://portswigger.net/suite/burpsuite_v%{version}.zip
 Source1:        %{name}.in
 BuildArch:      noarch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -51,7 +51,7 @@ Burp suite is extensible via the IBurpExtender interface.
 
 %files
 %defattr(-,root,root,-)
-%doc readme\ -\ running\ burp.txt terms\ and\ conditions.txt
+%doc readme\ -\ running\ burp.txt
 %dir %{_datadir}/%{name}
 %{_datadir}/%{name}/*.jar
 %{_bindir}/%{name}
