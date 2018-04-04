@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Exec=PE-bear %f
+Name=PE-bear
+Comment=Reversing tool for PE files
+GenericName=PE-Bear
+Icon=pe-bear
+Terminal=false
+Categories=System;Security;
+StartupNotify=true
+MimeType=application/x-ms-dos-executable;application/x-sharedlib
