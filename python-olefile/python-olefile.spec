@@ -1,27 +1,33 @@
-%global         gituser         decalage2
-%global         gitname         olefile
-# v0.44
-#global         commit          3397e5ea9172c26fca35fb45175fde170c277e3d
-# v0.45dev1
-%global         commit          e7eb5aae11e99a30ba1bdf3982413edd3bee2874
-%global         shortcommit     %(c=%{commit}; echo ${c:0:7})
-
-%global         sum             Tools to analyze Microsoft OLE2 files
-
-
-
-Name:           python-%{gitname}
-Version:        0.45
-Release:        0.3.git%{shortcommit}%{?dist}
-Summary:        %{sum}
-
+Name:           python-olefile
+Version:        0.45.1
 License:        BSD
 # URL:          https://github.com/decalage2/olefile
 URL:            https://www.decalage.info/olefile
-# Source used for clean release
-#Source0:       https://github.com/%{gituser}/%{gitname}/archive/v%{version}/%{gitname}-%{version}.tar.gz
-# Source used for snapshot based on the git commit
+
+
+%global         gituser         decalage2
+%global         gitname         olefile
+%global         gitdate         20180126
+%global         commit          93d0bde9115f4d3c54ea83c66b631afd1e741bc7
+%global         shortcommit     %(c=%{commit}; echo ${c:0:7})
+
+%global         sum             Tools to analyze Microsoft OLE2 files
+Summary:        %{sum}
+
+
+# Build source is tarball release=1 or git commit=0
+%global         build_release    1
+
+%if 0%{?build_release}  > 0
+# Build from the targball release
+Release:        1%{?dist}
+Source0:        https://github.com/%{gituser}/%{gitname}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
+
+%else
+# Build from the git commit snapshot
+Release:        1.%{gitdate}git%{shortcommit}%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
+%endif #build_release
 
 
 BuildArch:      noarch
@@ -76,10 +82,17 @@ McAfee antivirus quarantine files, etc.
 See http://www.decalage.info/olefile for more info.
 
 
-
 %prep
-#autosetup -n %{gitname}-%{version}
-%autosetup -n %{gitname}-%{commit}
+# Build from tarball release version
+%if 0%{?build_release} > 0
+%autosetup -p 1 -n %{gitname}-%{version}
+
+%else
+# Build from git commit
+%autosetup -p 1 -n %{gitname}-%{commit}
+%endif
+
+
 
 %build
 %py2_build
@@ -103,19 +116,22 @@ install -D -m644 doc/_build/man/olefile.1 %{buildroot}%{_mandir}/man1/%{name}.1
 
 # Note that there is no %%files section for the unversioned python module if we are building for several python runtimes
 %files -n python2-%{gitname}
-%license olefile/LICENSE.txt
+%license LICENSE.txt
 %{python2_sitelib}/*
 
 
 %files -n python%{python3_pkgversion}-%{gitname}
-%license olefile/LICENSE.txt
-%doc olefile/README.html olefile/README.rst
+%license LICENSE.txt
+%doc README.html README.rst
 %{python3_sitelib}/*
 %{_mandir}/man1/%{name}.1*
 
 
 
 %changelog
+* Thu Apr 05 2018 Michal Ambroz <rebus at, seznam.cz> 0.45.1-1
+- bump to 0.45.1 release
+
 * Thu Jun 15 2017 Michal Ambroz <rebus at, seznam.cz> 0.45-0.3.dev1.53c619f4
 - update from git
 
