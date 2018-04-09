@@ -1,4 +1,8 @@
 Get rid of the warning about not used return value from chdir.
+https://github.com/DinoTools/dionaea/issues/162
+https://github.com/DinoTools/dionaea/pull/163
+Merged in in https://github.com/DinoTools/dionaea/commit/ea5d54060af53250abfe3dde9f36af399fa30524
+
 diff -ru dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.orig/src/dionaea.c dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.new/src/dionaea.c
 --- dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.orig/src/dionaea.c	2018-03-21 04:21:30.201354584 +0100
 +++ dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.new/src/dionaea.c	2018-03-21 04:22:07.529846514 +0100

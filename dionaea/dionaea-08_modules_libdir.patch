@@ -1,3 +1,10 @@
+fix hardcoded /lib dir
+on 64 platform the RedHat based distrubutions prefer the lib directories to 
+have different names for 64 bit (lib64) and 32 bit (lib).
+This fix allows to configure that at compile time.
+
+https://github.com/DinoTools/dionaea/pull/181
+
 diff -ru dionaea-d2efb768e753a7f1ddca6dbf402548d741f33574.orig/modules/python/module.c dionaea-d2efb768e753a7f1ddca6dbf402548d741f33574.new/modules/python/module.c
 --- dionaea-d2efb768e753a7f1ddca6dbf402548d741f33574.orig/modules/python/module.c	2018-03-26 22:14:31.519330709 +0200
 +++ dionaea-d2efb768e753a7f1ddca6dbf402548d741f33574.new/modules/python/module.c	2018-03-26 22:15:40.311274663 +0200

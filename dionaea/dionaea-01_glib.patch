@@ -1,4 +1,7 @@
 Use the glib CFLAGS and LDFLAGS during build where necessary
+https://github.com/DinoTools/dionaea/issues/161
+https://github.com/DinoTools/dionaea/pull/160
+Merged in in https://github.com/DinoTools/dionaea/commit/1748f3b3936aa1da2d92500251ae8010fe181dfc
 diff -ru dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.orig/modules/curl/Makefile.am dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.new/modules/curl/Makefile.am
 --- dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.orig/modules/curl/Makefile.am	2016-11-14 23:26:58.000000000 +0100
 +++ dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.new/modules/curl/Makefile.am	2018-03-21 10:34:08.529280378 +0100

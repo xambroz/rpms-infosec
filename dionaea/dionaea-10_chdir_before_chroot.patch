@@ -1,0 +1,14 @@
+diff --git a/src/dionaea.c b/src/dionaea.c
+index e52673d..88ac690 100644
+--- a/src/dionaea.c
++++ b/src/dionaea.c
+@@ -720,7 +720,8 @@ opt->stdOUT.filter);
+ 	// chroot
+ 	if( opt->root != NULL )
+ 	{
+-		if ( chroot(opt->root) != 0 )
++		/* change working dir to the new root directory and chroot */
++		if ( chdir(opt->root) != 0 && chroot(opt->root) != 0 )
+ 		{
+ 			g_error("Could not chroot(\"%s\") (%s)", opt->root, strerror(errno));
+ 		} else

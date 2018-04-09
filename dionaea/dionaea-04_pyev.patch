@@ -1,8 +1,37 @@
-Instead of using embedded pyev, use the system one.
-diff -ru dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.orig/modules/python/dionaea/hpfeeds.py dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.new/modules/python/dionaea/hpfeeds.py
---- dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.orig/modules/python/dionaea/hpfeeds.py	2018-03-21 04:21:30.195354666 +0100
-+++ dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.new/modules/python/dionaea/hpfeeds.py	2018-03-21 06:59:11.422191102 +0100
-@@ -38,7 +38,7 @@
+diff --git a/modules/python/Makefile.am b/modules/python/Makefile.am
+index 5beb169..aa273d3 100644
+--- a/modules/python/Makefile.am
++++ b/modules/python/Makefile.am
+@@ -4,19 +4,20 @@ AUTOMAKE_OPTIONS = foreign
+ 
+ SUBDIRS = dionaea util
+ 
++PYTHON_SITEARCH=$(pkglibdir)"/python"
++
+ all: binding.c
+ 
+ binding.c: setup.py setup.py.in binding.pyx module.c module.h ../../config.h ../../include/protocol.h ../../include/dionaea.h
+ 	$(PYTHON) setup.py build
+ 
+ install-exec-am: all
+-	cp build/*/dionaea/*.so $(DESTDIR)$(pkglibdir)/python.so
+-	(cd $(DESTDIR)$(pkglibdir)/python/dionaea && rm -f core.so && ln -s ../../python.so core.so)
+-	(cd $(DESTDIR)$(pkglibdir)/python/dionaea && rm -f pyev.so && ln -s ../../python.so pyev.so)
++	$(PYTHON) setup.py install -O1 --skip-build --root $(DESTDIR) --install-lib $(PYTHON_SITEARCH)
++	(cd $(DESTDIR)$(PYTHON_SITEARCH)/dionaea && export X=core*.so && ln -s $(PYTHON_SITEARCH)/dionaea/$$X python.so && mv python.so $(DESTDIR)$(pkglibdir)/python.so)
+ 
+ clean:
+ 	$(PYTHON) setup.py clean
+-	rm -rf ./build binding.{c,h} 
++	rm -rf ./build binding.{c,h}
+ 
+ dist-clean: clean
+ 
+diff --git a/modules/python/dionaea/hpfeeds.py b/modules/python/dionaea/hpfeeds.py
+index 3674f4b..9a92e0d 100644
+--- a/modules/python/dionaea/hpfeeds.py
++++ b/modules/python/dionaea/hpfeeds.py
+@@ -38,7 +38,7 @@ import datetime
  from time import gmtime, strftime
  
  try:
@@ -11,10 +40,11 @@ diff -ru dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.orig/modules/python/di
  except ImportError:
      pyev = None
  
-diff -ru dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.orig/modules/python/dionaea/sip/__init__.py dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.new/modules/python/dionaea/sip/__init__.py
---- dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.orig/modules/python/dionaea/sip/__init__.py	2018-03-21 04:21:30.198354625 +0100
-+++ dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.new/modules/python/dionaea/sip/__init__.py	2018-03-21 07:00:05.553401019 +0100
-@@ -36,9 +36,10 @@
+diff --git a/modules/python/dionaea/sip/__init__.py b/modules/python/dionaea/sip/__init__.py
+index 66cb86e..48100f0 100644
+--- a/modules/python/dionaea/sip/__init__.py
++++ b/modules/python/dionaea/sip/__init__.py
+@@ -36,9 +36,10 @@ import random
  import os
  import datetime
  import tempfile
@@ -26,9 +56,10 @@ diff -ru dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.orig/modules/python/di
  
  from dionaea.sip.extras import msg_to_icd, SipConfig, ErrorWithResponse
  
-diff -ru dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.orig/modules/python/dionaea/submit_http.py dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.new/modules/python/dionaea/submit_http.py
---- dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.orig/modules/python/dionaea/submit_http.py	2018-03-21 04:21:30.196354652 +0100
-+++ dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.new/modules/python/dionaea/submit_http.py	2018-03-21 06:58:39.522656697 +0100
+diff --git a/modules/python/dionaea/submit_http.py b/modules/python/dionaea/submit_http.py
+index 20d645d..66c166c 100644
+--- a/modules/python/dionaea/submit_http.py
++++ b/modules/python/dionaea/submit_http.py
 @@ -1,7 +1,8 @@
  from dionaea.core import ihandler, incident, g_dionaea
  from dionaea.util import md5file, sha512file
@@ -39,10 +70,11 @@ diff -ru dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.orig/modules/python/di
  import logging
  import uuid
  import struct
-diff -ru dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.orig/modules/python/dionaea/virustotal.py dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.new/modules/python/dionaea/virustotal.py
---- dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.orig/modules/python/dionaea/virustotal.py	2018-03-21 04:21:30.196354652 +0100
-+++ dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.new/modules/python/dionaea/virustotal.py	2018-03-21 06:59:41.793747808 +0100
-@@ -32,7 +32,7 @@
+diff --git a/modules/python/dionaea/virustotal.py b/modules/python/dionaea/virustotal.py
+index f2508a7..3e96c3d 100644
+--- a/modules/python/dionaea/virustotal.py
++++ b/modules/python/dionaea/virustotal.py
+@@ -32,7 +32,7 @@ import logging
  import json
  import uuid
  import sqlite3
@@ -51,30 +83,11 @@ diff -ru dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.orig/modules/python/di
  
  logger = logging.getLogger('virustotal')
  logger.setLevel(logging.DEBUG)
-diff -ru dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.orig/modules/python/Makefile.am dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.new/modules/python/Makefile.am
---- dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.orig/modules/python/Makefile.am	2018-03-21 04:21:30.195354666 +0100
-+++ dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.new/modules/python/Makefile.am	2018-03-21 07:14:31.670155062 +0100
-@@ -10,13 +10,11 @@
- 	$(PYTHON) setup.py build
- 
- install-exec-am: all
--	cp build/*/dionaea/*.so $(DESTDIR)$(pkglibdir)/python.so
--	(cd $(DESTDIR)$(pkglibdir)/python/dionaea && rm -f core.so && ln -s ../../python.so core.so)
--	(cd $(DESTDIR)$(pkglibdir)/python/dionaea && rm -f pyev.so && ln -s ../../python.so pyev.so)
-+	$(PYTHON) setup.py install -O1 --skip-build --root $(DESTDIR)/
- 
- clean:
- 	$(PYTHON) setup.py clean
--	rm -rf ./build binding.{c,h} 
-+	rm -rf ./build binding.{c,h}
- 
- dist-clean: clean
- 
-Only in dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.orig/modules/python: pyev
-diff -ru dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.orig/modules/python/setup.py.in dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.new/modules/python/setup.py.in
---- dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.orig/modules/python/setup.py.in	2018-03-21 10:40:22.942127530 +0100
-+++ dionaea-793accd84432a77309fa8b81e1f5e9b5bd9ee7a3.new/modules/python/setup.py.in	2018-03-21 10:41:35.418132420 +0100
-@@ -81,7 +81,7 @@
+diff --git a/modules/python/setup.py.in b/modules/python/setup.py.in
+index 17d71c0..97da738 100644
+--- a/modules/python/setup.py.in
++++ b/modules/python/setup.py.in
+@@ -86,7 +86,7 @@ PYEV_VERSION = "\"{0}\"".format(pyev_version)
  
  ext_modules=[
  	Extension("dionaea.core", 

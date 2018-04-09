@@ -1,0 +1,13 @@
+diff -up dionaea-1748f3b3936aa1da2d92500251ae8010fe181dfc/configure.ac.fix_obsolete_macros dionaea-1748f3b3936aa1da2d92500251ae8010fe181dfc/configure.ac
+--- dionaea-1748f3b3936aa1da2d92500251ae8010fe181dfc/configure.ac.fix_obsolete_macros   2018-03-26 12:08:28.000000000 +0200
++++ dionaea-1748f3b3936aa1da2d92500251ae8010fe181dfc/configure.ac       2018-04-07 14:42:03.306757293 +0200
+@@ -25,7 +25,7 @@ AC_C_BIGENDIAN
+ # Checks for programs.
+ AC_PROG_CC
+ AC_PROG_MAKE_SET
+-AC_PROG_LIBTOOL
++LT_INIT
+ 
+ AC_CHECK_HEADERS([stdint.h stdlib.h string.h strings.h unistd.h netpacket/packet.h execinfo.h linux/sockios.h])
+
+
