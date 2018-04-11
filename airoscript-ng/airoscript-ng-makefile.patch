@@ -1,0 +1,259 @@
+diff -ru Airoscript.orig/doc/html/Makefile Airoscript.fc12/doc/html/Makefile
+--- Airoscript.orig/doc/html/Makefile	2009-10-01 02:25:59.000000000 +0200
++++ Airoscript.fc12/doc/html/Makefile	2010-01-17 19:18:52.000000000 +0100
+@@ -1,10 +1,10 @@
+ all: install
+ install:
+ 	@echo "\t Installing html documentation"
+-	@$(INSTALLDATA) *.html $(docdir)/html
+-	@$(INSTALLDATA) images/* $(docdir)/html/images/
++	@$(INSTALLDATA) *.html $(DESTDIR)$(docdir)/html
++	@$(INSTALLDATA) images/* $(DESTDIR)$(docdir)/html/images/
+ 
+ uninstall:
+-	@echo "Removing html documentation from $(docdir)/html"
+-	@rm -r $(docdir)/html
++	@echo "Removing html documentation from $(DESTDIR)$(docdir)/html"
++	@rm -r $(DESTDIR)$(docdir)/html
+ 
+diff -ru Airoscript.orig/doc/tools/Makefile Airoscript.fc12/doc/tools/Makefile
+--- Airoscript.orig/doc/tools/Makefile	2009-10-01 02:25:59.000000000 +0200
++++ Airoscript.fc12/doc/tools/Makefile	2010-01-17 19:20:12.000000000 +0100
+@@ -1,7 +1,7 @@
+ install: 
+ 	@echo "\t Installing tools documentation" 
+-	@$(INSTALLDATA) * $(docdir)/tools 
++	@$(INSTALLDATA) * $(DESTDIR)$(docdir)/tools 
+ uninstall: 
+-	@echo "Removing tools documentation from $(docdir)/tools" 
+-	@rm -r $(docdir)/tools
++	@echo "Removing tools documentation from $(DESTDIR)$(docdir)/tools" 
++	@rm -r $(DESTDIR)$(docdir)/tools
+ 
+diff -ru Airoscript.orig/Makefile Airoscript.fc12/Makefile
+--- Airoscript.orig/Makefile	2009-10-10 01:42:11.000000000 +0200
++++ Airoscript.fc12/Makefile	2010-01-18 00:44:31.000000000 +0100
+@@ -1,6 +1,6 @@
+ #!/usr/bin/make
+ # Configure prefix here:
+-prefix="/usr/local"
+-aircrack_prefix="/usr/local" # for packaged aircrack-ng change me to /usr
++prefix?="/usr/local"
++aircrack_prefix?=$(prefix) # for packaged aircrack-ng change me to /usr
+ OSTYPE:=$(shell uname -s|cut -d_ -f1)
+ include Makefile-$(OSTYPE)
+diff -ru Airoscript.orig/Makefile-Linux Airoscript.fc12/Makefile-Linux
+--- Airoscript.orig/Makefile-Linux	2009-10-10 01:42:11.000000000 +0200
++++ Airoscript.fc12/Makefile-Linux	2010-01-18 01:40:00.000000000 +0100
+@@ -7,17 +7,19 @@
+ 
+ # Destdirs. 
+ 	# prefixes
+-data=$(prefix)/share
++data?=$(prefix)/share
+ 
+ 	# main
+-bindir=$(prefix)/sbin/
+-datadir=$(data)/$(NAME)/
+-docdir=$(data)/doc/$(NAME)
+-etcdir=$(prefix)/etc
+-locale=$(data)/locale
+-mandir=$(data)/man
++bindir?=$(prefix)/sbin/
++datadir?=$(data)/$(NAME)/
++docdir?=$(data)/doc/$(NAME)
++etcdir?=$(prefix)/etc
++locale?=$(data)/locale
++mandir?=$(data)/man
+ srcdir=./src
+ 
++FIXPATH = sed -i -e "s%@@prefix@@%$(prefix)%g" -e "s%@@AIRPREFIX@@%$(aircrack_prefix)%g" -e "s%@@etcdir@@%$(etcdir)%g" 
++
+ # Manpages
+ 
+ ###############################################################################
+@@ -32,60 +34,61 @@
+ 	 post-install
+ 
+ installdirs:
+-	@$(SHELL) $(srcdir)/mkinstalldirs $(bindir) $(datadir) \
+-        			$(docdir)/html/images $(etcdir) \
+-                                $(mandir)/man1 $(locale) \
+-				$(datadir)/themes \
+-				$(datadir)/airosperl \
+-				$(docdir)/tools
++	@$(SHELL) $(srcdir)/mkinstalldirs $(DESTDIR)$(bindir) $(DESTDIR)$(datadir) \
++        			$(DESTDIR)$(docdir)/html/images $(DESTDIR)$(etcdir) \
++                                $(DESTDIR)$(mandir)/man1 $(DESTDIR)$(locale) \
++				$(DESTDIR)$(datadir)/themes \
++				$(DESTDIR)$(datadir)/airosperl \
++				$(DESTDIR)$(docdir)/tools
+ 	
+ install-airoscript:
+ 	@echo "Installing airoscript"
+-	@$(INSTALL) $(srcdir)/airoscript-ng $(bindir)/$(name)
+-	@$(INSTALL) $(srcdir)/conffiles/airoscript-ng.conf $(etcdir)
+-	@$(INSTALL) $(srcdir)/functions/*func* $(datadir)
+-	@$(INSTALLDATA) $(srcdir)/conffiles/screenrc $(etcdir)
++	@$(INSTALL) $(srcdir)/airoscript-ng $(DESTDIR)$(bindir)/$(NAME)
++	@$(INSTALL) $(srcdir)/conffiles/airoscript-ng.conf $(DESTDIR)$(etcdir)/airoscript-ng.conf
++	@$(INSTALL) $(srcdir)/functions/*func* $(DESTDIR)$(datadir)
++	@$(INSTALLDATA) $(srcdir)/conffiles/screenrc $(DESTDIR)$(etcdir)
+ 
+ 
+ install-themes:
+ 	@echo "Installing themes"
+-	@$(INSTALLDATA) $(srcdir)/themes/*.theme $(datadir)/themes
++	@$(INSTALLDATA) $(srcdir)/themes/*.theme $(DESTDIR)$(datadir)/themes
+ 
+ install-tools:
+ 	@# Commented thigs because airosperl is not yet ready.
+ 	@echo "Installing tools:"
+ 	@# Binary files
+ 	@#echo  "\t airosconf"
+-	@#$(INSTALL) $(srcdir)/tools/airosconf.sh $(bindir)/airosconf
++	@#$(INSTALL) $(srcdir)/tools/airosconf.sh $(DESTDIR)$(bindir)/airosconf
+ 	@echo  "\t airoscwordlist"
+-	@$(INSTALL) $(srcdir)/tools/airoscwordlist.pl $(bindir)/airoscwordlist
++	@$(INSTALL) $(srcdir)/tools/airoscwordlist.pl $(DESTDIR)$(bindir)/airoscwordlist
+ 	@echo  "\t airopdate"
+-	@$(INSTALL) $(srcdir)/tools/airopdate.sh $(bindir)/airopdate
++	@$(INSTALL) $(srcdir)/tools/airopdate.sh $(DESTDIR)$(bindir)/airopdate
+ 	@#echo  "\t airosperl"
+ 	@#$(INSTALL) $(srcdir)/tools/airosperl/airosperl.pl\
+-	 #$(bindir)/airosperl.pl
++	 #$(DESTDIR)$(bindir)/airosperl.pl
+ 	@# Data files.
+-	@#$(INSTALLDATA) $(srcdir)/conffiles/airosperl.conf $(etcdir)
+-	@#$(INSTALLDATA) $(srcdir)/tools/airosperl/airosperl.glade $(datadir)
++	@#$(INSTALLDATA) $(srcdir)/conffiles/airosperl.conf $(DESTDIR)$(etcdir)
++	@#$(INSTALLDATA) $(srcdir)/tools/airosperl/airosperl.glade $(DESTDIR)$(datadir)
+ 	@# Airosperl configuration
+ 	@#$(SHELL) $(srcdir)/tools/airosconf.sh --set --to-airosperl apppath\
+-	 #"$(datadir)" --force-yes
++	 #"$(DESTDIR)$(datadir)" --force-yes
+ 
+ post-install:
+ 	@echo ""
+-	@if [ "$(aircrack_prefix)" != "/usr/local " ]; then sed -i 's/AIRPREFIX=\"\/usr\/local\"/AIRPREFIX=\"$(aircrack_prefix)\"/g' $(etcdir)/airoscript-ng.conf &>/dev/null;fi
++	@$(FIXPATH) $(DESTDIR)$(etcdir)/airoscript-ng.conf &>/dev/null
++	@$(FIXPATH) $(DESTDIR)$(bindir)/$(NAME) &>/dev/null
+ 
+ install-docs: install-main-docs install-manpages
+ 
+ install-main-docs:
+ 	@echo "Installing documentation"
+ 	@echo "\t Installing standard documentation"
+-	@for i in doc/* ; do if [ -d $$i ] && [ $$i != "." ] && [ $$i != ".." ]; then make -s -C $$i docdir="$(docdir)" INSTALLDATA="$(INSTALLDATA)" ; else $(INSTALLDATA) $$i $(docdir) ;fi ; done
++	@for i in doc/* ; do if [ -d $$i ] && [ $$i != "." ] && [ $$i != ".." ]; then make -s -C $$i docdir="$(docdir)" INSTALLDATA="$(INSTALLDATA)" DESTDIR="$(DESTDIR)" ; else $(INSTALLDATA) $$i $(DESTDIR)$(docdir) ;fi ; done
+ 
+ install-manpages: 
+ 	@# This will install any manpage on manpages dir. (Just man1 manpages)
+ 	@echo  "\t Installing manpages"
+-	@for i in $(srcdir)/manpages/*.1 ; do $(INSTALLDATA) $$i $(mandir)/man1/ ; done
++	@for i in $(srcdir)/manpages/*.1 ; do $(INSTALLDATA) $$i $(DESTDIR)$(mandir)/man1/ ; done
+ 
+ ###############################################################################
+ #		                    locale                                   #
+@@ -102,7 +105,7 @@
+ 	@echo "Installing locales"
+ 	@for i in $(srcdir)/locale/* ; do \
+ 		if [ -d $$i ] && [ $$i != "." ] && [ $$i != ".." ]; then \
+-			make -s -C $$i install locale="$(locale)" INSTALLDATA="$(INSTALLDATA)" ; \
++			make -s -C $$i install locale="$(locale)" INSTALLDATA="$(INSTALLDATA)" DESTDIR="$(DESTDIR)"; \
+ 		fi ; \
+ 	done
+ 
+@@ -114,23 +117,23 @@
+ 	@echo "Uninstalled succesfully"
+ 
+ uninstall-binary:
+-	@rm  $(bindir)/$(name)
+-	@rm $(bindir)/airopdate
++	@rm $(DESTDIR)$(bindir)/$(NAME)
++	@rm $(DESTDIR)$(bindir)/airopdate
+ 
+ uninstall-data: uninstall-locale
+-	@rm $(etcdir)/airosperl.conf $(sysconfdir)/airoscript-ng.conf
+-	@rm -r $(datadir)
++	@rm $(DESTDIR)$(etcdir)/airosperl.conf $(DESTDIR)$(sysconfdir)/airoscript-ng.conf
++	@rm -r $(DESTDIR)$(datadir)
+ 
+ uninstall-docs:
+-	@rm -r $(docdir)
++	@rm -r $(DESTDIR)$(docdir)
+ 
+ uninstall-manpages:
+-	@for i in $(srcdir)/manpages/*.1 ; do $(INSTALLDATA) $$i $(mandir)/man1/ ; done
++	@for i in $(DESTDIR)$(srcdir)/manpages/*.1 ; do $(INSTALLDATA) $$i $(DESTDIR)$(mandir)/man1/ ; done
+ 
+ uninstall-locale:
+-	@for i in $(srcdir)/locale/* ; do \
++	@for i in $(DESTDIR)$(srcdir)/locale/* ; do \
+ 		if [ -d $$i ] && [ $$i != "." ] && [ $$i != ".." ]; then \
+-			make -s -C $$i uninstall locale=$(locale) ; \
++			make -s -C $$i uninstall locale=$(locale) DESTDIR=$(DESTDIR) ; \
+ 		fi ; \
+ 	done
+ 	
+diff -ru Airoscript.orig/src/airoscript-ng Airoscript.fc12/src/airoscript-ng
+--- Airoscript.orig/src/airoscript-ng	2009-10-05 02:05:12.000000000 +0200
++++ Airoscript.fc12/src/airoscript-ng	2010-01-18 01:27:53.000000000 +0100
+@@ -50,7 +50,7 @@
+ 			else echo `gettext "Ok, please remove/rename your $HOME/.airoscript-ng/airoscript-ng.conf"`; exit; fi
+ 		else . ~/.airoscript-ng/airoscript-ng.conf ; fi
+ 	else
+-		if [ -e /etc/airoscript-ng.conf ]; then . /etc/airoscript-ng.conf
++		if [ -e @@etcdir@@/airoscript-ng.conf ]; then . @@etcdir@@/airoscript-ng.conf
+ 		else
+ 			if [ -e /usr/local/etc/airoscript-ng.conf ]; then . /usr/local/etc/airoscript-ng.conf
+ 			else
+diff -ru Airoscript.orig/src/conffiles/airoscript-ng.conf Airoscript.fc12/src/conffiles/airoscript-ng.conf
+--- Airoscript.orig/src/conffiles/airoscript-ng.conf	2009-11-11 18:46:25.000000000 +0100
++++ Airoscript.fc12/src/conffiles/airoscript-ng.conf	2010-01-18 00:39:44.000000000 +0100
+@@ -61,8 +61,8 @@
+ 	# For example, in systems where you have compiled aircrack-ng 
+ 	# or in slax it'll be /usr/local/bin or BINDIR and SBINDIR
+ 	# And, on some systems, mdk3 will be installed on /usr/local/bin/
+-	PREFIX="/usr/local"
+-    AIRPREFIX="/usr/local" # This way we don't need to have airoscript in the same path as aircrack...
++	PREFIX="@@prefix@@"
++	AIRPREFIX="@@AIRPREFIX@@" # This way we don't need to have airoscript in the same path as aircrack...
+ 
+ 	BINDIR="$AIRPREFIX/bin/"
+ 	SBINDIR="$AIRPREFIX/sbin/"                     
+@@ -78,7 +78,7 @@
+ 	MACCHANGER=$BINDIR"macchanger"
+ 
+ 	# Fix to be able to use screenrc defined screenrc's
+-	[[ "$SCREENRC" == "" ]] && SCREENRC="$PREFIX/share/airoscript/screenrc"
++	[[ "$SCREENRC" == "" ]] && SCREENRC="$PREFIX/etc/airoscript/screenrc"
+ 	
+ 	FUNCTIONS="$PREFIX/share/airoscript-ng/functions.sh"
+ 	IFUNCTIONS="$PREFIX/share/airoscript-ng/functions_internal.sh"
+@@ -92,7 +92,7 @@
+ 	iwconfig="iwconfig"
+ 
+ # Path to optional binaries
+-	MDK3="/usr/local/sbin/mdk3"
++	MDK3="${SBINDIR}/mdk3"
+ 
+ 	# As i know, those are just used for spanish routers...
+ 	JTD="jazzteldecrypter"
+diff -ru Airoscript.orig/src/locale/es_ES/Makefile Airoscript.fc12/src/locale/es_ES/Makefile
+--- Airoscript.orig/src/locale/es_ES/Makefile	2009-10-01 02:25:59.000000000 +0200
++++ Airoscript.fc12/src/locale/es_ES/Makefile	2010-01-18 01:10:59.000000000 +0100
+@@ -5,10 +5,11 @@
+ 
+ install:
+ 	@echo "\t Installing locale es_ES"
+-	@$(INSTALLDATA) airoscript.mo $(localedir)/`basename \`pwd\``
++	@$(INSTALLDATA) -m 755 -d $(DESTDIR)$(locale)/`basename \`pwd\``
++	@$(INSTALLDATA) airoscript.mo $(DESTDIR)$(locale)/`basename \`pwd\``
+ 
+ uninstall:
+-	@rm $(localedir)/`basename \`pwd\``/airoscript.mo
++	@rm $(DESTDIR)$(locale)/`basename \`pwd\``/airoscript.mo
+ 
+ clean:
+ 	@rm airoscript.mo
