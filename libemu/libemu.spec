@@ -342,6 +342,7 @@ find %{buildroot} -name '*.a' -exec rm -f {} ';'
 * Tue Apr 03 2018 Michal Ambroz <rebus at, seznam.cz> - 0.2.0-8.20130410gitab48695
 - use ldconfig_scriptlets
 - fix release version number in the changelog
+- fix obsolete m4 macros
 - Exclude the private libemu in python sitearch dir
 - show all warnings to autoreconf
 - use autosetup+git for troubleshooting the patches
