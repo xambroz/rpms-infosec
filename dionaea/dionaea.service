@@ -1,0 +1,15 @@
+[Unit]
+Description=Dionaea is low interaction honeypot
+Documentation=man:dionaea https://dionaea.readthedocs.io/
+After=syslog.target network.target
+
+[Service]
+Type=forking
+PIDFile=/var/run/dionaea.pid
+EnvironmentFile=-/etc/sysconfig/dionaea
+ExecStart=/usr/sbin/dionaea -D $DUSER $DGROUP $DWORKDIR $LOGLEVELS $LOGDOMAINS $PIDFILE $MISC
+
+
+[Install]
+WantedBy=multi-user.target
+

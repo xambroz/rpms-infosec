@@ -1,0 +1,16 @@
+# logrotate requires dionaea to be started with a pidfile
+# in this case -p /opt/dionaea/var/run/dionaea.pid
+# adjust the path to your needs
+/var/log/dionaea/dionaea.log /var/log/dionaea/dionaea-errors.log {
+        notifempty
+        missingok
+        rotate 28
+        daily
+        compress
+        delaycompress
+        create 660 dionaea dionaea
+        dateext
+        postrotate
+                kill -HUP `cat /var/run/dionaea.pid`
+        endscript
+}
