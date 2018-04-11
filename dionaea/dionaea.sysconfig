@@ -1,0 +1,18 @@
+# Dionaea commandline options
+DUSER='--user=dionaea'
+
+DGROUP='--group=dionaea'
+
+DWORKDIR='--workingdir=/'
+
+#LOGLEVELS='--log-levels=all'
+LOGLEVELS='--log-levels=all,-debug'
+
+#LOGDOMAINS='--log-domains=con*,py*'
+LOGDOMAINS='--log-domains=*'
+
+PIDFILE='--pid-file=/var/run/dionaea.pid'
+
+#MISC='--chroot=/dionaea/chrootdir'
+MISC=''
+

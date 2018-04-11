@@ -17,6 +17,8 @@ URL:            https://dionaea.readthedocs.io/
 #               https://gitlab.labs.nic.cz/honeynet/dionaea/
 #               https://github.com/devwerks/dionaea
 #               https://github.com/RootingPuntoEs/DionaeaFR/
+#               https://github.com/ManiacTwister/dionaea/
+#               https://github.com/tklengyel/dionaea
 #    Installation:
 #               https://www.aldeid.com/wiki/Dionaea/Installation
 
@@ -41,7 +43,7 @@ URL:            https://dionaea.readthedocs.io/
 # Build source is github release=1 or git commit=0
 %global         build_release    0
 
-%global         rel              5
+%global         rel              6
 
 %if 0%{?build_release}  > 0
 Release:        %{rel}%{?dist}
@@ -53,8 +55,8 @@ Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{nam
 %endif #build_release
 
 Source1:        %{name}.sysconfig
-Source2:        %{name}.initd 
-Source3:        %{name}.service 
+Source2:        %{name}.initd
+Source3:        %{name}.service
 Source4:        %{name}.logrotate
 
 
@@ -175,6 +177,7 @@ Requires(preun): initscripts
 Requires(postun): initscripts
 %endif
 
+Requires(pre): shadow-utils
 
 %description
 Dionaea honeypot is meant to be a nepenthes successor, embedding python
@@ -250,18 +253,18 @@ sed -i -e "s|/opt/dionaea/var/dionaea|${DESTDIR}/var/lib/dionaea|g;" \
     modules/python/util/readlogsqltree.py
 
 
-# move /var/dionaea to /var/lib/dionaea according to LFS
+# move /var/dionaea to /var/lib/dionaea according to Linux FHS
 # Fedora specific - not reported upstream
 sed -i -e "s|/var/dionaea|/var/lib/dionaea|g;" \
     modules/python/util/readlogsqltree.py \
     modules/python/util/gnuplotsql.py
 
-# move /var/dionaea to /var/lib/dionaea according to LFS
+# move /var/dionaea to /var/lib/dionaea according to Linux FHS
 # Fedora specific - not reported upstream
 sed -i -e 's|\$(localstatedir)/dionaea/|\$(localstatedir)/lib/dionaea/|g;' \
     Makefile.am
 
-# move /var/dionaea to /var/lib/dionaea according to LFS
+# move /var/dionaea to /var/lib/dionaea according to Linux FHS
 # Fedora specific - not reported upstream
 sed -i -e 's|@LOCALESTATEDIR@/dionaea/|@LOCALESTATEDIR@/lib/dionaea/|g;' \
     conf/dionaea.cfg.in \
@@ -276,6 +279,11 @@ sed -i -e 's|@LOCALESTATEDIR@/dionaea/|@LOCALESTATEDIR@/lib/dionaea/|g;' \
     conf/services/ftp.yaml.in \
     conf/services/tftp.yaml.in \
     conf/services/upnp.yaml.in
+
+# move the logs from /var/lib/dionaea to /var/log/dionaea
+sed -i -e 's|@LOCALESTATEDIR@/lib/dionaea/dionaea.log|@LOCALESTATEDIR@/log/dionaea/dionaea.log|g;
+    s|@LOCALESTATEDIR@/lib/dionaea/dionaea-errors.log|@LOCALESTATEDIR@/log/dionaea/dionaea-errors.log|g;
+'   conf/dionaea.cfg.in
 
 # Change the hardoced minor python3.2 version especially in shabang to python3
 # https://github.com/DinoTools/dionaea/issues/169
@@ -350,10 +358,18 @@ install -p -D -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/sysconfig/%{name}
 # Install logrotate
 install -p -D -m 644 %{SOURCE4} %{buildroot}%{_sysconfdir}/logrotate.d/%{name}
 
+# Create the log directory
+mkdir -p %{buildroot}%{_localstatedir}/log/%{name} || :
 
-mkdir -p %{buildroot}%{_sharedstatedir}/%{name}/roots/tftp
+# Create directories to capture binaries and payloads
+mkdir -p %{buildroot}%{_sharedstatedir}/%{name}/binaries || :
+mkdir -p %{buildroot}%{_sharedstatedir}/%{name}/bistreams || :
 
-mkdir -p %{buildroot}%{_sharedstatedir}/%{name}/bistreams
+# Create directory for the content templates
+mkdir -p %{buildroot}%{_sharedstatedir}/%{name}/roots/ftp  || :
+mkdir -p %{buildroot}%{_sharedstatedir}/%{name}/roots/tftp || :
+mkdir -p %{buildroot}%{_sharedstatedir}/%{name}/roots/www  || :
+mkdir -p %{buildroot}%{_sharedstatedir}/%{name}/roots/upnp || :
 
 
 
@@ -385,6 +401,14 @@ mkdir -p %{buildroot}%{_sharedstatedir}/%{name}/bistreams
 %endif
 
 
+%pre
+getent group dionaea >/dev/null || groupadd -r dionaea || :
+getent passwd dionaea >/dev/null || \
+    useradd -r -g dionaea -d /home/dionaea -s /sbin/nologin \
+    -c "Dionaea honeypot" dionaea || :
+
+
+
 
 # ============= package files ==================================================
 %files
@@ -400,7 +424,12 @@ mkdir -p %{buildroot}%{_sharedstatedir}/%{name}/bistreams
 %{_libdir}/%{name}/
 %exclude %{_libdir}/%{name}/python.so
 %{_mandir}/man1/%{name}.1.*
-%{_sharedstatedir}/%{name}/
+%attr(0750,dionaea,dionaea) %dir %{_localstatedir}/log/%{name}
+%attr(0750,dionaea,dionaea) %dir %{_sharedstatedir}/%{name}
+%attr(0750,dionaea,dionaea) %dir %{_sharedstatedir}/%{name}/binaries
+%attr(0750,dionaea,dionaea) %dir %{_sharedstatedir}/%{name}/bistreams
+%attr(-,dionaea,dionaea)        %{_sharedstatedir}/%{name}/roots/
+%attr(-,dionaea,dionaea)        %{_sharedstatedir}/%{name}/share/
 
 %if 0%{?_with_systemd}
 %{_unitdir}/*.service
@@ -426,6 +455,11 @@ mkdir -p %{buildroot}%{_sharedstatedir}/%{name}/bistreams
 
 
 %changelog
+* Mon Apr 09 2018 Michal Ambroz <rebus at, seznam.cz> 0.6.0-6.20180326git1748f3b
+- fix log rotation, move the logs to /var/log/dionaea
+- create user dionaea:dionaea
+- grant shared stare dir/files to the dionaea user account
+
 * Mon Apr 09 2018 Michal Ambroz <rebus at, seznam.cz> 0.6.0-5.20180326git1748f3b
 - clean-up based on review in #1564716
 
