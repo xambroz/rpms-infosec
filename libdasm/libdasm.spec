@@ -1,14 +1,15 @@
 Name:           libdasm
-Version:        1.5
+Version:        1.6
 Summary:        Simple x86 disassembly library
 
+# Current code being maintained on github by Joshua Pereyda
+# version 1.6 was released with the BSD license
 # Original author Jarkko Turkulainen <jt () klake org> put the code into public domain
 # http://www.klake.org/~jt/misc/libdasm-1.4.tar.gz -> https://web.archive.org/web/20060718012748/http://www.klake.org/~jt/misc/libdasm-1.4.tar.gz
 # http://www.klake.org/~jt/misc/libdasm-1.5.tar.gz -> https://web.archive.org/web/20120119123445/http://www.klake.org/~jt/misc/libdasm-1.5.tar.gz
 # https://labsblog.f-secure.com/author/turkja/
 # http://en.gravatar.com/turkja
 # There was another fork on https://code.google.com/archive/p/libdasm/ by Ange Albertini
-# Current code being maintained on github by Joshua Pereyda
 License:        BSD
 URL:            https://github.com/jtpereyda/libdasm
 
@@ -27,7 +28,7 @@ URL:            https://github.com/jtpereyda/libdasm
 # Fix up the Makefiles to remove upstream compilation flags, install to destdir
 # https://github.com/jtpereyda/libdasm/issues/6
 # https://github.com/jtpereyda/libdasm/pull/5
-Patch0:         %{name}-destdir.patch
+# Patch0:         %{name}-destdir.patch
 
 
 %if 0%{?rhel} && 0%{?rhel} <= 6
@@ -47,25 +48,25 @@ Patch0:         %{name}-destdir.patch
 %global         gituser         jtpereyda
 %global         gitname         libdasm
 # Current version
-%global         gitdate         20180328
-%global         commit          c315f8d9107566efc8ffde74270ed9031db65c28
+%global         gitdate         20180330
+%global         commit          b9233ccf35dce894ac0188e5830fa4346873a1f6
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
 # Build source is tarball release=1 or git commit=0
-%global         build_release    0
+%global         build_release    1
 
 %if 0%{?build_release}  > 0
 # Build from the targball release
-Release:        6%{?dist}
+Release:        1%{?dist}
 #Source0:       http://libdasm.googlecode.com/files/%{name}-%{version}.tar.gz
-#Source0:       https://github.com/%{gituser}/%{gitname}/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
-Source0:        https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/%{name}/%{name}-%{version}.tar.gz
+#Source0:       https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/%{name}/%{name}-%{version}.tar.gz
+Source0:        https://github.com/%{gituser}/%{gitname}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
 %else
 # Build from the git commit snapshot
 # Release is not starting with 0 as usual, because the next release will be 1.6
-Release:        6.%{gitdate}git%{shortcommit}%{?dist}
+Release:        1.%{gitdate}git%{shortcommit}%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 %endif #build_release
 
@@ -77,10 +78,6 @@ BuildRequires:  libtool
 BuildRequires:  gettext-devel
 BuildRequires:  python2-devel
 BuildRequires:  python2-setuptools
-
-# ldconfig is provided by glibc
-Requires(post): ldconfig
-Requires(postun): ldconfig
 
 
 
@@ -148,9 +145,7 @@ find %{buildroot} -name '*.la' -exec rm -f {} ';'
 find %{buildroot} -name '*.a' -exec rm -f {} ';'
 
 
-%post -p /sbin/ldconfig
-
-%postun -p /sbin/ldconfig
+%ldconfig_scriptlets
 
 
 %files
@@ -167,6 +162,13 @@ find %{buildroot} -name '*.a' -exec rm -f {} ';'
 %{_bindir}/das.py
 
 %changelog
+* Sun Apr 01 2018 Michal Ambroz <rebus at, seznam.cz> - 1.6-1
+- switch to the github release of 1.6
+
+* Fri Mar 30 2018 Michal Ambroz <rebus at, seznam.cz> - 1.5-6.20180328gitc315f8d
+- switch to github snapshot with BSD license
+- use ldconfig_scriptlets instead of ldconfig in post/postun
+
 * Sun Mar 25 2018 Michal Ambroz <rebus at, seznam.cz> - 1.5-5.20151201gitc1afd03
 - switch to github snapshot
 
