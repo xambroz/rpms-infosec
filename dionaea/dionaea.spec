@@ -3,6 +3,9 @@ Version:        0.6.0
 Summary:        Low interaction honeypot
 Group:          Applications/System
 
+# Show as the RPM release number (keep same number line for tarball and git builds)
+%global         rel              9
+
 # Dionaea package is licensed with GPLv2
 # On top of that it is granting one exception extra - it is permitted by the license
 # to link modified binary files in the src/ directory against the openssl libraries.
@@ -43,7 +46,6 @@ URL:            https://dionaea.readthedocs.io/
 # Build source is github release=1 or git commit=0
 %global         build_release    0
 
-%global         rel              6
 
 %if 0%{?build_release}  > 0
 Release:        %{rel}%{?dist}
@@ -160,7 +162,7 @@ BuildRequires:  libnl3-devel
 
 
 # Documentation generation
-%if  0%{?rhel} <= 7
+%if 0%{?rhel} && 0%{?rhel} <= 7
 BuildRequires:  python-sphinx
 %else
 BuildRequires:  python3-sphinx
@@ -210,6 +212,8 @@ Group:          Development/Libraries
 # Runtime dependencies
 Requires:       python%{python3_pkgversion}-pyev
 Requires:       python%{python3_pkgversion}-bson
+Requires:       python%{python3_pkgversion}-PyYAML
+Requires:       python%{python3_pkgversion}-scapy
 
 %description -n python%{python3_pkgversion}-%{gitname}
 This is a Python3 library that gives access to dionaea honeypot functionality.
@@ -258,6 +262,11 @@ sed -i -e "s|/opt/dionaea/var/dionaea|${DESTDIR}/var/lib/dionaea|g;" \
 sed -i -e "s|/var/dionaea|/var/lib/dionaea|g;" \
     modules/python/util/readlogsqltree.py \
     modules/python/util/gnuplotsql.py
+
+# Change var/dionaea to var/lib/dionaea for the location of sip user database
+sed -i -e "s|var/dionaea|var/lib/dionaea|g;" \
+    modules/python/dionaea/sip/extras.py
+
 
 # move /var/dionaea to /var/lib/dionaea according to Linux FHS
 # Fedora specific - not reported upstream
@@ -455,6 +464,16 @@ getent passwd dionaea >/dev/null || \
 
 
 %changelog
+* Mon Apr 30 2018 Michal Ambroz <rebus at, seznam.cz> 0.6.0-9.20180326git1748f3b
+- add runtime python dependencies
+- fix location of sip user database
+
+* Mon Apr 30 2018 Iryna Shcherbina <shcherbina.iryna@gmail.com> - 0.6.0-8.20180326git1748f3b
+- Fix condition for python-sphinx on Fedora
+
+* Fri Apr 20 2018 Michal Ambroz <rebus at, seznam.cz> 0.6.0-7.20180326git1748f3b
+- fix the link creation to python core library 
+
 * Mon Apr 09 2018 Michal Ambroz <rebus at, seznam.cz> 0.6.0-6.20180326git1748f3b
 - fix log rotation, move the logs to /var/log/dionaea
 - create user dionaea:dionaea

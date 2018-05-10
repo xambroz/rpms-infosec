@@ -18,7 +18,7 @@ index 5beb169..aa273d3 100644
 -	(cd $(DESTDIR)$(pkglibdir)/python/dionaea && rm -f core.so && ln -s ../../python.so core.so)
 -	(cd $(DESTDIR)$(pkglibdir)/python/dionaea && rm -f pyev.so && ln -s ../../python.so pyev.so)
 +	$(PYTHON) setup.py install -O1 --skip-build --root $(DESTDIR) --install-lib $(PYTHON_SITEARCH)
-+	(cd $(DESTDIR)$(PYTHON_SITEARCH)/dionaea && export X=core*.so && ln -s $(PYTHON_SITEARCH)/dionaea/$$X python.so && mv python.so $(DESTDIR)$(pkglibdir)/python.so)
++	(cd $(DESTDIR)$(PYTHON_SITEARCH)/dionaea && export X=`ls core*.so | head -n 1` && ln -s $(PYTHON_SITEARCH)/dionaea/$$X python.so && mv python.so $(DESTDIR)$(pkglibdir)/python.so)
  
  clean:
  	$(PYTHON) setup.py clean

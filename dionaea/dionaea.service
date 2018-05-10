@@ -1,5 +1,5 @@
 [Unit]
-Description=Dionaea is low interaction honeypot
+Description=Dionaea low interaction honeypot
 Documentation=man:dionaea https://dionaea.readthedocs.io/
 After=syslog.target network.target
 
