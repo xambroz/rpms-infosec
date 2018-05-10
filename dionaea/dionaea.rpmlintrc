@@ -1,0 +1,21 @@
+from Config import addFilter
+
+
+addFilter('dionaea-debugsource.*no-documentation')
+addFilter('dionaea.*: spelling-error.*nepenthes')
+addFilter('dionaea.*: spelling-error.*libemu')
+addFilter('dionaea.*: spelling-error.*shell-codes')
+addFilter('dionaea.*: spelling-error.*TLS')
+
+# Permissions in /var/lib/dionaea /var/log/dionaea for the dionaea account are right
+addFilter('dionaea.*: non-standard-uid /var/l../dionaea.*dionaea')
+addFilter('dionaea.*: non-standard-gid /var/l../dionaea.*dionaea')
+addFilter('dionaea.*: non-standard-dir-perm /var/l../dionaea.*750')
+
+# Yes the two manpages are missing
+addFilter('dionaea.*: no-manual-page-for-binary gnuplotsql')
+addFilter('dionaea.*: no-manual-page-for-binary readlogsqltree')
+
+# Postun has 2 branch conditional, is not empty
+addFilter('dionaea.*: empty-%postun')
+
