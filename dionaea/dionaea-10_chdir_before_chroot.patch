@@ -1,3 +1,5 @@
+Fix the potential vunerability of current working directory being off the chroot
+Merged upstream in 0.7.0
 diff --git a/src/dionaea.c b/src/dionaea.c
 index e52673d..88ac690 100644
 --- a/src/dionaea.c

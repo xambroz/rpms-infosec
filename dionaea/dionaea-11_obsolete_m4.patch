@@ -1,3 +1,4 @@
+Merged upstream in 0.7.0
 diff -up dionaea-1748f3b3936aa1da2d92500251ae8010fe181dfc/configure.ac.fix_obsolete_macros dionaea-1748f3b3936aa1da2d92500251ae8010fe181dfc/configure.ac
 --- dionaea-1748f3b3936aa1da2d92500251ae8010fe181dfc/configure.ac.fix_obsolete_macros   2018-03-26 12:08:28.000000000 +0200
 +++ dionaea-1748f3b3936aa1da2d92500251ae8010fe181dfc/configure.ac       2018-04-07 14:42:03.306757293 +0200

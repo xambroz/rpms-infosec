@@ -2,6 +2,8 @@ On RHEL7 the python3 binary is actually naed python3.4.
 The usual python3 is not available there.
 Searching explicitly for python3.4 amongst the others will fix the issue.
 
+Merged to upstream with 0.7.0
+
 https://github.com/DinoTools/dionaea/pull/180
 diff -ru dionaea-d2efb768e753a7f1ddca6dbf402548d741f33574.orig/configure.ac dionaea-d2efb768e753a7f1ddca6dbf402548d741f33574.new/configure.ac
 --- dionaea-d2efb768e753a7f1ddca6dbf402548d741f33574.orig/configure.ac	2018-03-26 21:49:11.042568472 +0200

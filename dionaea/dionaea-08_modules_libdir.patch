@@ -38,3 +38,14 @@ diff -ru dionaea-d2efb768e753a7f1ddca6dbf402548d741f33574.orig/src/modules.c dio
  			return;
  
  		g_message("loading module %s (%s)", *name, module_path);
+diff -ru dionaea-0.7.0.orig/config.h.cmake dionaea-0.7.0.new/config.h.cmake
+--- dionaea-0.7.0.orig/config.h.cmake	2018-05-11 01:20:46.645826049 +0200
++++ dionaea-0.7.0.new/config.h.cmake	2018-05-11 01:18:51.860064505 +0200
+@@ -8,6 +8,7 @@
+ #define DEBUG "${DEBUG}"
+ 
+ #define PREFIX "${CMAKE_INSTALL_PREFIX}"
++#define LIBDIR "${CMAKE_INSTALL_FULL_LIBDIR}"
+ #define SYSCONFDIR "${CMAKE_INSTALL_FULL_SYSCONFDIR}"
+ #define LOCALSTATEDIR "${CMAKE_INSTALL_FULL_LOCALSTATEDIR}"
+ #define LOCALESTATEDIR "${CMAKE_INSTALL_FULL_LOCALSTATEDIR}"

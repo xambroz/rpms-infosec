@@ -1,10 +1,10 @@
 Name:           dionaea
-Version:        0.6.0
+Version:        0.7.0
 Summary:        Low interaction honeypot
 Group:          Applications/System
 
 # Show as the RPM release number (keep same number line for tarball and git builds)
-%global         rel              9
+%global         rel              1
 
 # Dionaea package is licensed with GPLv2
 # On top of that it is granting one exception extra - it is permitted by the license
@@ -30,8 +30,8 @@ URL:            https://dionaea.readthedocs.io/
 # Specification of the used GIT commit
 %global         gituser         DinoTools
 %global         gitname         dionaea
-%global         commit          1748f3b3936aa1da2d92500251ae8010fe181dfc
-%global         gitdate         20180326
+%global         commit          079d014f47a71cc85a86bd836a9a4533e98d7385
+%global         gitdate         20180501
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
@@ -44,7 +44,7 @@ URL:            https://dionaea.readthedocs.io/
 
 
 # Build source is github release=1 or git commit=0
-%global         build_release    0
+%global         build_release    1
 
 
 %if 0%{?build_release}  > 0
@@ -97,7 +97,8 @@ Patch6:         dionaea-06_docswarn.patch
 
 # Fix configure not finding the cython on RHEL7/Centos7
 # https://github.com/DinoTools/dionaea/pull/180
-Patch7:         dionaea-07_cython_el7.patch
+# Merged to upstream with 0.7.0
+# Patch7:         dionaea-07_cython_el7.patch
 
 # Fix hardcoded lib dir
 # https://github.com/DinoTools/dionaea/pull/181
@@ -111,11 +112,13 @@ Patch9:         dionaea-09_setgroups_before_setresuid.patch
 # Call chdir before chroot
 # https://github.com/DinoTools/dionaea/issues/176
 # https://github.com/DinoTools/dionaea/pull/175
-Patch10:        dionaea-10_chdir_before_chroot.patch
+# Merged upstream in 0.7.0
+# Patch10:        dionaea-10_chdir_before_chroot.patch
 
 # Not use obsolete m4 macros
 # https://github.com/DinoTools/dionaea/pull/182
-Patch11:        dionaea-11_obsolete_m4.patch
+# Merged upstream in 0.7.0
+# Patch11:        dionaea-11_obsolete_m4.patch
 
 
 BuildRequires:  autoconf
@@ -183,8 +186,8 @@ Requires(pre): shadow-utils
 
 %description
 Dionaea honeypot is meant to be a nepenthes successor, embedding python
-as scripting language, using libemu to detect shellcodes, supporting
-ipv6 and tls.
+as scripting language, using libemu to detect shell-codes, supporting
+ipv6 and TLS.
 
 
 
@@ -198,8 +201,8 @@ BuildArch:      noarch
 %description doc
 This is documentation for the dionaea honeypot package.
 Dionaea honeypot is meant to be a nepenthes successor, embedding python
-as scripting language, using libemu to detect shellcodes, supporting
-ipv6 and tls.
+as scripting language, using libemu to detect shell-codes, supporting
+ipv6 and TLS.
 
 
 
@@ -224,12 +227,22 @@ This is a Python3 library that gives access to dionaea honeypot functionality.
 %prep
 %if 0%{?build_release} > 0
 # Build from git release version
-%autosetup -p 1 -n %{gitname}-%{version} -S git
+%autosetup -p 1 -n %{gitname}-%{version} -N
 
 %else
 # Build from git commit
-%autosetup -p 1 -n %{gitname}-%{commit} -S git
+%autosetup -p 1 -n %{gitname}-%{commit} -N
 %endif
+
+# Re-initialize the git repo, to track changes even on files ignored by the upstream
+rm -rf .git
+# Remove the .gitignore to prevent ignoring changes in some files
+rm -f .gitignore
+git init -q
+git add .
+git commit -a -m "base"
+
+%autopatch -p 1
 
 # Unbundle the pyev library and use the system one
 # https://github.com/DinoTools/dionaea/issues/169
@@ -308,6 +321,8 @@ sed -i -e 's|#!/bin/python3|#!/usr/bin/python3|;' \
     modules/python/util/gnuplotsql.py \
     modules/python/util/updateccs.py
 
+
+git commit -a -m "finished prep"
 
 
 # ============= Build ==========================================================
@@ -464,6 +479,12 @@ getent passwd dionaea >/dev/null || \
 
 
 %changelog
+* Thu May 10 2018 Michal Ambroz <rebus at, seznam.cz> 0.7.0-1
+- bump to release 0.7.0
+
+* Mon May 07 2018 Michal Ambroz <rebus at, seznam.cz> 0.6.0-10.20180326git1748f3b
+- cosmetics, changing description in the systemd service
+
 * Mon Apr 30 2018 Michal Ambroz <rebus at, seznam.cz> 0.6.0-9.20180326git1748f3b
 - add runtime python dependencies
 - fix location of sip user database
