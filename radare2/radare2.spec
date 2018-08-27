@@ -1,18 +1,30 @@
-%global         gituser         radare
-%global         gitname         radare2
-%global         commit          cf72ffdc8007a24725b928e7c65da3b71d417a6a
-%global         shortcommit     %(c=%{commit}; echo ${c:0:7})
-
-
 Name:           radare2
-Version:        2.4.0
-# Build from git commit
-#Release:       0.1.git%{shortcommit}%{?dist}
-# Build from git release version
-Release:        1%{?dist}
 Summary:        The reverse engineering framework
 Group:          Development/Tools
+Version:        2.8.0
+URL:            http://radare.org/
+#               https://github.com/radare/radare2
 
+%global         gituser         radare
+%global         gitname         radare2
+%global         gitdate         20180808
+%global         commit          a76b965410aba07b4ef8b96d90b25b271c2003dd
+%global         shortcommit     %(c=%{commit}; echo ${c:0:7})
+
+# Build source is github release=1 or git commit=0
+%global         build_release    1
+%global         rel              1
+
+
+%if 0%{?build_release}  > 0
+Release:        %{rel}%{?dist}
+Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
+%else
+Release:        0.%{rel}.%{gitdate}git%{shortcommit}%{?dist}
+Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
+%endif #build_release
+
+License:        LGPLv3+ and GPLv2+ and BSD and MIT and ASLv2.0 and MPLv2.0
 # Radare2 as a package is targeting to be licensed/compiled as LGPLv3+
 # during build for Fedora the GPL code is not omitted so effectively it is GPLv2+
 # some code has originally different license:
@@ -40,13 +52,7 @@ Group:          Development/Tools
 # shlr/www/p/vendors/dagre*|graphlib* - 3 clause BSD
 # shlr/www/p/vendors/jquery.onoff.min.js - MIT
 
-License:        LGPLv3+ and GPLv2+ and BSD and MIT and ASLv2.0 and MPLv2.0
-URL:            http://radare.org/
-#               https://github.com/radare/radare2
-# Build from git commit
-#Source0:       https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
-# Build from git release version
-Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
+
 
 BuildRequires:  gcc
 BuildRequires:  make
@@ -125,10 +131,17 @@ information.
 
 
 %prep
-# Build from git commit
-#setup -q -n %{gitname}-%{commit}
+%if 0%{?build_release} > 0
 # Build from git release version
 %setup -q -n %{gitname}-%{version}
+
+%else
+# Build from git commit
+%setup -q -n %{gitname}-%{commit}
+# Rename internatl "version-git" to "version"
+sed -i -e "s|%{version}-git|%{version}|g;" configure configure.acr
+
+%endif
 
 # Webui contains pre-build and/or minimized versions of JS libraries without source code
 # Consider installing the web-interface from https://github.com/radare/radare2-webui
@@ -137,8 +150,6 @@ echo "The radare2 source usually comes with a pre-built version of the web-inter
 echo "This has been removed in the Fedora package to follow the Fedora Packaging Guidelines." >> ./shlr/www/README.Fedora
 echo "Available under https://github.com/radare/radare2-webui" >>                        ./shlr/www/README.Fedora
 
-# Rename "version-git" to "version" if needed
-sed -i -e "s|%{version}-git|%{version}|g;" configure
 
 %build
 # Options based on the sys/user.sh and sys/install.sh
@@ -200,7 +211,8 @@ find %{buildroot} -name '*.a' -delete
 %{_datadir}/%{name}/%{version}/cons/*
 %dir %{_datadir}/%{name}/%{version}/format
 %{_datadir}/%{name}/%{version}/format/*
-
+%dir %{_datadir}/%{name}/%{version}/flag
+%{_datadir}/%{name}/%{version}/flag/*
 
 # TODO - no modules built since 2018
 # %{_libdir}/%{name}/%{version}/*.so
@@ -214,6 +226,22 @@ find %{buildroot} -name '*.a' -delete
 
 
 %changelog
+* Mon Aug 27 2018 Michal Ambroz <rebus at, seznam.cz> 2.8.0-1
+- bump to 2.8.0 release
+
+* Fri Jun 08 2018 Michal Ambroz <rebus at, seznam.cz> 2.7.0-0.2.20180611gitc52c7ba
+- bump to 2.7.0 c52c7bace3a8a4e53baa008d05df8aee75733eee
+- fixes https://github.com/radare/radare2/issues/10300
+
+* Fri Jun 08 2018 Michal Ambroz <rebus at, seznam.cz> 2.7.0-0.1.20180608git555e88a
+- bump to 2.7.0 alpha release
+
+* Fri Jun 08 2018 Michal Ambroz <rebus at, seznam.cz> 2.6.0-1
+- bump to 2.6.0 release - failed to link capstone and zip
+
+* Mon Apr 09 2018 Michal Ambroz <rebus at, seznam.cz> 2.5.0-1
+- bump to 2.5.0 release
+
 * Sun Feb 11 2018 Michal Ambroz <rebus at, seznam.cz> 2.4.0-1
 - bump to 2.4.0 release
 
