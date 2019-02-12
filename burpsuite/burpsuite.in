@@ -2,5 +2,5 @@
 
 . /usr/share/java-utils/java-functions
 
-java -jar -Xmx512m @@datadir@@/@@name@@/@@name@@_free_v@@version@@.jar
+java -jar -Xmx512m @@datadir@@/@@name@@/@@name@@_community_@@version@@.jar
 

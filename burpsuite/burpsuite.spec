@@ -1,16 +1,18 @@
 Name:           burpsuite
-Version:        1.7.06
+Version:        1.7.36
 Release:        1%{?dist}
 Summary:        Security tool for analyzing web application security
 
 Group:          Applications/System
+
+#               Proprietary Free to Use
 License:        Burp License
-#License:        Proprietary Free to Use
+
 URL:            http://portswigger.net/suite/
-#http://portswigger.net/burp/burpsuite_free_v1.6.jar
-#https://portswigger.net/Burp/Releases/Download?productId=100&version=1.7.06&type=Jar#burpsuite_free_v%{version}.jar
-#Source0:        http://portswigger.net/burp/burpsuite_free_v%{version}.jar
-Source0:        https://portswigger.net/Burp/Releases/Download?productId=100&version=1.7.06&type=Jar/burpsuite_free_v%{version}.jar
+#               http://portswigger.net/burp/burpsuite_free_v1.6.jar
+#               https://portswigger.net/Burp/Releases/Download?productId=100&version=1.7.06&type=Jar
+#Source0:       http://portswigger.net/burp/burpsuite_free_v%{version}.jar
+Source0:        https://portswigger.net/Burp/Releases/Download?productId=100&version=%{version}&type=Jar#/burpsuite_community_%{version}.jar
 Source1:        %{name}.in
 NoSource:       0
 BuildArch:      noarch
@@ -36,19 +38,19 @@ Burp suite is extensible via the IBurpExtender interface.
 
 %prep
 #%setup -q -n %{name}_v%{version}
+jar xvf %{SOURCE0} resources/Legal/EulaCommunity.txt
 
 
 %build
-%__sed -e "s:@@datadir@@:%{_datadir}:g" \
+sed -e "s:@@datadir@@:%{_datadir}:g" \
     -e "s:@@version@@:%{version}:g" \
     -e "s:@@name@@:%{name}:g" < %{SOURCE1} > %{name}
 
 %install
-%__rm -rf %{buildroot}
-%__mkdir -p  %{buildroot}%{_datadir}/%{name}/
-%__install %{SOURCE0} %{buildroot}%{_datadir}/%{name}/
+mkdir -p  %{buildroot}%{_datadir}/%{name}/
+install %{SOURCE0} %{buildroot}%{_datadir}/%{name}/
 
-%__install -Dp -m 0755 %{name} %{buildroot}%{_bindir}/%{name}
+install -Dp -m 0755 %{name} %{buildroot}%{_bindir}/%{name}
 
 mkdir -p %{buildroot}%{_datadir}/applications/
 
@@ -58,7 +60,7 @@ Type=Application
 Exec=%{name}
 Name=burpsuite
 Comment=Security tool for analyzing web application security
-GenericName=Burpsuite Free Edition
+GenericName=Burpsuite Community Edition
 Icon=burpsuite
 Terminal=false
 Categories=System;Security;
@@ -79,7 +81,7 @@ rm -rf burp
 
 
 %clean
-%__rm -rf %{buildroot}
+rm -rf %{buildroot}
 
 %post
 update-desktop-database &> /dev/null ||:
@@ -97,8 +99,8 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %files
-%defattr(-,root,root,-)
 #%doc readme\ -\ running\ burp.txt
+%license resources/Legal/EulaCommunity.txt
 %dir %{_datadir}/%{name}
 %{_datadir}/%{name}/*.jar
 %{_bindir}/%{name}
@@ -112,8 +114,11 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
-* Fri Sep 09 2016 Michal Ambroz <rebus at, seznam.cz> 1.7.06-1
-- bump to 1.7.06
+* Tue Feb 12 2019 Michal Ambroz <rebus at, seznam.cz> 1.7.36-1
+- bump to 1.7.36
+
+* Wed Apr 04 2018 Michal Ambroz <rebus at, seznam.cz> 1.7.33-1
+- bump to 1.7.33
 
 * Tue Jun 07 2016 Michal Ambroz <rebus at, seznam.cz> 1.7.03-1
 - bump to 1.7.03
