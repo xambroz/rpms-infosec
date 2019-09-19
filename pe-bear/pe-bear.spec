@@ -1,5 +1,5 @@
 Name:           pe-bear
-Version:        0.3.8
+Version:        0.3.9.5
 Release:        1%{?dist}
 Summary:        reversing tool for PE files
 
@@ -8,18 +8,18 @@ Summary:        reversing tool for PE files
 # https://web.archive.org/web/20170711210758/https://hshrzd.wordpress.com/pe-bear/
 #
 # it contains embedded udis86 library - licensed with 2-clause BSD license
-# the code is removed during build and unbundled libdasm library is used instead.
 License:        freeware
 URL:            https://hshrzd.wordpress.com/pe-bear/
 
 %global         gituser         hasherezade
-%global         gitname         releases
+%global         gitname         pe-bear-releases
 %global         debug_package   %{nil}
 
-Source0:        https://github.com/%{gituser}/%{gitname}/releases/download/%{version}/PE-bear_linux64.tar.gz
-Source1:        pe-bear.png
-Source2:        pe-bear.desktop
+Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{version}.tar.gz#/%{gitname}-%{version}.tar.gz
 NoSource:       0
+Source1:        https://github.com/%{gituser}/%{gitname}/releases/download/%{version}/PE-bear_linux64.tar.gz
+NoSource:       1
+Source2:        pe-bear.desktop
 BuildArch:      x86_64
 
 Requires:       bzip2-libs
@@ -61,7 +61,7 @@ analysts, stable and capable to handle malformed PE files.
 %prep
 # ======================= prep =======================================
 %setup -n %(basename %{SOURCE0} .tar.gz)
-
+tar xzvf %{SOURCE1}
 
 
 %build
@@ -78,7 +78,7 @@ ln -s %{_bindir}/PE-bear %{buildroot}/%{_bindir}/%{name}
 
 # Install application launcher with icon
 mkdir -p %{buildroot}/%{_datadir}/icons/hicolor/64x64/apps
-install -m 0644 %{SOURCE1} %{buildroot}/%{_datadir}/icons/hicolor/64x64/apps/%{name}.png
+install -m 0644 logo/main_ico.png %{buildroot}/%{_datadir}/icons/hicolor/64x64/apps/%{name}.png
 
 mkdir -p %{buildroot}%{_datadir}/applications/
 install -m 0644 %{SOURCE2} %{buildroot}%{_datadir}/applications/%{name}.desktop
@@ -117,6 +117,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_datadir}/icons/hicolor/64x64/apps/%{name}.png
 
 %changelog
+* Thu Sep 19 2019 Michal Ambroz <rebus at, seznam.cz> - 0.3.9.5-1
+- update to 0.3.9.5
+
 * Tue Apr 03 2018 Michal Ambroz <rebus at, seznam.cz> - 0.3.8-1
 - initial fedora package
 
