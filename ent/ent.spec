@@ -1,7 +1,7 @@
 Name:           ent
 Version:        20080128
 Release:        1%{?dist}
-Summary:        a pseudorandom number sequence test program
+Summary:        A pseudo-random number sequence test program
 
 License:        GPLv2+
 URL:            http://www.fourmilab.ch/random/
@@ -16,7 +16,7 @@ BuildRequires:  sed
 %description
 Utility ent (as entropy) applies various tests to sequences of bytes stored
 in files and reports the results of those tests. The program is useful for
-evaluating pseudorandom number generators for encryption and statistical
+evaluating pseudo-random number generators for encryption and statistical
 sampling applications, compression algorithms, and other applications,
 where the information density of a file is of interest.
 
