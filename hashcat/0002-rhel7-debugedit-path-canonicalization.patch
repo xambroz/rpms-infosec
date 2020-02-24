@@ -1,0 +1,47 @@
+Author: Michal Ambroz <rebus AT_ seznam.cz>
+Prevent issue with debugedit on RHEL7
+if path during compilation contains // in the reference to the file, the debugedit then reports.
+unexpected difference - example:
+extracting debug info from /builddir/build/BUILDROOT/hashcat-5.1.0-7.20200220git398e068.el7.x86_64/usr/lib64/libhashcat.so.5.1.0
+/usr/lib/rpm/debugedit: canonicalization unexpectedly shrank by one character
+
+Example EPEL7 build log:
+https://download.copr.fedorainfracloud.org/results/rebus/infosec-rebus/epel-7-x86_64/01248605-hashcat/build.log.gz
+
+Reported upstream:
+https://github.com/hashcat/hashcat/pull/2315
+
+diff -ru hashcat-398e06878d6e36460bcd00283d847c723a162be3/src/Makefile hashcat-398e06878d6e36460bcd00283d847c723a162be3.new/src/Makefile
+--- hashcat-398e06878d6e36460bcd00283d847c723a162be3/src/Makefile	2020-02-20 16:42:12.000000000 +0100
++++ hashcat-398e06878d6e36460bcd00283d847c723a162be3.new/src/Makefile	2020-02-21 19:23:37.774485349 +0100
+@@ -112,25 +112,25 @@
+ ifeq ($(USE_SYSTEM_LZMA),0)
+ DEPS_LZMA_PATH          := deps/LZMA-SDK/C
+ else
+-DEPS_LZMA_PATH          := $(LIBRARY_DEV_ROOT_FOLDER)/
++DEPS_LZMA_PATH          := $(LIBRARY_DEV_ROOT_FOLDER)
+ endif
+ 
+ ifeq ($(USE_SYSTEM_ZLIB),0)
+-DEPS_ZLIB_PATH          := deps/zlib/
++DEPS_ZLIB_PATH          := deps/zlib
+ else
+-DEPS_ZLIB_PATH          := $(LIBRARY_DEV_ROOT_FOLDER)/
++DEPS_ZLIB_PATH          := $(LIBRARY_DEV_ROOT_FOLDER)
+ endif
+ 
+ ifeq ($(USE_SYSTEM_OPENCL),0)
+ DEPS_OPENCL_PATH        := deps/OpenCL-Headers
+ else
+-DEPS_OPENCL_PATH        := $(LIBRARY_DEV_ROOT_FOLDER)/
++DEPS_OPENCL_PATH        := $(LIBRARY_DEV_ROOT_FOLDER)
+ endif
+ 
+ ifeq ($(USE_SYSTEM_XXHASH),0)
+ DEPS_XXHASH_PATH        := deps/xxHash
+ else
+-DEPS_XXHASH_PATH        := $(LIBRARY_DEV_ROOT_FOLDER)/
++DEPS_XXHASH_PATH        := $(LIBRARY_DEV_ROOT_FOLDER)
+ endif
+ 
+ ##

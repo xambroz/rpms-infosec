@@ -33,8 +33,19 @@ Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{version}.tar.
 # Patch is not needed:
 # - debug/optimization options fixed by setting DEBUG=3
 # - doc gets deleted in %%install part
-# - bash completion installed explicitly in %%instal 
+# - bash completion installed explicitly in %%instal
 #Patch0:        0001-Fedora-build-patches.patch
+
+# Prevent issue with debugedit on RHEL7
+# if path during compilation contains // in the reference to the file, the debugedit then reports
+# unexpected difference - example:
+# extracting debug info from /builddir/build/BUILDROOT/hashcat-5.1.0-7.20200220git398e068.el7.x86_64/usr/lib64/libhashcat.so.5.1.0
+# /usr/lib/rpm/debugedit: canonicalization unexpectedly shrank by one character
+#
+# Example EPEL7 build log:
+# https://download.copr.fedorainfracloud.org/results/rebus/infosec-rebus/epel-7-x86_64/01248605-hashcat/build.log.gz
+# Reported upstream: https://github.com/hashcat/hashcat/pull/2315
+Patch2:         0002-rhel7-debugedit-path-canonicalization.patch
 
 
 BuildRequires:  bash-completion
@@ -43,9 +54,9 @@ BuildRequires:  xxhash-devel
 BuildRequires:  xz-devel
 BuildRequires:  gcc
 
-Requires:       bash-completion
 %if 0%{?fedora}
 Recommends:     mesa-libOpenCL%{?_isa}
+Recommends:     pocl%{?_isa}
 Recommends:     %{name}-doc = %{?epoch:%{epoch}:}%{version}-%{release}
 %endif
 
@@ -116,7 +127,7 @@ install -m 644 extra/tab_completion/hashcat.sh "$BASHCOMP_FOLDER"/hashcat
 %files
 %license docs/license.txt
 %doc README.md
-%{_datadir}/bash-completion/completions/%{name}
+%{_datadir}/bash-completion
 %{_libdir}/lib%{name}.so.%{version}
 %{_datadir}/%{name}
 %{_bindir}/%{name}
