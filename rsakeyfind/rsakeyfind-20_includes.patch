@@ -1,0 +1,18 @@
+diff -ru rsakeyfind.orig/Makefile rsakeyfind.new/Makefile
+--- rsakeyfind.orig/rsakeyfind.cpp	2008-07-18 08:18:40.000000000 +0200
++++ rsakeyfind.new/rsakeyfind.cpp	2020-03-01 21:23:16.122161341 +0100
+@@ -4,12 +4,14 @@
+ #include <fcntl.h>
+ #include <stdlib.h>
+ #include <stdio.h>
++#include <unistd.h>
+ #include <fcntl.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <sys/mman.h>
+ #include <string>
+ #include <iostream>
++#include <cstring>
+ 
+ #ifdef __FreeBSD__
+ #include <err.h>

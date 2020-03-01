@@ -1,0 +1,31 @@
+.TH "rsakeyfind" "1" "2020-03-01" "User Commands" "User Commands"
+.SH "NAME"
+rsakeyfind \- Locates BER-encoded RSA private keys in memory images.
+.SH SYNOPSIS
+.B rsakeyfind
+MEMORY-IMAGE [MODULUS-FILE]
+.SH DESCRIPTION
+rsakeyfind is a tool that locates BER-encoded RSA private keys in MEMORY-IMAGE.
+If a MODULUS-FILE is specified, it will locate private and public keys matching
+the hex-encoded modulus read from this file.
+.PP
+If MODULUS-FILE is provided the program searches for the modulus and attempts to parse the surrounding
+data as a BER-encoded public or private key.
+.PP
+Otherwise the program searches for a fixed pattern--the BER-encoded RSA version
+field followed by the integer type of the following field in an RSA
+key--and attempts to parse the surrounding data as a BER-encoded
+private key.
+.PP
+These techniques were successfully tested on a Linux system running
+Apache 2.2.3 with mod_ssl.  However, RSA implementations that store
+keys in memory using a different format will not be susceptible.
+.SH "SEE ALSO"
+\fBaesfix\fR(1),
+\fBaeskeyfind\fR(1),
+\fBbiosmemimage\fR(1)
+.SH AUTHOR
+.TP
+rsakeyfind was written by Nadia Heninger and J. Alex Halderman
+.TP
+
