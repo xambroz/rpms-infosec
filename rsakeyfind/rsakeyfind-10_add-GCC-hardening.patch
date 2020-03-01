@@ -1,0 +1,17 @@
+diff -ru rsakeyfind.orig/Makefile rsakeyfind.new/Makefile
+--- rsakeyfind.orig/Makefile	2008-07-18 08:18:40.000000000 +0200
++++ rsakeyfind.new/Makefile	2020-03-01 21:05:10.428109407 +0100
+@@ -1,10 +1,10 @@
+-CXXFLAGS= -Wall -O4
++CXXFLAGS += -Wall -O4
+ OBJS=rsakeyfind.o
+ 
+ all: rsakeyfind
+ 
+ rsakeyfind: $(OBJS)
+-	$(CXX) -o rsakeyfind $(OBJS)
++	$(CXX) $(LDFLAGS) -o rsakeyfind $(OBJS)
+ 
+ clean:
+ 	@rm -f rsakeyfind *~ \#* $(OBJS)
+Only in rsakeyfind.orig: Makefile.rej
