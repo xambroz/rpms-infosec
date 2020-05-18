@@ -8,7 +8,8 @@
 %global with_python3 1
 %endif
 
-%if ( 0%{?fedora} && 0%{?fedora} <= 31 ) || ( 0%{?rhel} && 0%{?rhel} <= 7 )
+%if ( 0%{?fedora} && 0%{?fedora} <= 32 ) || ( 0%{?rhel} && 0%{?rhel} <= 7 )
+# distorm3 needed for python2-volatility
 %global with_python2 1
 %endif
 
