@@ -2,11 +2,13 @@
 %global gem_name arel-helpers
 
 Name: rubygem-%{gem_name}
-Version: 2.6.1
+Version: 2.7.0
 Release: 1%{?dist}
 Summary: Useful tools to help construct database queries with ActiveRecord and Arel
 License: MIT
 URL: https://github.com/camertron/arel-helpers
+#    https://github.com/camertron/arel-helpers/releases
+#    https://rubygems.org/gems/arel-helpers
 Source0: https://rubygems.org/gems/%{gem_name}-%{version}.gem
 BuildRequires: ruby(release)
 BuildRequires: rubygems-devel

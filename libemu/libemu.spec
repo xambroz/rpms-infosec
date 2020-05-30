@@ -2,7 +2,8 @@ Name:           libemu
 Version:        0.2.0
 Summary:        The x86 shell-code detection and emulation
 # Group needed for EPEL
-Group:          Applications/System
+%global         baserelease     11
+
 
 # libemu package licensed with GPLv2+
 # libdasm.c libdasm.h licensed as public domain do whatever - being bundled with libemu since at least 2006 effectively GPLv2+
@@ -47,8 +48,15 @@ URL:            https://github.com/DinoTools/libemu/
 
 %if 0%{?fedora} || ( 0%{?rhel} && 0%{?rhel} >= 7 )
 # libemu currently doesn't work with python3
-%global         with_python3    0
+%bcond_with     python3
 %endif
+
+%if ( 0%{?fedora} && 0%{?fedora} <= 30 ) || ( 0%{?rhel} && 0%{?rhel} <= 7 )
+%bcond_without  python2
+%else
+%bcond_with     python2
+%endif
+
 
 # Exclude the private libemu in python sitearch dir
 %global __provides_exclude_from ^(%{python2_sitearch}/.*\\.so$
@@ -79,14 +87,14 @@ URL:            https://github.com/DinoTools/libemu/
 
 %if 0%{?build_release}  > 0
 # Build from the targball release
-Release:        8%{?dist}
+Release:        %{baserelease}%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
 %else
 # Build from the git commit snapshot
 # Not using the 0. on the beginning of release version as these are patches past version 0.2.0
 # Next release should be probably 0.3.0
-Release:        8.%{gitdate}git%{shortcommit}%{?dist}
+Release:        %{baserelease}.%{gitdate}git%{shortcommit}%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 %endif #build_release
 
@@ -175,6 +183,10 @@ Patch13:        libemu-13_unbundle_libdasm.patch
 # https://github.com/DinoTools/libemu/pull/27
 Patch14:        libemu-14_obsolete_m4.patch
 
+# Parametrize python(2) binary used for building the extension
+# https://github.com/DinoTools/libemu/pull/28
+Patch15:        libemu-15_python2_build.patch
+
 BuildRequires:  pkgconfig
 BuildRequires:  automake
 BuildRequires:  autoconf
@@ -182,8 +194,11 @@ BuildRequires:  libtool
 BuildRequires:  git
 BuildRequires:  gettext-devel
 BuildRequires:  libdasm-devel
+
+%if 0%{?with_python2}
 BuildRequires:  python2-devel
 BuildRequires:  python2-setuptools
+%endif
 
 %if 0%{?with_python3}
 BuildRequires:  python%{python3_pkgversion}-devel
@@ -209,24 +224,22 @@ The %{name}-devel package contains libraries and header files for
 developing applications that use %{name}.
 
 
-
+%if 0%{?with_python2}
 %package        -n python2-libemu
 # ======================= python2-libemu =============================
 Summary:        Python2 binding to the libemu x86 emulator
-Group:          Development/Libraries
 Requires:       %{name}%{?_isa} = %{version}-%{release}
 %{?python_provide:%python_provide python2-%{name}}
 
-
 %description    -n python2-libemu
 Python2 binding to the libemu x86 emulator.
+%endif #with_python2
 
 
 %if 0%{?with_python3}
 %package        -n python3-libemu
 # ======================= python3-libemu =============================
 Summary:        Python3 binding to the libemu x86 emulator
-Group:          Development/Libraries
 Requires:       %{name}%{?_isa} = %{version}-%{release}
 %{?python_provide:%python_provide python%{python3_pkgversion}-%{name}}
 
@@ -271,18 +284,24 @@ git commit -q -a -m "downgrade autoconf for rhel6"
 # Create m4 directory if missing
 [ -d m4 ] || mkdir m4
 
-autoreconf --verbose --install --warnings=all
-%configure --enable-python-bindings
+autoreconf --verbose --install --force --warnings=all
 
+%if 0%{?with_python2} || 0%{?with_python3}
+%configure --enable-python-bindings
 #Build also for python3
 cp -r bindings/python bindings/python3
+%else
+%configure
+%endif
 
-make %{?_smp_mflags}
+make %{?_smp_mflags} PYTHON=%{__python3}
 
-# Just to be sure rebuild with the Fedora hardening options
+%if 0%{?with_python2}
+# re-rebuild with the Fedora hardening options
 pushd bindings/python
 %py2_build
 popd
+%endif #with_python2
 
 %if 0%{?with_python3}
 # Ignore the python3 build at this point
@@ -293,12 +312,14 @@ popd
 
 %install
 # ======================= install ====================================
-%make_install pkgconfigdir=%{_libdir}/pkgconfig
+%make_install pkgconfigdir=%{_libdir}/pkgconfig PYTHON=%{__python3}
 
-# just to be on the safe side
+%if 0%{?with_python2}
+# do the python install explicitly
 pushd bindings/python
 %py2_install
 popd
+%endif
 
 %if 0%{?with_python3}
 # Ignore the python3 build at this point
@@ -330,8 +351,10 @@ find %{buildroot} -name '*.a' -exec rm -f {} ';'
 %{_mandir}/man3/%{name}.3*
 
 
+%if 0%{?with_python2}
 %files -n python2-libemu
 %{python2_sitearch}/*
+%endif
 
 %if 0%{?with_python3}
 %files -n python3-libemu
@@ -339,6 +362,19 @@ find %{buildroot} -name '*.a' -exec rm -f {} ';'
 %endif #with_python3
 
 %changelog
+* Mon Oct 14 2019 Michal Ambroz <rebus at, seznam.cz> - 0.2.0-11.20130410gitab48695
+- do not build the python2 package on f31+ and rhel8+
+
+* Fri Feb 01 2019 Fedora Release Engineering <releng@fedoraproject.org> - 0.2.0-10.20130410gitab48695.1
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
+
+* Tue Sep 04 2018 Michal Ambroz <rebus at, seznam.cz> - 0.2.0-10.20130410gitab48695
+- patch to calling python2 explicitly during build of the python binding
+- fixes FTBS due to missing python binary as part of switching to python3
+
+* Fri Jul 13 2018 Fedora Release Engineering <releng@fedoraproject.org> - 0.2.0-9.20130410gitab48695
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
+
 * Tue Apr 03 2018 Michal Ambroz <rebus at, seznam.cz> - 0.2.0-8.20130410gitab48695
 - use ldconfig_scriptlets
 - fix release version number in the changelog

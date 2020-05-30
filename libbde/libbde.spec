@@ -1,17 +1,17 @@
 %global         gituser         libyal
 %global         gitname         libbde
-%global         commit          7985ac45c98ae264c4bc2f5854e561db8fcdbda1
+%global         commit          51ebab0ecabc32d6bcd5bb7494ac2d1372e2e0e2
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
 Name:           libbde
-Version:        20160418
+Version:        20200413
 Release:        1%{?dist}
 Summary:        Library to support cross-platform AES encryption 
 
 Group:          System Environment/Libraries
 License:        LGPLv3+
-URL:            https://github.com/%{gituser}/%{gitname}
+URL:            https://github.com/libyal/libbde
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 #Patch build to use the shared system libraries rather than using embedded ones
 Patch0:         %{name}-libs.patch

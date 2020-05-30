@@ -1,19 +1,20 @@
 Name:		cowrie
-Version:	1.2.0
-Release:	git20170930.1%{?dist}
+Version:	1.6.0
+Release:	1%{?dist}
 Summary:	Medium interaction SSH honeypot
 License:	BSD
 
 
 %global         gituser         micheloosterhof
 %global         gitname         cowrie
-%global         commit          f09c91292ef65649508f8efa40056fc7dc378e14
+%global         commit          f0ed16ee14afc5719ebc63fc2ff55fd4a54fc42d
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 #               http://www.micheloosterhof.com/cowrie/
 #               https://github.com/micheloosterhof/cowrie/
 URL:            https://github.com/%{gituser}/%{gitname}
-Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
+#Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
+Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
 BuildArch:	noarch
 BuildRequires:	python2-devel python-setuptools openssl-devel libffi-devel
@@ -37,11 +38,12 @@ Cowrie is a medium interaction SSH and telnet honeypot designed to log brute for
 and, most importantly, the entire shell interaction performed by the attacker.
 
 %prep
-%setup -q -n %{gitname}-%{commit}
+#setup -q -n %{gitname}-%{commit}
+%setup -q -n %{gitname}-%{version}
 
 #Change implicit "env python" to explicit versioned python shebang
 #https://fedoraproject.org/wiki/Features/SystemPythonExecutablesUseSystemPython
-for I in bin/playlog bin/fsctl bin/createfs bin/asciinema ; do
+for I in setup.py bin/playlog bin/fsctl bin/createfs bin/asciinema ; do
 	sed -e 's|^#!/usr/bin/env python|#!%{__python2}|' "$I" > "${I}.new"
 	touch -r "$I" "${I}.new"
 	mv "${I}.new" "$I"
@@ -76,5 +78,8 @@ getent passwd cowrie >/dev/null || \
 
 
 %changelog
-* Tue Nov 12 2017 Michal Ambroz <rebus _AT seznam.cz> - 1.2.0-1.git20171109
+* Thu Sep 19 2019 Michal Ambroz <rebus _AT seznam.cz> - 1.6.0-1
+- bump to 1.6.0
+
+* Sun Nov 12 2017 Michal Ambroz <rebus _AT seznam.cz> - 1.2.0-1.git20171109
 - Initial package
