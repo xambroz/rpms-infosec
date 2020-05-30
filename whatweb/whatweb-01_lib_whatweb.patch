@@ -1,0 +1,30 @@
+From 49f1ed911ed906a78dde02e2605c2c82f7184e42 Mon Sep 17 00:00:00 2001
+From: Andrew Benson <abenson@gmail.com>
+Date: Fri, 4 Oct 2019 09:53:00 -0500
+Subject: [PATCH] Resolve real name if called via symlink.
+
+For example if `whatweb` and `lib/whatweb` are in /usr/share/whatweb, and
+`/usr/bin/whatweb` is a symlink to `/usr/share/whatweb/whatweb`, the old
+behavior wouldn't resolve the library path correctly (it would be searching
+for `/usr/bin/lib/whatweb`).
+
+`File.real_name(__FILE__)` will resolve the symlink correctly, but
+`File.expand_path(File.dirname(File.real_name(__FILE__)))` is equivalent to
+`__dir__`.
+---
+ whatweb | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/whatweb b/whatweb
+index 3fc9a9e0..a12cf689 100755
+--- a/whatweb
++++ b/whatweb
+@@ -32,7 +32,7 @@
+ # You should have received a copy of the GNU General Public License
+ # along with WhatWeb.  If not, see <http://www.gnu.org/licenses/>.
+ 
+-$:.unshift(File.join(File.expand_path(File.dirname(__FILE__)), '.'))
++$:.unshift(File.join(File.expand_path(__dir__)), '.')
+ 
+ require 'lib/whatweb'
+ 

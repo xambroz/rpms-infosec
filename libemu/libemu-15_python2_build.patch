@@ -1,0 +1,28 @@
+As the Fedora distribution is aproaching to a date to replace python2 with
+python3 there was removed the python link to use python2 by default. As during
+build it is needed to specify which python version to use for compilation,
+it would be nice to have a variable in a makefile to be able to parametrize
+the python runtime used for build.
+diff -ru libemu-ab48695b7113db692982a1839e3d6eb9e73e90a9.orig/bindings/python/Makefile.am libemu-ab48695b7113db692982a1839e3d6eb9e73e90a9.new/bindings/python/Makefile.am
+--- libemu-ab48695b7113db692982a1839e3d6eb9e73e90a9.orig/bindings/python/Makefile.am	2018-09-04 14:57:37.065000000 +0000
++++ libemu-ab48695b7113db692982a1839e3d6eb9e73e90a9.new/bindings/python/Makefile.am	2018-09-04 15:04:16.250000000 +0000
+@@ -1,15 +1,16 @@
+ # $Id$
+ 
+ AUTOMAKE_OPTIONS = foreign
++PYTHON = python
+ 
+ all:
+-	python setup.py build
++	$(PYTHON) setup.py build
+ 
+ install: all
+-	python setup.py install --prefix=$(DESTDIR)$(prefix)
++	$(PYTHON) setup.py install --prefix=$(DESTDIR)$(prefix)
+ 
+ clean:
+-	python setup.py clean
++	$(PYTHON) setup.py clean
+ 
+ dist-clean: clean
+ 
