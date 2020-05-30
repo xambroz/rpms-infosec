@@ -1,0 +1,30 @@
+From d36b7395e69c70a8d98f78f2bcb20a32bf9f3173 Mon Sep 17 00:00:00 2001
+From: "Richard W.M. Jones" <rjones@redhat.com>
+Date: Fri, 11 Jan 2019 13:48:11 +0000
+Subject: [PATCH] Fix include path in pkg-config for Makefile too (#1339).
+
+Commit 0a39b785d3 fixed the pkg-config include path when using cmake.
+However it didn't fix it for the Makefile.  This fixes the Makefile
+path.
+
+Signed-off-by: Richard W.M. Jones <rjones@redhat.com>
+---
+ Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Makefile b/Makefile
+index 378f2fea..4a2c2d35 100644
+--- a/Makefile
++++ b/Makefile
+@@ -514,7 +514,7 @@ define generate-pkgcfg
+ 	echo 'Description: Capstone disassembly engine' >> $(PKGCFGF)
+ 	echo 'Version: $(PKG_VERSION)' >> $(PKGCFGF)
+ 	echo 'libdir=$(LIBDIR)' >> $(PKGCFGF)
+-	echo 'includedir=$(INCDIR)' >> $(PKGCFGF)
++	echo 'includedir=$(INCDIR)/capstone' >> $(PKGCFGF)
+ 	echo 'archive=$${libdir}/libcapstone.a' >> $(PKGCFGF)
+ 	echo 'Libs: -L$${libdir} -lcapstone' >> $(PKGCFGF)
+ 	echo 'Cflags: -I$${includedir}' >> $(PKGCFGF)
+-- 
+2.20.1
+
