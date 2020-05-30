@@ -1,0 +1,148 @@
+From 45043c256d56dc13aa87c00b0f726ced34aff836 Mon Sep 17 00:00:00 2001
+From: Jakub Adam <jakub.adam@ktknet.cz>
+Date: Thu, 8 Oct 2015 15:09:49 +0200
+Subject: [PATCH] appshare: share my desktop with multiuser conference
+
+---
+ src/api/sipe-core.h      |  4 ++++
+ src/core/sipe-appshare.c | 38 ++++++++++++++++++++++++++++++++++++++
+ src/core/sipe-conf.c     |  3 ++-
+ src/purple/purple-chat.c | 21 +++++++++++++++++++--
+ 4 files changed, 63 insertions(+), 3 deletions(-)
+
+diff --git a/src/api/sipe-core.h b/src/api/sipe-core.h
+index bb32f7987..14e4b167c 100644
+--- a/src/api/sipe-core.h
++++ b/src/api/sipe-core.h
+@@ -551,6 +551,10 @@ void sipe_core_appshare_connect_conference(struct sipe_core_public *sipe_public,
+ void sipe_core_appshare_share_desktop(struct sipe_core_public *sipe_public,
+ 				      const gchar *with);
+ 
++void
++sipe_core_conf_share_application(struct sipe_core_public *sipe_public,
++				 struct sipe_chat_session *chat_session);
++
+ void sipe_core_appshare_stop_presenting(struct sipe_media_call *call);
+ 
+ /* group chat */
+diff --git a/src/core/sipe-appshare.c b/src/core/sipe-appshare.c
+index a66406b0a..27a311bd7 100644
+--- a/src/core/sipe-appshare.c
++++ b/src/core/sipe-appshare.c
+@@ -892,6 +892,14 @@ monitor_selected_cb(struct sipe_core_private *sipe_private, gchar *with,
+ 					      "x-applicationsharing-media-type",
+ 					      "rdp");
+ 
++	// These attributes are mandatory when sharing with a conference.
++	sipe_media_stream_add_extra_attribute(stream,
++					      "setup",
++					      "active");
++	sipe_media_stream_add_extra_attribute(stream,
++					      "connection",
++					      "new");
++
+ 	appshare = g_new0(struct sipe_appshare, 1);
+ 	appshare->stream = stream;
+ 	appshare->monitor_id = monitor_id;
+@@ -958,6 +966,36 @@ sipe_core_appshare_share_desktop(struct sipe_core_public *sipe_public,
+ {
+ 	present_monitor_choice(sipe_public, with);
+ }
++
++void
++sipe_core_conf_share_application(struct sipe_core_public *sipe_public,
++				 struct sipe_chat_session *chat_session)
++{
++	gchar * uri;
++	sipe_appshare_role role;
++
++	role = sipe_core_conf_get_appshare_role(sipe_public, chat_session);
++
++	if (role == SIPE_APPSHARE_ROLE_PRESENTER) {
++		// We are already the presenting.
++		return;
++	} else if (role == SIPE_APPSHARE_ROLE_VIEWER) {
++		// Close RDP viewer before we start our own presentation.
++		gchar *mcu_uri;
++		struct sipe_media_call *call;
++
++		mcu_uri = sipe_conf_build_uri(chat_session->id, "applicationsharing");
++		call = sipe_media_call_find(SIPE_CORE_PRIVATE, mcu_uri);
++		g_free(mcu_uri);
++
++		sipe_backend_media_hangup(call->backend_private, TRUE);
++	}
++
++	uri = sipe_conf_build_uri(chat_session->id, "applicationsharing");
++	sipe_core_appshare_share_desktop(sipe_public, uri);
++
++	g_free(uri);
++}
+ #endif // HAVE_RDP_SERVER
+ 
+ /*
+diff --git a/src/core/sipe-conf.c b/src/core/sipe-conf.c
+index 0c29a5acc..38a6071a4 100644
+--- a/src/core/sipe-conf.c
++++ b/src/core/sipe-conf.c
+@@ -1417,7 +1417,8 @@ sipe_process_conference(struct sipe_core_private *sipe_private,
+ 				} else if (sipe_strequal("applicationsharing", session_type)) {
+ #ifdef HAVE_APPSHARE
+ 					if (sipe_core_conf_get_appshare_role(SIPE_CORE_PUBLIC,
+-									     session->chat_session) == SIPE_APPSHARE_ROLE_NONE) {
++									     session->chat_session) == SIPE_APPSHARE_ROLE_NONE &&
++					    !sipe_strequal(user_uri, self)) {
+ 						presentation_was_added = process_conference_appshare_endpoint(endpoint);
+ 					}
+ #endif
+diff --git a/src/purple/purple-chat.c b/src/purple/purple-chat.c
+index 226b5d024..4f5cad8e8 100644
+--- a/src/purple/purple-chat.c
++++ b/src/purple/purple-chat.c
+@@ -284,6 +284,13 @@ sipe_purple_chat_menu_show_presentation_cb(SIPE_UNUSED_PARAMETER PurpleChat *cha
+ 					      sipe_purple_chat_get_session(conv),
+ 					      FALSE);
+ }
++
++static void sipe_purple_chat_menu_share_desktop_cb(SIPE_UNUSED_PARAMETER PurpleChat *chat,
++						   PurpleConversation *conv)
++{
++	sipe_core_conf_share_application(PURPLE_CONV_TO_SIPE_CORE_PUBLIC,
++					 sipe_purple_chat_get_session(conv));
++}
+ #endif
+ #endif // HAVE_VV
+ 
+@@ -306,6 +313,9 @@ sipe_purple_chat_menu(PurpleChat *chat)
+ 	if (conv) {
+ 		PurpleMenuAction *act = NULL;
+ 		struct sipe_chat_session *chat_session;
++#ifdef HAVE_APPSHARE
++		sipe_appshare_role role;
++#endif
+ 
+ 		SIPE_DEBUG_INFO("sipe_purple_chat_menu: %p", conv);
+ 
+@@ -344,13 +354,20 @@ sipe_purple_chat_menu(PurpleChat *chat)
+ 					menu = g_list_prepend(menu, act);
+ 			}
+ #ifdef HAVE_APPSHARE
+-			if (sipe_core_conf_get_appshare_role(PURPLE_CONV_TO_SIPE_CORE_PUBLIC,
+-							     chat_session) == SIPE_APPSHARE_ROLE_NONE) {
++			role = sipe_core_conf_get_appshare_role(PURPLE_CONV_TO_SIPE_CORE_PUBLIC,
++								chat_session);
++			if (role == SIPE_APPSHARE_ROLE_NONE) {
+ 				act = purple_menu_action_new(_("Show presentation"),
+ 							     PURPLE_CALLBACK(sipe_purple_chat_menu_show_presentation_cb),
+ 							     conv, NULL);
+ 				menu = g_list_prepend(menu, act);
+ 			}
++			if (role != SIPE_APPSHARE_ROLE_PRESENTER) {
++				act = purple_menu_action_new(_("Share my desktop"),
++							     PURPLE_CALLBACK(sipe_purple_chat_menu_share_desktop_cb),
++							     conv, NULL);
++				menu = g_list_prepend(menu, act);
++			}
+ #endif
+ #endif // HAVE_VV
+ 			act = purple_menu_action_new(_("Meeting entry info"),
