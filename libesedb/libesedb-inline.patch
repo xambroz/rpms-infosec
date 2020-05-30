@@ -1,3 +1,4 @@
+Not available in the 20181229 version
 diff -ru libesedb-20120102/libuna/libuna_inline.h libesedb-20120102.new/libuna/libuna_inline.h
 --- libesedb-20120102/libuna/libuna_inline.h	2012-01-02 16:08:00.000000000 +0100
 +++ libesedb-20120102.new/libuna/libuna_inline.h	2016-08-01 11:25:55.000000000 +0200

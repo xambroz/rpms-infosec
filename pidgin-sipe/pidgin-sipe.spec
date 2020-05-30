@@ -1,7 +1,7 @@
 Name:           pidgin-sipe
 Summary:        Pidgin protocol plugin to connect to MS Office Communicator
 Version:        1.23.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 
 Group:          Applications/Communications
 License:        GPLv2+
@@ -29,6 +29,10 @@ BuildRequires:  intltool
 BuildRequires:  libtool
 
 Requires:       purple-sipe = %{version}-%{release}
+
+# Called from commandline to establish the RDP screen sharing
+Requires:       remmina
+Requires:       remmina-plugins-rdp
 
 
 %description
@@ -70,7 +74,7 @@ This package provides the protocol plugin for libpurple clients.
 
 
 %prep
-%autosetup -q -p 1
+%setup -q
 
 %build
 autoreconf -f -i
@@ -110,6 +114,9 @@ make %{?_smp_mflags} check
 
 
 %changelog
+* Fri Apr 27 2018 Michal Ambroz <rebus AT_ seznam.cz> - 1.23.2-2
+- add missing runtime dependency to remmina, remmina-plugins-rdp
+
 * Sat Mar 10 2018 Stefan Becker <chemobejk@gmail.com> - 1.23.2-1
 - update to 1.23.2:
     - fix some HTTP requests that were not sent

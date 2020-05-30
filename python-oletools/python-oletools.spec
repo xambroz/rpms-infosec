@@ -1,7 +1,11 @@
 %global         gituser         decalage2
 %global         gitname         oletools
-# v0.51
-%global         commit          3681c317fa9ebc5102064070dea3f3b293119509
+# v0.52
+%global         commit          9a7b711b06d67fb4c71cebf8c3f776fc56b83c88
+# v0.52.1
+%global         commit          be5c30ab8d8fd1bd4fdafc98c13fe39212271df2
+# v0.52.1+
+%global         commit          62940506f86f3a1cea5e83b68bc30dfbf7c09950
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 %global         sum             Tools to analyze Microsoft OLE2 files
@@ -9,7 +13,7 @@
 
 
 Name:           python-%{gitname}
-Version:        0.51
+Version:        0.54.2
 #Release:       0.3.%{shortcommit}%{?dist}
 Release:        1%{?dist}
 Summary:        %{sum}
@@ -22,6 +26,11 @@ Source0:       https://github.com/%{gituser}/%{gitname}/archive/v%{version}/%{gi
 # Source based on git commit
 #Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 Patch0:         %{name}-thirdparty.patch
+
+# Syntax issue with python3 large numbers
+# https://github.com/decalage2/oletools/commit/e2d05a8e6b71d2b9382bc71cf24cbf84bdf8b049.patch
+Patch1:         %{name}-e2d05a8e6b71d2b9382bc71cf24cbf84bdf8b049.patch
+
 
 
 BuildArch:      noarch
@@ -89,8 +98,7 @@ Summary:        %{sum}
 
 
 %prep
-%autosetup -n %{gitname}-%{version}
-#autosetup -n %{gitname}-%{commit}
+%autosetup -p 1 -n %{gitname}-%{version}
 
 
 #Use globally installed python-modules instead
@@ -195,6 +203,9 @@ popd
 %doc cheatsheet
 
 %changelog
+* Thu Sep 19 2019 Michal Ambroz <rebus at, seznam.cz> 0.54.2-1
+- bump to 0.54.2 release
+
 * Thu Jun 22 2017 Michal Ambroz <rebus at, seznam.cz> 0.51-1
 - bump to 0.51 release
 

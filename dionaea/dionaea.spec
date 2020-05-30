@@ -144,11 +144,7 @@ BuildRequires:  sqlite
 BuildRequires:  python%{python3_pkgversion}-devel
 BuildRequires:  python%{python3_pkgversion}-Cython
 
-%if 0%{?fedora} >= 26
-BuildRequires:  compat-openssl10-devel
-%else
 BuildRequires:  openssl-devel
-%endif
 
 %if 0%{?_with_systemd}
 BuildRequires:  systemd-units
@@ -327,9 +323,11 @@ git commit -a -m "finished prep"
 
 # ============= Build ==========================================================
 %build
-autoreconf -vif
-%configure --enable-python --with-python=`which python3` --with-glib=glib --with-nl-include=/usr/include/libnl3
-make %{?_smp_mflags} CFLAGS="%{optflags} -Wno-error -D_GNU_SOURCE -std=c99"
+#autoreconf -vif
+#configure --enable-python --with-python=`which python3` --with-glib=glib --with-nl-include=/usr/include/libnl3
+#export CFLAGS="%{optflags} -Wno-error -D_GNU_SOURCE -std=c99"
+cmake .
+make %{?_smp_mflags}
 cd doc
 make html
 make man

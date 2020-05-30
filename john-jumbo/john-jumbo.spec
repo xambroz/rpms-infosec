@@ -1,14 +1,14 @@
 %global           jumbo_version 1
 Summary:          John the Ripper password cracker
 Name:             john-jumbo
-Version:          1.8.0
-Release:          jumbo.%{jumbo_version}.2%{?dist}
+Version:          1.9.0
+Release:          jumbo.%{jumbo_version}.1%{?dist}
 
 URL:              http://www.openwall.com/john
 License:          GPLv2
 Group:            Applications/System
-Source0:          http://www.openwall.com/john/j/john-%{version}-jumbo-%{jumbo_version}.tar.xz
-Source1:          http://www.openwall.com/john/j/john-%{version}-jumbo-%{jumbo_version}.tar.xz.sign
+Source0:          http://www.openwall.com/john/k/john-%{version}-jumbo-%{jumbo_version}.tar.xz
+Source1:          http://www.openwall.com/john/k/john-%{version}-jumbo-%{jumbo_version}.tar.xz.sign
 Patch0:           john-jumbo-inlines.patch
 #Patch3:           http://www.openwall.com/john/g/john-%{version}-jumbo-%{jumbo_version}.diff.gz
 BuildRoot:        %{_tmppath}/%{name}-%{version}-%{release}-root
@@ -46,6 +46,11 @@ add many more types of the passwords.
 chmod 0644 doc/*
 sed -i 's#\$JOHN/john.conf#%{_sysconfdir}/%{name}/john.conf#' src/params.h
 chmod -R u+r src
+
+pushd run
+futurize -w aix2john.py
+popd
+
 
 %build
 cd src
@@ -104,6 +109,9 @@ rm -f %{buildroot}%{_bindir}/unshadow
 
 
 %changelog
+* Sun Mar 01 2020 Michal Ambroz <rebus _AT seznam.cz> - 1.9.0-jumbo.1
+- bump to version 1.9.0
+
 * Tue Feb 21 2017 Michal Ambroz <rebus AT seznam.cz> - 1.8.0-jumbo.1.2
 - build with compat openssl for FC26
 
