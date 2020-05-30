@@ -1,26 +1,37 @@
-%global         gituser         urbanadventurer
-%global         gitname         WhatWeb
-%global         commit          f67c0513a9ba84764fdae6afde5aa7fa4627ed63
-%global         shortcommit     %(c=%{commit}; echo ${c:0:7})
-
 Name:           whatweb
-Version:        0.4.9
+Version:        0.5.1
 Release:        1%{?dist}
 Summary:        Web scanner to identify what websites are running
 
+
+%global         gituser         urbanadventurer
+%global         gitname         WhatWeb
+
+
+%if 0%{?rhel}
 Group:          Applications/Internet
+%endif
 
 License:        GPLv2
-URL:            http://www.morningstarsecurity.com/research/%{name}
-#Source0:       https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
+URL:            http://www.morningstarsecurity.com/research/whatweb
+#               https://github.com/urbanadventurer/WhatWeb/releases/
+
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
+#Patch1:         https://patch-diff.githubusercontent.com/raw/urbanadventurer/WhatWeb/pull/282.patch#/whatweb-01_lib_whatweb.patch
+Patch0:         whatweb-makefile.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
 
-#Requires:       ruby(abi) >= 1.8
-Requires:       /usr/bin/ruby
 
+
+#Requires:      ruby(abi) >= 2.0
+Requires:       /usr/bin/ruby
+Requires:       rubygem-addressable
+
+
+Recommends:     rubygem-bson
+Recommends:     rubygem-mongo
 
 %description
 Identify content management systems (CMS), blogging platforms, stats/analytic
@@ -32,16 +43,7 @@ these hints and reports what it finds.
 
 
 %prep
-#setup -qn %{gitname}-%{commit}
-%setup -qn %{gitname}-%{version}
-
-#Files with Windows ends of lines
-sed -i -e 's/\r//' README
-sed -i -e 's/\r//' whatweb.xsl
-
-# Shabang in non-executable/library file
-sed -i -e 's|#!/usr/bin/env ruby|#/usr/bin/ruby|; s|#!/bin/env ruby|#/usr/bin/ruby|;' \
-    lib/tld.rb
+%autosetup -p 1 -n %{gitname}-%{version}
 
 # Fedora using Rubypick
 sed -i -e 's|#!/usr/bin/env ruby|#!/usr/bin/ruby|; s|#!/bin/env ruby|#!/usr/bin/ruby|;' \
@@ -50,17 +52,24 @@ sed -i -e 's|#!/usr/bin/env ruby|#!/usr/bin/ruby|; s|#!/bin/env ruby|#!/usr/bin/
 # Unknown macros in manpage
 sed -i -e 's|^.ni||; s|^\./plugins-disabled|+\./plugins-disabled|' whatweb.1
 
+# Disable bundle install in the Makefile
+sed -i -e 's|bundle install|#bundle install|' Makefile
+
+# Add the whatweb shared directory + PR282
+sed -i -e "s|expand_path(__dir__)), '.')|expand_path(__dir__)), '%{_datadir}/%{name}')|" whatweb
+
 %build
 echo "Nothing to build."
 
 
 %install
+alias bundle='echo'
 make install DESTDIR=%{buildroot}
 rm -rf %{buildroot}%{_datadir}/doc/%{name}
 
 
 %files
-%doc CHANGELOG README whatweb.xsl
+%doc CHANGELOG.md README.md whatweb.xsl
 %license LICENSE
 %{_bindir}/%{name}
 %dir %{_datadir}/%{name}
@@ -70,6 +79,7 @@ rm -rf %{buildroot}%{_datadir}/doc/%{name}
 %dir %{_datadir}/%{name}/my-plugins
 %dir %{_datadir}/%{name}/plugin-development
 %dir %{_datadir}/%{name}/plugins-disabled
+%{_datadir}/%{name}/%{name}
 %{_datadir}/%{name}/addons/*
 %{_datadir}/%{name}/lib/*
 %{_datadir}/%{name}/plugins/*
@@ -80,6 +90,12 @@ rm -rf %{buildroot}%{_datadir}/doc/%{name}
 
 
 %changelog
+* Sun May 31 2020 Michal Ambroz <rebus at, seznam.cz> - 0.5.1-1
+- bump to 0.5.1, rebuild for fedora 32
+
+* Wed Oct 30 2019 Michal Ambroz <rebus at, seznam.cz> - 0.5.0-1
+- bump to 0.5.0
+
 * Sat Dec 9 2017 Michal Ambroz <rebus at, seznam.cz> - 0.4.9-1
 - bump to 0.4.9
 

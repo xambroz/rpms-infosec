@@ -1,11 +1,13 @@
-diff -ru whatweb-0.4.6/Makefile whatweb-0.4.6.new/Makefile
---- whatweb-0.4.6/Makefile	2011-03-25 04:12:45.000000000 +0100
-+++ whatweb-0.4.6.new/Makefile	2011-03-28 00:41:41.000000000 +0200
-@@ -10,6 +10,7 @@
- 	install -p -D -m 644 $(NAME).1 $(DESTDIR)$(MANPATH)/man1/$(NAME).1
- 	gzip -f $(DESTDIR)$(MANPATH)/man1/$(NAME).1
- 	install -d $(DESTDIR)$(LIBPATH)/$(NAME)
-+	install -d $(DESTDIR)$(DOCPATH)/$(NAME)
- 	cp -p -r my-plugins plugins-disabled plugins lib plugin-development $(DESTDIR)$(LIBPATH)/$(NAME)/
- 	cp -p -r CHANGELOG INSTALL LICENSE README TODO whatweb.xsl $(DESTDIR)$(DOCPATH)/$(NAME)/
+diff -ru WhatWeb-0.5.1/Makefile WhatWeb-0.5.1.new/Makefile
+--- WhatWeb-0.5.1/Makefile	2020-02-25 16:13:54.000000000 +0100
++++ WhatWeb-0.5.1.new/Makefile	2020-05-31 01:06:53.127055943 +0200
+@@ -27,7 +27,8 @@
  
+ 	# copy whatweb into LIBPATH/NAME/ and create a symbolic link in the BINPATH
+ 	install -p $(INSTALLD) -m 755 $(NAME) $(DESTDIR)$(LIBPATH)/$(NAME)
+-	ln -s $(DESTDIR)$(LIBPATH)/$(NAME)/$(NAME) $(DESTDIR)$(BINPATH)/$(NAME)
++	install -d $(DESTDIR)$(BINPATH)
++	ln -s $(LIBPATH)/$(NAME)/$(NAME) $(DESTDIR)$(BINPATH)/$(NAME)
+ 
+ 	cp -p -r my-plugins $(DESTDIR)$(LIBPATH)/$(NAME)/
+ 	cp -p -r plugins-disabled plugins lib plugin-development addons $(DESTDIR)$(LIBPATH)/$(NAME)/
