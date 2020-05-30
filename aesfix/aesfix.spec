@@ -1,9 +1,9 @@
 Name:           aesfix
 Version:        1.0.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 # 3-clause BSD license
 License:        BSD
-Summary:        correct bit errors in AES-128 key schedule
+Summary:        Correct bit errors in AES-128 key schedule
 
 URL:            https://citp.princeton.edu/our-work/memory/
 # Current code: https://citp.princeton.edu/our-work/memory/code
@@ -79,6 +79,9 @@ install -p -m644 %{SOURCE3} %{buildroot}%{_mandir}/man1
 
 
 %changelog
+* Fri Feb 28 2020 Michal Ambroz <rebus at, seznam.cz> - 1.0.1-2
+- uppercase the summary
+
 * Fri Feb 28 2020 Michal Ambroz <rebus at, seznam.cz> - 1.0.1-1
 - package based on the aeskeyfind
 
