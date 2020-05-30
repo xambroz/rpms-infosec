@@ -1,0 +1,67 @@
+#!/usr/bin/bash
+# Copyright (c) 2019 Michal Ambroz <rebus _AT seznam.cz>
+#
+# This file is distributed with same license as Volatility.
+#
+# Volatility is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# Volatility is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Volatility.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+TOOLSDIR=/usr/share/python-volatility/tools/linux
+PROFILEDIR=/usr/lib/python2.7/site-packages/volatility/plugins/overlays/linux
+
+
+OSNAME=$(grep "^NAME=" /etc/os-release | cut -d "=" -f 2 | sed -e 's/"//g;')
+OSVER=$(grep "^VERSION_ID=" /etc/os-release  | cut -d "=" -f 2 | sed -e 's/"//g;')
+KERNEL=$(uname -r)
+
+ZIPNAME="${OSNAME}_${OSVER}-${KERNEL}.zip"
+
+if [ "x$1" = "x--help" ] ; then
+	echo "Syntax:      $0"
+	echo "Description: generate linux profile for use with Volatility based on the current running kernel"
+	echo "             Profile will be stored to directory $PROFILEDIR"
+	echo ""
+	echo "Dependencies: dwarfdump(libdwarf-tools), libdwarf, elfutils-libelf, kernel-headers, make, gcc"
+	exit 0
+fi
+
+
+DWARFDUMP=$(command -v dwarfdump 2>/dev/null)
+if [ "$DWARFDUMP" = "" ] ; then
+	echo "==== ERROR: tool dwarfdump is not installed. Please install the libdwarf-tools package."
+	exit 1
+fi
+
+MYID=$(id -u)
+if [ "$MYID" -ne 0 ] ; then
+	echo -e "==== ERROR: Needs to run as root to be able to read the '/boot/System.map-${KERNEL}' of the current kernel and write the profile to: \n '${PROFILEDIR}/${ZIPNAME}'"
+	exit 1
+fi
+
+TEMPDIR=$(mktemp -d)
+if [ -d "$TEMPDIR" ] ; then
+        echo "==== ERROR: failed to create temporary directory"
+        exit 1
+fi
+
+cp "${TOOLSDIR}/Makefile ${TOOLSDIR}/module.c" "${TEMPDIR}/"
+pushd "${TEMPDIR}" || exit 1
+
+make
+
+echo zip "${PROFILEDIR}/${ZIPNAME}" module.dwarf "/boot/System.map-${KERNEL}"
+zip "${PROFILEDIR}/${ZIPNAME}" module.dwarf "/boot/System.map-${KERNEL}"
+
+popd || exit 1
+rm -rf "$TEMPDIR"

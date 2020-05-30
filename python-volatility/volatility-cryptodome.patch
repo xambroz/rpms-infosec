@@ -1,0 +1,60 @@
+diff -ru volatility-2.6.1.old/setup.py volatility-2.6.1.new/setup.py
+--- volatility-2.6.1.old/setup.py	2019-10-22 14:13:50.192448163 +0200
++++ volatility-2.6.1.new/setup.py	2019-10-22 14:18:30.623513225 +0200
+@@ -83,7 +83,7 @@
+     # otherwise the help gets optimized out
+     opts['options'] = {'py2exe':{'optimize': 1,
+                                  'dist_dir': py2exe_distdir,
+-                                 'packages': opts['packages'] + ['socket', 'ctypes', 'Crypto.Cipher', 'urllib', 'distorm3', 'yara', 'xml.etree.ElementTree'],
++                                 'packages': opts['packages'] + ['socket', 'ctypes', 'Cryptodome.Cipher', 'urllib', 'distorm3', 'yara', 'xml.etree.ElementTree'],
+                                  # This, along with zipfile = None, ensures a single binary
+                                  'bundle_files': 1,
+                                 }
+diff -ru volatility-2.6.1.old/volatility/win32/domcachedump.py volatility-2.6.1.new/volatility/win32/domcachedump.py
+--- volatility-2.6.1.old/volatility/win32/domcachedump.py	2019-10-22 14:13:50.257450689 +0200
++++ volatility-2.6.1.new/volatility/win32/domcachedump.py	2019-10-22 14:16:01.885632342 +0200
+@@ -31,8 +31,10 @@
+ import volatility.win32.hive as hive
+ import volatility.win32.lsasecrets as lsasecrets
+ import volatility.win32.hashdump as hashdump
+-from Crypto.Hash import HMAC
+-from Crypto.Cipher import ARC4, AES
++#from Crypto.Hash import HMAC
++from Cryptodome.Hash import HMAC
++#from Crypto.Cipher import ARC4, AES
++from Cryptodome.Cipher import ARC4, AES
+ from struct import unpack
+ 
+ def get_nlkm(addr_space, secaddr, lsakey):
+diff -ru volatility-2.6.1.old/volatility/win32/hashdump.py volatility-2.6.1.new/volatility/win32/hashdump.py
+--- volatility-2.6.1.old/volatility/win32/hashdump.py	2019-10-22 14:13:50.257450689 +0200
++++ volatility-2.6.1.new/volatility/win32/hashdump.py	2019-10-22 14:16:29.228712346 +0200
+@@ -29,8 +29,10 @@
+ import volatility.obj as obj
+ import volatility.win32.rawreg as rawreg
+ import volatility.win32.hive as hive
+-from Crypto.Hash import MD5, MD4
+-from Crypto.Cipher import ARC4, DES
++#from Crypto.Hash import MD5, MD4
++from Cryptodome.Hash import MD5, MD4
++#from Crypto.Cipher import ARC4, DES
++from Cryptodome.Cipher import ARC4, DES
+ from struct import unpack, pack
+ 
+ odd_parity = [
+diff -ru volatility-2.6.1.old/volatility/win32/lsasecrets.py volatility-2.6.1.new/volatility/win32/lsasecrets.py
+--- volatility-2.6.1.old/volatility/win32/lsasecrets.py	2019-10-22 14:13:50.258450728 +0200
++++ volatility-2.6.1.new/volatility/win32/lsasecrets.py	2019-10-22 14:17:00.348941534 +0200
+@@ -31,8 +31,10 @@
+ import volatility.win32.rawreg as rawreg
+ import volatility.win32.hive as hive
+ import volatility.win32.hashdump as hashdump
+-from Crypto.Hash import MD5, SHA256
+-from Crypto.Cipher import ARC4, DES, AES
++#from Crypto.Hash import MD5, SHA256
++from Cryptodome.Hash import MD5, SHA256
++#from Crypto.Cipher import ARC4, DES, AES
++from Cryptodome.Cipher import ARC4, DES, AES
+ 
+ def decrypt_aes(secret, key):
+     """
