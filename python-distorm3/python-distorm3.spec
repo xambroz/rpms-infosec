@@ -8,7 +8,7 @@
 %global with_python3 1
 %endif
 
-%if ( 0%{?fedora} && 0%{?fedora} <= 32 ) || ( 0%{?rhel} && 0%{?rhel} <= 7 )
+%if ( 0%{?fedora} && 0%{?fedora} <= 32 ) || ( 0%{?rhel} && 0%{?rhel} <= 8 )
 # distorm3 needed for python2-volatility
 %global with_python2 1
 %endif
@@ -24,6 +24,8 @@ URL:            https://github.com/gdabah/distorm
 #Source0:       https://github.com/%%{gituser}/%%{gitname}/archive/%%{commit}/%%{name}-%%{version}-%%{shortcommit}.tar.gz
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
+BuildRequires:  gcc
+
 %if 0%{?with_python2}
 BuildRequires:  python2
 BuildRequires:  python2-devel
@@ -32,9 +34,9 @@ BuildRequires:  python-setuptools
 %endif
 
 %if 0%{?with_python3}
+BuildRequires:  python3
 BuildRequires:  python%{python3_pkgversion}-devel
 BuildRequires:  python%{python3_pkgversion}-libs
-BuildRequires:  python%{python3_pkgversion}-nose
 BuildRequires:  python%{python3_pkgversion}-setuptools
 %endif
 
