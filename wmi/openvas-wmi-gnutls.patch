@@ -1,0 +1,35 @@
+Fix deprecated call to gnutls_transport_set_lowat
+http://openvas-discuss.openvas.narkive.com/6aPd7G6w/fail-to-build-wmi-1-3-14
+diff -ru wmi-1.3.14.orig/Samba/source/lib/tls/tls.c wmi-1.3.14.new/Samba/source/lib/tls/tls.c
+--- wmi-1.3.14.orig/Samba/source/lib/tls/tls.c	2008-07-30 21:44:55.000000000 +0200
++++ wmi-1.3.14.new/Samba/source/lib/tls/tls.c	2018-09-18 21:50:47.152038929 +0200
+@@ -505,7 +505,9 @@
+ 	gnutls_transport_set_ptr(tls->session, (gnutls_transport_ptr)tls);
+ 	gnutls_transport_set_pull_function(tls->session, (gnutls_pull_func)tls_pull);
+ 	gnutls_transport_set_push_function(tls->session, (gnutls_push_func)tls_push);
+-	gnutls_transport_set_lowat(tls->session, 0);
++	/* deprecated */
++	/* gnutls_transport_set_lowat(tls->session, 0); */
++	gnutls_record_check_pending(tls->session);
+ 
+ 	tls->plain_chars = plain_chars;
+ 	if (plain_chars) {
+@@ -576,7 +578,7 @@
+ 	talloc_free(cafile);
+ 	TLSCHECK(gnutls_init(&tls->session, GNUTLS_CLIENT));
+ 	TLSCHECK(gnutls_set_default_priority(tls->session));
+-	gnutls_certificate_type_set_priority(tls->session, cert_type_priority);
++	/* gnutls_certificate_type_set_priority(tls->session, cert_type_priority); */
+ 	TLSCHECK(gnutls_credentials_set(tls->session, GNUTLS_CRD_CERTIFICATE, tls->xcred));
+ 
+ 	talloc_set_destructor(tls, tls_destructor);
+@@ -584,7 +586,8 @@
+ 	gnutls_transport_set_ptr(tls->session, (gnutls_transport_ptr)tls);
+ 	gnutls_transport_set_pull_function(tls->session, (gnutls_pull_func)tls_pull);
+ 	gnutls_transport_set_push_function(tls->session, (gnutls_push_func)tls_push);
+-	gnutls_transport_set_lowat(tls->session, 0);
++	/* gnutls_transport_set_lowat(tls->session, 0); */
++	gnutls_record_check_pending(tls->session);
+ 	tls->tls_detect = False;
+ 
+ 	tls->output_pending  = False;
