@@ -1,0 +1,6 @@
+#!/bin/bash
+
+. /usr/share/java-utils/java-functions
+
+java -jar -Xmx512m @@datadir@@/@@name@@/@@name@@_v@@version@@.jar
+
