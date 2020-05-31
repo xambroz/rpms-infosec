@@ -1,0 +1,41 @@
+Binary files samdump2-3.0.0/bkhive.o and samdump2-3.0.0.new/bkhive.o differ
+Binary files samdump2-3.0.0/hive.o and samdump2-3.0.0.new/hive.o differ
+Binary files samdump2-3.0.0/list.o and samdump2-3.0.0.new/list.o differ
+diff -ru samdump2-3.0.0/Makefile samdump2-3.0.0.new/Makefile
+--- samdump2-3.0.0/Makefile	2012-04-20 14:27:00.000000000 +0200
++++ samdump2-3.0.0.new/Makefile	2012-05-28 04:27:47.022022297 +0200
+@@ -31,12 +31,16 @@
+ CC	  = $(shell which gcc)
+ CFLAGS    = -Wall 
+ LIBS      = -lssl
++OWNER     = root
++GROUP     = root
+ 
+ # Default target
+ all: build
+ 
+ build: samdump2
+ 
++infos: samdump2.1
++
+ samdump2: hive.o list.o bkhive.o samdump2.o main.o dumpsam.o
+ 	@echo "Building binary..."
+ 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
+@@ -51,12 +55,12 @@
+ # Install target
+ install: build infos
+ 	@echo "Creating directories..."
+-	$(INSTALL) -d -m 755 -o root -g root $(DESTDIR)$(BINDIR)
+-	$(INSTALL) -d -m 755 -o root -g root $(DESTDIR)$(MANDIR)
++	$(INSTALL) -d -m 755 -o $(OWNER) -g $(GROUP) $(DESTDIR)$(BINDIR)
++	$(INSTALL) -d -m 755 -o $(OWNER) -g $(GROUP) $(DESTDIR)$(MANDIR)
+ 	@echo "Copying binary..."
+-	$(INSTALL) samdump2 -m 755 -o root -g root $(DESTDIR)$(BINDIR)
++	$(INSTALL) samdump2 -m 755 -o $(OWNER) -g $(GROUP) $(DESTDIR)$(BINDIR)
+ 	@echo "Installing man page..."
+-	$(INSTALL) samdump2.1 -m 644 -o root -g root $(DESTDIR)$(MANDIR)
++	$(INSTALL) samdump2.1 -m 644 -o $(OWNER) -g $(GROUP) $(DESTDIR)$(MANDIR)
+ 	@echo ""
+ 
+ # Uninstall target
+Binary files samdump2-3.0.0/samdump2 and samdump2-3.0.0.new/samdump2 differ
