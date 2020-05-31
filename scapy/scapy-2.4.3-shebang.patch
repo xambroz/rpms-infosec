@@ -1,0 +1,288 @@
+diff -ru scapy-2.4.3.old/scapy/contrib/aoe.py scapy-2.4.3.new/scapy/contrib/aoe.py
+--- scapy-2.4.3.old/scapy/contrib/aoe.py	2019-08-04 16:12:30.000000000 +0000
++++ scapy-2.4.3.new/scapy/contrib/aoe.py	2019-08-04 16:12:30.000000000 +0000
+@@ -1,4 +1,2 @@
+-#! /usr/bin/env python
+-
+ # Copyright (C) 2018 antoine.torre <torreantoine1@gmail.com>
+ ##
+diff -ru scapy-2.4.3.old/scapy/contrib/automotive/bmw/enet.py scapy-2.4.3.new/scapy/contrib/automotive/bmw/enet.py
+--- scapy-2.4.3.old/scapy/contrib/automotive/bmw/enet.py	2019-08-04 16:12:30.000000000 +0000
++++ scapy-2.4.3.new/scapy/contrib/automotive/bmw/enet.py	2019-08-04 16:12:30.000000000 +0000
+@@ -1,4 +1,2 @@
+-#! /usr/bin/env python
+-
+ # This file is part of Scapy
+ # See http://www.secdev.org/projects/scapy for more information
+diff -ru scapy-2.4.3.old/scapy/contrib/automotive/ccp.py scapy-2.4.3.new/scapy/contrib/automotive/ccp.py
+--- scapy-2.4.3.old/scapy/contrib/automotive/ccp.py	2019-08-04 16:12:30.000000000 +0000
++++ scapy-2.4.3.new/scapy/contrib/automotive/ccp.py	2019-08-04 16:12:30.000000000 +0000
+@@ -1,4 +1,2 @@
+-#! /usr/bin/env python
+-
+ # This file is part of Scapy
+ # See http://www.secdev.org/projects/scapy for more information
+diff -ru scapy-2.4.3.old/scapy/contrib/automotive/gm/gmlan.py scapy-2.4.3.new/scapy/contrib/automotive/gm/gmlan.py
+--- scapy-2.4.3.old/scapy/contrib/automotive/gm/gmlan.py	2019-08-04 16:12:30.000000000 +0000
++++ scapy-2.4.3.new/scapy/contrib/automotive/gm/gmlan.py	2019-08-04 16:12:30.000000000 +0000
+@@ -1,4 +1,2 @@
+-#! /usr/bin/env python
+-
+ # This file is part of Scapy
+ # See http://www.secdev.org/projects/scapy for more information
+diff -ru scapy-2.4.3.old/scapy/contrib/automotive/someip.py scapy-2.4.3.new/scapy/contrib/automotive/someip.py
+--- scapy-2.4.3.old/scapy/contrib/automotive/someip.py	2019-08-04 16:12:30.000000000 +0000
++++ scapy-2.4.3.new/scapy/contrib/automotive/someip.py	2019-08-04 16:12:30.000000000 +0000
+@@ -1,4 +1,2 @@
+-#! /usr/bin/env python
+-
+ # MIT License
+ 
+diff -ru scapy-2.4.3.old/scapy/contrib/automotive/someip_sd.py scapy-2.4.3.new/scapy/contrib/automotive/someip_sd.py
+--- scapy-2.4.3.old/scapy/contrib/automotive/someip_sd.py	2019-08-04 16:12:30.000000000 +0000
++++ scapy-2.4.3.new/scapy/contrib/automotive/someip_sd.py	2019-08-04 16:12:30.000000000 +0000
+@@ -1,4 +1,2 @@
+-#! /usr/bin/env python
+-
+ # MIT License
+ 
+diff -ru scapy-2.4.3.old/scapy/contrib/automotive/uds.py scapy-2.4.3.new/scapy/contrib/automotive/uds.py
+--- scapy-2.4.3.old/scapy/contrib/automotive/uds.py	2019-08-04 16:12:30.000000000 +0000
++++ scapy-2.4.3.new/scapy/contrib/automotive/uds.py	2019-08-04 16:12:30.000000000 +0000
+@@ -1,4 +1,2 @@
+-#! /usr/bin/env python
+-
+ # This file is part of Scapy
+ # See http://www.secdev.org/projects/scapy for more information
+diff -ru scapy-2.4.3.old/scapy/contrib/avs.py scapy-2.4.3.new/scapy/contrib/avs.py
+--- scapy-2.4.3.old/scapy/contrib/avs.py	2019-08-04 16:12:30.000000000 +0000
++++ scapy-2.4.3.new/scapy/contrib/avs.py	2019-08-04 16:12:30.000000000 +0000
+@@ -1,4 +1,2 @@
+-#! /usr/bin/env python
+-
+ # This file is part of Scapy
+ # Scapy is free software: you can redistribute it and/or modify
+diff -ru scapy-2.4.3.old/scapy/contrib/bp.py scapy-2.4.3.new/scapy/contrib/bp.py
+--- scapy-2.4.3.old/scapy/contrib/bp.py	2019-08-04 16:12:30.000000000 +0000
++++ scapy-2.4.3.new/scapy/contrib/bp.py	2019-08-04 16:12:30.000000000 +0000
+@@ -1,4 +1,2 @@
+-#!/usr/bin/env python
+-
+ # This file is part of Scapy
+ # Scapy is free software: you can redistribute it and/or modify
+diff -ru scapy-2.4.3.old/scapy/contrib/cdp.py scapy-2.4.3.new/scapy/contrib/cdp.py
+--- scapy-2.4.3.old/scapy/contrib/cdp.py	2019-08-04 16:12:30.000000000 +0000
++++ scapy-2.4.3.new/scapy/contrib/cdp.py	2019-08-04 16:12:30.000000000 +0000
+@@ -1,4 +1,2 @@
+-#! /usr/bin/env python
+-
+ # scapy.contrib.description = Cisco Discovery Protocol (CDP)
+ # scapy.contrib.status = loads
+diff -ru scapy-2.4.3.old/scapy/contrib/coap.py scapy-2.4.3.new/scapy/contrib/coap.py
+--- scapy-2.4.3.old/scapy/contrib/coap.py	2019-08-04 16:12:30.000000000 +0000
++++ scapy-2.4.3.new/scapy/contrib/coap.py	2019-08-04 16:12:30.000000000 +0000
+@@ -1,4 +1,2 @@
+-#! /usr/bin/env python
+-
+ # This file is part of Scapy.
+ # See http://www.secdev.org/projects/scapy for more information.
+diff -ru scapy-2.4.3.old/scapy/contrib/dtp.py scapy-2.4.3.new/scapy/contrib/dtp.py
+--- scapy-2.4.3.old/scapy/contrib/dtp.py	2019-08-04 16:12:30.000000000 +0000
++++ scapy-2.4.3.new/scapy/contrib/dtp.py	2019-08-04 16:12:30.000000000 +0000
+@@ -1,4 +1,2 @@
+-#!/usr/bin/env python
+-
+ # This file is part of Scapy
+ # Scapy is free software: you can redistribute it and/or modify
+diff -ru scapy-2.4.3.old/scapy/contrib/eigrp.py scapy-2.4.3.new/scapy/contrib/eigrp.py
+--- scapy-2.4.3.old/scapy/contrib/eigrp.py	2019-08-04 16:12:30.000000000 +0000
++++ scapy-2.4.3.new/scapy/contrib/eigrp.py	2019-08-04 16:12:30.000000000 +0000
+@@ -1,4 +1,2 @@
+-#!/usr/bin/env python
+-
+ # This file is part of Scapy
+ # Scapy is free software: you can redistribute it and/or modify
+diff -ru scapy-2.4.3.old/scapy/contrib/ethercat.py scapy-2.4.3.new/scapy/contrib/ethercat.py
+--- scapy-2.4.3.old/scapy/contrib/ethercat.py	2019-08-04 16:12:30.000000000 +0000
++++ scapy-2.4.3.new/scapy/contrib/ethercat.py	2019-08-04 16:12:30.000000000 +0000
+@@ -1,4 +1,2 @@
+-#! /usr/bin/env python
+-#
+ # scapy.contrib.description = EtherCat
+ # scapy.contrib.status = loads
+diff -ru scapy-2.4.3.old/scapy/contrib/gtp.py scapy-2.4.3.new/scapy/contrib/gtp.py
+--- scapy-2.4.3.old/scapy/contrib/gtp.py	2019-08-04 16:12:30.000000000 +0000
++++ scapy-2.4.3.new/scapy/contrib/gtp.py	2019-08-04 16:12:30.000000000 +0000
+@@ -1,4 +1,2 @@
+-#! /usr/bin/env python
+-
+ # Copyright (C) 2018 Leonardo Monteiro <decastromonteiro@gmail.com>
+ #               2017 Alexis Sultan    <alexis.sultan@sfr.com>
+diff -ru scapy-2.4.3.old/scapy/contrib/gtp_v2.py scapy-2.4.3.new/scapy/contrib/gtp_v2.py
+--- scapy-2.4.3.old/scapy/contrib/gtp_v2.py	2019-08-04 16:12:30.000000000 +0000
++++ scapy-2.4.3.new/scapy/contrib/gtp_v2.py	2019-08-04 16:12:30.000000000 +0000
+@@ -1,4 +1,2 @@
+-#! /usr/bin/env python
+-
+ # Copyright (C) 2017 Alessio Deiana <adeiana@gmail.com>
+ # 2017 Alexis Sultan <alexis.sultan@sfr.com>
+diff -ru scapy-2.4.3.old/scapy/contrib/homeplugav.py scapy-2.4.3.new/scapy/contrib/homeplugav.py
+--- scapy-2.4.3.old/scapy/contrib/homeplugav.py	2019-08-04 16:12:30.000000000 +0000
++++ scapy-2.4.3.new/scapy/contrib/homeplugav.py	2019-08-04 16:12:30.000000000 +0000
+@@ -1,4 +1,2 @@
+-#! /usr/bin/env python
+-
+ # This file is part of Scapy
+ # Scapy is free software: you can redistribute it and/or modify
+diff -ru scapy-2.4.3.old/scapy/contrib/icmp_extensions.py scapy-2.4.3.new/scapy/contrib/icmp_extensions.py
+--- scapy-2.4.3.old/scapy/contrib/icmp_extensions.py	2019-08-04 16:12:30.000000000 +0000
++++ scapy-2.4.3.new/scapy/contrib/icmp_extensions.py	2019-08-04 16:12:30.000000000 +0000
+@@ -1,4 +1,2 @@
+-#! /usr/bin/env python
+-
+ # This file is part of Scapy
+ # Scapy is free software: you can redistribute it and/or modify
+diff -ru scapy-2.4.3.old/scapy/contrib/ife.py scapy-2.4.3.new/scapy/contrib/ife.py
+--- scapy-2.4.3.old/scapy/contrib/ife.py	2019-08-04 16:12:30.000000000 +0000
++++ scapy-2.4.3.new/scapy/contrib/ife.py	2019-08-04 16:12:30.000000000 +0000
+@@ -1,4 +1,2 @@
+-#! /usr/bin/env python
+-#
+ # scapy.contrib.description = ForCES Inter-FE LFB type (IFE)
+ # scapy.contrib.status = loads
+diff -ru scapy-2.4.3.old/scapy/contrib/igmp.py scapy-2.4.3.new/scapy/contrib/igmp.py
+--- scapy-2.4.3.old/scapy/contrib/igmp.py	2019-08-04 16:12:30.000000000 +0000
++++ scapy-2.4.3.new/scapy/contrib/igmp.py	2019-08-04 16:12:30.000000000 +0000
+@@ -1,4 +1,2 @@
+-#! /usr/bin/env python
+-
+ # This file is part of Scapy
+ # Scapy is free software: you can redistribute it and/or modify
+diff -ru scapy-2.4.3.old/scapy/contrib/igmpv3.py scapy-2.4.3.new/scapy/contrib/igmpv3.py
+--- scapy-2.4.3.old/scapy/contrib/igmpv3.py	2019-08-04 16:12:30.000000000 +0000
++++ scapy-2.4.3.new/scapy/contrib/igmpv3.py	2019-08-04 16:12:30.000000000 +0000
+@@ -1,4 +1,2 @@
+-#! /usr/bin/env python
+-
+ # This file is part of Scapy
+ # Scapy is free software: you can redistribute it and/or modify
+diff -ru scapy-2.4.3.old/scapy/contrib/ikev2.py scapy-2.4.3.new/scapy/contrib/ikev2.py
+--- scapy-2.4.3.old/scapy/contrib/ikev2.py	2019-08-04 16:12:30.000000000 +0000
++++ scapy-2.4.3.new/scapy/contrib/ikev2.py	2019-08-04 16:12:30.000000000 +0000
+@@ -1,4 +1,2 @@
+-#!/usr/bin/env python
+-
+ # This file is part of Scapy
+ # Scapy is free software: you can redistribute it and/or modify
+diff -ru scapy-2.4.3.old/scapy/contrib/isotp.py scapy-2.4.3.new/scapy/contrib/isotp.py
+--- scapy-2.4.3.old/scapy/contrib/isotp.py	2019-08-04 16:12:30.000000000 +0000
++++ scapy-2.4.3.new/scapy/contrib/isotp.py	2019-08-04 16:12:30.000000000 +0000
+@@ -1,4 +1,2 @@
+-#! /usr/bin/env python
+-
+ # This file is part of Scapy
+ # See http://www.secdev.org/projects/scapy for more information
+diff -ru scapy-2.4.3.old/scapy/contrib/lldp.py scapy-2.4.3.new/scapy/contrib/lldp.py
+--- scapy-2.4.3.old/scapy/contrib/lldp.py	2019-08-04 16:12:30.000000000 +0000
++++ scapy-2.4.3.new/scapy/contrib/lldp.py	2019-08-04 16:12:30.000000000 +0000
+@@ -1,4 +1,2 @@
+-#! /usr/bin/env python
+-#
+ # scapy.contrib.description = Link Layer Discovery Protocol (LLDP)
+ # scapy.contrib.status = loads
+diff -ru scapy-2.4.3.old/scapy/contrib/ltp.py scapy-2.4.3.new/scapy/contrib/ltp.py
+--- scapy-2.4.3.old/scapy/contrib/ltp.py	2019-08-04 16:12:30.000000000 +0000
++++ scapy-2.4.3.new/scapy/contrib/ltp.py	2019-08-04 16:12:30.000000000 +0000
+@@ -1,4 +1,2 @@
+-#!/usr/bin/env python
+-
+ # This file is part of Scapy
+ # Scapy is free software: you can redistribute it and/or modify
+diff -ru scapy-2.4.3.old/scapy/contrib/mac_control.py scapy-2.4.3.new/scapy/contrib/mac_control.py
+--- scapy-2.4.3.old/scapy/contrib/mac_control.py	2019-08-04 16:12:30.000000000 +0000
++++ scapy-2.4.3.new/scapy/contrib/mac_control.py	2019-08-04 16:12:30.000000000 +0000
+@@ -1,4 +1,2 @@
+-#! /usr/bin/env python
+-#
+ # scapy.contrib.description = MACControl
+ # scapy.contrib.status = loads
+diff -ru scapy-2.4.3.old/scapy/contrib/ospf.py scapy-2.4.3.new/scapy/contrib/ospf.py
+--- scapy-2.4.3.old/scapy/contrib/ospf.py	2019-08-04 16:12:30.000000000 +0000
++++ scapy-2.4.3.new/scapy/contrib/ospf.py	2019-08-04 16:12:30.000000000 +0000
+@@ -1,4 +1,2 @@
+-#!/usr/bin/env python
+-
+ # scapy.contrib.description = Open Shortest Path First (OSPF)
+ # scapy.contrib.status = loads
+diff -ru scapy-2.4.3.old/scapy/contrib/ripng.py scapy-2.4.3.new/scapy/contrib/ripng.py
+--- scapy-2.4.3.old/scapy/contrib/ripng.py	2019-08-04 16:12:30.000000000 +0000
++++ scapy-2.4.3.new/scapy/contrib/ripng.py	2019-08-04 16:12:30.000000000 +0000
+@@ -1,4 +1,2 @@
+-#!/usr/bin/env python
+-
+ # This file is part of Scapy
+ # Scapy is free software: you can redistribute it and/or modify
+diff -ru scapy-2.4.3.old/scapy/contrib/sdnv.py scapy-2.4.3.new/scapy/contrib/sdnv.py
+--- scapy-2.4.3.old/scapy/contrib/sdnv.py	2019-08-04 16:12:30.000000000 +0000
++++ scapy-2.4.3.new/scapy/contrib/sdnv.py	2019-08-04 16:12:30.000000000 +0000
+@@ -1,4 +1,2 @@
+-#!/usr/bin/env python
+-
+ # This file is part of Scapy
+ # Scapy is free software: you can redistribute it and/or modify
+diff -ru scapy-2.4.3.old/scapy/contrib/send.py scapy-2.4.3.new/scapy/contrib/send.py
+--- scapy-2.4.3.old/scapy/contrib/send.py	2019-08-04 16:12:30.000000000 +0000
++++ scapy-2.4.3.new/scapy/contrib/send.py	2019-08-04 16:12:30.000000000 +0000
+@@ -1,4 +1,2 @@
+-#! /usr/bin/env python
+-
+ # This file is part of Scapy
+ # Scapy is free software: you can redistribute it and/or modify
+diff -ru scapy-2.4.3.old/scapy/contrib/skinny.py scapy-2.4.3.new/scapy/contrib/skinny.py
+--- scapy-2.4.3.old/scapy/contrib/skinny.py	2019-08-04 16:12:30.000000000 +0000
++++ scapy-2.4.3.new/scapy/contrib/skinny.py	2019-08-04 16:12:30.000000000 +0000
+@@ -1,4 +1,2 @@
+-#! /usr/bin/env python
+-
+ # scapy.contrib.description = Skinny Call Control Protocol (SCCP)
+ # scapy.contrib.status = loads
+diff -ru scapy-2.4.3.old/scapy/contrib/tzsp.py scapy-2.4.3.new/scapy/contrib/tzsp.py
+--- scapy-2.4.3.old/scapy/contrib/tzsp.py	2019-08-04 16:12:30.000000000 +0000
++++ scapy-2.4.3.new/scapy/contrib/tzsp.py	2019-08-04 16:12:30.000000000 +0000
+@@ -1,4 +1,2 @@
+-#! /usr/bin/env python
+-#
+ # scapy.contrib.description = TaZmen Sniffer Protocol (TZSP)
+ # scapy.contrib.status = loads
+diff -ru scapy-2.4.3.old/scapy/layers/inet6.py scapy-2.4.3.new/scapy/layers/inet6.py
+--- scapy-2.4.3.old/scapy/layers/inet6.py	2019-08-04 16:12:30.000000000 +0000
++++ scapy-2.4.3.new/scapy/layers/inet6.py	2019-08-04 16:12:30.000000000 +0000
+@@ -1,4 +1,3 @@
+-#! /usr/bin/env python
+ #############################################################################
+ #                                                                           #
+ #  inet6.py --- IPv6 support for Scapy                                      #
+diff -ru scapy-2.4.3.old/scapy/pipetool.py scapy-2.4.3.new/scapy/pipetool.py
+--- scapy-2.4.3.old/scapy/pipetool.py	2019-08-04 16:12:30.000000000 +0000
++++ scapy-2.4.3.new/scapy/pipetool.py	2019-08-04 16:12:30.000000000 +0000
+@@ -1,4 +1,2 @@
+-#! /usr/bin/env python
+-
+ # This file is part of Scapy
+ # See http://www.secdev.org/projects/scapy for more information
+diff -ru scapy-2.4.3.old/scapy/tools/automotive/isotpscanner.py scapy-2.4.3.new/scapy/tools/automotive/isotpscanner.py
+--- scapy-2.4.3.old/scapy/tools/automotive/isotpscanner.py	2019-08-04 16:12:30.000000000 +0000
++++ scapy-2.4.3.new/scapy/tools/automotive/isotpscanner.py	2019-08-04 16:12:30.000000000 +0000
+@@ -1,4 +1,2 @@
+-#! /usr/bin/env python
+-
+ # This file is part of Scapy
+ # See http://www.secdev.org/projects/scapy for more information
+diff -ru scapy-2.4.3.old/scapy/tools/check_asdis.py scapy-2.4.3.new/scapy/tools/check_asdis.py
+--- scapy-2.4.3.old/scapy/tools/check_asdis.py	2019-08-04 16:12:30.000000000 +0000
++++ scapy-2.4.3.new/scapy/tools/check_asdis.py	2019-08-04 16:12:30.000000000 +0000
+@@ -1,4 +1,2 @@
+-#! /usr/bin/env python
+-
+ from __future__ import print_function
+ import getopt
