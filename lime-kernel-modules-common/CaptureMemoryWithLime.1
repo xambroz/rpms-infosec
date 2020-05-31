@@ -1,0 +1,65 @@
+.TH CaptureMemoryWithLime "1" "January 2014"
+.SH NAME
+CaptureMemoryWithLime \- capture physical memorying using LiME Forensics
+.SH SYNOPSIS
+.B CaptureMemoryWithLine
+[\fIOPTION\fR]... 
+.SH DESCRIPTION
+.\" Add any additional description here
+.PP
+.B CaptureMemoryWithLime
+uses the Linux Memory Extrator loadable kernel module to acquire volatile memory from the current Linux system.
+Here are the options, all of which are optional.
+.TP
+\fB\-o\fR, \fB\-\-output\fR=\fIFILE\fR
+Save memory to the indicated file.
+This option defaults to \fI/var/tmp/memory.dd\fR.
+.TP
+\fB\-d\fR, \fB\-\-dir\fR=\fIDIRECTORY\fR
+Look for pre-compiled kernel modules in the indicated directory.
+This option defaults to \fI/usr/share/lime-kernel-modules-1.1.r17\fR.
+.TP
+\fB\-r\fR, \fB\-\-raw\fR
+Save memory in raw format.
+.TP
+\fB\-l\fR, \fB\-\-lime\fR
+Save memory in LiME format.
+.TP
+\fB\-p\fR, \fB\-\-padded\fR
+Save memory in padded format.
+.TP
+\fB\-v\fR, \fB\-\-verbose\fR
+Be verbose about what's going on.
+.TP
+\fB\-h\fR, \fB\-\-help\fR
+Display the options and their meaning.
+.TP
+\fB\-\-deploy\fR=\fIDIRECTORY\fR
+In this mode, the
+.B CaptureMemoryWithLime
+script and the supporting kernel objects library are copied to the indicated directory.
+The deploped copy of
+.B CaptureMemoryWithLime
+is also altered so that when it is run, it references the deployed kernel objects library using the path
+used to run the
+.B CaptureMemoryWithLime
+script.
+Finally, the deployed copy is also changed so that the location of the memory dump is also in the deployed
+directory from which the
+.B CaptureMemoryWithLime
+script runs.
+The idea here is to deploy the script and the library to removable media that is subsequently used
+to capture memory on a machine under investigation.
+.SH EXAMPLES
+.ps 6
+\f(CW$ sudo CaptureMemoryWithLime -v -d /lime-kernel-objects
+.br
+Checking for lime.ko for 3.12.8-300.fc20.i686.PAE ... Found lime.ko for 3.12.8-300.fc20.i686.PAE
+.br
+Running: insmod /lime-kernel-objects/3.12.8-300.fc20.i686.PAE/lime.ko "path=/var/tmp/memory.dd format=raw" ... Done
+.br
+-r--r--r--. 1 root root 1073276928 Jan 27 15:37 /var/tmp/memory.dd
+.br
+Removing installed lime module ... Done\fR
+.SH "SEE ALSO"
+See \fIhttps://code.google.com/p/lime-forensics/\fR for more information.

@@ -1,0 +1,226 @@
+#!/bin/bash
+########################################################################################
+# This script uses the Lime Forensics kernel module to capture physical memory on
+# the current machine. The library of kernel modules can be on removable storage which
+# is indicated by the -l library option.
+########################################################################################
+
+Output=/var/tmp/memory.dd
+Format=raw
+Library=/usr/share/lime-kernel-modules-1.1.r17
+Program="`basename $0`"
+Deployed=0
+DeployDir=
+
+unset Verbose
+
+usage()
+{
+cat << EOF
+
+Usage: $Program options
+
+	OPTIONS:
+	   -o, --output file	File where memory is stored (default: $Output)
+	   -d, --dir dir	Directory where pre-compiled kernel objects reside (default: $Library)
+	   -r, --raw      	Raw format (default)
+	   -l, --lime      	Lime format
+	   -p, --padded      	Padded format
+	   -v, --verbose      	Verbose
+	   -h, --help      	Display help information
+	   --deploy dir		Deploy this script and the supporting kernel objects to a directory
+
+This script saves all of physical memory to a file using the specified format
+ using the Lime Forensics kernel module. See https://code.google.com/p/lime-forensics.
+
+EOF
+}
+
+Vecho ()
+{
+        if [ "$Verbose" ]; then
+		T=
+		case "$1" in
+		-*)
+			T="$1"
+			shift
+			;;
+		esac
+		echo $T "$@"
+        fi
+}
+
+########################################################################################
+########################################################################################
+if [ $Deployed = 1 ]; then
+	Library="`dirname $0`/$Library"
+	Output="`dirname $0`/`basename $Output`"
+fi
+
+########################################################################################
+# Parse options
+########################################################################################
+TMP=`getopt -o o:d:rlpvh --long output:,dir:,raw,lime,padded,verbose,help,deploy: -- "$@"`
+if [ $? != 0 ]; then
+	usage
+	exit 1
+fi
+eval set -- "$TMP"
+while true
+do
+	case "$1" in
+	-r | --raw)
+		Format=raw
+		shift
+		;;
+	-l | --line)
+		Format=lime
+		shift
+		;;
+	-p | --padded)
+		Format=padded
+		shift
+		;;
+	-o | --output)
+		Output="$2"
+		shift 2
+		;;
+	-v | --verbose)
+		Verbose=yes
+		shift
+		;;
+	-h | --help)
+		usage
+		exit 0
+		;;
+	-d | --dir)
+		if [ ! -d "$2" ]; then
+			echo "$Program: No library directory $2 - option ignored"
+		else
+			Library="$2"
+		fi
+		shift 2
+		;;
+	--deploy)
+		if [ ! -d "$2" ]; then
+			echo "$Program: No deploy directory $2 - option ignored"
+		else
+			DeployDir="$2"
+		fi
+		shift 2
+		;;
+	--)
+		break
+		;;
+	*)
+		break
+		;;
+	esac
+done
+
+########################################################################################
+# There better be a library of kernel objects ...
+########################################################################################
+if [ ! -d "$Library" ]; then
+	echo "$Program: No library directory $Library - exiting"
+	exit 1
+fi
+
+########################################################################################
+# If we are deploying, we do that only and then exit.
+########################################################################################
+if [ -n "$DeployDir" ]; then
+	Vecho -n "Copying $Library to $DeployDir ... "
+	cp -rpL "$Library" "$DeployDir"
+	Vecho Done
+	Vecho -n "Copying $Program to $DeployDir ... "
+	cp -pL $0 "$DeployDir"
+	L=`basename $Library`
+	Vecho Done
+	Vecho -n "Updating Library in $Program in $DeployDir to be $L ... "
+	sed --in-place -e "s/^Library=.*/Library=\"$L\"/" -e "s/Deployed=0/Deployed=1/" "$DeployDir/$Program"
+	Vecho Done
+	echo "Exiting since deploy was selected"
+	exit 0
+fi
+########################################################################################
+# We better be able to find insmod and rmmod.
+########################################################################################
+for d in /usr/sbin /sbin
+do
+	if [ -f $d/insmod ]; then
+		I=$d/insmod
+	fi
+	if [ -f $d/rmmod ]; then
+		R=$d/rmmod
+	fi
+done
+if [ -z "$I" ]; then
+	echo "Cannot find insmod"
+	exit 2
+elif [ -z "$R" ]; then
+	echo "Cannot find rmmod"
+	exit 2
+fi
+
+if [ "`whoami`" != "root" ]; then
+	echo "Must be root to install the lime kernel module"
+	exit 3
+fi
+
+########################################################################################
+# We need to find a pre-compiled kernel object to install.
+# Now, if we cannot find one, we could compile one, but this is likely not a good idea
+# as it will change host memory quite a bit by running make and gcc, so we'll not do
+# that automatically.
+########################################################################################
+K=$(uname -r | tr + .)
+Vecho -n "Checking for lime.ko for $K ... "
+case "$K" in
+*i686*|*x86_64*)
+	LIME_KO="$Library/$K/lime.ko"
+	;;
+*)
+	LIME_KO="$Library/$K.$(uname -m)/lime.ko"
+	;;
+esac
+if [ ! -f $LIME_KO ]; then
+	echo "A lime.ko module could not be found in $Library for this linux system."
+	echo "Here are the specifics for this sytem:"
+	echo ""
+	cat /proc/version
+	echo ""
+	echo "If you need to create a module, the best practice is to create that"
+	echo "module on some other system and then re-run this script, thereby"
+	echo "minimizing the footprint of the module creating process on this system."
+	exit 4
+fi
+Vecho Found lime.ko for $K
+
+########################################################################################
+# In the case of LiME, installing the module also runs the module. If the module is
+# installed, we need to remove it first, then install (and run).
+########################################################################################
+if [ -d /sys/module/lime ]; then
+	Vecho "Removing installed lime module ... "
+	$R lime
+	Vecho Done
+fi
+
+########################################################################################
+# Finally, after all this, let's install the module which causes it to run and save
+# memory to the specified location in the specified format. Then remove the module.
+########################################################################################
+if [ -f $LIME_KO ]; then
+	Vecho -n "Running: insmod $LIME_KO \"path=$Output format=$Format\" ... "
+	$I $LIME_KO "path=$Output format=$Format" || exit;
+	Vecho "Done";
+	ls -l "$Output"
+	Vecho -n "Removing installed lime module ... "
+	$R lime
+	Vecho Done
+else
+	echo "No module for kernel $K to install"
+	exit 5
+fi
+exit 0
