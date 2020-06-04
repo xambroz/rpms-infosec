@@ -2,7 +2,7 @@
 Summary:          John the Ripper password cracker
 Name:             john-jumbo
 Version:          1.9.0
-Release:          jumbo.%{jumbo_version}.1%{?dist}
+Release:          jumbo.%{jumbo_version}.2%{?dist}
 
 URL:              http://www.openwall.com/john
 License:          GPLv2
@@ -38,23 +38,41 @@ This package includes the john added with the jumbo %{jumbo_version} patch to
 add many more types of the passwords.
 
 %prep
-%setup -q -n john-%{version}-jumbo-%{jumbo_version}
+%autosetup -p 1 -n john-%{version}-jumbo-%{jumbo_version}
+
+
 #rm doc/INSTALL
 
-%patch0 -p1 -b .inlines
-#%patch3 -p1 -b .jumbo
-chmod 0644 doc/*
+#fix permissions
+chmod go-wx doc/*
+chmod a+x doc/extras
 sed -i 's#\$JOHN/john.conf#%{_sysconfdir}/%{name}/john.conf#' src/params.h
 chmod -R u+r src
+
+
+# Change env python to python
+sed -i -e 's%#![ ]*/usr/bin/env[ ]*python[ ]*$%#!/usr/bin/python2%;
+           s%#![ ]*/usr/bin/env[ ]*python3[ ]*$%#!/usr/bin/python3%;
+           s%#!/usr/bin/python$%#!/usr/bin/python2%;' \
+    run/*.py doc/README.apex doc/Auditing-Kerio-Connect.md
+sed -i -e 's%#![ ]*/usr/bin/env[ ]*perl[ ]*$%#!/usr/bin/perl%;' run/*.pl
 
 pushd run
 futurize -w aix2john.py
 popd
 
 
+
+
+
 %build
 cd src
-export CFLAGS="-DJOHN_SYSTEMWIDE=1"
+
+# -DJOHN_SYSTEMWIDE=1 ... use system-wid installation of john
+# -fcommon ... don't complain about redefined global definitions
+# -g ... debug
+export CFLAGS="-DJOHN_SYSTEMWIDE=1 -fcommon -g"
+
 #%%configure
 #./configure --build=x86_64-redhat-linux-gnu --host=x86_64-redhat-linux-gnu --program-prefix= --disable-dependency-tracking --prefix=/usr --exec-prefix=/usr --bindir=/usr/bin --sbindir=/usr/sbin --sysconfdir=/etc --datadir=/usr/share --includedir=/usr/include --libdir=/usr/lib64 --libexecdir=/usr/libexec --localstatedir=/var --sharedstatedir=/var/lib --mandir=/usr/share/man --infodir=/usr/share/info
 ./configure
@@ -99,9 +117,11 @@ rm -f %{buildroot}%{_bindir}/unshadow
 %{_libexecdir}/john/dumb16.conf
 %{_libexecdir}/john/dumb32.conf
 %{_libexecdir}/john/dynamic.conf
+%{_libexecdir}/john/dynamic_disabled.conf
 %{_libexecdir}/john/dynamic_flat_sse_formats.conf
 %{_libexecdir}/john/john.conf
-%{_libexecdir}/john/john.local.conf
+%{_libexecdir}/john/hybrid.conf
+# %%{_libexecdir}/john/john.local.conf
 %{_libexecdir}/john/korelogic.conf
 %{_libexecdir}/john/regex_alphabets.conf
 %{_libexecdir}/john/repeats16.conf
@@ -109,7 +129,10 @@ rm -f %{buildroot}%{_bindir}/unshadow
 
 
 %changelog
-* Sun Mar 01 2020 Michal Ambroz <rebus _AT seznam.cz> - 1.9.0-jumbo.1
+* Fri Jun 02 2020 Michal Ambroz <rebus _AT seznam.cz> - 1.9.0-jumbo.1.2
+- rebuild for Fedora32
+
+* Sun Mar 01 2020 Michal Ambroz <rebus _AT seznam.cz> - 1.9.0-jumbo.1.1
 - bump to version 1.9.0
 
 * Tue Feb 21 2017 Michal Ambroz <rebus AT seznam.cz> - 1.8.0-jumbo.1.2
