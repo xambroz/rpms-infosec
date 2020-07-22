@@ -23,7 +23,7 @@ Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{version}.tar.
 %else
 Release:        0.%{rel}.%{gitdate}git%{shortcommit}%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
-%endif #build_release
+%endif
 
 License:        LGPLv3+ and GPLv2+ and BSD and MIT and ASLv2.0 and MPLv2.0
 # Radare2 as a package is targeting to be licensed/compiled as LGPLv3+
@@ -227,6 +227,8 @@ find %{buildroot} -name '*.a' -delete
 
 
 %changelog
+* Mon Jul 13 2020 Michal Ambroz <rebus at, seznam.cz> 4.4.0-10.20200713gitc52c7ba
+
 * Fri Jun 08 2018 Michal Ambroz <rebus at, seznam.cz> 2.7.0-0.2.20180611gitc52c7ba
 - bump to 2.7.0 c52c7bace3a8a4e53baa008d05df8aee75733eee
 - fixes https://github.com/radare/radare2/issues/10300
