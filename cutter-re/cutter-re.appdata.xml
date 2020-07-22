@@ -21,12 +21,15 @@
     </screenshot>
   </screenshots>
 
-  <url type="homepage">https://cutter.re/docs/</url>
-  <url type="bugtracker">https://bugzilla.redhat.com/enter_bug.cgi?product=Fedora&amp;component=cutter-re</url>
+  <url type="homepage">https://cutter.re/</url>
+  <url type="help">https://cutter.re/docs/</url>
+  <url type="faq">https://cutter.re/docs/common-errors.html</url>
   <url type="bugtracker">https://github.com/radareorg/cutter/issues</url>
+  <url type="contact">https://cutter.re/#community</url>
   <update_contact>xarkes</update_contact>
 
   <releases>
+    <release version="1.11.0-rc1" date="2020-07-21" />
     <release version="1.10.3" date="2020-05-08" />
     <release version="1.10.2" date="2020-03-10" />
     <release version="1.10.1" date="2020-01-31" />
