@@ -3,18 +3,18 @@
 
 Name:           radare2
 Summary:        The reverse engineering framework
-Version:        4.5.0
+Version:        5.1.1
 URL:            https://radare.org/
 VCS:            https://github.com/radare/radare2
 
 %global         gituser         radare
 %global         gitname         radare2
 
-%global         gitdate         20190401
-%global         commit          3c41cb7d7ed018509a24c2e370d79a91c642ed07
+%global         gitdate         20210211
+%global         commit          a86f8077fc148abd6443384362a3717cd4310e64
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
-%global         rel              1
+%global         rel              2
 
 %if %{with build_release}
 Release:        %{rel}%{?dist}
@@ -45,6 +45,7 @@ License:        LGPLv3+ and GPLv2+ and BSD and MIT and ASL 2.0 and MPLv2.0 and z
 # shlr/zip/zlib - zlib/libpng License (system installed shared libzip is used instead)
 # shlr/zip/zip - 3 clause BSD (system installed shared zlib is used instead)
 # shlr/ptrace-wrap - LGPL v3+
+# shlr/tree-sitter - MIT
 
 # Removed from the final package because of the presence of minified JS and
 # absence of the source JS - this should be packaged with radare2-webui
@@ -113,11 +114,12 @@ Provides:       bundled(spp) = 1.2.0
 # ./shlr/sdb/README.md
 # sdb is a simple string key/value database based on djb's cdb
 # https://github.com/radare/sdb
-Provides:       bundled(sdb) = 1.5.0
+Provides:       bundled(sdb) = 1.7.0
 
 # ./shlr/sdb/src/json/README
+# Based on js0n with a lot of modifications
 # https://github.com/quartzjer/js0n
-# JSON support for sdb
+# JSON support for sdb.
 Provides:       bundled(js0n)
 
 # libr/util/regex/README
@@ -150,6 +152,9 @@ Provides:       bundled(grub2)
 # https://github.com/thestr4ng3r/ptrace-wrap
 Provides:       bundled(ptrace-wrap)
 
+# ./shlr/tree-sitter
+# https://github.com/tree-sitter/tree-sitter
+Provides:	bundled(tree-sitter) = 0.17.2
 
 %description
 The radare2 is a reverse-engineering framework that is multi-architecture,
@@ -220,16 +225,11 @@ echo "Available under https://github.com/radare/radare2-webui" >> ./shlr/www/REA
 
 %install
 %meson_install
-# removing r2pm because it is a package manager which could install packages
-# system wide or in the user home directory
-rm %{buildroot}/%{_bindir}/r2pm
-# create r2 symlink because meson build does not create it (yet)
-ln -s radare2 %{buildroot}/%{_bindir}/r2
 # install README.Fedora for the www part
 mkdir -p %{buildroot}/%{_datadir}/%{name}/%{version}/www
 cp ./shlr/www/README.Fedora %{buildroot}/%{_datadir}/%{name}/%{version}/www/README.Fedora
 # remove unneeded fortunes
-rm %{buildroot}/%{_datadir}/doc/%{name}/fortunes.{creepy,nsfw,fun}
+rm %{buildroot}/%{_datadir}/doc/%{name}/fortunes.fun
 
 %ldconfig_scriptlets
 
@@ -241,7 +241,7 @@ rm %{buildroot}/%{_datadir}/doc/%{name}/fortunes.{creepy,nsfw,fun}
 
 
 %files
-%doc AUTHORS.md CONTRIBUTING.md DEVELOPERS.md README.md
+%doc CONTRIBUTING.md DEVELOPERS.md README.md
 %doc doc/3D/ doc/node.js/ doc/pdb/ doc/sandbox/
 %doc doc/avr.md doc/brainfuck.md doc/calling-conventions.md doc/debug.md
 %doc doc/esil.md doc/gdb.md doc/gprobe.md doc/intro.md doc/io.md doc/rap.md
@@ -273,12 +273,28 @@ rm %{buildroot}/%{_datadir}/doc/%{name}/fortunes.{creepy,nsfw,fun}
 %{_datadir}/%{name}/%{version}/magic
 %{_datadir}/%{name}/%{version}/opcodes
 %{_datadir}/%{name}/%{version}/syscall
+%{_datadir}/%{name}/%{version}/charsets
 %dir %{_datadir}/%{name}
 %dir %{_datadir}/doc/%{name}
 %dir %{_datadir}/%{name}/%{version}
 
 
 %changelog
+* Sun Feb 28 2021 Michal Ambroz <rebus at, seznam.cz> 5.1.1-2
+- stop removing the r2pm binary from the package
+
+* Mon Feb 15 2021 Henrik Nordstrom <henrik@henriknordstrom.net> - 5.1.1-1
+- Rebase to upstream version 5.1.1
+
+* Wed Jan 27 2021 Fedora Release Engineering <releng@fedoraproject.org> - 4.5.0-2.2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
+
+* Fri Oct 2 2020 Riccardo Schirone <rschirone91@gmail.com> - 4.5.0-2.1
+- Rebuilt to make sure version is no lower than F32
+
+* Wed Jul 29 2020 Fedora Release Engineering <releng@fedoraproject.org> - 4.5.0-1.1
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
+
 * Mon Jul 20 2020 Riccardo Schirone <rschirone91@gmail.com> - 4.5.0-1
 - Rebase to upstream version 4.5.0
 * Fri May 8 2020 Riccardo Schirone <rschirone91@gmail.com> - 4.4.0-2
