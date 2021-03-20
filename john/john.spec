@@ -5,12 +5,12 @@ Name:             john
 Version:          1.9.0
 Release:          1%{?dist}
 
-URL:              http://www.openwall.com/john
+URL:              https://www.openwall.com/john
 License:          GPLv2
-Source0:          http://www.openwall.com/john/k/john-%{version}.tar.xz
-Source1:          http://www.openwall.com/john/k/john-%{version}.tar.xz.sign
-# Source2:          http://www.openwall.com/john/k/john-extra-%{extra_date}.tar.xz
-# Source3:          http://www.openwall.com/john/k/john-extra-%{extra_date}.tar.xz.sign
+Source0:          https://www.openwall.com/john/k/john-%{version}.tar.xz
+Source1:          https://www.openwall.com/john/k/john-%{version}.tar.xz.sign
+# Source2:          https://www.openwall.com/john/k/john-extra-%%{extra_date}.tar.xz
+# Source3:          https://www.openwall.com/john/k/john-extra-%%{extra_date}.tar.xz.sign
 
 BuildRequires:  gcc
 %description
@@ -20,28 +20,31 @@ supported as well.
 
 %prep
 %setup -q
-#%patch2 -p0 -b .jumbo
+# %%patch2 -p0 -b .jumbo
 chmod 0644 doc/*
 sed -i 's#\$JOHN/john.conf#%{_sysconfdir}/john.conf#' src/params.h
 cp -a src src-mmx
-# tar --strip-components 1 --directory run -xf "%{SOURCE2}"
+# tar --strip-components 1 --directory run -xf "%%{SOURCE2}"
 
 %build
 
 %global target_non_mmx generic
 
 %ifarch %{ix86}
-%global target_non_mmx linux-x86-any
-%global target_mmx linux-x86-mmx
+    %global target_non_mmx linux-x86-any
+    %global target_mmx linux-x86-mmx
 %endif
+
 %ifarch x86_64
-%global target_non_mmx linux-x86-64
+    %global target_non_mmx linux-x86-64
 %endif
+
 %ifarch ppc
-%global target_non_mmx linux-ppc32
+    %global target_non_mmx linux-ppc32
 %endif
+
 %ifarch ppc64
-%global target_non_mmx linux-ppc64
+    %global target_non_mmx linux-ppc64
 %endif
 
 export CFLAGS="-c ${RPM_OPT_FLAGS} -DJOHN_SYSTEMWIDE=1"
@@ -49,12 +52,12 @@ export CFLAGS="-c ${RPM_OPT_FLAGS} -DJOHN_SYSTEMWIDE=1"
 make -C src %{target_non_mmx} CFLAGS="${CFLAGS}" LDFLAGS="${RPM_OPT_FLAGS}"
 
 %if 0%{?target_mmx:1}
-mv run/john run/john-non-mmx
+    mv run/john run/john-non-mmx
 
-CFLAGS="${CFLAGS} -DCPU_FALLBACK=1"
-LDFLAGS="${CFLAGS}"
+    CFLAGS="${CFLAGS} -DCPU_FALLBACK=1"
+    LDFLAGS="${CFLAGS}"
 
-make -C src-mmx %{target_mmx}  CFLAGS="${CFLAGS}" LDFLAGS=""
+    make -C src-mmx %{target_mmx}  CFLAGS="${CFLAGS}" LDFLAGS=""
 %endif
 
 %install
@@ -65,10 +68,12 @@ install -d -m 755 %{buildroot}%{_datadir}/john
 install -m 755 run/{john,mailer} %{buildroot}%{_bindir}
 install -m 644 run/{*.chr,password.lst} %{buildroot}%{_datadir}/john
 install -m 644 run/john.conf %{buildroot}%{_sysconfdir}
+
 %if 0%{?target_mmx:1}
-install -d -m 755 %{buildroot}%{_libexecdir}/john
-install -m 755 run/john-non-mmx %{buildroot}%{_libexecdir}/john/
+    install -d -m 755 %{buildroot}%{_libexecdir}/john
+    install -m 755 run/john-non-mmx %{buildroot}%{_libexecdir}/john/
 %endif
+
 pushd %{buildroot}%{_bindir}
 ln -s john unafs
 ln -s john unique
