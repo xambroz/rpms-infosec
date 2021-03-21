@@ -1,6 +1,6 @@
 Name:           r2cutter
 Version:        0.1.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        GUI for radare2 reverse engineering framework
 
 %global         cutter_translations_commit 8e1d24b4040474c681d8db39cb75c0ed66bb5bda
@@ -13,6 +13,13 @@ License:        GPLv3 and CC-BY-SA and CC0
 URL:            https://github.com/radareorg/r2cutter/
 Source0:        https://github.com/radareorg/r2cutter/archive/%{version}/r2cutter-%{version}.tar.gz
 Source1:        https://github.com/radareorg/cutter-translations/archive/%{cutter_translations_commit}.tar.gz#/cutter-translations-%{cutter_translations_commit}.tar.gz
+
+Patch0:         https://github.com/radareorg/r2cutter/commit/3e34672e7e2cb2bdba3541f391121e0cf52d508c.patch#/r2cutter-00-unhandled-write.patch
+Patch1:         https://github.com/radareorg/r2cutter/commit/19435220bfa377a503a32aa4b0bb660cfd8a274a.patch#/r2cutter-01-unused-iod.patch
+Patch2:         https://github.com/radareorg/r2cutter/commit/7d9729bbffe18a87c6039b583c30ea84887bdff1.patch#/r2cutter-02-doubled-enum.patch
+Patch3:         https://github.com/radareorg/r2cutter/commit/955d6278363474a3e91aaff4b2ef846b094422ca.patch#/r2cutter-03-unhandled-pipe.patch
+Patch4:         https://github.com/radareorg/r2cutter/commit/f9acd9e53ff7bd936a731bfc446461946c6b57a9.patch#/r2cutter-04-uninitialized-menu.patch
+
 
 BuildRequires:  radare2-devel >= 4.5.0
 BuildRequires:  cmake
@@ -77,7 +84,7 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
 %files
 %{_bindir}/r2cutter
 %{_datadir}/applications/*.desktop
-%{_datadir}/RadareOrg/r2cutter/translations/*.qm
+%{_datadir}/RadareOrg/
 %{_metainfodir}/*.appdata.xml
 %{_datadir}/icons/hicolor/scalable/apps/*.svg
 %license COPYING src/img/icons/Iconic-LICENSE

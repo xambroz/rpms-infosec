@@ -1,0 +1,51 @@
+From 7d9729bbffe18a87c6039b583c30ea84887bdff1 Mon Sep 17 00:00:00 2001
+From: pancake <pancake@nopcode.org>
+Date: Fri, 19 Mar 2021 10:54:23 +0100
+Subject: [PATCH] Fix #8 - do not define the same enum twice
+
+---
+ src/widgets/ProcessesWidget.cpp | 10 ++++------
+ src/widgets/ThreadsWidget.cpp   |  9 +++------
+ 2 files changed, 7 insertions(+), 12 deletions(-)
+
+diff --git a/src/widgets/ProcessesWidget.cpp b/src/widgets/ProcessesWidget.cpp
+index 75e95489..946d607c 100644
+--- a/src/widgets/ProcessesWidget.cpp
++++ b/src/widgets/ProcessesWidget.cpp
+@@ -9,12 +9,10 @@
+ 
+ #define DEBUGGED_PID (-1)
+ 
+-enum ColumnIndex {
+-    COLUMN_PID = 0,
+-    COLUMN_UID,
+-    COLUMN_STATUS,
+-    COLUMN_PATH,
+-};
++#define COLUMN_PID 0
++#define COLUMN_UID 1
++#define COLUMN_STATUS 2
++#define COLUMN_PATH 3
+ 
+ ProcessesWidget::ProcessesWidget(MainWindow *main) :
+     CutterDockWidget(main),
+diff --git a/src/widgets/ThreadsWidget.cpp b/src/widgets/ThreadsWidget.cpp
+index 75f9c726..36508dc1 100644
+--- a/src/widgets/ThreadsWidget.cpp
++++ b/src/widgets/ThreadsWidget.cpp
+@@ -8,12 +8,9 @@
+ #include "core/MainWindow.h"
+ 
+ #define DEBUGGED_PID (-1)
+-
+-enum ColumnIndex {
+-    COLUMN_PID = 0,
+-    COLUMN_STATUS,
+-    COLUMN_PATH,
+-};
++#define COLUMN_PID 0
++#define COLUMN_STATUS 1
++#define COLUMN_PATH 2
+ 
+ ThreadsWidget::ThreadsWidget(MainWindow *main) :
+     CutterDockWidget(main),
