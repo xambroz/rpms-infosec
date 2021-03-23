@@ -1,7 +1,7 @@
 Name:           python-volatility3
 Summary:        The volatile memory extraction framework
-Version:        1.0.0
-%global         baserelease     3
+Version:        1.0.1
+%global         baserelease     1
 
 
 URL:            https://github.com/volatilityfoundation/volatility3
@@ -15,15 +15,14 @@ License:        vslv1
 %global         gituser         volatilityfoundation
 # this is hosted on github as...
 %global         gitname         volatility3
-# but the setup.py name is...
-%global         pyname          volatility
-%global         commit          874ec2e410c9621d65ebe307f3050e4088cf5e04
-%global         gitdate         20200530
+%global         pyname          volatility3
+%global         commit          8ecc7df9eb6b83ad1c82a9ad3b9790bffb568681
+%global         gitdate         20210201
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
-%global         pre beta.1
-%global         pypre b1
+# %%global      pre .beta.1
+# %%global      pypre b1
 %global         upstream_version %{version}%{?pre:-%{pre}}
 %global         py_version %{version}%{?pypre:%{pypre}}
 
@@ -32,12 +31,13 @@ License:        vslv1
 %global         build_release    1
 
 %if 0%{?build_release}  > 0
-Release:        0.%{baserelease}.%{?pre:%{pre}}%{?dist}
+Release:        %{baserelease}%{?pre:%{pre}}%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/v%{upstream_version}/%{gitname}-%{upstream_version}.tar.gz
 %else
-Release:        0.%{baserelease}.%{?pre:%{pre}}%{?dist}
+Release:        %{baserelease}%{?pre:%{pre}}%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
-%endif #Build_release
+#Build_release
+%endif
 
 
 BuildArch:      noarch
@@ -95,7 +95,6 @@ Requires:     python%{python3_pkgversion}dist(capstone)
 
 %prep
 %autosetup -n %{gitname}-%{upstream_version}
-dos2unix README.txt
 
 
 
@@ -107,7 +106,7 @@ dos2unix README.txt
 %install
 %py3_install
 # highlevel importable module only used to develop volatility itself
-rm -r %{buildroot}%{python3_sitelib}/development
+# rm -r %{buildroot}%{python3_sitelib}/development
 
 mv %{buildroot}%{_bindir}/vol{,3}
 mv %{buildroot}%{_bindir}/volshell{,3}
@@ -124,7 +123,7 @@ ln -s volatility3 %{buildroot}%{_bindir}/volatility
 
 %files -n python%{python3_pkgversion}-%{gitname}
 %license LICENSE.txt
-%doc README.txt
+%doc README.md
 %{_bindir}/vol3
 %{_bindir}/volatility3
 %{_bindir}/volshell3
@@ -139,6 +138,9 @@ ln -s volatility3 %{buildroot}%{_bindir}/volatility
 
 
 %changelog
+* Tue Mar 23 2021 Michal Ambroz <rebus AT_ seznam.cz> - 1.0.1-1
+- bump to new upstream version 1.0.1
+
 * Wed Oct 30 2019 Michal Ambroz <rebus AT_ seznam.cz> - 1.0.0-0.2.beta.1
 - change summary, license name
 
