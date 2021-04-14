@@ -1,11 +1,11 @@
-# by default it builds from the released version of radare2
-%bcond_without  build_release
-
 Name:           radare2
 Summary:        The reverse engineering framework
 Version:        5.1.1
 URL:            https://radare.org/
 VCS:            https://github.com/radare/radare2
+
+# by default it builds from the released version of radare2
+%bcond_without  build_release
 
 %global         gituser         radare
 %global         gitname         radare2
