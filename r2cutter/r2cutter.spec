@@ -1,6 +1,6 @@
 Name:           r2cutter
 Version:        0.1.1
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        GUI for radare2 reverse engineering framework
 
 %global         cutter_translations_commit 8e1d24b4040474c681d8db39cb75c0ed66bb5bda
@@ -14,10 +14,25 @@ URL:            https://github.com/radareorg/r2cutter/
 Source0:        https://github.com/radareorg/r2cutter/archive/%{version}/r2cutter-%{version}.tar.gz
 Source1:        https://github.com/radareorg/cutter-translations/archive/%{cutter_translations_commit}.tar.gz#/cutter-translations-%{cutter_translations_commit}.tar.gz
 
+# Cosmetics - GCC10 compilation warnings - Fix unhandled pipe return code
+# reported to upstream https://github.com/radareorg/r2cutter/issues/10
 Patch0:         https://github.com/radareorg/r2cutter/commit/3e34672e7e2cb2bdba3541f391121e0cf52d508c.patch#/r2cutter-00-unhandled-write.patch
+
+
+# Cosmetics - GCC10 compilation warnings - get rid of unused iod variable
+# reported to upstream https://github.com/radareorg/r2cutter/issues/9
 Patch1:         https://github.com/radareorg/r2cutter/commit/19435220bfa377a503a32aa4b0bb660cfd8a274a.patch#/r2cutter-01-unused-iod.patch
+
+# Cosmetics - GCC10 compilation warnings - Two definitions of the ColumnIndex
+# reported to upstream https://github.com/radareorg/r2cutter/issues/8
 Patch2:         https://github.com/radareorg/r2cutter/commit/7d9729bbffe18a87c6039b583c30ea84887bdff1.patch#/r2cutter-02-doubled-enum.patch
+
+# Cosmetics - GCC10 compilation warnings - Fix unhandled pipe return code
+# reported to upstream https://github.com/radareorg/r2cutter/pull/11
 Patch3:         https://github.com/radareorg/r2cutter/commit/955d6278363474a3e91aaff4b2ef846b094422ca.patch#/r2cutter-03-unhandled-pipe.patch
+
+# Cosmetics - GCC10 compilation warnings - Avoid warning about uninitialized menu
+# reported to upstream https://github.com/radareorg/r2cutter/pull/12
 Patch4:         https://github.com/radareorg/r2cutter/commit/f9acd9e53ff7bd936a731bfc446461946c6b57a9.patch#/r2cutter-04-uninitialized-menu.patch
 
 
@@ -98,8 +113,9 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
 
 
 %changelog
-* Fri Mar 19 2021 Michal Ambroz <rebus _AT seznam.cz> - 0.1.1-1
+* Fri Mar 19 2021 Michal Ambroz <rebus _AT seznam.cz> - 0.1.1-3
 - switch from cutter to r2cutter
+- cosmetic patches to fix gcc10+ warnings (reported upstream)
 
 * Tue Jan 26 2021 Fedora Release Engineering <releng@fedoraproject.org> - 0.0.1.11.0-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
