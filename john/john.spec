@@ -1,29 +1,39 @@
-%global extra_date 20130529
+Name:           john
+Summary:        John the Ripper password cracker
+Version:        1.9.0
+Release:        1%{?dist}
 
-Summary:          John the Ripper password cracker
-Name:             john
-Version:          1.9.0
-Release:          1%{?dist}
+%global         BUILD_AVX 1
+%global         BUILD_XOP 1
+%global         BUILD_OMP 1
 
-URL:              https://www.openwall.com/john
-License:          GPLv2
-Source0:          https://www.openwall.com/john/k/john-%{version}.tar.xz
-Source1:          https://www.openwall.com/john/k/john-%{version}.tar.xz.sign
-# Source2:          https://www.openwall.com/john/k/john-extra-%%{extra_date}.tar.xz
-# Source3:          https://www.openwall.com/john/k/john-extra-%%{extra_date}.tar.xz.sign
+
+URL:            https://www.openwall.com/john
+License:        GPLv2
+Source0:        https://www.openwall.com/john/k/john-%{version}.tar.xz
+Source1:        https://www.openwall.com/john/k/john-%{version}.tar.xz.sign
+
+# Extra charsets - not needed anymore, part of 1.9.0 core release
+# %global       extra_date 20130529
+# Source2:      https://www.openwall.com/john/j/john-extra-%%{extra_date}.tar.xz
+# Source3:      https://www.openwall.com/john/j/john-extra-%%{extra_date}.tar.xz.sign
 
 BuildRequires:  gcc
+BuildRequires:  make
+
 %description
-John the Ripper is a fast password cracker. Its primary purpose is to
-detect weak Unix passwords, but a number of other hash types are
-supported as well.
+John the Ripper is a fast password cracker (password security auditing
+tool). Its primary purpose is to detect weak Unix passwords, but a number
+of other hash types are supported as well.
+
 
 %prep
 %setup -q
-# %%patch2 -p0 -b .jumbo
+
 chmod 0644 doc/*
 sed -i 's#\$JOHN/john.conf#%{_sysconfdir}/john.conf#' src/params.h
-cp -a src src-mmx
+
+# Extra charsets - not needed anymore, part of 1.9.0 core release
 # tar --strip-components 1 --directory run -xf "%%{SOURCE2}"
 
 %build
@@ -31,25 +41,25 @@ cp -a src src-mmx
 %global target_non_mmx generic
 
 %ifarch %{ix86}
-    %global target_non_mmx linux-x86-any
-    %global target_mmx linux-x86-mmx
+%global target_non_mmx linux-x86-any
+%global target_mmx linux-x86-mmx
 %endif
 
 %ifarch x86_64
-    %global target_non_mmx linux-x86-64
+%global target_non_mmx linux-x86-64
 %endif
 
 %ifarch ppc
-    %global target_non_mmx linux-ppc32
+%global target_non_mmx linux-ppc32
 %endif
 
 %ifarch ppc64
-    %global target_non_mmx linux-ppc64
+%global target_non_mmx linux-ppc64
 %endif
 
-export CFLAGS="-c ${RPM_OPT_FLAGS} -DJOHN_SYSTEMWIDE=1"
+export CFLAGS="-c %optflags -DJOHN_SYSTEMWIDE=1"
 
-make -C src %{target_non_mmx} CFLAGS="${CFLAGS}" LDFLAGS="${RPM_OPT_FLAGS}"
+make -C src %{target_non_mmx} CFLAGS="${CFLAGS}" LDFLAGS="%optflags"
 
 %if 0%{?target_mmx:1}
     mv run/john run/john-non-mmx
