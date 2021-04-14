@@ -1,7 +1,7 @@
 Name:		python-evtx
-Version:	0.6.1
+Version:	0.7.4
 License:	APLv2
-Release:	2%{?dist}
+Release:	1%{?dist}
 Summary:	Pure Python parser for new Windows Event Log XML files (.evtx)
 URL:		https://github.com/williballenthin/python-evtx/
 #		https://github.com/williballenthin/python-evtx/releases
@@ -87,26 +87,67 @@ heavily inspired by the work of Andreas Schuster and his Perl implementation
 
 %build
 %if 0%{?with_python2}
-%{__python2} setup.py build
+%py2_build
 %endif
 %if 0%{?with_python3}
-%{__python3} setup.py build
+%py3_build
 %endif
 
 %install
 %if 0%{?with_python2}
-%{__python2} setup.py install -O1 --skip-build --root %{buildroot}
+%py2_install
+pushd %{buildroot}%{_bindir}
+for I in *.py ; do
+    BASENAME=$(basename "$I" .py)
+    mv "$I" "${BASENAME}-%{python2_version}"
+    ln -s "${BASENAME}-%{python2_version}" "${BASENAME}-2"
+
+done
+popd
 %endif
+
 %if 0%{?with_python3}
-%{__python3} setup.py install -O1 --skip-build --root %{buildroot}
+%py3_install
+pushd %{buildroot}%{_bindir}
+for I in *.py ; do
+    BASENAME=$(basename "$I" .py)
+    mv "$I" "${BASENAME}-%{python3_version}"
+    ln -s "${BASENAME}-%{python3_version}" "${BASENAME}-3"
+done
+popd
 %endif
+
+
+# Default link
+pushd %{buildroot}%{_bindir}
+
+%if (0%{?fedora} && 0%{?fedora} <= 30 ) || ( 0%{?rhel} && 0%{?rhel} <= 7 )
+    #Link to python2 as default on fedora up to 30 and rhel up to 7
+    for I in *-2 ; do
+        BASENAME=$(basename "$I" "-2" )
+        ln -s "${I}" "${BASENAME}.py"
+    done
+%else
+    #Link to python3 as default on fedora 31+ and rhel8+ and everything else
+    for I in *-3 ; do
+        BASENAME=$(basename "$I" "-3" )
+        ln -s "${I}" "${BASENAME}.py"
+    done
+%endif
+popd
+
+
 
 %if 0%{?with_python2}
 %files -n python2-evtx
 %license LICENSE.TXT
 %{python2_sitelib}/Evtx
 %{python2_sitelib}/python_evtx*egg-info
+%{_bindir}/evtx_*-2
+%{_bindir}/evtx_*-%{python2_version}
+%if (0%{?fedora} && 0%{?fedora} <= 30 ) || ( 0%{?rhel} && 0%{?rhel} <= 7 )
 %{_bindir}/evtx_*.py
+%endif
 %endif
 
 %if 0%{?with_python3}
@@ -115,12 +156,19 @@ heavily inspired by the work of Andreas Schuster and his Perl implementation
 %doc README.md
 %{python3_sitelib}/Evtx
 %{python3_sitelib}/python_evtx*egg-info
+%{_bindir}/evtx_*-3
+%{_bindir}/evtx_*-%{python3_version}
+%if (0%{?fedora} && 0%{?fedora} >= 31 ) || ( 0%{?rhel} && 0%{?rhel} >= 8 )
 %{_bindir}/evtx_*.py
+%endif
 %endif
 
 
 %changelog
-* Tue Apr 14 2021 Michal Ambroz <rebus _AT seznam.cz> - 0.6.1-2
+* Wed Apr 14 2021 Michal Ambroz <rebus _AT seznam.cz> - 0.7.4-1
+- bump to 0.7.4
+
+* Wed Apr 14 2021 Michal Ambroz <rebus _AT seznam.cz> - 0.6.1-2
 - build python3
 
 * Wed Oct 04 2017 Michal Ambroz <rebus _AT seznam.cz> - 0.6.1-1
