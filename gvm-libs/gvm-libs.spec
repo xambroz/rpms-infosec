@@ -1,6 +1,6 @@
-Name:           openvas-libraries
+Name:           gvm-libs
 Version:        11.0.1
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        Support libraries for Greenbone Vulnerability Management Solution and OpenVAS
 
 License:        GPLv2+
@@ -19,13 +19,13 @@ Source1:        https://github.com/greenbone/gvm-libs/releases/download/v%{versi
 # gpg2 --export --export-options export-minimal 8AE4BE429B60A59B311C2E739823FAA60ED1E580 > gpgkey-8AE4BE429B60A59B311C2E739823FAA60ED1E580.gpg
 Source3:        gpgkey-8AE4BE429B60A59B311C2E739823FAA60ED1E580.gpg
 
-Patch0:         openvas-libraries-strncpy.patch
+Patch0:         gvm-libs-strncpy.patch
 
-Obsoletes:      openvas-libnasl
-#Obsoletes:     openvas-libraries <= 9.0.3
-#Provides:      libgvm = %{version}-%{release}
+# Obsoletes:    openvas-libnasl
+# Obsoletes:    openvas-libraries <= 9.0.3
+# Provides:     libgvm = %%{version}-%%{release}
 
-BuildRequires: make
+BuildRequires:  make
 BuildRequires:  bison
 BuildRequires:  cmake
 BuildRequires:  doxygen
@@ -71,8 +71,8 @@ The documentation of %{name}.
 #check signature
 gpgv2 --keyring %{SOURCE3} %{SOURCE1} %{SOURCE0}
 
-
 %autosetup -n gvm-libs-%{version} -p1
+
 
 %build
 # In GCC7 format-truncation throws bogus errors when formating time/date
@@ -81,21 +81,31 @@ export CFLAGS="%{optflags} -Wno-format-truncation"
 export CFLAGS="${CFLAGS} -Wno-error=stringop-truncation"
 %cmake -DLOCALSTATEDIR:PATH=%{_var} -DBUILD_WITH_LDAP=ON .
 # No parallel build because it causes compilation problems
-%make_build
-make doc-full
+%cmake_build
+make -C "%{_vpath_builddir}" doc-full
+
 
 %install
-%make_install
+%cmake_install
 # Remove static libraries
 find %{buildroot} -name '*.la' -delete
 find %{buildroot} -name '*.a' -delete
 
+mv "%{_vpath_builddir}/doc/generated" "doc"
+
+
+%if ( 0%{?rhel} && 0%{?rhel} <= 7 )
 %ldconfig_scriptlets
+%endif
+
+
+
 
 %files
 %doc CHANGELOG.md README.md
 %license COPYING
 %{_libdir}/libgvm*.so.*
+
 
 %files devel
 %license COPYING
@@ -103,10 +113,15 @@ find %{buildroot} -name '*.a' -delete
 %{_libdir}/libgvm_*.so
 %{_libdir}/pkgconfig/*.pc
 
+
 %files doc
 %doc doc/generated/html
 
+
 %changelog
+* Tue Apr 13 2021 Michal Ambroz <rebus at, seznam.cz> - 11.0.1-5
+- rename to gvm-libs
+
 * Tue Jan 26 2021 Fedora Release Engineering <releng@fedoraproject.org> - 11.0.1-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
 
@@ -130,8 +145,6 @@ find %{buildroot} -name '*.a' -delete
   gcc diagnostic about length of strncpy call being the same as the
   source string length
 
-* Tue Oct 15 2019 Michal Ambroz <rebus at, seznam.cz> - 11.0.0-1
-- bump to gvm-libs version 11.0.0
 - put back the signature checking
 
 * Thu Jul 25 2019 Fedora Release Engineering <releng@fedoraproject.org> - 10.0.0-2
