@@ -1,0 +1,22 @@
+From 3466569e31f21d39b973ef8c703d812113ee3aa5 Mon Sep 17 00:00:00 2001
+From: cfi-gb <34644702+cfi-gb@users.noreply.github.com>
+Date: Tue, 18 Sep 2018 14:03:55 +0200
+Subject: [PATCH] Correct name for netsnmp lib
+
+---
+ CMakeLists.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 94c1c786..c491a90e 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -238,7 +238,7 @@ if (NOT MINGW)
+     OUTPUT_STRIP_TRAILING_WHITESPACE)
+ 
+   message (STATUS "Looking for netsnmp...")
+-  find_library (SNMP snmp)
++  find_library (SNMP netsnmp)
+   message (STATUS "Looking for netsnmp... ${SNMP}")
+   if (SNMP)
+     execute_process (COMMAND net-snmp-config --libs

@@ -1,0 +1,11 @@
+diff -ru openvas-libraries-9.0.1/misc/network.c openvas-libraries-9.0.1.new/misc/network.c
+--- openvas-libraries-9.0.1/misc/network.c	2017-04-17 22:25:09.189848934 +0200
++++ openvas-libraries-9.0.1.new/misc/network.c	2017-04-17 22:24:33.972362144 +0200
+@@ -1876,6 +1876,7 @@
+           pid_perror ("SO_ERROR");
+ #endif
+           /* no break; go on */
++        /* fallthrough */
+         default:
+           __port_closed = 1;
+           socket_close (soc);

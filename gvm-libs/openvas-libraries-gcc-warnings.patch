@@ -1,0 +1,31 @@
+From 405b49f8ee432907f69c7c2aa142de0f1854aaf9 Mon Sep 17 00:00:00 2001
+From: Hani Benhabiles <kroosec@gmail.com>
+Date: Sun, 11 Nov 2018 18:33:11 +0100
+Subject: [PATCH] Fix format-truncation warning in GCC 8.2.
+
+Warning is erroneous, as the number of printed bytes is limited. Check
+snprintf() return value to silence it.
+---
+ nasl/nasl_isotime.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/nasl/nasl_isotime.c b/nasl/nasl_isotime.c
+index f715acaa..5a8ac40f 100644
+--- a/nasl/nasl_isotime.c
++++ b/nasl/nasl_isotime.c
+@@ -102,9 +102,13 @@ epoch2isotime (my_isotime_t timebuf, time_t atime)
+       struct tm *tp;
+ 
+       tp = gmtime (&atime);
+-      snprintf (timebuf, ISOTIME_SIZE, "%04d%02d%02dT%02d%02d%02d",
++      if (snprintf (timebuf, ISOTIME_SIZE, "%04d%02d%02dT%02d%02d%02d",
+                 1900 + tp->tm_year, tp->tm_mon+1, tp->tm_mday,
+-                tp->tm_hour, tp->tm_min, tp->tm_sec);
++                tp->tm_hour, tp->tm_min, tp->tm_sec) < 0)
++        {
++          *timebuf = '\0';
++          return;
++        }
+     }
+ }
+ 

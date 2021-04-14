@@ -1,0 +1,29 @@
+--- a/util/kb.c	2019-10-11 01:12:04.000000000 -0600
++++ b/util/kb.c	2020-01-17 15:23:17.672447449 -0700
+@@ -377,7 +377,7 @@ redis_new (kb_t *kb, const char *kb_path
+ 
+   kbr = g_malloc0 (sizeof (struct kb_redis) + strlen (kb_path) + 1);
+   kbr->kb.kb_ops = &KBRedisOperations;
+-  strncpy (kbr->path, kb_path, strlen (kb_path));
++  strcpy (kbr->path, kb_path);
+ 
+   if ((rc = get_redis_ctx (kbr)) < 0)
+     return rc;
+@@ -408,7 +408,7 @@ redis_direct_conn (const char *kb_path,
+ 
+   kbr = g_malloc0 (sizeof (struct kb_redis) + strlen (kb_path) + 1);
+   kbr->kb.kb_ops = &KBRedisOperations;
+-  strncpy (kbr->path, kb_path, strlen (kb_path));
++  strcpy (kbr->path, kb_path);
+ 
+   kbr->rctx = redisConnectUnix (kbr->path);
+   if (kbr->rctx == NULL || kbr->rctx->err)
+@@ -448,7 +448,7 @@ redis_find (const char *kb_path, const c
+ 
+   kbr = g_malloc0 (sizeof (struct kb_redis) + strlen (kb_path) + 1);
+   kbr->kb.kb_ops = &KBRedisOperations;
+-  strncpy (kbr->path, kb_path, strlen (kb_path));
++  strcpy (kbr->path, kb_path);
+ 
+   do
+     {
