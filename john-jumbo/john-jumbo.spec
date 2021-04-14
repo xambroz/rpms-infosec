@@ -10,7 +10,7 @@ Group:            Applications/System
 Source0:          http://www.openwall.com/john/k/john-%{version}-jumbo-%{jumbo_version}.tar.xz
 Source1:          http://www.openwall.com/john/k/john-%{version}-jumbo-%{jumbo_version}.tar.xz.sign
 Patch0:           john-jumbo-inlines.patch
-#Patch3:           http://www.openwall.com/john/g/john-%{version}-jumbo-%{jumbo_version}.diff.gz
+# Patch3:           http://www.openwall.com/john/g/john-%%{version}-jumbo-%%{jumbo_version}.diff.gz
 BuildRoot:        %{_tmppath}/%{name}-%{version}-%{release}-root
 Requires:         john = %{version}
 
@@ -20,8 +20,14 @@ Buildrequires:    gmp-devel
 
 Buildrequires:    gcc
 Buildrequires:    autoconf
-#For optional AES-NI support
+# For optional AES-NI support
 Buildrequires:    yasm
+# Fix python scripts
+Buildrequires:    python%{python3_pkgversion}-future
+Buildrequires:    python%{python3_pkgversion}-future
+BuildRequires:    python%{python3_pkgversion}-devel
+BuildRequires:    python%{python3_pkgversion}-setuptools
+
 
 %if 0%{?fedora} <= 25
 Buildrequires:    openssl-devel
@@ -55,10 +61,11 @@ sed -i -e 's%#![ ]*/usr/bin/env[ ]*python[ ]*$%#!/usr/bin/python2%;
            s%#![ ]*/usr/bin/env[ ]*python3[ ]*$%#!/usr/bin/python3%;
            s%#!/usr/bin/python$%#!/usr/bin/python2%;' \
     run/*.py doc/README.apex doc/Auditing-Kerio-Connect.md
+
 sed -i -e 's%#![ ]*/usr/bin/env[ ]*perl[ ]*$%#!/usr/bin/perl%;' run/*.pl
 
 pushd run
-futurize -w aix2john.py
+futurize-%{python3_version} -w aix2john.py
 popd
 
 
@@ -92,20 +99,20 @@ install -m 755 run/stats %{buildroot}%{_libexecdir}/john/
 install -m 755 run/*.conf %{buildroot}%{_libexecdir}/john/
 
 for LINK in `find run/ -type l` ; do
-	LINKNAME=`basename $LINK`
-	pushd %{buildroot}%{_bindir}
-	ln -s %{name} "$LINKNAME"
-	popd
+    LINKNAME=$(basename "$LINK" )
+    pushd %{buildroot}%{_bindir}
+    ln -s %{name} "$LINKNAME"
+    popd
 done
 
-#Remove files conflicting with john package
+# Remove files conflicting with john package
 rm -f %{buildroot}%{_bindir}/unafs
 rm -f %{buildroot}%{_bindir}/unique
 rm -f %{buildroot}%{_bindir}/unshadow
 
 
-#perl-SHA is not in Fedora at the moment
-#rm %{buildroot}%{_libexecdir}/john/sha-test.pl
+# perl-SHA is not in Fedora at the moment
+# rm %%{buildroot}%%{_libexecdir}/john/sha-test.pl
 
 
 
@@ -129,7 +136,7 @@ rm -f %{buildroot}%{_bindir}/unshadow
 
 
 %changelog
-* Fri Jun 02 2020 Michal Ambroz <rebus _AT seznam.cz> - 1.9.0-jumbo.1.2
+* Tue Jun 02 2020 Michal Ambroz <rebus _AT seznam.cz> - 1.9.0-jumbo.1.2
 - rebuild for Fedora32
 
 * Sun Mar 01 2020 Michal Ambroz <rebus _AT seznam.cz> - 1.9.0-jumbo.1.1
