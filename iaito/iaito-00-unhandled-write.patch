@@ -1,0 +1,33 @@
+From 3e34672e7e2cb2bdba3541f391121e0cf52d508c Mon Sep 17 00:00:00 2001
+From: pancake <pancake@nopcode.org>
+Date: Fri, 19 Mar 2021 10:58:02 +0100
+Subject: [PATCH] Fix #10 - check return value of write API call
+
+---
+ src/widgets/ConsoleWidget.cpp | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
+
+diff --git a/src/widgets/ConsoleWidget.cpp b/src/widgets/ConsoleWidget.cpp
+index 8730f953..cb920e29 100644
+--- a/src/widgets/ConsoleWidget.cpp
++++ b/src/widgets/ConsoleWidget.cpp
+@@ -247,10 +247,15 @@ void ConsoleWidget::executeCommand(const QString &command)
+ 
+ void ConsoleWidget::sendToStdin(const QString &input)
+ {
+-#ifndef Q_OS_WIN
+-    write(stdinFile, (input + "\n").toStdString().c_str(), input.size() + 1);
+-    fsync(stdinFile);
+-    addOutput("Sent input: '" + input + "'");
++#if __UNIX__
++    ssize_t input_size = input.size() + 1;
++    ssize_t res = write(stdinFile, (input + "\n").toStdString().c_str(), input_size);
++    if (res == input_size) {
++        fsync(stdinFile);
++        addOutput("Sent input: '" + input + "'");
++    } else {
++        addOutput("Couldn't write to stdin.");
++    }
+ #else
+     // Stdin redirection isn't currently available in windows because console applications
+     // with stdin already get their own console window with stdin when they are launched
