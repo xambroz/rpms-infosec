@@ -13,27 +13,7 @@ License:        GPLv3 and CC-BY-SA and CC0
 URL:            https://github.com/radareorg/iaito/
 Source0:        https://github.com/radareorg/iaito/archive/%{version}/iaito-%{version}.tar.gz
 Source1:        https://github.com/radareorg/iaito-translations/archive/%{iaito_translations_commit}.tar.gz#/iaito-translations-%{iaito_translations_commit}.tar.gz
-
-# FIXED 5.2.0 - Cosmetics - GCC10 compilation warnings - Fix unhandled pipe return code
-# reported to upstream https://github.com/radareorg/iaito/issues/10
-# Patch0:         https://github.com/radareorg/iaito/commit/3e34672e7e2cb2bdba3541f391121e0cf52d508c.patch#/iaito-00-unhandled-write.patch
-
-
-# FIXED 5.2.0 - Cosmetics - GCC10 compilation warnings - get rid of unused iod variable
-# reported to upstream https://github.com/radareorg/iaito/issues/9
-# Patch1:         https://github.com/radareorg/iaito/commit/19435220bfa377a503a32aa4b0bb660cfd8a274a.patch#/iaito-01-unused-iod.patch
-
-# FIXED 5.2.0 - Cosmetics - GCC10 compilation warnings - Two definitions of the ColumnIndex
-# reported to upstream https://github.com/radareorg/iaito/issues/8
-# Patch2:         https://github.com/radareorg/iaito/commit/7d9729bbffe18a87c6039b583c30ea84887bdff1.patch#/iaito-02-doubled-enum.patch
-
-# FIXED 5.2.0 - Cosmetics - GCC10 compilation warnings - Fix unhandled pipe return code
-# reported to upstream https://github.com/radareorg/iaito/pull/11
-# Patch3:         https://github.com/radareorg/iaito/commit/955d6278363474a3e91aaff4b2ef846b094422ca.patch#/iaito-03-unhandled-pipe.patch
-
-# FIXED 5.2.0 - Cosmetics - GCC10 compilation warnings - Avoid warning about uninitialized menu
-# reported to upstream https://github.com/radareorg/iaito/pull/12
-# Patch4:         https://github.com/radareorg/iaito/commit/f9acd9e53ff7bd936a731bfc446461946c6b57a9.patch#/iaito-04-uninitialized-menu.patch
+Source2:        iaito.1
 
 
 BuildRequires:  radare2-devel >= 5.2.0
@@ -51,13 +31,20 @@ BuildRequires:  qt5-linguist
 %ifarch %{qt5_qtwebengine_arches}
 BuildRequires:  qt5-qtwebengine-devel
 %endif
+
+# Generate documentation
+BuildRequires:  doxygen
+BuildRequires:  /usr/bin/sphinx-build
+BuildRequires:  python3-breathe
+BuildRequires:  python3-recommonmark
+
 Requires:       python3-jupyter-client
 Requires:       python3-notebook
 Requires:       hicolor-icon-theme
 
-Obsoletes:      r2cutter < 5.1.1
-Obsoletes:      r2cutter-devel < 5.1.1
-
+# Package iaito was renamed from r2cutter in version 5.2.0
+Obsoletes:      r2cutter < 5.2.0
+Provides:       r2cutter%{?_isa} = %{version}-%{release}
 
 
 %description
@@ -74,8 +61,20 @@ Closer integration between r2 and the UI.
 Summary:        Development files for the iaito package
 Requires:       %{name}%{?_isa} = %{version}-%{release}
 
+# Package iaito was renamed from r2cutter in version 5.2.0
+Obsoletes:      r2cutter-devel < 5.2.0
+Provides:       r2cutter-devel%{?_isa} = %{version}-%{release}
+
 %description devel
 Development files for the iaito package. See iaito package for more
+information.
+
+%package doc
+Summary:        Documentation for the iaito package
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
+%description doc
+Documentation for the iaito package. See iaito package for more
 information.
 
 
@@ -93,12 +92,23 @@ sed -i -e 's/^Icon=iaito$/Icon=iaito-o/' src/org.radare.iaito.desktop
 %cmake src
 %cmake_build
 
+cd docs
+make html
+rm -rf build/html/.buildinfo
+mv build/html ../
+
 
 %install
 %cmake_install
 
 mkdir -p %{buildroot}%{_metainfodir}
 install -pm644 src/org.radare.iaito.appdata.xml %{buildroot}%{_metainfodir}
+
+# install manpage
+install -d %{buildroot}%{_mandir}/man1
+install -m 644 %{SOURCE2} %{buildroot}%{_mandir}/man1/
+
+
 
 
 %check
@@ -112,6 +122,7 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
 %{_datadir}/RadareOrg/
 %{_metainfodir}/*.appdata.xml
 %{_datadir}/icons/hicolor/scalable/apps/*.svg
+%{_mandir}/man1/iaito.1*
 %license COPYING src/img/icons/Iconic-LICENSE
 %doc README.md
 
@@ -121,6 +132,8 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
 %{_libdir}/iaito/*.cmake
 %dir %{_libdir}/iaito
 
+%files doc
+%doc html
 
 %changelog
 * Fri Mar 19 2021 Michal Ambroz <rebus _AT seznam.cz> - 5.2.0-1
