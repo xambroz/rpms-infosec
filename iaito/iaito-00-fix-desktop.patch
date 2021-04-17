@@ -1,0 +1,103 @@
+From 0829b78e1598d24f29bd1cf7d849e7e454bc0212 Mon Sep 17 00:00:00 2001
+From: xambroz <723625+xambroz@users.noreply.github.com>
+Date: Fri, 16 Apr 2021 09:41:39 +0200
+Subject: [PATCH 1/5] Rename org.radare.r2cutter.appdata.xml to
+ org.radare.iaito.appdata.xml
+
+r2cutter -> iaito
+---
+ ...g.radare.r2cutter.appdata.xml => org.radare.iaito.appdata.xml} | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ rename src/{org.radare.r2cutter.appdata.xml => org.radare.iaito.appdata.xml} (100%)
+
+diff --git a/src/org.radare.r2cutter.appdata.xml b/src/org.radare.iaito.appdata.xml
+similarity index 100%
+rename from src/org.radare.r2cutter.appdata.xml
+rename to src/org.radare.iaito.appdata.xml
+
+From 2650cf28d0a70126e16cdea8002bf852cb53193c Mon Sep 17 00:00:00 2001
+From: xambroz <723625+xambroz@users.noreply.github.com>
+Date: Fri, 16 Apr 2021 09:43:36 +0200
+Subject: [PATCH 2/5] Rename org.radare.r2cutter.desktop to
+ org.radare.iaito.desktop
+
+r2cutter -> iaito
+---
+ src/{org.radare.r2cutter.desktop => org.radare.iaito.desktop} | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ rename src/{org.radare.r2cutter.desktop => org.radare.iaito.desktop} (100%)
+
+diff --git a/src/org.radare.r2cutter.desktop b/src/org.radare.iaito.desktop
+similarity index 100%
+rename from src/org.radare.r2cutter.desktop
+rename to src/org.radare.iaito.desktop
+
+From 4f6db8e27a0323ec3b7bd7d73cb47a81928c1fe3 Mon Sep 17 00:00:00 2001
+From: xambroz <723625+xambroz@users.noreply.github.com>
+Date: Fri, 16 Apr 2021 10:11:13 +0200
+Subject: [PATCH 3/5] version changed to 5.2.0
+
+---
+ src/org.radare.iaito.appdata.xml | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/org.radare.iaito.appdata.xml b/src/org.radare.iaito.appdata.xml
+index d97c52a6..e7b198f5 100644
+--- a/src/org.radare.iaito.appdata.xml
++++ b/src/org.radare.iaito.appdata.xml
+@@ -25,6 +25,7 @@
+   <update_contact>xarkes</update_contact>
+ 
+   <releases>
++    <release version="5.2.0" date="2021-04-12" />
+     <release version="1.12.0" date="2020-09-03" />
+     <release version="1.11.0" date="2020-07-24" />
+     <release version="1.10.3" date="2020-05-08" />
+
+From d4e0d26ea670c2fbeea4232c53af1fdd50755826 Mon Sep 17 00:00:00 2001
+From: xambroz <723625+xambroz@users.noreply.github.com>
+Date: Fri, 16 Apr 2021 10:11:58 +0200
+Subject: [PATCH 4/5] The icon installed by meson is the iaito-o
+
+---
+ src/org.radare.iaito.desktop | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/org.radare.iaito.desktop b/src/org.radare.iaito.desktop
+index 65533f8c..02d5715a 100644
+--- a/src/org.radare.iaito.desktop
++++ b/src/org.radare.iaito.desktop
+@@ -2,5 +2,5 @@
+ Type=Application
+ Name=iaito
+ Exec=iaito
+-Icon=iaito
++Icon=iaito-o
+ Categories=Development;
+
+From 48f0e481ed6e4fd3048613b0277de6e572b45e3c Mon Sep 17 00:00:00 2001
+From: xambroz <723625+xambroz@users.noreply.github.com>
+Date: Fri, 16 Apr 2021 17:07:09 +0200
+Subject: [PATCH 5/5] Update the desktop file with search keywords
+
+Keywords are used for example by the Gnome activities. Now typing r2 in activities would allow finding the iaiato as relevant application.
+I have also added the tool to relevant categories for the same reason.
+---
+ src/org.radare.iaito.desktop | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/src/org.radare.iaito.desktop b/src/org.radare.iaito.desktop
+index 02d5715a..2ce75a68 100644
+--- a/src/org.radare.iaito.desktop
++++ b/src/org.radare.iaito.desktop
+@@ -3,4 +3,9 @@ Type=Application
+ Name=iaito
+ Exec=iaito
+ Icon=iaito-o
+-Categories=Development;
++
++Categories=Qt;Development;Debugger;Viewer;ComputerScience;DataVisualization;Emulator;FileTools;Security;
++StartupNotify=true
++GenericName=GUI to Radare2 reverse engineering platform
++Comment=It can serve as disassembler, debugger, hex viewer / editor and decompiler to several binary architectures and file formats
++Keywords=radare2;radare;r2;r2cutter;cutter;cutter-re;gdb;disassembler;debugger;c;c++;assembler;decompiler;binary;asm;arm;exe;viewer;

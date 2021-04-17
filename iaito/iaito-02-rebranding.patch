@@ -1,0 +1,1497 @@
+From c4722c6d195d53e645f5dce471b469348d7a1bce Mon Sep 17 00:00:00 2001
+From: xambroz <723625+xambroz@users.noreply.github.com>
+Date: Fri, 16 Apr 2021 22:44:42 +0200
+Subject: [PATCH 01/10] r2cutter -> iaito
+
+---
+ src/{CutterConfig.h.meson.in => IaitoConfig.h.meson.in} | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ rename src/{CutterConfig.h.meson.in => IaitoConfig.h.meson.in} (100%)
+
+diff --git a/src/CutterConfig.h.meson.in b/src/IaitoConfig.h.meson.in
+similarity index 100%
+rename from src/CutterConfig.h.meson.in
+rename to src/IaitoConfig.h.meson.in
+
+From 5536501bbabcddac4c0844cc82551d60435a621d Mon Sep 17 00:00:00 2001
+From: xambroz <723625+xambroz@users.noreply.github.com>
+Date: Fri, 16 Apr 2021 22:50:07 +0200
+Subject: [PATCH 02/10] r2cutter -> iaito
+
+renaming to Iaito.astylerc. rename was lost probably during rebranding. Already referenced as Iaito.astylerc in src/Iaito.pro
+---
+ src/{Cutter.astylerc => Iaito.astylerc} | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ rename src/{Cutter.astylerc => Iaito.astylerc} (100%)
+
+diff --git a/src/Cutter.astylerc b/src/Iaito.astylerc
+similarity index 100%
+rename from src/Cutter.astylerc
+rename to src/Iaito.astylerc
+
+From 5601654f2207ad8c80bc255407052c1218f1673e Mon Sep 17 00:00:00 2001
+From: xambroz <723625+xambroz@users.noreply.github.com>
+Date: Fri, 16 Apr 2021 22:52:24 +0200
+Subject: [PATCH 03/10] Rename build_cutter.sh to build_iaito.sh
+
+r2cutter -> iaito
+---
+ docker/{build_cutter.sh => build_iaito.sh} | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ rename docker/{build_cutter.sh => build_iaito.sh} (100%)
+
+diff --git a/docker/build_cutter.sh b/docker/build_iaito.sh
+similarity index 100%
+rename from docker/build_cutter.sh
+rename to docker/build_iaito.sh
+
+From 7072d0d21dc72dc74cde1e1a2e12828ab5770d2e Mon Sep 17 00:00:00 2001
+From: xambroz <723625+xambroz@users.noreply.github.com>
+Date: Fri, 16 Apr 2021 22:55:15 +0200
+Subject: [PATCH 04/10] r2cutter -> iaito
+
+---
+ docker/Dockerfile-dev | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/docker/Dockerfile-dev b/docker/Dockerfile-dev
+index 16211f42..91784d81 100644
+--- a/docker/Dockerfile-dev
++++ b/docker/Dockerfile-dev
+@@ -23,18 +23,18 @@ RUN apk add --no-cache \
+         wget
+ 
+ # install radare2 first
+-COPY docker/build_radare2.sh /opt/cutter/
+-COPY radare2 /opt/cutter/radare2
++COPY docker/build_radare2.sh /opt/iaito/
++COPY radare2 /opt/iaito/radare2
+ 
+-WORKDIR /opt/cutter
++WORKDIR /opt/iaito
+ RUN bash build_radare2.sh
+ 
+-COPY docker/build_cutter.sh /opt/cutter/
+-COPY scripts /opt/cutter/scripts
+-COPY src /opt/cutter/src
++COPY docker/build_iaito.sh /opt/iaito/
++COPY scripts /opt/iaito/scripts
++COPY src /opt/iaito/src
+ 
+ RUN bash build_cutter.sh && \
+-    bash -c 'if [[ ! -x "/opt/cutter/build/Iaito" ]]; then exit -1; fi'
++    bash -c 'if [[ ! -x "/opt/iaito/build/Iaito" ]]; then exit -1; fi'
+ 
+ FROM alpine:latest AS runner
+ ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+@@ -62,9 +62,9 @@ RUN mkdir /var/sharedFolder && \
+ COPY ./docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+ 
+ # Get the compiled Iaito, r2 libs and bins from the builder
+-COPY --from=builder /opt/cutter /opt/cutter
++COPY --from=builder /opt/iaito /opt/iaito
+ COPY --from=builder /usr/lib /usr/lib
+ COPY --from=builder /usr/share/radare2 /usr/share/radare2
+-WORKDIR /opt/cutter/radare2/binr
++WORKDIR /opt/iaito/radare2/binr
+ RUN make install && \
+ make symstall install-symlink
+
+From 0365591f300ccdaf11098d45e8aae8f967ce3796 Mon Sep 17 00:00:00 2001
+From: xambroz <723625+xambroz@users.noreply.github.com>
+Date: Fri, 16 Apr 2021 22:55:57 +0200
+Subject: [PATCH 05/10] r2cutter -> iaito
+
+---
+ docker/Dockerfile-dev | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/docker/Dockerfile-dev b/docker/Dockerfile-dev
+index 91784d81..ed9d457e 100644
+--- a/docker/Dockerfile-dev
++++ b/docker/Dockerfile-dev
+@@ -33,7 +33,7 @@ COPY docker/build_iaito.sh /opt/iaito/
+ COPY scripts /opt/iaito/scripts
+ COPY src /opt/iaito/src
+ 
+-RUN bash build_cutter.sh && \
++RUN bash build_iaito.sh && \
+     bash -c 'if [[ ! -x "/opt/iaito/build/Iaito" ]]; then exit -1; fi'
+ 
+ FROM alpine:latest AS runner
+
+From d45660ed6e3bb3196dcebc5a422863bb65736cc1 Mon Sep 17 00:00:00 2001
+From: xambroz <723625+xambroz@users.noreply.github.com>
+Date: Fri, 16 Apr 2021 22:58:37 +0200
+Subject: [PATCH 06/10] r2cutter -> iaito
+
+---
+ src/macos/{r2cutter.sh => iaito.sh} | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ rename src/macos/{r2cutter.sh => iaito.sh} (100%)
+
+diff --git a/src/macos/r2cutter.sh b/src/macos/iaito.sh
+similarity index 100%
+rename from src/macos/r2cutter.sh
+rename to src/macos/iaito.sh
+
+From df384aa6e7a52d1033bc53551e9cb36f9941e2a8 Mon Sep 17 00:00:00 2001
+From: xambroz <723625+xambroz@users.noreply.github.com>
+Date: Fri, 16 Apr 2021 23:04:03 +0200
+Subject: [PATCH 07/10] r2cutter -> iaito
+
+---
+ .../sample-cpp/{CutterSamplePlugin.cpp => IaitoSamplePlugin.cpp}  | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ rename src/plugins/sample-cpp/{CutterSamplePlugin.cpp => IaitoSamplePlugin.cpp} (100%)
+
+diff --git a/src/plugins/sample-cpp/CutterSamplePlugin.cpp b/src/plugins/sample-cpp/IaitoSamplePlugin.cpp
+similarity index 100%
+rename from src/plugins/sample-cpp/CutterSamplePlugin.cpp
+rename to src/plugins/sample-cpp/IaitoSamplePlugin.cpp
+
+From 43421e80fdeace323a4c26bd59434567b7aef8f5 Mon Sep 17 00:00:00 2001
+From: xambroz <723625+xambroz@users.noreply.github.com>
+Date: Fri, 16 Apr 2021 23:05:40 +0200
+Subject: [PATCH 08/10] r2cutter -> iaito
+
+---
+ .../sample-cpp/{CutterSamplePlugin.h => IaitoSamplePlugin.h}    | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+ rename src/plugins/sample-cpp/{CutterSamplePlugin.h => IaitoSamplePlugin.h} (93%)
+
+diff --git a/src/plugins/sample-cpp/CutterSamplePlugin.h b/src/plugins/sample-cpp/IaitoSamplePlugin.h
+similarity index 93%
+rename from src/plugins/sample-cpp/CutterSamplePlugin.h
+rename to src/plugins/sample-cpp/IaitoSamplePlugin.h
+index a0d2f3b6..e626228a 100644
+--- a/src/plugins/sample-cpp/CutterSamplePlugin.h
++++ b/src/plugins/sample-cpp/IaitoSamplePlugin.h
+@@ -8,7 +8,7 @@
+ class IaitoSamplePlugin : public QObject, IaitoPlugin
+ {
+     Q_OBJECT
+-    Q_PLUGIN_METADATA(IID "org.radare.cutter.plugins.IaitoPlugin")
++    Q_PLUGIN_METADATA(IID "org.radare.iaito.plugins.IaitoPlugin")
+     Q_INTERFACES(IaitoPlugin)
+ 
+ public:
+
+From 698ad81c14992dc7b9ca90bbe24c1760ef9ab16b Mon Sep 17 00:00:00 2001
+From: xambroz <723625+xambroz@users.noreply.github.com>
+Date: Fri, 16 Apr 2021 23:06:44 +0200
+Subject: [PATCH 09/10] r2cutter -> iaito
+
+---
+ .../sample-cpp/{CutterSamplePlugin.pro => IaitoSamplePlugin.pro}  | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ rename src/plugins/sample-cpp/{CutterSamplePlugin.pro => IaitoSamplePlugin.pro} (100%)
+
+diff --git a/src/plugins/sample-cpp/CutterSamplePlugin.pro b/src/plugins/sample-cpp/IaitoSamplePlugin.pro
+similarity index 100%
+rename from src/plugins/sample-cpp/CutterSamplePlugin.pro
+rename to src/plugins/sample-cpp/IaitoSamplePlugin.pro
+
+From 201f717ebb1048016b943d020ac985ef7931a29b Mon Sep 17 00:00:00 2001
+From: xambroz <723625+xambroz@users.noreply.github.com>
+Date: Sat, 17 Apr 2021 02:13:52 +0200
+Subject: [PATCH 10/10] r2cutter -> iaito Main thing - the configuration file
+ was left behind. + found some more stuff which was not switched over.
+
+---
+ .appveyor.yml                                 |   6 +-
+ .github/PULL_REQUEST_TEMPLATE.md              |   8 +--
+ .github/workflows/ci.yml                      |  10 ++--
+ .github/workflows/coverity-scan.yml           |  12 ++--
+ .gitignore                                    |   2 +
+ CONTRIBUTING.md                               |   4 +-
+ Makefile                                      |   4 +-
+ README.md                                     |   2 +-
+ build.bat                                     |  22 ++++----
+ dist/CMakeLists.txt                           |   8 +--
+ docker/.travis.yml                            |   2 +-
+ docker/Dockerfile                             |  10 ++--
+ docker/Makefile                               |   4 +-
+ docker/README.md                              |   2 +-
+ docker/build_iaito.sh                         |   2 +-
+ docker/entrypoint.sh                          |   2 +-
+ .../{cutter_theme => iaito_theme}/layout.html |   0
+ .../static/admonitions.css                    |   0
+ .../static/iaito.css_t}                       |   2 +-
+ .../cutter.js => iaito_theme/static/iaito.js} |   0
+ docs/{cutter_theme => iaito_theme}/theme.conf |   2 +-
+ docs/source/conf.py                           |  14 ++---
+ docs/source/contributing/code/ide-setup.rst   |  12 ++--
+ .../contributing/plugins/getting-started.rst  |  52 +++++++++---------
+ .../translations/getting-started.rst          |   2 +-
+ docs/source/index.rst                         |   4 +-
+ docs/source/user-docs/command-line.rst        |   8 +--
+ meson.py                                      |  12 ++--
+ scripts/deploy_docs.sh                        |  20 +++----
+ scripts/fetch_deps.sh                         |  14 ++---
+ scripts/prepare_python_macos.sh               |   2 +-
+ scripts/update_deps.py                        |   2 +-
+ src/IaitoApplication.cpp                      |   4 +-
+ .../meson.build                               |   0
+ src/cmake/Packaging.cmake                     |   2 +-
+ src/common/BugReporting.cpp                   |   2 +-
+ src/common/Configuration.cpp                  |   4 +-
+ src/common/Configuration.h                    |   2 +-
+ src/common/PythonAPI.cpp                      |   2 +-
+ src/common/PythonManager.cpp                  |   2 +-
+ src/common/UpdateWorker.cpp                   |   8 +--
+ src/core/MainWindow.cpp                       |   2 +-
+ src/dialogs/AboutDialog.cpp                   |   2 +-
+ src/img/iaito.ico                             | Bin 0 -> 16958 bytes
+ src/macos/Info.plist                          |   2 +-
+ src/meson.build                               |   2 +-
+ src/plugins/PluginManager.cpp                 |   2 +-
+ src/plugins/sample-python/sample_python.py    |  28 +++++-----
+ src/python/{cutter.py => iaito.py}            |   2 +-
+ src/resources.qrc                             |   2 +-
+ src/widgets/ConsoleWidget.cpp                 |   6 +-
+ 51 files changed, 161 insertions(+), 159 deletions(-)
+ rename docs/{cutter_theme => iaito_theme}/layout.html (100%)
+ rename docs/{cutter_theme => iaito_theme}/static/admonitions.css (100%)
+ rename docs/{cutter_theme/static/cutter.css_t => iaito_theme/static/iaito.css_t} (99%)
+ rename docs/{cutter_theme/static/cutter.js => iaito_theme/static/iaito.js} (100%)
+ rename docs/{cutter_theme => iaito_theme}/theme.conf (87%)
+ rename src/bindings/{CutterBindings => IaitoBindings}/meson.build (100%)
+ create mode 100644 src/img/iaito.ico
+ rename src/python/{cutter.py => iaito.py} (92%)
+
+diff --git a/.appveyor.yml b/.appveyor.yml
+index 3d9d43c5..fa22ebc1 100644
+--- a/.appveyor.yml
++++ b/.appveyor.yml
+@@ -10,7 +10,7 @@ configuration:
+ environment:
+   NINJA_URL: https://github.com/ninja-build/ninja/releases/download/v1.9.0/ninja-win.zip
+   VSVARSALLPATH: 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat'
+-  QTPATH: 'cutter-deps\qt'
++  QTPATH: 'iaito-deps\qt'
+   USE_APPVEYOR_QT: 'false'
+   matrix:
+     # Build: qmake vs2017 x86 shared
+@@ -35,7 +35,7 @@ environment:
+ install:
+   - ps: $env:path = ($env:path -split ";").Where({!($_ -like "*Microsoft SQL Server*")}) -join ";"
+   - cmd: C:\msys64\usr\bin\bash -lc "cd $APPVEYOR_BUILD_FOLDER && scripts/fetch_deps.sh"
+-  - cmd: set "IAITO_DEPS_DIR=%APPVEYOR_BUILD_FOLDER%\cutter-deps"
++  - cmd: set "IAITO_DEPS_DIR=%APPVEYOR_BUILD_FOLDER%\iaito-deps"
+   - cmd: set "PATH=%CD%;%PYTHON%;%PATH%"
+   - cmd: call "%VSVARSALLPATH%" %ARCH%
+   - cmd: if "%USE_APPVEYOR_QT%" == "false" ( set "QTPATH=%APPVEYOR_BUILD_FOLDER%\%QTPATH%" )
+@@ -46,7 +46,7 @@ install:
+   - cmd: powershell -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; wget %NINJA_URL% -OutFile ninja.zip; Expand-Archive .\ninja.zip -DestinationPath ."
+   # Artifacts
+   - cmd: set "ARTIFACT_NAME=Iaito-v1.12.0-%ARCH%.Windows"
+-  - cmd: if defined MESON ( set "ARTIFACT_PATH=dist_%ARCH%" ) else ( set "ARTIFACT_PATH=build_%ARCH%\cutter" )
++  - cmd: if defined MESON ( set "ARTIFACT_PATH=dist_%ARCH%" ) else ( set "ARTIFACT_PATH=build_%ARCH%\iaito" )
+ 
+ before_build:
+   - cmd: git submodule update --init
+diff --git a/.github/PULL_REQUEST_TEMPLATE.md b/.github/PULL_REQUEST_TEMPLATE.md
+index 7c944d10..6ba30c07 100644
+--- a/.github/PULL_REQUEST_TEMPLATE.md
++++ b/.github/PULL_REQUEST_TEMPLATE.md
+@@ -1,9 +1,9 @@
+ <!-- Filling this template is mandatory -->
+ 
+ **Your checklist for this pull request**
+-- [ ] I've read the [guidelines for contributing](https://cutter.re/docs/contributing/code/getting-started.html) to this repository
+-- [ ] I made sure to follow the project's [coding style](https://cutter.re/docs/contributing/code/development-guidelines.html)
+-- [ ] I've updated the [documentation](https://cutter.re/docs/user-docs.html) with the relevant information (if needed)
++- [ ] I've read the [guidelines for contributing](https://github.com/radareorg/iaito/blob/master/docs/source/contributing/code/getting-started.rst) to this repository
++- [ ] I made sure to follow the project's [coding style](https://github.com/radareorg/iaito/blob/master/docs/source/contributing/code/development-guidelines.rst)
++- [ ] I've updated the [documentation](https://radare.org/iaito/docs/user-docs.html) with the relevant information (if needed)
+ 
+ 
+ **Detailed description**
+@@ -16,7 +16,7 @@
+ 
+ 
+ <!-- **Code formatting**
+-Make sure you ran astyle on your code before making the PR. Check our contribution guidelines here: https://cutter.re/docs/code.html -->
++Make sure you ran astyle on your code before making the PR. Check our contribution guidelines here: https://radare.org/iaito/docs/code.html -->
+ 
+ **Closing issues**
+ 
+diff --git a/.github/workflows/ci.yml b/.github/workflows/ci.yml
+index 358baf67..7b1b7009 100644
+--- a/.github/workflows/ci.yml
++++ b/.github/workflows/ci.yml
+@@ -154,11 +154,11 @@ jobs:
+         if [[ "${{ matrix.system-deps }}" = "false" ]]
+         then
+           scripts/fetch_deps.sh
+-          source cutter-deps/env.sh
++          source iaito-deps/env.sh
+           export PKG_CONFIG_PATH="$CUTTER_DEPS_PYTHON_PREFIX/lib/pkgconfig:${PKG_CONFIG_PATH:-}"
+           export LD_LIBRARY_PATH="`llvm-config --libdir`:$LD_LIBRARY_PATH"
+         fi
+-        set -euo pipefail #TODO: move to top once cutter-deps doesn't fail
++        set -euo pipefail #TODO: move to top once iaito-deps doesn't fail
+         if [[ "${{ matrix.cc-override }}" != "default" ]]
+         then
+           export CC="${{matrix.cc-override}}"
+@@ -196,7 +196,7 @@ jobs:
+       if: contains(matrix.os, 'macos')
+       run: |
+         scripts/fetch_deps.sh
+-        source cutter-deps/env.sh
++        source iaito-deps/env.sh
+         set -euo pipefail
+         wget -q https://github.com/radareorg/radare2/releases/download/5.2.0/radare2-5.2.0.pkg
+         sudo installer -pkg *.pkg -target /
+@@ -240,8 +240,8 @@ jobs:
+       shell: cmd
+       run: |
+         set ARCH=x64
+-        set IAITO_DEPS=%CD%\cutter-deps
+-        set PATH=%CD%\cutter-deps\qt\bin;%CD%\r2_dist\bin;%PATH%
++        set IAITO_DEPS=%CD%\iaito-deps
++        set PATH=%CD%\iaito-deps\qt\bin;%CD%\r2_dist\bin;%PATH%
+         call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" x64
+         move radare2 radare2_git
+         call prepare_r2.bat
+diff --git a/.github/workflows/coverity-scan.yml b/.github/workflows/coverity-scan.yml
+index eb39393e..90873dc1 100644
+--- a/.github/workflows/coverity-scan.yml
++++ b/.github/workflows/coverity-scan.yml
+@@ -16,7 +16,7 @@ jobs:
+ 
+       - name: Download Coverity Build Tool
+         run: |
+-          wget -q https://scan.coverity.com/download/cxx/linux64 --post-data "token=$TOKEN&project=radareorg%2Fcutter" -O cov-analysis-linux64.tar.gz
++          wget -q https://scan.coverity.com/download/cxx/linux64 --post-data "token=$TOKEN&project=radareorg%2Fiaito" -O cov-analysis-linux64.tar.gz
+           mkdir cov-analysis-linux64
+           tar xzf cov-analysis-linux64.tar.gz --strip 1 -C cov-analysis-linux64
+         env:
+@@ -37,7 +37,7 @@ jobs:
+       - name: CMake
+         run: |
+           scripts/fetch_deps.sh
+-          source cutter-deps/env.sh
++          source iaito-deps/env.sh
+           export LD_LIBRARY_PATH="`llvm-config --libdir`:$LD_LIBRARY_PATH"
+           mkdir build
+           cd build
+@@ -52,14 +52,14 @@ jobs:
+       - name: Submit the result to Coverity Scan
+         run: |
+           cd build
+-          tar czvf cutter.tgz cov-int
++          tar czvf iaito.tgz cov-int
+           curl \
+-            --form project=radareorg-cutter \
++            --form project=radareorg-iaito \
+             --form token=$TOKEN \
+             --form email=noreply@radare.org \
+-            --form file=@cutter.tgz \
++            --form file=@iaito.tgz \
+             --form version=trunk \
+             --form description="Iaito" \
+-            https://scan.coverity.com/builds?project=radareorg%2Fcutter
++            https://scan.coverity.com/builds?project=radareorg%2Fiaito
+         env:
+           TOKEN: ${{ secrets.COVERITY_SCAN_TOKEN }}
+diff --git a/CONTRIBUTING.md b/CONTRIBUTING.md
+index e194c41d..16547075 100644
+--- a/CONTRIBUTING.md
++++ b/CONTRIBUTING.md
+@@ -10,9 +10,9 @@ You can create an issue by clicking on [this link](https://github.com/radareorg/
+ 
+ ## Submit a Pull Request
+ 
+-Note that cutter is still under development and many parts of the code are to be improved.
++Note that iaito is still under development and many parts of the code are to be improved.
+ The best way is to check the opened issues [here](https://github.com/radareorg/iaito/issues) or discuss with radareorg team.
+-Please follow our contribution guidelines: https://cutter.re/docs/contributing.html
++Please follow our contribution guidelines: https://github.com/radareorg/iaito/blob/master/docs/source/contributing.rst
+ 
+ ## Write Some Documentation
+ 
+diff --git a/Makefile b/Makefile
+index 1ab28d92..b9d4baf9 100644
+--- a/Makefile
++++ b/Makefile
+@@ -8,12 +8,12 @@ endif
+ 
+ # linux or win
+ IAITO_OS=macos
+-IAITO_DEPS_URL=https://github.com/rizinorg/cutter-deps/releases/download/v13/cutter-deps-$(IAITO_OS).tar.gz
++IAITO_DEPS_URL=https://github.com/radareorg/iaito-deps/releases/download/v13/iaito-deps-$(IAITO_OS).tar.gz
+ 
+ ifeq ($(WANT_PYTHON),1)
+ QMAKE_FLAGS+=IAITO_ENABLE_PYTHON=true
+ 
+-# cutter deps should provide deps.mk
++# iaito deps should provide deps.mk
+ CMAKE_FLAGS+=-DPYTHON_LIBRARY="$(IAITO_DEPS)/python/lib/libpython3.6m.so.1.0"
+ CMAKE_FLAGS+=-DPYTHON_INCLUDE_DIR="$(IAITO_DEPS)/include/python3.6m"
+ CMAKE_FLAGS+=-DPYTHON_EXECUTABLE="$(IAITO_DEPS)/bin/python3"
+diff --git a/README.md b/README.md
+index a178d68b..02c376bf 100644
+--- a/README.md
++++ b/README.md
+@@ -61,7 +61,7 @@ make install
+ 
+ 
+ ## Plugins
+-iaito supports both Python and Native C++ plugins. For now the api is compatible with Iaito. Read the [Plugins](https://cutter.re/docs/plugins) section on their documentation.
++iaito supports both Python and Native C++ plugins. For now the api is compatible with Cutter. Read the [Plugins](https://cutter.re/docs/plugins) section on their documentation.
+ 
+ ## Help
+ 
+diff --git a/dist/CMakeLists.txt b/dist/CMakeLists.txt
+index 75719466..3e5f7a41 100644
+--- a/dist/CMakeLists.txt
++++ b/dist/CMakeLists.txt
+@@ -1,4 +1,4 @@
+-set(IAITO_DEPS "${CMAKE_CURRENT_SOURCE_DIR}/../cutter-deps")
++set(IAITO_DEPS "${CMAKE_CURRENT_SOURCE_DIR}/../iaito-deps")
+ unset(RZ_GHIDRA_PREFIX_PATH)
+ 
+ ################################################
+@@ -44,8 +44,8 @@ if(APPLE)
+ 	set(ICON "iaito")
+ 	configure_file("${CMAKE_CURRENT_SOURCE_DIR}/macos/Info.plist.in" "${CMAKE_CURRENT_BINARY_DIR}/macos/Info.plist")
+ 	set(CPACK_BUNDLE_PLIST "${CMAKE_CURRENT_BINARY_DIR}/macos/Info.plist")
+-	set(CPACK_BUNDLE_ICON "${CMAKE_CURRENT_SOURCE_DIR}/macos/cutter.icns")
+-	set(CPACK_DMG_BACKGROUND_IMAGE "${CMAKE_CURRENT_SOURCE_DIR}/macos/cutter_mac_app.png")
++	set(CPACK_BUNDLE_ICON "${CMAKE_CURRENT_SOURCE_DIR}/macos/iaito.icns")
++	set(CPACK_DMG_BACKGROUND_IMAGE "${CMAKE_CURRENT_SOURCE_DIR}/macos/iaito_mac_app.png")
+ 	set(CPACK_DMG_DS_STORE "${CMAKE_CURRENT_SOURCE_DIR}/macos/DS_Store_ForDMGBackground")
+ 
+ 	
+@@ -86,7 +86,7 @@ endif()
+ if(IAITO_PACKAGE_RZ_GHIDRA)
+ 	if(IAITO_ENABLE_DEPENDENCY_DOWNLOADS)
+ 		# Currently using external project only for downloading source
+-		# It neeeds to link against compiled cutter so for now build it using custom install script.
++		# It neeeds to link against compiled iaito so for now build it using custom install script.
+ 		# That way rz-ghidra build process is the same as with any other external plugin built against
+ 		# installed Iaito.
+ 		ExternalProject_Add(rz-ghidra
+diff --git a/docker/.travis.yml b/docker/.travis.yml
+index 418ba7a9..5dfd50c2 100644
+--- a/docker/.travis.yml
++++ b/docker/.travis.yml
+@@ -4,4 +4,4 @@ services:
+   - docker
+ 
+ script:
+-  - docker build -t radareorg/cutter .
++  - docker build -t radareorg/iaito .
+diff --git a/docker/Dockerfile b/docker/Dockerfile
+index b683271c..fe18562d 100644
+--- a/docker/Dockerfile
++++ b/docker/Dockerfile
+@@ -21,10 +21,10 @@ RUN apk add --no-cache \
+         wget
+ 
+ # Get, compile and test Iaito from master branch
+-RUN git clone --recurse-submodules https://github.com/radareorg/cutter.git /opt/cutter
+-RUN cd /opt/cutter && \
++RUN git clone --recurse-submodules https://github.com/radareorg/iaito.git /opt/iaito
++RUN cd /opt/iaito && \
+     yes | bash build.sh && \
+-    bash -c 'if [[ ! -x "/opt/cutter/build/Iaito" ]]; then exit -1; fi'
++    bash -c 'if [[ ! -x "/opt/iaito/build/Iaito" ]]; then exit -1; fi'
+ 
+ FROM alpine:latest AS runner
+ 
+@@ -39,10 +39,10 @@ RUN apk add --no-cache \
+          su-exec
+ 
+ # Get the compiled Iaito, r2 libs and bins from the builder
+-COPY --from=builder /opt/cutter /opt/cutter
++COPY --from=builder /opt/iaito /opt/iaito
+ COPY --from=builder /usr/lib /usr/lib
+ COPY --from=builder /usr/share/radare2 /usr/share/radare2
+-RUN cd /opt/cutter/radare2/binr && \
++RUN cd /opt/autter/radare2/binr && \
+     make install && \
+     make symstall install-symlink
+ 
+diff --git a/docker/Makefile b/docker/Makefile
+index e2b2d0df..c84ed291 100644
+--- a/docker/Makefile
++++ b/docker/Makefile
+@@ -14,8 +14,8 @@ ifdef BINARY
+ endif
+ 
+ VERSION ?= latest
+-IMAGE_NAME ?= radareorg/cutter
+-CONTAINER_NAME ?= cutter
++IMAGE_NAME ?= radareorg/iaito
++CONTAINER_NAME ?= iaito
+ 
+ LOCAL_DEV ?= n
+ 
+diff --git a/docker/README.md b/docker/README.md
+index c92a4ce3..94aa8ff0 100644
+--- a/docker/README.md
++++ b/docker/README.md
+@@ -1,6 +1,6 @@
+ # Docker Configuration for Iaito
+ 
+-These files provide an easy way to deploy *Iaito* in a Docker container. After additional configuration you may want to apply to the `Makefile`, execute `make run`. By default, the *Iaito* image on [Docker Hub](https://hub.docker.com/r/radareorg/cutter/) will be used along with additional UID, capability, X and mount settings:
++These files provide an easy way to deploy *Iaito* in a Docker container. After additional configuration you may want to apply to the `Makefile`, execute `make run`. By default, the *Iaito* image on [Docker Hub](https://hub.docker.com/r/radareorg/iaito/) will be used along with additional UID, capability, X and mount settings:
+ 
+ - Xauthority settings which avoid using potentially insecure `xhost` directives. The settings have been adapted from [this post](https://stackoverflow.com/questions/16296753/can-you-run-gui-apps-in-a-docker-container/25280523#25280523).
+ - Mount directives to mount a shared folder and radare2 configuration files.
+diff --git a/docker/build_iaito.sh b/docker/build_iaito.sh
+index 9c2d9baf..5c5b1e68 100755
+--- a/docker/build_iaito.sh
++++ b/docker/build_iaito.sh
+@@ -81,7 +81,7 @@ ERR=$((ERR+$?))
+ 
+ # Move translations
+ mkdir -p "$(pwd)/translations"
+-find "$ROOT_DIR/src/translations" -maxdepth 1  -type f | grep "cutter_..\.qm" | while read -r SRC_FILE; do
++find "$ROOT_DIR/src/translations" -maxdepth 1  -type f | grep "iaito..\.qm" | while read -r SRC_FILE; do
+     mv "$SRC_FILE" "$(pwd)/translations"
+ done
+ 
+diff --git a/docker/entrypoint.sh b/docker/entrypoint.sh
+index f306763d..d1f04973 100755
+--- a/docker/entrypoint.sh
++++ b/docker/entrypoint.sh
+@@ -6,4 +6,4 @@ usermod -u $LOCAL_USER_ID $USERNAME
+ usermod -g $LOCAL_GROUP_ID $USERNAME
+ export HOME=/home/$USERNAME
+ 
+-exec su-exec $USERNAME "/opt/cutter/build/Iaito" $@
++exec su-exec $USERNAME "/opt/iaito/build/Iaito" $@
+diff --git a/docs/cutter_theme/layout.html b/docs/iaito_theme/layout.html
+similarity index 100%
+rename from docs/cutter_theme/layout.html
+rename to docs/iaito_theme/layout.html
+diff --git a/docs/cutter_theme/static/admonitions.css b/docs/iaito_theme/static/admonitions.css
+similarity index 100%
+rename from docs/cutter_theme/static/admonitions.css
+rename to docs/iaito_theme/static/admonitions.css
+diff --git a/docs/cutter_theme/static/cutter.css_t b/docs/iaito_theme/static/iaito.css_t
+similarity index 99%
+rename from docs/cutter_theme/static/cutter.css_t
+rename to docs/iaito_theme/static/iaito.css_t
+index f5867771..cbf35bf4 100644
+--- a/docs/cutter_theme/static/cutter.css_t
++++ b/docs/iaito_theme/static/iaito.css_t
+@@ -1,5 +1,5 @@
+ /*
+- * cutter.css_t
++ * iaito.css_t
+  * based on flasky.css_t by Armin Ronacher
+  * ~~~~~~~~~~~~
+  *
+diff --git a/docs/cutter_theme/static/cutter.js b/docs/iaito_theme/static/iaito.js
+similarity index 100%
+rename from docs/cutter_theme/static/cutter.js
+rename to docs/iaito_theme/static/iaito.js
+diff --git a/docs/cutter_theme/theme.conf b/docs/iaito_theme/theme.conf
+similarity index 87%
+rename from docs/cutter_theme/theme.conf
+rename to docs/iaito_theme/theme.conf
+index 24051280..1a5111f8 100644
+--- a/docs/cutter_theme/theme.conf
++++ b/docs/iaito_theme/theme.conf
+@@ -1,6 +1,6 @@
+ [theme]
+ inherit = basic
+-stylesheet = cutter.css
++stylesheet = iaito.css
+ pygments_style = flasky
+ 
+ [options]
+diff --git a/docs/source/conf.py b/docs/source/conf.py
+index 83205b84..06c86bca 100644
+--- a/docs/source/conf.py
++++ b/docs/source/conf.py
+@@ -80,8 +80,8 @@
+ 
+ # -- Options for Breathe -----------------------------------------------------
+ 
+-breathe_projects = { 'cutter': '../doxygen-out/xml' }
+-breathe_default_project = 'cutter'
++breathe_projects = { 'iaito': '../doxygen-out/xml' }
++breathe_default_project = 'iaito'
+ breathe_default_members = ('members', 'undoc-members')
+ 
+ # -- Options for HTML output -------------------------------------------------
+@@ -89,9 +89,9 @@
+ # The theme to use for HTML and HTML Help pages.  See the documentation for
+ # a list of builtin themes.
+ #
+-html_theme = 'cutter_theme'
++html_theme = 'iaito_theme'
+ html_theme_path = ['..']
+-html_logo = '../../src/img/cutter.ico'
++html_logo = '../../src/img/iaito.ico'
+ 
+ # Theme options are theme-specific and customize the look and feel of a theme
+ # further.  For a list of options available for each theme, see the
+@@ -105,11 +105,11 @@
+ # html_static_path = ['static']
+ 
+ html_js_files = [
+-    'cutter.js',
++    'iaito.js',
+ ]
+ 
+ html_css_files = [
+-    'cutter.css',
++    'iaito.css',
+     'admonitions.css'
+ ]
+ 
+@@ -166,7 +166,7 @@
+ # One entry per manual page. List of tuples
+ # (source start file, name, description, authors, manual section).
+ man_pages = [
+-    (master_doc, 'cutter', 'Iaito Documentation',
++    (master_doc, 'iaito', 'Iaito Documentation',
+      [author], 1)
+ ]
+ 
+diff --git a/docs/source/contributing/code/ide-setup.rst b/docs/source/contributing/code/ide-setup.rst
+index 8852d341..9c3d304e 100644
+--- a/docs/source/contributing/code/ide-setup.rst
++++ b/docs/source/contributing/code/ide-setup.rst
+@@ -25,14 +25,14 @@ Windows
+ -------
+ 
+ Assuming you have a sufficiently powerful computer, a nice way of getting and configuring Qt for Iaito is to use `vcpkg <https://github.com/Microsoft/vcpkg>`_.
+-For a quick test, the exact versions of libraries used by Iaito release packages can be obtained from `cutter-deps <https://github.com/radareorg/cutter-deps/releases>`_ but they don't contain debug
++For a quick test, the exact versions of libraries used by Iaito release packages can be obtained from `iaito-deps <https://github.com/radareorg/iaito-deps/releases>`_ but they don't contain debug
+ versions of libraries so they are not suitable for more serious Iaito development on Windows.
+ 
+ Qt Creator
+ ----------
+ QT Creator is an open-source IDE made by the same developers as Qt.
+ 
+-Even though Iaito has qmake project cutter.pro it is recommended to use the CMake project in QTCreator.
++Even though Iaito has qmake project iaito.pro it is recommended to use the CMake project in QTCreator.
+ QTCreator support for CMake is as good as qmake one but not all Iaito project configuration options are available in qmake project and in future Iaito qmake project might be removed.
+ 
+ Pros and Cons
+@@ -48,7 +48,7 @@ Project setup
+ ~~~~~~~~~~~~~
+ The following instructions were made based on version 4.12.4 of Qt Creator. The steps might slightly differ between the versions.
+ 
+-- Go to :menuselection:`File --> Open File or Project..` and select :file:`cutter/src/CMakeList.txt`
++- Go to :menuselection:`File --> Open File or Project..` and select :file:`iaito/src/CMakeList.txt`
+ - Select kit and press :guilabel:`Configure Project`
+ - Configuration step might fail due to r2 not being found, that's normal
+ - Click :guilabel:`Projects` button with wrench icon on the left side of the screen
+@@ -58,7 +58,7 @@ The following instructions were made based on version 4.12.4 of Qt Creator. The
+ 
+ Either in :menuselection:`Projects --> Code Style --> C++` or :menuselection:`Tools --> Options --> C++ --> Code Style` select :guilabel:`Qt [built-in]`. It should be selected by default unless you have used Qt Creator for other projects. Iaito Coding style is almost identical to Qt one. This will help with using correct indentation type and basic formatting without running code formatter.
+ 
+-To configure AStyle for formatting a file go to :menuselection:`Tools --> Options --> Beautifier --> Artistic Style`. If necessary, specify the path to astyle executable. The :guilabel:`Use file \*.astylerc defined in project files` option doesn't seem to be working reliably so it is necessary to use :guilabel:`Use specific config file` option. Iaito astyle configuration is stored in :file:`cutter/src/Iaito.astylerc`.
++To configure AStyle for formatting a file go to :menuselection:`Tools --> Options --> Beautifier --> Artistic Style`. If necessary, specify the path to astyle executable. The :guilabel:`Use file \*.astylerc defined in project files` option doesn't seem to be working reliably so it is necessary to use :guilabel:`Use specific config file` option. Iaito astyle configuration is stored in :file:`iaito/src/Iaito.astylerc`.
+ 
+ Changing CMake configuration
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+@@ -88,7 +88,7 @@ Project setup
+ ~~~~~~~~~~~~~
+ - :menuselection:`File --> Open Folder...` and select the folder in which you cloned Iaito
+ - Install the recommended plugins.
+-- Once the `CMake Tools` plugin is installed, in the corner you will see a popup asking you "Would you like to configure project 'cutter'? Source: CMake Tools (Extension)". Click Yes.
++- Once the `CMake Tools` plugin is installed, in the corner you will see a popup asking you "Would you like to configure project 'iaito'? Source: CMake Tools (Extension)". Click Yes.
+ - In the kit selection popup, choose :guilabel:`[Unspecified]` unless you have more specific needs.
+ - If you initially dismissed the configuration window or didn't have the plugins installed yet - open command-palette using :kbd:`Ctrl-Shift-P` and select :guilabel:`Cmake: Configure`
+ 
+@@ -141,7 +141,7 @@ Project setup
+ ~~~~~~~~~~~~~
+ - Go to :menuselection:`File --> Open` and select the folder in which you cloned Iaito
+ - Go to :menuselection:`File --> Settings --> Build, Execution, Deployment --> CMake`. In the :guilabel:`CMake Options` field enter ``-DIAITO_USE_BUNDLED_RADARE2=ON``
+-- Open :file:`cutter/src/CMakeLists.txt` using the project file list on the left side of the screen
++- Open :file:`iaito/src/CMakeLists.txt` using the project file list on the left side of the screen
+ - A yellow bar with a message :guilabel:`CMake project is not loaded` should appear, click :guilabel:`Load CMake project`
+ 
+ Changing CMake configuration
+diff --git a/docs/source/contributing/plugins/getting-started.rst b/docs/source/contributing/plugins/getting-started.rst
+index cb2797e6..243c4e01 100644
+--- a/docs/source/contributing/plugins/getting-started.rst
++++ b/docs/source/contributing/plugins/getting-started.rst
+@@ -7,9 +7,9 @@ Create a python file, called ``myplugin.py`` for example, and add the following
+ 
+ .. code-block:: python
+ 
+-   import cutter
++   import iaito
+ 
+-   class MyIaitoPlugin(cutter.IaitoPlugin):
++   class MyIaitoPlugin(iaito.IaitoPlugin):
+        name = "My Plugin"
+        description = "This plugin does awesome things!"
+        version = "1.0"
+@@ -24,17 +24,17 @@ Create a python file, called ``myplugin.py`` for example, and add the following
+        def terminate(self):
+            pass
+ 
+-   def create_cutter_plugin():
++   def create_iaito_plugin():
+        return MyIaitoPlugin()
+ 
+ This is the most basic code that makes up a plugin.
+ Python plugins in Iaito are regular Python modules that are imported automatically on startup.
+-In order to load the plugin, Iaito will call the function ``create_cutter_plugin()`` located
+-in the root of the module and expects it to return an instance of ``cutter.IaitoPlugin``.
++In order to load the plugin, Iaito will call the function ``create_iaito_plugin()`` located
++in the root of the module and expects it to return an instance of ``iaito.IaitoPlugin``.
+ Normally, you shouldn't have to do anything else in this function.
+ 
+ .. note::
+-   The Iaito API is exposed through the ``cutter`` module.
++   The Iaito API is exposed through the ``iaitor`` module.
+    This consists mostly of direct bindings of the original C++ classes, generated with Shiboken2.
+    For more detail about this API, see the Iaito C++ code or :ref:`api`.
+ 
+@@ -53,7 +53,7 @@ Here, the absolute path to the plugins directory is shown too if you are unsure
+ .. note::
+    As mentioned, plugins are Python modules. This means, instead of only a single .py file, you can also
+    use a directory containing multiple python files and an ``__init__.py`` file that defines or imports the
+-   ``create_cutter_plugin()`` function.
++   ``create_iaito_plugin()`` function.
+ 
+ .. note::
+    If you are working on a Unix-like system, instead of copying, you can also symlink your plugin into the plugins
+@@ -67,11 +67,11 @@ Next, we are going to add a simple dock widget. Extend the code as follows:
+ 
+ .. code-block:: python
+ 
+-   import cutter
++   import iaito
+ 
+    from PySide2.QtWidgets import QAction, QLabel
+ 
+-   class MyDockWidget(cutter.IaitoDockWidget):
++   class MyDockWidget(iaito.IaitoDockWidget):
+        def __init__(self, parent, action):
+            super(MyDockWidget, self).__init__(parent, action)
+            self.setObjectName("MyDockWidget")
+@@ -81,7 +81,7 @@ Next, we are going to add a simple dock widget. Extend the code as follows:
+            self.setWidget(label)
+            label.setText("Hello World")
+ 
+-   class MyIaitoPlugin(cutter.IaitoPlugin):
++   class MyIaitoPlugin(iaito.IaitoPlugin):
+        # ...
+ 
+        def setupInterface(self, main):
+@@ -92,7 +92,7 @@ Next, we are going to add a simple dock widget. Extend the code as follows:
+ 
+    # ...
+ 
+-We are subclassing ``cutter.IaitoDockWidget``, which is the base class for all dock widgets in Iaito,
++We are subclassing ``iaito.IaitoDockWidget``, which is the base class for all dock widgets in Iaito,
+ and adding a label to it.
+ 
+ .. note::
+@@ -123,16 +123,16 @@ Extend the code as follows:
+ 
+    # ...
+ 
+-   class MyDockWidget(cutter.IaitoDockWidget):
++   class MyDockWidget(iaito.IaitoDockWidget):
+        def __init__(self, parent, action):
+            # ...
+ 
+            label = QLabel(self)
+            self.setWidget(label)
+ 
+-           disasm = cutter.cmd("pd 1").strip()
++           disasm = iaito.cmd("pd 1").strip()
+ 
+-           instruction = cutter.cmdj("pdj 1")
++           instruction = iaito.cmdj("pdj 1")
+            size = instruction[0]["size"]
+ 
+            label.setText("Current disassembly:\n{}\nwith size {}".format(disasm, size))
+@@ -181,27 +181,27 @@ This can be done like the following:
+ 
+    # ...
+ 
+-   class MyDockWidget(cutter.IaitoDockWidget):
++   class MyDockWidget(iaito.IaitoDockWidget):
+        def __init__(self, parent, action):
+            # ...
+ 
+            self._label = QLabel(self)
+            self.setWidget(self._label)
+ 
+-           QObject.connect(cutter.core(), SIGNAL("seekChanged(RVA)"), self.update_contents)
++           QObject.connect(iaito.core(), SIGNAL("seekChanged(RVA)"), self.update_contents)
+            self.update_contents()
+ 
+        def update_contents(self):
+-           disasm = cutter.cmd("pd 1").strip()
++           disasm = iaito.cmd("pd 1").strip()
+ 
+-           instruction = cutter.cmdj("pdj 1")
++           instruction = iaito.cmdj("pdj 1")
+            size = instruction[0]["size"]
+ 
+            self._label.setText("Current disassembly:\n{}\nwith size {}".format(disasm, size))
+ 
+ 
+ First, we move the update code to a separate method.
+-Then we call ``cutter.core()``, which returns the global instance of ``IaitoCore``.
++Then we call ``iaito.core()``, which returns the global instance of ``IaitoCore``.
+ This class provides the Qt signal ``seekChanged(RVA)``, which is emitted every time the current seek changes.
+ We can simply connect this signal to our method and our widget will update as we expect it to:
+ 
+@@ -214,12 +214,12 @@ Full Code
+ 
+ .. code-block:: python
+ 
+-   import cutter
++   import iaito
+ 
+    from PySide2.QtCore import QObject, SIGNAL
+    from PySide2.QtWidgets import QAction, QLabel
+ 
+-   class MyDockWidget(cutter.IaitoDockWidget):
++   class MyDockWidget(iaito.IaitoDockWidget):
+        def __init__(self, parent, action):
+            super(MyDockWidget, self).__init__(parent, action)
+            self.setObjectName("MyDockWidget")
+@@ -228,19 +228,19 @@ Full Code
+            self._label = QLabel(self)
+            self.setWidget(self._label)
+ 
+-           QObject.connect(cutter.core(), SIGNAL("seekChanged(RVA)"), self.update_contents)
++           QObject.connect(iaito.core(), SIGNAL("seekChanged(RVA)"), self.update_contents)
+            self.update_contents()
+ 
+        def update_contents(self):
+-           disasm = cutter.cmd("pd 1").strip()
++           disasm = iaito.cmd("pd 1").strip()
+ 
+-           instruction = cutter.cmdj("pdj 1")
++           instruction = iaito.cmdj("pdj 1")
+            size = instruction[0]["size"]
+ 
+            self._label.setText("Current disassembly:\n{}\nwith size {}".format(disasm, size))
+ 
+ 
+-   class MyIaitoPlugin(cutter.IaitoPlugin):
++   class MyIaitoPlugin(iaito.IaitoPlugin):
+        name = "My Plugin"
+        description = "This plugin does awesome things!"
+        version = "1.0"
+@@ -258,5 +258,5 @@ Full Code
+        def terminate(self):
+            pass
+ 
+-   def create_cutter_plugin():
++   def create_iaito_plugin():
+        return MyIaitoPlugin()
+diff --git a/docs/source/contributing/translations/getting-started.rst b/docs/source/contributing/translations/getting-started.rst
+index 4dc1db33..b1e3d768 100644
+--- a/docs/source/contributing/translations/getting-started.rst
++++ b/docs/source/contributing/translations/getting-started.rst
+@@ -3,7 +3,7 @@ Translate Iaito
+ 
+ Help Iaito by adding translations to the project!
+ 
+-Iaito is a global project with users from all around the world. We believe that Iaito should be as accessible as possible, and want our users to feel comfortable while using its interface. Providing our community an interface with their own language makes the experience of using Iaito better. Thus, Iaito supports a translation and localization mechanism powered by the `Crowdin <https://crowdin.com/project/cutter>`_ platform. We invite you to contribute and add translations to the project.
++Iaito is a global project with users from all around the world. We believe that Iaito should be as accessible as possible, and want our users to feel comfortable while using its interface. Providing our community an interface with their own language makes the experience of using Iaito better. Thus, Iaito supports a translation and localization mechanism powered by the `Crowdin <https://crowdin.com/project/iaito>`_ platform. We invite you to contribute and add translations to the project.
+ 
+ 
+ .. important::
+diff --git a/docs/source/index.rst b/docs/source/index.rst
+index 461ce6a0..c1c1ca59 100644
+--- a/docs/source/index.rst
++++ b/docs/source/index.rst
+@@ -14,7 +14,7 @@ Getting Iaito
+ 
+ Iaito is available for all major platforms. You can
+ download the latest release from
+-`here <https://github.com/radareorg/cutter/releases>`__.
++`here <https://github.com/radareorg/iaito/releases>`__.
+ 
+ - **macOS**: Download the ``.dmg`` file and install it.
+ - **Windows**: Download the ``.zip`` archive and extract it.
+@@ -36,7 +36,7 @@ Need help?
+ You can contact the *Iaito* developers and community on:
+ 
+ -  Telegram: https://t.me/iaito
+--  #cutter on irc.freenode.net
++-  #iaito on irc.freenode.net
+ -  Twitter: https://twitter.com/r2gui
+ 
+ Want to help the project?
+diff --git a/docs/source/user-docs/command-line.rst b/docs/source/user-docs/command-line.rst
+index 282c4ea7..0ad80bc0 100644
+--- a/docs/source/user-docs/command-line.rst
++++ b/docs/source/user-docs/command-line.rst
+@@ -70,12 +70,12 @@ Options
+ 
+ .. option:: --no-plugins
+ 
+-   Start cutter with all plugins disabled. Implies :option:`--no-cutter-plugins` and :option:`--no-r2-plugins`.
++   Start iaito with all plugins disabled. Implies :option:`--no-iaito-plugins` and :option:`--no-r2-plugins`.
+ 
+-.. option:: --no-cutter-plugins
++.. option:: --no-iaito-plugins
+ 
+-   Start cutter with cutter plugins disabled.
++   Start iaito with iaito plugins disabled.
+ 
+ .. option:: --no-r2-plugins
+ 
+-   Start cutter with r2 plugins disabled.
++   Start iaito with r2 plugins disabled.
+diff --git a/meson.py b/meson.py
+index 763f5b73..3a805a47 100644
+--- a/meson.py
++++ b/meson.py
+@@ -26,7 +26,7 @@ def set_global_vars():
+ 
+     logging.basicConfig(format='[%(name)s][%(levelname)s]: %(message)s',
+                         level=logging.DEBUG)
+-    log = logging.getLogger('cutter-meson')
++    log = logging.getLogger('iaito-meson')
+     log.debug('ROOT: %s', ROOT)
+ 
+     r2_meson_mod.set_global_variables()
+@@ -41,8 +41,8 @@ def win_dist(args):
+     r2_meson_mod.meson('install', options=[['-C', '{}'.format(args.dir)], '--no-rebuild'])
+ 
+ def build(args):
+-    cutter_builddir = os.path.join(ROOT, args.dir)
+-    if not os.path.exists(cutter_builddir):
++    iaito_builddir = os.path.join(ROOT, args.dir)
++    if not os.path.exists(iaito_builddir):
+         defines = ['-Denable_python=%s' % str(args.python).lower(),
+                    '-Denable_python_bindings=%s' % str(args.python_bindings).lower()]
+         if os.name == 'nt':
+@@ -54,11 +54,11 @@ def build(args):
+                            prefix=os.path.abspath(args.dist), backend=args.backend,
+                            release=args.release, shared=False, options=defines)
+     if not args.nobuild:
+-        log.info('Building cutter')
++        log.info('Building iaito')
+         if args.backend == 'ninja':
+-            r2_meson_mod.ninja(cutter_builddir)
++            r2_meson_mod.ninja(iaito_builddir)
+         else:
+-            project = os.path.join(cutter_builddir, 'iaito.sln')
++            project = os.path.join(iaito_builddir, 'iaito.sln')
+             r2_meson_mod.msbuild(project, '/m')
+ 
+ def main():
+diff --git a/scripts/deploy_docs.sh b/scripts/deploy_docs.sh
+index 42a38158..6658ada1 100755
+--- a/scripts/deploy_docs.sh
++++ b/scripts/deploy_docs.sh
+@@ -2,29 +2,29 @@
+ 
+ cd $(dirname "${BASH_SOURCE[0]}")/..
+ 
+-cutter_timestamp=$(git show -s --format=%ct)
+-cutter_commit="$(git show -s --format="%H %s")"
++iaito_timestamp=$(git show -s --format=%ct)
++iaito_commit="$(git show -s --format="%H %s")"
+ 
+-echo "Cloning current cutter.re"
++echo "Cloning current radareorg"
+ 
+-git clone --depth 1 git@github.com:radareorg/cutter.re.git || exit 1
++git clone --depth 1 git@github.com:radareorg/radareorg.git || exit 1
+ 
+ echo "Updating docs"
+ 
+-rm -rf cutter.re/docs
+-cp -a docs/build/html cutter.re/docs || exit 1
++rm -rf radareorg/iaito/docs
++cp -a docs/build/html radareorg/iaito/docs || exit 1
+ 
+ echo "Committing new changes"
+ 
+-cd cutter.re || exit 1
++cd radareorg/iaito || exit 1
+ docs_timestamp=$(git show -s --format=%ct)
+-if [ $docs_timestamp -ge $cutter_timestamp ]; then
+-	echo "Last commit on cutter.re is newer than this commit on cutter. Skipping."
++if [ $docs_timestamp -ge $iaito_timestamp ]; then
++	echo "Last commit on radareorg is newer than this commit on iaito. Skipping."
+ 	exit 0
+ fi
+ 
+ git add . || exit 1
+ git diff --cached --quiet && echo "No changes." && exit 0
+-printf "Update docs from radareorg/cutter\n\nOriginal Commit:\n$cutter_commit" | git commit -F -
++printf "Update docs from radareorg/iaito\n\nOriginal Commit:\n$iaito_commit" | git commit -F -
+ git push origin master || exit 1
+ 
+diff --git a/scripts/fetch_deps.sh b/scripts/fetch_deps.sh
+index 9ef8fe74..0d08f6b0 100755
+--- a/scripts/fetch_deps.sh
++++ b/scripts/fetch_deps.sh
+@@ -1,19 +1,19 @@
+ #!/bin/bash
+ 
+ cd $(dirname "${BASH_SOURCE[0]}")/..
+-mkdir -p cutter-deps && cd cutter-deps
++mkdir -p iaito-deps && cd iaito-deps
+ 
+-LINUX_FILE="cutter-deps-linux.tar.gz"
++LINUX_FILE="iaito-deps-linux.tar.gz"
+ LINUX_MD5=31fd19443a3405d6b6097cbbd4c11fba
+-LINUX_URL=https://github.com/rizinorg/cutter-deps/releases/download/v12/cutter-deps-linux.tar.gz
++LINUX_URL=https://github.com/rizinorg/iaito-deps/releases/download/v14/iaito-deps-linux.tar.gz
+ 
+-MACOS_FILE="cutter-deps-macos.tar.gz"
++MACOS_FILE="iaito-deps-macos.tar.gz"
+ MACOS_MD5=e75041c04fc806437723a399028402af
+-MACOS_URL=https://github.com/rizinorg/cutter-deps/releases/download/v12/cutter-deps-macos.tar.gz
++MACOS_URL=https://github.com/rizinorg/iaito-deps/releases/download/v14/iaito-deps-macos.tar.gz
+ 
+-WIN_FILE="cutter-deps-win.tar.gz"
++WIN_FILE="iaito-deps-win.tar.gz"
+ WIN_MD5=7c755404140f2e9945bfc13d2e645bb1
+-WIN_URL=https://github.com/rizinorg/cutter-deps/releases/download/v12/cutter-deps-win.tar.gz
++WIN_URL=https://github.com/rizinorg/iaito-deps/releases/download/v14/iaito-deps-win.tar.gz
+ 
+ if [ "$OS" == "Windows_NT" ]; then
+ 	FILE="${WIN_FILE}"
+diff --git a/scripts/prepare_python_macos.sh b/scripts/prepare_python_macos.sh
+index 1172d453..94bcc484 100755
+--- a/scripts/prepare_python_macos.sh
++++ b/scripts/prepare_python_macos.sh
+@@ -13,7 +13,7 @@ cd Python-3.6.4 || exit 1
+ 
+ CPPFLAGS="-I$(brew --prefix openssl)/include" LDFLAGS="-L$(brew --prefix openssl)/lib" ./configure --enable-framework=$PYTHON_FRAMEWORK_DIR || exit 1
+ 
+-# Patch for https://github.com/radareorg/cutter/issues/424
++# Patch for https://github.com/rizinorg/cutter/issues/424
+ sed -i ".original" "s/#define HAVE_GETENTROPY 1/#define HAVE_GETENTROPY 0/" pyconfig.h
+ 
+ make -j4 || exit 1
+diff --git a/scripts/update_deps.py b/scripts/update_deps.py
+index 854ddc47..ed43b1e0 100644
+--- a/scripts/update_deps.py
++++ b/scripts/update_deps.py
+@@ -15,7 +15,7 @@
+ fetch_deps_path = os.path.join(os.path.dirname(sys.argv[0]), "fetch_deps.sh")
+ 
+ print("Fetching latest release")
+-json = requests.get("https://api.github.com/repos/radareorg/cutter-deps/releases/latest").json()
++json = requests.get("https://api.github.com/repos/radareorg/iaito-deps/releases/latest").json()
+ 
+ release_url = json["assets"][0]["browser_download_url"]
+ for platform in platforms:
+diff --git a/src/IaitoApplication.cpp b/src/IaitoApplication.cpp
+index e2d05105..5fa8a4fb 100644
+--- a/src/IaitoApplication.cpp
++++ b/src/IaitoApplication.cpp
+@@ -216,7 +216,7 @@ void IaitoApplication::launchNewInstance(const QStringList &args)
+     process.setEnvironment(QProcess::systemEnvironment());
+     QStringList allArgs;
+     if (!clOptions.enableIaitoPlugins) {
+-        allArgs.push_back("--no-cutter-plugins");
++        allArgs.push_back("--no-iaito-plugins");
+     }
+     if (!clOptions.enableR2Plugins) {
+         allArgs.push_back("--no-r2-plugins");
+@@ -365,7 +365,7 @@ bool IaitoApplication::parseCommandLineOptions()
+                                       QObject::tr("Do not load plugins"));
+     cmd_parser.addOption(disablePlugins);
+ 
+-    QCommandLineOption disableIaitoPlugins("no-cutter-plugins",
++    QCommandLineOption disableIaitoPlugins("no-iaito-plugins",
+                                             QObject::tr("Do not load Iaito plugins"));
+     cmd_parser.addOption(disableIaitoPlugins);
+ 
+diff --git a/src/bindings/CutterBindings/meson.build b/src/bindings/IaitoBindings/meson.build
+similarity index 100%
+rename from src/bindings/CutterBindings/meson.build
+rename to src/bindings/IaitoBindings/meson.build
+diff --git a/src/cmake/Packaging.cmake b/src/cmake/Packaging.cmake
+index d83dc0f4..65df926e 100644
+--- a/src/cmake/Packaging.cmake
++++ b/src/cmake/Packaging.cmake
+@@ -1,4 +1,4 @@
+-set(IAITO_DEPS "${CMAKE_CURRENT_SOURCE_DIR}/../cutter-deps")
++set(IAITO_DEPS "${CMAKE_CURRENT_SOURCE_DIR}/../iaito-deps")
+ if(WIN32)
+     set(CPACK_GENERATOR "ZIP")
+ 
+diff --git a/src/common/BugReporting.cpp b/src/common/BugReporting.cpp
+index 3c896270..a5407fb1 100644
+--- a/src/common/BugReporting.cpp
++++ b/src/common/BugReporting.cpp
+@@ -31,7 +31,7 @@ void openIssue()
+         type = "N/A";
+     }
+     url =
+-        "https://github.com/radareorg/cutter/issues/new?&body=**Environment information**\n* Operating System: "
++        "https://github.com/radareorg/iaito/issues/new?&body=**Environment information**\n* Operating System: "
+         + osInfo + "\n* Iaito version: " + IAITO_VERSION_FULL +
+         "\n* File format: " + format + "\n * Arch: " + arch + "\n * Type: " + type +
+         "\n\n**Describe the bug**\nA clear and concise description of what the bug is.\n\n**To Reproduce**\n"
+diff --git a/src/common/Configuration.cpp b/src/common/Configuration.cpp
+index 3376c641..aef9ae9a 100644
+--- a/src/common/Configuration.cpp
++++ b/src/common/Configuration.cpp
+@@ -43,7 +43,7 @@ const QHash<QString, ColorFlags> Configuration::relevantThemes = {
+     { "bright", DarkFlag },
+     { "rasta", DarkFlag },
+ // light themes
+-    { "cutter", LightFlag },
++    { "iaito", LightFlag },
+     { "dark", LightFlag },
+     { "rasta", LightFlag },
+     { "matrix", LightFlag },
+@@ -51,7 +51,7 @@ const QHash<QString, ColorFlags> Configuration::relevantThemes = {
+     { "white", LightFlag },
+     { "white2", LightFlag }
+ };
+-static const QString DEFAULT_LIGHT_COLOR_THEME = "cutter";
++static const QString DEFAULT_LIGHT_COLOR_THEME = "iaito";
+ static const QString DEFAULT_DARK_COLOR_THEME = "ayu";
+ 
+ 
+diff --git a/src/common/Configuration.h b/src/common/Configuration.h
+index 0e251031..6842956e 100644
+--- a/src/common/Configuration.h
++++ b/src/common/Configuration.h
+@@ -129,7 +129,7 @@ class IAITO_EXPORT Configuration : public QObject
+     // Asm Options
+     void resetToDefaultAsmOptions();
+ 
+-    QString getColorTheme() const     { return s.value("theme", "cutter").toString(); }
++    QString getColorTheme() const     { return s.value("theme", "iaito").toString(); }
+     void setColorTheme(const QString &theme);
+     /**
+      * @brief Change current color theme if it doesn't much native theme's darkness.
+diff --git a/src/common/PythonAPI.cpp b/src/common/PythonAPI.cpp
+index aadb85fe..b384ec9b 100644
+--- a/src/common/PythonAPI.cpp
++++ b/src/common/PythonAPI.cpp
+@@ -75,7 +75,7 @@ PyMethodDef IaitoMethods[] = {
+ };
+ 
+ PyModuleDef IaitoModule = {
+-    PyModuleDef_HEAD_INIT, "_cutter", NULL, -1, IaitoMethods,
++    PyModuleDef_HEAD_INIT, "_iaito", NULL, -1, IaitoMethods,
+     NULL, NULL, NULL, NULL
+ };
+ 
+diff --git a/src/common/PythonManager.cpp b/src/common/PythonManager.cpp
+index 45e5900f..136f6e4f 100644
+--- a/src/common/PythonManager.cpp
++++ b/src/common/PythonManager.cpp
+@@ -72,7 +72,7 @@ void PythonManager::initialize()
+ {
+     initPythonHome();
+ 
+-    PyImport_AppendInittab("_cutter", &PyInit_api);
++    PyImport_AppendInittab("_iaito", &PyInit_api);
+     PyImport_AppendInittab("_qtres", &PyInit_qtres);
+ #ifdef IAITO_ENABLE_PYTHON_BINDINGS
+     PyImport_AppendInittab("IaitoBindings", &PyInit_IaitoBindings);
+diff --git a/src/common/UpdateWorker.cpp b/src/common/UpdateWorker.cpp
+index 9a52770d..6c8a789b 100644
+--- a/src/common/UpdateWorker.cpp
++++ b/src/common/UpdateWorker.cpp
+@@ -37,7 +37,7 @@ UpdateWorker::UpdateWorker(QObject *parent) :
+ 
+ void UpdateWorker::checkCurrentVersion(time_t timeoutMs)
+ {
+-    QUrl url("https://api.github.com/repos/radareorg/cutter/releases/latest");
++    QUrl url("https://api.github.com/repos/radareorg/iaito/releases/latest");
+     QNetworkRequest request;
+     request.setUrl(url);
+ 
+@@ -58,7 +58,7 @@ void UpdateWorker::download(QString filename, QString version)
+ 
+     QNetworkRequest request;
+     request.setAttribute(QNetworkRequest::FollowRedirectsAttribute, true);
+-    QUrl url(QString("https://github.com/radareorg/cutter/releases/"
++    QUrl url(QString("https://github.com/radareorg/iaito/releases/"
+                      "download/v%1/%2").arg(version).arg(getRepositoryFileName()));
+     request.setUrl(url);
+ 
+@@ -77,8 +77,8 @@ void UpdateWorker::showUpdateDialog(bool showDontCheckForUpdatesButton)
+                + "<b>" + tr("Current version:") + "</b> " IAITO_VERSION_FULL "<br/>"
+                + "<b>" + tr("Latest version:") + "</b> " + latestVersion.toString() + "<br/><br/>"
+                + tr("For update, please check the link:<br/>")
+-               + QString("<a href=\"https://github.com/radareorg/cutter/releases/tag/v%1\">"
+-                         "https://github.com/radareorg/cutter/releases/tag/v%1</a><br/>").arg(latestVersion.toString())
++               + QString("<a href=\"https://github.com/radareorg/iaito/releases/tag/v%1\">"
++                         "https://github.com/radareorg/iaito/releases/tag/v%1</a><br/>").arg(latestVersion.toString())
+                + tr("or click \"Download\" to download latest version of Iaito."));
+     if (showDontCheckForUpdatesButton) {
+         mb.setStandardButtons(QMessageBox::Save | QMessageBox::Reset | QMessageBox::Ok);
+diff --git a/src/core/MainWindow.cpp b/src/core/MainWindow.cpp
+index 1d6fbfbf..717b31aa 100644
+--- a/src/core/MainWindow.cpp
++++ b/src/core/MainWindow.cpp
+@@ -1597,7 +1597,7 @@ void MainWindow::on_actionIssue_triggered()
+ 
+ void MainWindow::documentationClicked()
+ {
+-    QDesktopServices::openUrl(QUrl("https://cutter.re/docs/user-docs"));
++    QDesktopServices::openUrl(QUrl("https://radare,org/iaito/docs/user-docs"));
+ }
+ 
+ void MainWindow::on_actionRefresh_Panels_triggered()
+diff --git a/src/dialogs/AboutDialog.cpp b/src/dialogs/AboutDialog.cpp
+index f2f4813b..5f758f22 100644
+--- a/src/dialogs/AboutDialog.cpp
++++ b/src/dialogs/AboutDialog.cpp
+@@ -48,7 +48,7 @@ AboutDialog::AboutDialog(QWidget *parent) :
+                         + tr("This Software is released under the GNU General Public License v3.0")
+                         + "<h2>" + tr("Authors") + "</h2>"
+                         + tr("Iaito is developed by the community and maintained by its core and development teams.<br/>")
+-                        + tr("Check our <a href='https://github.com/radareorg/cutter/graphs/contributors'>contributors page</a> for the full list of contributors."));
++                        + tr("Check our <a href='https://github.com/radareorg/iaito/graphs/contributors'>contributors page</a> for the full list of contributors."));
+     ui->label->setText(aboutString);
+ }
+ 
+diff --git a/src/img/iaito.ico b/src/img/iaito.ico
+new file mode 100644
+index 0000000000000000000000000000000000000000..2ce8c65d8c812b478e81e63aaf3a6bee4f4097cf
+GIT binary patch
+literal 16958
+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
+WPZ{=et+?x3ex&8cp2<g)3Hu)-=N4=L
+
+literal 0
+HcmV?d00001
+
+diff --git a/src/macos/Info.plist b/src/macos/Info.plist
+index 0f924d86..a857a3d5 100644
+--- a/src/macos/Info.plist
++++ b/src/macos/Info.plist
+@@ -15,7 +15,7 @@
+ 	<key>CFBundleIconFile</key>
+ 	<string>@ICON@</string>
+ 	<key>CFBundleIdentifier</key>
+-	<string>org.radare.cutter</string>
++	<string>org.radare.iaito</string>
+ 	<key>CFBundlePackageType</key>
+ 	<string>APPL</string>
+ 	<key>NSPrincipalClass</key>
+diff --git a/src/meson.build b/src/meson.build
+index 6e4aa238..e28c21a4 100644
+--- a/src/meson.build
++++ b/src/meson.build
+@@ -107,7 +107,7 @@ if host_machine.system() == 'windows'
+   add_project_link_arguments(join_paths(py3_exe.get_variable('BINDIR'), 'libs', 'python3.lib'), language: 'cpp')
+ endif
+ 
+-cutter_exe = executable(
++iaito_exe = executable(
+   'iaito',
+   moc_files,
+   gui_app: true,
+diff --git a/src/plugins/PluginManager.cpp b/src/plugins/PluginManager.cpp
+index d4d609f7..77b9c8f6 100644
+--- a/src/plugins/PluginManager.cpp
++++ b/src/plugins/PluginManager.cpp
+@@ -3,7 +3,7 @@
+ 
+ #ifdef IAITO_ENABLE_PYTHON_BINDINGS
+ #include <Python.h>
+-#include <cutterbindings_python.h>
++#include <iaitobindings_python.h>
+ #include "PythonManager.h"
+ #endif
+ 
+diff --git a/src/plugins/sample-python/sample_python.py b/src/plugins/sample-python/sample_python.py
+index 65c7966b..cb5b3516 100644
+--- a/src/plugins/sample-python/sample_python.py
++++ b/src/plugins/sample-python/sample_python.py
+@@ -1,11 +1,11 @@
+ 
+-import cutter
++import iaito
+ 
+ from PySide2.QtCore import Qt
+ from PySide2.QtWidgets import QVBoxLayout, QLabel, QWidget, QSizePolicy, QPushButton
+ 
+ 
+-class FortuneWidget(cutter.IaitoDockWidget):
++class FortuneWidget(iaito.IaitoDockWidget):
+     def __init__(self, parent):
+         super(FortuneWidget, self).__init__(parent)
+         self.setObjectName("FancyDockWidgetFromCoolPlugin")
+@@ -19,7 +19,7 @@ def __init__(self, parent):
+         content.setLayout(layout)
+         self.text = QLabel(content)
+         self.text.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+-        self.text.setFont(cutter.Configuration.instance().getFont())
++        self.text.setFont(iaito.Configuration.instance().getFont())
+         layout.addWidget(self.text)
+ 
+         button = QPushButton(content)
+@@ -31,17 +31,17 @@ def __init__(self, parent):
+         layout.setAlignment(button, Qt.AlignHCenter)
+ 
+         button.clicked.connect(self.generate_fortune)
+-        cutter.core().seekChanged.connect(self.generate_fortune)
++        iaito.core().seekChanged.connect(self.generate_fortune)
+ 
+         self.show()
+ 
+     def generate_fortune(self):
+-        fortune = cutter.cmd("fo").replace("\n", "")
+-        res = cutter.core().cmdRaw(f"?E {fortune}")
++        fortune = iaito.cmd("fo").replace("\n", "")
++        res = iaito.core().cmdRaw(f"?E {fortune}")
+         self.text.setText(res)
+ 
+ 
+-class IaitoSamplePlugin(cutter.IaitoPlugin):
++class IaitoSamplePlugin(iaito.IaitoPlugin):
+     name = "Sample Plugin"
+     description = "A sample plugin written in python."
+     version = "1.1"
+@@ -66,13 +66,13 @@ def setupInterface(self, main):
+         main.addPluginDockWidget(widget)
+ 
+         # Dissassembly context menu
+-        menu = main.getContextMenuExtensions(cutter.MainWindow.ContextMenuType.Disassembly)
++        menu = main.getContextMenuExtensions(iaito.MainWindow.ContextMenuType.Disassembly)
+         self.disas_action = menu.addAction("IaitoSamplePlugin dissassembly action")
+         self.disas_action.triggered.connect(self.handle_disassembler_action)
+         self.main = main
+ 
+         # Context menu for tables with addressable items like Flags,Functions,Strings,Search results,...
+-        addressable_item_menu = main.getContextMenuExtensions(cutter.MainWindow.ContextMenuType.Addressable)
++        addressable_item_menu = main.getContextMenuExtensions(iaito.MainWindow.ContextMenuType.Addressable)
+         self.addr_submenu = addressable_item_menu.addMenu("IaitoSamplePlugin") # create submenu
+         adrr_action = self.addr_submenu.addAction("Action 1")
+         self.addr_submenu.addSeparator() # can use separator and other qt functionality
+@@ -83,9 +83,9 @@ def setupInterface(self, main):
+     def terminate(self): # optional
+         print("IaitoSamplePlugin shutting down")
+         if self.main:
+-            menu = self.main.getContextMenuExtensions(cutter.MainWindow.ContextMenuType.Disassembly)
++            menu = self.main.getContextMenuExtensions(iaito.MainWindow.ContextMenuType.Disassembly)
+             menu.removeAction(self.disas_action)
+-            addressable_item_menu = self.main.getContextMenuExtensions(cutter.MainWindow.ContextMenuType.Addressable)
++            addressable_item_menu = self.main.getContextMenuExtensions(iaito.MainWindow.ContextMenuType.Addressable)
+             submenu_action = self.addr_submenu.menuAction()
+             addressable_item_menu.removeAction(submenu_action)
+         print("IaitoSamplePlugin finished clean up")
+@@ -95,13 +95,13 @@ def terminate(self): # optional
+     def handle_addressable_item_action(self):
+         # for actions in plugin menu Iaito sets data to current item address
+         submenu_action = self.addr_submenu.menuAction()
+-        cutter.message("Context menu action callback 0x{:x}".format(submenu_action.data()))
++        iaito.message("Context menu action callback 0x{:x}".format(submenu_action.data()))
+ 
+     def handle_disassembler_action(self):
+         # for actions in plugin menu Iaito sets data to address for current dissasembly line
+-        cutter.message("Dissasembly menu action callback 0x{:x}".format(self.disas_action.data()))
++        iaito.message("Dissasembly menu action callback 0x{:x}".format(self.disas_action.data()))
+ 
+ 
+ # This function will be called by Iaito and should return an instance of the plugin.
+-def create_cutter_plugin():
++def create_iaito():
+     return IaitoSamplePlugin()
+diff --git a/src/python/cutter.py b/src/python/iaito.py
+similarity index 92%
+rename from src/python/cutter.py
+rename to src/python/iaito.py
+index 0492e8e8..73011416 100644
+--- a/src/python/cutter.py
++++ b/src/python/iaito.py
+@@ -1,5 +1,5 @@
+ import json
+-from _cutter import *
++from _iaito import *
+ 
+ try:
+     from IaitoBindings import *
+diff --git a/src/resources.qrc b/src/resources.qrc
+index c8701707..0a84f2d3 100644
+--- a/src/resources.qrc
++++ b/src/resources.qrc
+@@ -102,7 +102,7 @@
+         <file>img/icons/fork.svg</file>
+         <file>img/icons/plugins.svg</file>
+         <file>img/icons/light/plugins.svg</file>
+-        <file>python/cutter.py</file>
++        <file>python/iaito.py</file>
+         <file>python/reg_qtres_importer.py</file>
+         <file>img/icons/download_black.svg</file>
+         <file>img/icons/pencil_thin.svg</file>
+diff --git a/src/widgets/ConsoleWidget.cpp b/src/widgets/ConsoleWidget.cpp
+index d697255d..712866be 100644
+--- a/src/widgets/ConsoleWidget.cpp
++++ b/src/widgets/ConsoleWidget.cpp
+@@ -23,12 +23,12 @@
+ #define fileno _fileno
+ #define fdopen _fdopen
+ #define PIPE_SIZE 65536 // Match Linux size
+-#define PIPE_NAME "\\\\.\\pipe\\cutteroutput-%1"
++#define PIPE_NAME "\\\\.\\pipe\\iaitooutput-%1"
+ #else
+ #include <unistd.h>
+ #define PIPE_READ  (0)
+ #define PIPE_WRITE (1)
+-#define STDIN_PIPE_NAME "%1/cutter-stdin-%2"
++#define STDIN_PIPE_NAME "%1/iaito-stdin-%2"
+ #endif
+ 
+ #define CONSOLE_R2_INPUT ("R2 Console")
+@@ -448,7 +448,7 @@ void ConsoleWidget::redirectOutput()
+ {
+     // Make sure that we are running in a valid console with initialized output handles
+     if (0 > fileno(stderr) && 0 > fileno(stdout)) {
+-        addOutput("Run cutter in a console to enable r2 output redirection into this widget.");
++        addOutput("Run iaito in a console to enable r2 output redirection into this widget.");
+         return;
+     }
+ 

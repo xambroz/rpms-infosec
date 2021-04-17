@@ -1,0 +1,126 @@
+From 79ffbfcbf7a13735645ec3cb5ef7c54cb2955a4c Mon Sep 17 00:00:00 2001
+From: xambroz <723625+xambroz@users.noreply.github.com>
+Date: Fri, 16 Apr 2021 21:40:21 +0200
+Subject: [PATCH 1/2] Add manpage, install appdata.xml - install manpage -
+ install the appdata.xml The appdata xml is used by tools like Gnome Software.
+
+Also removed desktop launcher from the Devel component ... as launcher
+should be part of the binary installation and not the Devel package.
+---
+ src/CMakeLists.txt | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index 3074cfb0..bbfcb33f 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -303,8 +303,11 @@ if(UNIX AND NOT APPLE)
+     install (FILES "img/iaito-o.svg"
+                 DESTINATION "share/icons/hicolor/scalable/apps/")
+     install(FILES "org.radare.iaito.desktop"
+-        DESTINATION "share/applications"
+-        COMPONENT Devel)
++                DESTINATION "share/applications")
++    install(FILES "org.radare.iaito.appdata.xml"
++                DESTINATION "share/metainfo")
++    install(FILES "iaito.1"
++                DESTINATION "share/man/man1")
+ endif()
+ 
+ include(Packaging)
+
+From 15a34d73d6d1a1e71db5b53cd6fbc23e9656e35e Mon Sep 17 00:00:00 2001
+From: xambroz <723625+xambroz@users.noreply.github.com>
+Date: Fri, 16 Apr 2021 21:49:28 +0200
+Subject: [PATCH 2/2] Add manpage
+
+---
+ src/iaito.1 | 79 +++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 79 insertions(+)
+ create mode 100644 src/iaito.1
+
+diff --git a/src/iaito.1 b/src/iaito.1
+new file mode 100644
+index 00000000..ed50b4a5
+--- /dev/null
++++ b/src/iaito.1
+@@ -0,0 +1,79 @@
++.TH IAITO "1" "iaito" "User Commands"
++.SH NAME
++iaito \- manual page for iaito
++.SH SYNOPSIS
++.B iaito
++[\fI\,options\/\fR] \fI\,filename\/\fR
++.SH DESCRIPTION
++A Qt and C++ GUI for radare2 reverse engineering framework.
++The iaito is the continuation of the 
++.UR "https://cutter.re"
++.BR "Cutter"
++before the fork of
++.BR radare2
++/
++.BR rizin
++to keep radare2 as backend.
++.br
++- Focus on supporting latest version of radare2.
++.br
++- Recommend the use of system installed libraries.
++.br
++- Closer integration between r2 and the UI.
++.SH OPTIONS
++.TP
++\fB\-h\fR, \fB\-\-help\fR
++Displays help on commandline options.
++.TP
++\fB\-\-help\-all\fR
++Displays help including Qt specific options.
++.TP
++\fB\-v\fR, \fB\-\-version\fR
++Displays version information.
++.TP
++\fB\-A\fR, \fB\-\-analysis\fR <level>
++Automatically open file and optionally start
++analysis. Needs filename to be specified. May be a
++value between 0 and 2: 0 = no analysis, 1 = aaa, 2
++= aaaa (experimental)
++.TP
++\fB\-F\fR, \fB\-\-format\fR <name>
++Force using a specific file format (bin plugin)
++.TP
++\fB\-B\fR, \fB\-\-base\fR <base address>
++Load binary at a specific base address
++.TP
++\fB\-i\fR <file>
++Run script file
++.TP
++\fB\-w\fR, \fB\-\-writemode\fR
++Open file in write mode
++.TP
++\fB\-\-pythonhome\fR <PYTHONHOME>
++PYTHONHOME to use for embedded python interpreter
++.TP
++\fB\-\-no\-output\-redirect\fR
++Disable output redirection. Some of the output in
++console widget will not be visible. Use this option
++when debuging a crash or freeze and output
++redirection is causing some messages to be lost.
++.TP
++\fB\-\-no\-plugins\fR
++Do not load plugins
++.TP
++\fB\-\-no\-cutter\-plugins\fR
++Do not load Iaito plugins
++.TP
++\fB\-\-no\-r2\-plugins\fR
++Do not load radare2 plugins
++.SS "Arguments:"
++.TP
++filename
++Filename to open. If not specified file selection dialog will be shown.
++.SH "SEE ALSO"
++The full documentation for
++.B iaito
++is maintained as docs folder in the source
++.UR "https://github.com/radareorg/iaito/tree/master/docs"
++.BR "https://github.com/radareorg/iaito/tree/master/docs"
++In your distribution you might find it compiled in separate iaiato-doc package.

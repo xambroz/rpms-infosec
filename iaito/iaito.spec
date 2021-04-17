@@ -1,6 +1,6 @@
 Name:           iaito
 Version:        5.2.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        GUI for radare2 reverse engineering framework
 
 %global         iaito_translations_commit 9e4b6de0d1cbf8f8bf077240b54532cc32b384b4
@@ -13,13 +13,19 @@ License:        GPLv3 and CC-BY-SA and CC0
 URL:            https://github.com/radareorg/iaito/
 Source0:        https://github.com/radareorg/iaito/archive/%{version}/iaito-%{version}.tar.gz
 Source1:        https://github.com/radareorg/iaito-translations/archive/%{iaito_translations_commit}.tar.gz#/iaito-translations-%{iaito_translations_commit}.tar.gz
-Source2:        iaito.1
+
+# Fix icon and desktop launcher
+Patch0:         https://github.com/radareorg/iaito/pull/31.patch#/iaito-00-fix-desktop.patch
+
+# Add manpage, install the appdata.xml metadata
+Patch1:         https://github.com/radareorg/iaito/pull/33.patch#/iaito-01-add-manpage.patch
 
 
 BuildRequires:  radare2-devel >= 5.2.0
+BuildRequires:  git
 BuildRequires:  cmake
-BuildRequires:  gcc-c++
 BuildRequires:  make
+BuildRequires:  gcc-c++
 BuildRequires:  kf5-syntax-highlighting-devel
 BuildRequires:  python3-devel
 BuildRequires:  qt5-qtsvg-devel
@@ -79,18 +85,15 @@ information.
 
 
 %prep
-%autosetup -p1 -n iaito-%{version}
+%autosetup -p1 -n iaito-%{version} -S git_am
 tar --strip-component=1 -xvf %{SOURCE1} -C src/translations
 
-mv src/org.radare.r2cutter.desktop src/org.radare.iaito.desktop
-mv src/org.radare.r2cutter.appdata.xml src/org.radare.iaito.appdata.xml
-
-# Icon inst
-sed -i -e 's/^Icon=iaito$/Icon=iaito-o/' src/org.radare.iaito.desktop
 
 %build
-%cmake src
+%cmake -DAIATO_EXTRA_PLUGIN_DIRS=%{_libdir}/iaito src
 %cmake_build
+
+
 
 cd docs
 make html
@@ -101,15 +104,6 @@ mv build/html ../
 %install
 %cmake_install
 
-mkdir -p %{buildroot}%{_metainfodir}
-install -pm644 src/org.radare.iaito.appdata.xml %{buildroot}%{_metainfodir}
-
-# install manpage
-install -d %{buildroot}%{_mandir}/man1
-install -m 644 %{SOURCE2} %{buildroot}%{_mandir}/man1/
-
-
-
 
 %check
 appstream-util validate-relax --nonet %{buildroot}%{_metainfodir}/*.appdata.xml
@@ -118,8 +112,9 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
 
 %files
 %{_bindir}/iaito
-%{_datadir}/applications/*.desktop
+%{_libdir}/iaito
 %{_datadir}/RadareOrg/
+%{_datadir}/applications/*.desktop
 %{_metainfodir}/*.appdata.xml
 %{_datadir}/icons/hicolor/scalable/apps/*.svg
 %{_mandir}/man1/iaito.1*
@@ -136,8 +131,13 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
 %doc html
 
 %changelog
-* Fri Mar 19 2021 Michal Ambroz <rebus _AT seznam.cz> - 5.2.0-1
+* Fri Apr 16 2021 Michal Ambroz <rebus _AT seznam.cz> - 5.2.0-2
 - name change again -> iaito
+- adding doc package
+- Add '/usr/lib*/iaito/' to plugin search paths
+
+* Mon Mar 22 2021 Ivan Mironov <mironov.ivan@gmail.com> - 0.1.1-4
+- Add '/usr/lib*/r2cutter/' to plugin search paths
 
 * Fri Mar 19 2021 Michal Ambroz <rebus _AT seznam.cz> - 0.1.1-3
 - switch from cutter to r2cutter
