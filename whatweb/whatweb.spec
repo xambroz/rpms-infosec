@@ -1,5 +1,5 @@
 Name:           whatweb
-Version:        0.5.1
+Version:        0.5.5
 Release:        1%{?dist}
 Summary:        Web scanner to identify what websites are running
 
@@ -17,13 +17,8 @@ URL:            http://www.morningstarsecurity.com/research/whatweb
 #               https://github.com/urbanadventurer/WhatWeb/releases/
 
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
-#Patch1:         https://patch-diff.githubusercontent.com/raw/urbanadventurer/WhatWeb/pull/282.patch#/whatweb-01_lib_whatweb.patch
-Patch0:         whatweb-makefile.patch
 
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:      noarch
-
-
 
 #Requires:      ruby(abi) >= 2.0
 Requires:       /usr/bin/ruby
@@ -90,6 +85,9 @@ rm -rf %{buildroot}%{_datadir}/doc/%{name}
 
 
 %changelog
+* Sun Apr 18 2021 Michal Ambroz <rebus at, seznam.cz> - 0.5.5-1
+- bump to 0.5.5
+
 * Sun May 31 2020 Michal Ambroz <rebus at, seznam.cz> - 0.5.1-1
 - bump to 0.5.1, rebuild for fedora 32
 
