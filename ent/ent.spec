@@ -4,8 +4,8 @@ Release:        1%{?dist}
 Summary:        A pseudo-random number sequence test program
 
 License:        GPLv2+
-URL:            http://www.fourmilab.ch/random/
-Source0:        http://www.fourmilab.ch/random/random.zip
+URL:            https://www.fourmilab.ch/random/
+Source0:        https://www.fourmilab.ch/random/random.zip
 
 BuildRequires:  unzip
 BuildRequires:  make
