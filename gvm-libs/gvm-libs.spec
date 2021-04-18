@@ -1,6 +1,6 @@
 Name:           gvm-libs
-Version:        11.0.1
-Release:        5%{?dist}
+Version:        20.8.1
+Release:        1%{?dist}
 Summary:        Support libraries for Greenbone Vulnerability Management Solution and OpenVAS
 
 License:        GPLv2+
@@ -8,7 +8,7 @@ URL:            http://www.openvas.org
 #               https://github.com/greenbone/gvm-libs/releases
 
 Source0:        https://github.com/greenbone/gvm-libs/archive/v%{version}.tar.gz#/gvm-libs-%{version}.tar.gz
-Source1:        https://github.com/greenbone/gvm-libs/releases/download/v%{version}/gvm-libs-%{version}.tar.gz.asc
+Source1:        https://github.com/greenbone/gvm-libs/releases/download/v%{version}/gvm-libs-%{version}.tar.gz.sig
 
 # The authenticator public key obtained from release 11.0.0
 # gpg2 -vv gvm-libs-11.0.1.tar.gz.asc
@@ -119,6 +119,9 @@ mv "%{_vpath_builddir}/doc/generated" "doc"
 
 
 %changelog
+* Wed Apr 14 2021 Michal Ambroz <rebus at, seznam.cz> - 20.8.1-1
+- bump to upstream 20.8.1
+
 * Tue Apr 13 2021 Michal Ambroz <rebus at, seznam.cz> - 11.0.1-5
 - rename to gvm-libs
 
