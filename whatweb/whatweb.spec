@@ -14,6 +14,7 @@ Group:          Applications/Internet
 
 License:        GPLv2
 URL:            http://www.morningstarsecurity.com/research/whatweb
+VCS:            https://github.com/urbanadventurer/WhatWeb
 #               https://github.com/urbanadventurer/WhatWeb/releases/
 
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
