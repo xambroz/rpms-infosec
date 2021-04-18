@@ -1,0 +1,6 @@
+from Config import addFilter
+
+
+addFilter('libdasm-devel.*no-documentation')
+addFilter('spelling-error.*disassembly')
+addFilter('libdasm.*no-manual-page-for-binary.*das')

@@ -1,0 +1,17 @@
+Build the python dir with explicit version of python.
+diff -ru libdasm-1.6/pydasm/Makefile libdasm-1.6.new/pydasm/Makefile
+--- libdasm-1.6/pydasm/Makefile	2019-10-24 05:46:32.278323509 +0200
++++ libdasm-1.6.new/pydasm/Makefile	2019-10-24 05:05:06.357947817 +0200
+@@ -1,9 +1,10 @@
+ DESTDIR=/
+ BINDIR=/usr/local/bin
++PYTHON ?= python
+ 
+ all:
+-	python setup.py build
++	$(PYTHON) setup.py build
+ 
+ install:
+-	python setup.py install --skip-build --root $(DESTDIR)
++	$(PYTHON) setup.py install --skip-build --root $(DESTDIR)
+ 	install -m 755 -p -D das.py $(DESTDIR)$(BINDIR)/das.py

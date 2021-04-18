@@ -1,0 +1,22 @@
+From 3af940dc771132e3cafe275bb6eeaba2b55937cc Mon Sep 17 00:00:00 2001
+From: Michal Ambroz <xambroz@users.noreply.github.com>
+Date: Tue, 17 Apr 2018 19:16:05 +0200
+Subject: [PATCH] do not ask for unnecessary write rights
+
+---
+ examples/das.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/examples/das.c b/examples/das.c
+index 16c0eed..9c668dd 100644
+--- a/examples/das.c
++++ b/examples/das.c
+@@ -156,7 +156,7 @@ unsigned char * read_file(int *len, char *name) {
+         int             c;
+         struct stat     sstat;
+ 
+-        if ((fp = fopen(name, "r+b")) == NULL) {
++        if ((fp = fopen(name, "rb")) == NULL) {
+                 fprintf(stderr,"Error: unable to open file \"%s\"\n", name);
+                 exit(0);
+         }

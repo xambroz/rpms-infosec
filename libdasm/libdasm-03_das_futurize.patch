@@ -1,0 +1,45 @@
+Make the das.py example compatible with both python2 and python3
+diff -ru libdasm-1.6/pydasm/das.py libdasm-1.6.new/pydasm/das.py
+--- libdasm-1.6/pydasm/das.py	2018-03-30 02:44:45.000000000 +0000
++++ libdasm-1.6.new/pydasm/das.py	2019-10-24 13:29:00.294243697 +0000
+@@ -28,18 +28,20 @@
+ #
+ #
+ 
++from __future__ import print_function
++from builtins import range
+ import os
+ from pydasm import *
+ 
+ def main():
+ 
+     if len(os.sys.argv) < 2:
+-        print "Usage: %s <file> [-a|-i] [bytes]\n"              \
++        print("Usage: %s <file> [-a|-i] [bytes]\n"              \
+             "  file    file to be disassembled (required)\n"    \
+             "  -a      format: ATT (optional)\n"                \
+             "  -i      format: INTEL (optional, default)\n"     \
+             "  bytes   show raw instruction data (optional, default 8)\n" % \
+-               (os.sys.argv[0])
++               (os.sys.argv[0]))
+         os.sys.exit(1)
+         
+     fd = file(os.sys.argv[1], 'rb')
+@@ -79,7 +81,7 @@
+                 str += 'db 0x%.2x' % ord(data[offset])
+             else:
+                 str += '.byte 0x%.2x' % ord(data[offset])
+-            print str
++            print(str)
+             offset += 1
+             continue
+             
+@@ -102,7 +104,7 @@
+         # other way by accessing struct INSTRUCTION members directly.
+         #
+         str += get_instruction_string(instruction, format, offset);
+-        print str
++        print(str)
+ 
+         offset += ilen
+ 
