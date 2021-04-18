@@ -1,0 +1,39 @@
+Upstream - aimage is withdrawn from support2010-12-25 19:32:09
+http://web.archive.org/web/20110312080022/http://afflib.org/
+
+It is recommended to use guymager instead.
+But guymager is GUI only and there is a gap for having some 
+console based application for creation of the AFF images.
+
+
+Version:
+3.1.0
+	- http://downloads.digitalcorpora.org/downloads/old/aimage-3.1.0.tar.gz
+
+3.1.2
+	- http://downloads.digitalcorpora.org/downloads/old/aimage-3.1.2.tar.gz
+
+3.2.0
+	- http://downloads.digitalcorpora.org/downloads/old/aimage-3.2.0.tar.gz
+
+3.2.1
+	- http://downloads.digitalcorpora.org/downloads/old/aimage-3.2.1.tar.gz
+	- missing - http://web.archive.org/web/20090831104249/http://www.afflib.org:80/downloads/aimage-3.2.1.tar.gz
+	- missing - http://web.archive.org/web/20090223192955/http://www.afflib.org/aimage.tar.gz
+
+3.2.3
+	- http://downloads.digitalcorpora.org/downloads/old/aimage-3.2.3.tar.gz
+
+3.2.5
+	- 2011:08:18 01:35:25+02:00
+	https://distfiles.macports.org/aimage/aimage-3.2.5.tar.gz		-> 9c362dbb24a064af014677c30d9511ed65b4f2b2c5ea3ba051bc4c5ada635b11
+	http://downloads.digitalcorpora.org/downloads/aimage-3.2.5.tar.gz	-> 9c362dbb24a064af014677c30d9511ed65b4f2b2c5ea3ba051bc4c5ada635b11
+	https://www.freshports.org/sysutils/aimage
+		SHA256 (aimage-3.2.5.tar.gz) = 9c362dbb24a064af014677c30d9511ed65b4f2b2c5ea3ba051bc4c5ada635b11
+		SIZE (aimage-3.2.5.tar.gz) = 191039
+
+http://downloads.digitalcorpora.org/downloads/old/
+
+http://web.archive.org/web/20090831104249/http://www.afflib.org:80/
+
+https://distfiles.macports.org/aimage/aimage-3.2.5.tar.gz
