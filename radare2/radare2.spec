@@ -7,7 +7,7 @@ VCS:            https://github.com/radare/radare2
 # by default it builds from the released version of radare2
 %bcond_without  build_release
 
-%global         gituser         radare
+%global         gituser         radareorg
 %global         gitname         radare2
 
 %global         gitdate         20210211
