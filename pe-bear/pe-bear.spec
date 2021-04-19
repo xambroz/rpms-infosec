@@ -1,5 +1,5 @@
 Name:           pe-bear
-Version:        0.3.9.5
+Version:        0.5.3.2
 Release:        1%{?dist}
 Summary:        reversing tool for PE files
 
@@ -10,14 +10,15 @@ Summary:        reversing tool for PE files
 # it contains embedded udis86 library - licensed with 2-clause BSD license
 License:        freeware
 URL:            https://hshrzd.wordpress.com/pe-bear/
+VCS:            https://github.com/hasherezade/pe-bear-releases
 
 %global         gituser         hasherezade
 %global         gitname         pe-bear-releases
 %global         debug_package   %{nil}
 
-Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{version}.tar.gz#/%{gitname}-%{version}.tar.gz
+Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
 NoSource:       0
-Source1:        https://github.com/%{gituser}/%{gitname}/releases/download/%{version}/PE-bear_linux64.tar.gz
+Source1:        https://github.com/%{gituser}/%{gitname}/releases/download/%{version}/PE-bear_%{version}_x64_linux.tar.xz
 NoSource:       1
 Source2:        pe-bear.desktop
 BuildArch:      x86_64
@@ -51,6 +52,7 @@ Requires:       qt
 Requires:       qt-x11
 Requires:       zlib
 
+Provides:       bundled(capstone)
 
 %description
 PE-bear is a freeware reversing tool for PE files.
@@ -60,8 +62,8 @@ analysts, stable and capable to handle malformed PE files.
 
 %prep
 # ======================= prep =======================================
-%setup -n %(basename %{SOURCE0} .tar.gz)
-tar xzvf %{SOURCE1}
+%autosetup -n "%{gitname}-%{version}"
+tar xJvf  %{SOURCE1} --strip-components=1
 
 
 %build
@@ -110,7 +112,7 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 %files
 # ======================= files ======================================
-#%doc 
+#%doc
 %{_bindir}/PE-bear
 %{_bindir}/pe-bear
 %{_datadir}/applications/%{name}.desktop
