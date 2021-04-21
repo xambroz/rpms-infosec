@@ -1,0 +1,35 @@
+From 14afa872e2fb30a44ba4c2e13653c6c0564cfd08 Mon Sep 17 00:00:00 2001
+From: pancake <pancake@nopcode.org>
+Date: Sun, 18 Apr 2021 01:47:08 +0200
+Subject: [PATCH] Fix loading io plugin list from oLj new output
+
+---
+ src/core/Iaito.cpp | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/src/core/Iaito.cpp b/src/core/Iaito.cpp
+index 6aa02a1b..3a5717b4 100644
+--- a/src/core/Iaito.cpp
++++ b/src/core/Iaito.cpp
+@@ -2462,14 +2462,20 @@ QList<RBinPluginDescription> IaitoCore::getRBinPluginDescriptions(const QString
+ QList<RIOPluginDescription> IaitoCore::getRIOPluginDescriptions()
+ {
+     QList<RIOPluginDescription> ret;
++    QJsonArray plugins = (cmdj("oLj").isArray())?
++         cmdj("oLj").array()
++         : cmdj("oLj").object()["io_plugins"].toArray();
+ 
+-    QJsonArray plugins = cmdj("oLj").object()["io_plugins"].toArray();
++    if (plugins.size() == 0) {
++        eprintf ("Cannot find io plugins from r2\n");
++    }
+     for (const QJsonValue pluginValue : plugins) {
+         QJsonObject pluginObject = pluginValue.toObject();
+ 
+         RIOPluginDescription plugin;
+ 
+         plugin.name = pluginObject["name"].toString();
++
+         plugin.description = pluginObject["description"].toString();
+         plugin.license = pluginObject["license"].toString();
+         plugin.permissions = pluginObject["permissions"].toString();

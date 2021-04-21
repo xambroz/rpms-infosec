@@ -20,6 +20,9 @@ Patch0:         https://github.com/radareorg/iaito/pull/31.patch#/iaito-00-fix-d
 # Add manpage, install the appdata.xml metadata
 Patch1:         https://github.com/radareorg/iaito/pull/33.patch#/iaito-01-add-manpage.patch
 
+# Fix loading of the RIO list
+Patch2:         https://github.com/radareorg/iaito/commit/14afa872e2fb30a44ba4c2e13653c6c0564cfd08.patch#/iaito-02-fix-rio-list.patch
+
 
 BuildRequires:  radare2-devel >= 5.2.0
 BuildRequires:  git
@@ -131,6 +134,9 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
 %doc html
 
 %changelog
+* Wed Apr 21 2021 Michal Ambroz <rebus _AT seznam.cz> - 5.2.0-3
+- fix RIO list
+
 * Fri Apr 16 2021 Michal Ambroz <rebus _AT seznam.cz> - 5.2.0-2
 - name change again -> iaito
 - adding doc package
