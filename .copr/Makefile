@@ -6,7 +6,7 @@ PWD = $(shell pwd)
 
 prepare:
 	dnf -y install rpmdevtools rpm-build
-	spectool -g -R $(spec)
+	spectool -g $(spec)
 
 srpm: prepare
 	rpmbuild -bs --define "_sourcedir $(PWD)" --define "_srcrpmdir $(outdir)" $(spec)
