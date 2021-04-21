@@ -1,0 +1,36 @@
+From ac6f9be8037cfc05c0ab7a4eb9e70c4204ae3fbd Mon Sep 17 00:00:00 2001
+From: Michal Ambroz <723625+xambroz@users.noreply.github.com>
+Date: Tue, 20 Apr 2021 23:32:41 +0200
+Subject: [PATCH] Avoid c99 feature
+
+Hello,
+this patch avoids c99 feature of declaring variable withing the for stanza.
+
+
+Sample build log output
+FAILED: libr/crypto/libr_crypto.so.5.2.0.p/p_crypto_cps2.c.o
+cc -Ilibr/crypto/libr_crypto.so.5.2.0.p -I. -I.. -I../libr/include -I../shlr/spp -I../shlr/sdb/src -pipe -D_FILE_OFFSET_BITS=64 -fvisibility=hidden -O2 -g -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong --param=ssp-buffer-size=4 -grecord-gcc-switches -m64 -mtune=generic -fPIC -pthread -DR2_PLUGIN_INCORE=1 -MD -MQ libr/crypto/libr_crypto.so.5.2.0.p/p_crypto_cps2.c.o -MF libr/crypto/libr_crypto.so.5.2.0.p/p_crypto_cps2.c.o.d -o libr/crypto/libr_crypto.so.5.2.0.p/p_crypto_cps2.c.o -c ../libr/crypto/p/crypto_cps2.c
+../libr/crypto/p/crypto_cps2.c: In function 'set_key':
+../libr/crypto/p/crypto_cps2.c:729:3: error: 'for' loop initial declarations are only allowed in C99 mode
+   for (int b = 0; b < 10 * 16; b++) {
+   ^
+../libr/crypto/p/crypto_cps2.c:729:3: note: use option -std=c99 or -std=gnu99 to compile your code
+ninja: build stopped: subcommand failed.
+---
+ libr/crypto/p/crypto_cps2.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/libr/crypto/p/crypto_cps2.c b/libr/crypto/p/crypto_cps2.c
+index fbc069beb4d..bc03cedcd1e 100644
+--- a/libr/crypto/p/crypto_cps2.c
++++ b/libr/crypto/p/crypto_cps2.c
+@@ -726,7 +726,8 @@ static bool set_key(RCrypto *cry, const ut8 *key, int keylen, int mode, int dire
+ 	} else if (keylen == 20) {
+ 		const ut8* key8 = (const ut8*)key;
+ 		unsigned short decoded[10] = {0};
+-		for (int b = 0; b < 10 * 16; b++) {
++		int b;
++		for (b = 0; b < 10 * 16; b++) {
+ 			int bit = (317 - b) % 160;
+ 			if ((key8[bit / 8] >> ((bit ^ 7) % 8)) & 1)	{
+ 				decoded[b / 16] |= (0x8000 >> (b % 16));

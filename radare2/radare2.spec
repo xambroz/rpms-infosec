@@ -1,28 +1,40 @@
 Name:           radare2
 Summary:        The reverse engineering framework
-Version:        5.1.1
+Version:        5.2.0
+%global         rel             3
 URL:            https://radare.org/
-VCS:            https://github.com/radare/radare2
+VCS:            https://github.com/radareorg/radare2
 
 # by default it builds from the released version of radare2
-%bcond_without  build_release
+# to build from git use rpmbuild --without=releasetag
+%bcond_without  releasetag
 
 %global         gituser         radareorg
 %global         gitname         radare2
 
-%global         gitdate         20210211
-%global         commit          a86f8077fc148abd6443384362a3717cd4310e64
+%global         gitdate         20210411
+%global         commit          cf3db945083fb4dab951874e5ec1283128deab11
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
-%global         rel              2
 
-%if %{with build_release}
+%if %{with releasetag}
 Release:        %{rel}%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
 %else
 Release:        0.%{rel}.%{gitdate}git%{shortcommit}%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{commit}.zip
 %endif
+
+# avoid requiring the stdc99 feature
+# declare the variable prior its usage in for cycle
+# https://github.com/radareorg/radare2/pull/18602
+Patch0:         https://github.com/radareorg/radare2/pull/18602.patch#/radare2-5.2.0-for_std99.patch
+
+# meson on EPEL8 - the version 0.49 - has bug preventing from processing split-lines
+# meson.build:13:18: ERROR:  Expecting eof got eol_cont.
+Patch1:         radare2-5.2.0-meson_rhel8.patch
+
+
 
 License:        LGPLv3+ and GPLv2+ and BSD and MIT and ASL 2.0 and MPLv2.0 and zlib
 # Radare2 as a package is targeting to be licensed/compiled as LGPLv3+
@@ -60,10 +72,7 @@ License:        LGPLv3+ and GPLv2+ and BSD and MIT and ASL 2.0 and MPLv2.0 and z
 # shlr/www/p/vendors/dagre*|graphlib* - 3 clause BSD
 # shlr/www/p/vendors/jquery.onoff.min.js - MIT
 
-%if %{!with build_release}
 BuildRequires:  sed
-%endif
-
 BuildRequires:  gcc
 BuildRequires:  meson
 BuildRequires:  ninja-build
@@ -71,9 +80,13 @@ BuildRequires:  file-devel
 BuildRequires:  xxhash-devel
 BuildRequires:  pkgconfig
 
-%if 0%{?epel}
+%if 0%{?rhel}
 BuildRequires:  bzip2-devel
 BuildRequires:  python3
+# %%meson macro using the %%set_build_flags from Fedora/EPEL, but not bringing the dependency
+# https://src.fedoraproject.org/rpms/meson/pull-request/9
+BuildRequires:  epel-rpm-macros
+
 %else
 BuildRequires:  pkgconfig(bzip2)
 %endif
@@ -120,7 +133,7 @@ Provides:       bundled(sdb) = 1.7.0
 # Based on js0n with a lot of modifications
 # https://github.com/quartzjer/js0n
 # JSON support for sdb.
-Provides:       bundled(js0n)
+Provides:       bundled(js0n) = 2018
 
 # libr/util/regex/README
 # Modified OpenBSD regex to be portable
@@ -146,15 +159,15 @@ Provides:       bundled(vavrdisasm) = 1.6
 
 # ./shlr/grub/*
 # It is not clear which version has been copied
-Provides:       bundled(grub2)
+Provides:       bundled(grub2) = 1.99~beta0
 
 # ./shlr/ptrace-wrap
 # https://github.com/thestr4ng3r/ptrace-wrap
-Provides:       bundled(ptrace-wrap)
+Provides:       bundled(ptrace-wrap) = 20181018
 
 # ./shlr/tree-sitter
 # https://github.com/tree-sitter/tree-sitter
-Provides:	bundled(tree-sitter) = 0.17.2
+Provides:       bundled(tree-sitter) = 0.17.2
 
 %description
 The radare2 is a reverse-engineering framework that is multi-architecture,
@@ -186,12 +199,12 @@ information
 
 
 %prep
-%if %{with build_release}
+%if %{with releasetag}
 # Build from git release version
-%setup -n %{gitname}-%{version}
+%autosetup -p 1 -n %{gitname}-%{version}
 %else
 # Build from git commit
-%setup -q -n %{gitname}-%{commit}
+%autosetup -p 1 -n %{gitname}-%{commit}
 # Rename internal "version-git" to "version"
 sed -i -e "s|%{version}-git|%{version}|g;" configure configure.acr
 %endif
@@ -204,6 +217,15 @@ rm -rf ./shlr/www/*
 echo "The radare2 source usually comes with a pre-built version of the web-interface, but without the source code." > ./shlr/www/README.Fedora
 echo "This has been removed in the Fedora package to follow the Fedora Packaging Guidelines." >> ./shlr/www/README.Fedora
 echo "Available under https://github.com/radare/radare2-webui" >> ./shlr/www/README.Fedora
+
+%if 0%{?rhel} && 0%{?rhel} == 8
+# Meson on EPEL8 is older than meson on EPEL7 and older than recommended one
+# on EPEL8 downgrade the recommendation in meson.build and pray
+# meson_version : '>=0.50.1' => meson_version : '>=0.49.1'
+sed -i -e "s|meson_version : '>=......'|meson_version : '>=0.49.1'|;" meson.build
+%endif
+
+
 
 %build
 # Whereever possible use the system-wide libraries instead of bundles
@@ -280,6 +302,15 @@ rm %{buildroot}/%{_datadir}/doc/%{name}/fortunes.fun
 
 
 %changelog
+* Wed Apr 21 2021 Michal Ambroz <rebus at, seznam.cz> 5.2.0-3
+- avoid c99 for(int i...
+
+* Sat Apr 17 2021 Michal Ambroz <rebus at, seznam.cz> 5.2.0-2
+- fix epel build
+
+* Wed Apr 14 2021 Henrik Nordstrom <henrik@henriknordstrom.net> - 5.2.0-1
+- Update to version 5.2.0
+
 * Sun Feb 28 2021 Michal Ambroz <rebus at, seznam.cz> 5.1.1-2
 - stop removing the r2pm binary from the package
 
@@ -344,7 +375,7 @@ rm %{buildroot}/%{_datadir}/doc/%{name}/fortunes.fun
 - fix CVE-2018-20455 CVE-2018-20456 CVE-2018-20457 CVE-2018-20458 CVE-2018-20459 CVE-2018-20460 CVE-2018-20461
 * Fri Nov 23 2018 Riccardo Schirone <rschirone91@gmail.com> 3.1.0-1
 - rebase to upstream version 3.1.0
-- remove duplicated /usr/share/radare2 dir in %files
+- remove duplicated /usr/share/radare2 dir in %%files
 * Tue Oct 23 2018 Riccardo Schirone <rschirone91@gmail.com> 3.0.1-1
 - rebase to upstream version 3.0.1 which includes some minor fixes and fixes
   for ppc64 and s390x architectures
