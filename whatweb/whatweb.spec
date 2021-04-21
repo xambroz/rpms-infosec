@@ -28,9 +28,13 @@ Buildrequires:  sed
 Requires:       /usr/bin/ruby
 Requires:       rubygem-addressable
 
-
+%if 0%{?rhel} && 0%{?rhel} <= 8
+Requires:       rubygem-bson
+Requires:       rubygem-mongo
+%else
 Recommends:     rubygem-bson
 Recommends:     rubygem-mongo
+%endif
 
 %description
 Identify content management systems (CMS), blogging platforms, stats/analytic
