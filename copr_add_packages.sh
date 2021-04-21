@@ -1,0 +1,22 @@
+#!/bin/bash
+
+find ./ -maxdepth 1 -type d | grep -v -E '^./$|^./.git' | \
+while read I ; do
+    PACKAGE=$(basename "$I")
+    grep -i "NoSource:" "${I}/${PACKAGE}.spec"
+    if [ $? -eq 0 ] ; then
+        # Do not add to COPR the binary packages
+        continue
+    fi
+
+    copr add-package-scm --clone-url "https://github.com/xambroz/rpms-infosec" \
+        --subdir "${PACKAGE}" \
+        --spec "${PACKAGE}.spec" \
+        --type git \
+        --method make_srpm \
+        --name "${PACKAGE}" \
+        --webhook-rebuild on \
+        rebus/infosec
+
+$ 
+done
