@@ -21,6 +21,9 @@ Source0:        https://github.com/%{gituser}/%{gitname}/archive/v%{version}.tar
 
 BuildArch:      noarch
 
+Buildrequires:  make
+Buildrequires:  sed
+
 #Requires:      ruby(abi) >= 2.0
 Requires:       /usr/bin/ruby
 Requires:       rubygem-addressable
@@ -87,7 +90,7 @@ rm -rf %{buildroot}%{_datadir}/doc/%{name}
 
 %changelog
 * Sun Apr 18 2021 Michal Ambroz <rebus at, seznam.cz> - 0.5.5-1
-- bump to 0.5.5
+- bump to 0.5.5, adding mak+sed as BR
 
 * Sun May 31 2020 Michal Ambroz <rebus at, seznam.cz> - 0.5.1-1
 - bump to 0.5.1, rebuild for fedora 32
