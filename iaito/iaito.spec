@@ -1,6 +1,6 @@
 Name:           iaito
 Version:        5.2.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        GUI for radare2 reverse engineering framework
 
 %global         iaito_translations_commit 9e4b6de0d1cbf8f8bf077240b54532cc32b384b4
@@ -80,7 +80,8 @@ information.
 
 %package doc
 Summary:        Documentation for the iaito package
-Requires:       %{name}%{?_isa} = %{version}-%{release}
+BuildArch:      noarch
+Requires:       %{name} = %{version}-%{release}
 
 %description doc
 Documentation for the iaito package. See iaito package for more
