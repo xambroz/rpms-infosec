@@ -8,6 +8,10 @@ License:        BSD with advertising
 URL:            http://www.afflib.org
 Source0:        http://www.afflib.org/downloads/aimage-%{version}.tar.gz
 
+BuildRequires:  autoconf
+BuildRequires:  automake
+BuildRequires:  make
+BuildRequires:  gcc-c++
 BuildRequires:  afflib-devel >= 3.3.7
 BuildRequires:  expat-devel
 BuildRequires:  openssl-devel
