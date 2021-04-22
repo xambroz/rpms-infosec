@@ -187,6 +187,8 @@ Patch14:        libemu-14_obsolete_m4.patch
 # https://github.com/DinoTools/libemu/pull/28
 Patch15:        libemu-15_python2_build.patch
 
+BuildRequires:  gcc
+BuildRequires:  make
 BuildRequires:  pkgconfig
 BuildRequires:  automake
 BuildRequires:  autoconf

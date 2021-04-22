@@ -111,7 +111,8 @@ Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{nam
 
 
 
-BuildRequires: make
+BuildRequires:  make
+BuildRequires:  gcc
 BuildRequires:  pkgconfig
 BuildRequires:  automake
 BuildRequires:  libtool

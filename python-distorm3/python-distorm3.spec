@@ -25,6 +25,7 @@ URL:            https://github.com/gdabah/distorm
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
 BuildRequires:  gcc
+BuildRequires:  make
 
 %if 0%{?with_python2}
 BuildRequires:  python2

@@ -42,6 +42,8 @@ Patch0:         %{name}-libs.patch
 Patch1:         %{name}-libcstring.patch
 
 
+BuildRequires:  gcc
+BuildRequires:  make
 BuildRequires:  pkgconfig
 BuildRequires:  automake
 BuildRequires:  libtool

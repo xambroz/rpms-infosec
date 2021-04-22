@@ -30,6 +30,7 @@ Source0:        https://github.com/%{gituser}/%{gitname}/releases/download/%{ver
 BuildRequires:  autoconf
 BuildRequires:  automake
 BuildRequires:  gcc
+BuildRequires:  make
 
 %if 0%{?with_python3}
 BuildRequires:  python%{python3_pkgversion}-devel
