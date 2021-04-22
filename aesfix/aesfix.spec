@@ -38,10 +38,9 @@ Source3:        aesfix.1
 Patch1:         aesfix-10_add-GCC-hardening.patch
 
 
-Buildrequires:  gcc
+Buildrequires:  gcc-c++
 Buildrequires:  make
 BuildRequires:  gnupg2
-
 
 
 %description
@@ -50,8 +49,6 @@ AES key schedule. This program is limited to AES-128 key schedules
 and it can only correct unidirectional 1->0 bit errors.
 For the most part it has been optimized for readability rather than
 performance.
-
-
 
 
 %prep
