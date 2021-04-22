@@ -1,0 +1,33 @@
+Original install script is trying to install files as root:root
+This patch adds possibility to configure OWNER and GROUP which should
+be used to install the binaries
+
+diff -ru bkhive-1.1.1/Makefile bkhive-1.1.1.new/Makefile
+--- bkhive-1.1.1/Makefile	2007-11-21 14:47:36.000000000 +0100
++++ bkhive-1.1.1.new/Makefile	2012-05-28 00:32:17.588238596 +0200
+@@ -26,6 +26,8 @@
+ LFLAGS   = 
+ LIBS     =
+ INCPATH  =
++OWNER    = root
++GROUP    = root
+ 
+ HEADERS = hive.h
+ SOURCES = hive.c bkhive.c
+@@ -75,12 +77,12 @@
+ # Install target
+ install: build infos
+ 	@echo "Creating directories..."
+-	$(INSTALL) -d -m 755 -o root -g root $(DESTDIR)$(BINDIR)
+-	$(INSTALL) -d -m 755 -o root -g root $(DESTDIR)$(MANDIR)
++	$(INSTALL) -d -m 755 -o $(OWNER) -g $(GROUP) $(DESTDIR)$(BINDIR)
++	$(INSTALL) -d -m 755 -o $(OWNER) -g $(GROUP) $(DESTDIR)$(MANDIR)
+ 	@echo "Copying binary..."
+-	$(INSTALL) bkhive -m 755 -o root -g root $(DESTDIR)$(BINDIR)
++	$(INSTALL) bkhive -m 755 -o $(OWNER) -g $(GROUP) $(DESTDIR)$(BINDIR)
+ 	@echo "Installing man page..."
+-	$(INSTALL) bkhive.1 -m 644 -o root -g root $(DESTDIR)$(MANDIR)
++	$(INSTALL) bkhive.1 -m 644 -o $(OWNER) -g $(GROUP) $(DESTDIR)$(MANDIR)
+ 	@echo ""
+ 
+ # Uninstall target
