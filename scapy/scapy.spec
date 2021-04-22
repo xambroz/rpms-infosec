@@ -1,11 +1,11 @@
 Name:           scapy
-Version:        2.4.3
-Release:        3%{?dist}
+Version:        2.4.5
+Release:        1%{?dist}
 Summary:        Interactive packet manipulation tool and network scanner
 
 %global         gituser         secdev
 %global         gitname         scapy
-%global         commit          3047580162a9407ef05fe981983cacfa698f1159
+%global         commit          95ba5b8504152a1f820bbe679ccf03668cb5118f
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 License:        GPLv2
@@ -14,7 +14,6 @@ URL:            http://www.secdev.org/projects/scapy/
 #               https://bitbucket.org/secdev/scapy/pull-request/80
 #               https://scapy.readthedocs.io/en/latest/introduction.html
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
-Patch0:         https://github.com/secdev/scapy/commit/0c3d5e417bbd923c4729d15572c3d693d58aff81.patch#/scapy-2.4.3-ethertypes.patch
 
 %global         common_desc %{expand:
 Scapy is a powerful interactive packet manipulation program built on top
@@ -33,19 +32,32 @@ requests and replies, and much more.}
 %bcond_with        python2
 %endif
 
+# By default build the documentation
+%if 0%{?fedora} || ( 0%{?rhel} && 0%{?rhel} >= 8 )
+%bcond_without     doc
+%else
+# Documentation build fails on rhel7 due to version of sphinx
+%bcond_with        doc
+%endif
+
+
+
 
 BuildArch:      noarch
 
+BuildRequires:  make
 BuildRequires:  sed
 
 %if 0%{?with_python2}
 BuildRequires:  python2-devel
 BuildRequires:  python2-setuptools
+BuildRequires:  python2-tox
 %endif
 
 %if 0%{?with_python3}
 BuildRequires:  python%{python3_pkgversion}-devel
 BuildRequires:  python%{python3_pkgversion}-setuptools
+BuildRequires:  python%{python3_pkgversion}-tox
 %endif
 
 # Recommends only supported on fedora and rhel8+
@@ -92,14 +104,16 @@ Recommends:     ipython3
 %{common_desc}
 %endif
 
+%if 0%{?with_doc}
 %package doc
 Summary:        Interactive packet manipulation tool and network scanner
 
-BuildRequires:  /usr/bin/sphinx-build
-BuildRequires:  python-sphinx_rtd_theme
+BuildRequires:  python%{python3_pkgversion}-sphinx
+BuildRequires:  python%{python3_pkgversion}-sphinx_rtd_theme
 
 %description doc
 %{common_desc}
+%endif
 
 
 
@@ -126,12 +140,12 @@ done
 %py3_build
 %endif
 
-pushd doc/scapy
-make html
-popd
+%if 0%{?with_doc}
+make -C doc/scapy html BUILDDIR=_build_doc SPHINXBUILD=sphinx-build-%python3_version
 
-rm -f doc/scapy/_build/html/.buildinfo
-rm -f doc/scapy/_build/html/_static/_dummy
+rm -f doc/scapy/_build_doc/html/.buildinfo
+rm -f doc/scapy/_build_doc/html/_static/_dummy
+%endif
 
 
 
@@ -207,10 +221,34 @@ ln -s %{_bindir}/UTscapy3 %{buildroot}%{_bindir}/UTscapy
 %endif
 
 
+%if 0%{?with_doc}
 %files doc
-%doc doc/scapy/_build/html
+%doc doc/scapy/_build_doc/html
+%endif
+
 
 %changelog
+* Tue Apr 20 2021 Michal Ambroz <rebus _AT seznam.cz> - 2.4.5-1
+- bump to 2.4.5 release
+
+* Fri Mar 12 2021 Michal Ambroz <rebus _AT seznam.cz> - 2.4.4-1
+- bump to 2.4.4 release
+
+* Thu Mar 11 2021 W. Michael Petullo <mike@flyn.org> - 2.4.3-8
+- Patch to fix loading libc.a; see https://bugs.python.org/issue42580
+
+* Wed Jan 27 2021 Fedora Release Engineering <releng@fedoraproject.org> - 2.4.3-7
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
+
+* Wed Jul 29 2020 Fedora Release Engineering <releng@fedoraproject.org> - 2.4.3-6
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
+
+* Tue May 26 2020 Miro Hrončok <mhroncok@redhat.com> - 2.4.3-5
+- Rebuilt for Python 3.9
+
+* Thu Jan 30 2020 Fedora Release Engineering <releng@fedoraproject.org> - 2.4.3-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
+
 * Fri Nov 08 2019 Michal Ambroz <rebus _AT seznam.cz> - 2.4.3-3
 - remove colliding manpage from python2 package
 - add license files

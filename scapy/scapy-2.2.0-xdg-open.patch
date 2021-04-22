@@ -1,0 +1,24 @@
+# HG changeset patch
+# User Lubomir Rintel <lkundrak@v3.sk>
+# Date 1411237938 -7200
+# Node ID 0ce553161b799e9dc91f63de73dfdb0f50360056
+# Parent  ac04713bb61839a3476b72118e3d1c3ce5c81e86
+Do not default to acroread and gv
+
+They are not very likely to be present nowadays. Default to user's preferred
+application instead.
+
+diff --git a/scapy/config.py b/scapy/config.py
+--- a/scapy/config.py
++++ b/scapy/config.py
+@@ -56,8 +56,8 @@
+ 
+     
+ class ProgPath(ConfClass):
+-    pdfreader = "acroread"
+-    psreader = "gv"
++    pdfreader = "xdg-open"
++    psreader = "xdg-open"
+     dot = "dot"
+     display = "display"
+     tcpdump = "tcpdump"

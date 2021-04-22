@@ -1,0 +1,18 @@
+# HG changeset patch
+# User Jean-Michel <jean-michel.picod@cassidian.com>
+# Date 1400096697 -7200
+# Node ID 3bd59a1a75ff4a96e3f549840d27fe707d9f7b8c
+# Parent  6dd464d5ac302325e9e06f9ee2cf1d8e81637554
+Adding missing import for psdump() and pdfdump() methods
+
+diff --git a/scapy/packet.py b/scapy/packet.py
+--- a/scapy/packet.py
++++ b/scapy/packet.py
+@@ -15,6 +15,7 @@
+ from volatile import VolatileValue
+ from utils import import_hexcap,tex_escape,colgen,get_temp_file
+ from error import Scapy_Exception,log_runtime
++import subprocess
+ 
+ try:
+     import pyx
