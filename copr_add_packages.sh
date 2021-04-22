@@ -1,6 +1,8 @@
 #!/bin/bash
 
-find ./ -maxdepth 1 -type d | grep -v -E '^./$|^./.git' | \
+PACKAGE=$1
+
+find "./$PACKAGE" -maxdepth 1 -type d | grep -v -E '^./$|^./.git' | \
 while read I ; do
     PACKAGE=$(basename "$I")
     grep -i "NoSource:" "${I}/${PACKAGE}.spec"
@@ -18,5 +20,4 @@ while read I ; do
         --webhook-rebuild on \
         rebus/infosec
 
-$ 
 done
