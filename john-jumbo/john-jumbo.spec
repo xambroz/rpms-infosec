@@ -2,7 +2,7 @@
 Summary:          John the Ripper password cracker
 Name:             john-jumbo
 Version:          1.9.0
-Release:          jumbo.%{jumbo_version}.2%{?dist}
+Release:          jumbo.%{jumbo_version}.3%{?dist}
 
 URL:              http://www.openwall.com/john
 VCS:              https://github.com/openwall/john
@@ -21,6 +21,12 @@ Patch0:           john-jumbo-inlines.patch
 # Patch needed to be able to compule with the support of opencl
 # already fixed in the upstream development version
 Patch1:           https://github.com/openwall/john/commit/4f5f6fc8dca0102da7e307e44d5600af04c00ca9.patch#/john-jumbo-opencl.patch
+
+# Fix gcc11 compile error about alignment of struct.
+# https://github.com/openwall/john/issues/4604
+# https://bugzilla.redhat.com/show_bug.cgi?id=1937076
+Patch2:           https://patch-diff.githubusercontent.com/raw/openwall/john/pull/4611.patch#/john-jumbo-gcc11.patch
+
 
 BuildRoot:        %{_tmppath}/%{name}-%{version}-%{release}-root
 Requires:         john = %{version}
@@ -41,12 +47,7 @@ Buildrequires:    krb5-devel
 Buildrequires:    gmp-devel
 Buildrequires:    opencl-headers
 
-
-%if 0%{?fedora} || ( 0%{?rhel} && 0%{?rhel} >= 8 )
 Buildrequires:    openssl-devel
-%else
-Buildrequires:    compat-openssl10-devel
-%endif
 
 
 %description
@@ -149,6 +150,9 @@ rm -f %{buildroot}%{_bindir}/unshadow
 
 
 %changelog
+* Fri Apr 23 2021 Michal Ambroz <rebus _AT seznam.cz> - 1.9.0-jumbo.1.3
+- rebuild for Fedora33/34/gcc11
+
 * Tue Jun 02 2020 Michal Ambroz <rebus _AT seznam.cz> - 1.9.0-jumbo.1.2
 - rebuild for Fedora32
 
