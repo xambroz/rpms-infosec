@@ -5,18 +5,25 @@ Version:          1.9.0
 Release:          jumbo.%{jumbo_version}.2%{?dist}
 
 URL:              http://www.openwall.com/john
+VCS:              https://github.com/openwall/john
 License:          GPLv2
 Group:            Applications/System
 Source0:          http://www.openwall.com/john/k/john-%{version}-jumbo-%{jumbo_version}.tar.xz
 Source1:          http://www.openwall.com/john/k/john-%{version}-jumbo-%{jumbo_version}.tar.xz.sign
+
+
+# This patch fixes build issue, which results in following error message:
+# dynamic_fmt.o: In function `DynamicFunc__crypt_md5_to_input_raw_Overwrite_NoLen':
+# .../BUILD/john-1.8.0-jumbo-1/src/dynamic_fmt.c:4989: undefined reference to `MD5_body_for_thread'
+# https://github.com/magnumripper/JohnTheRipper/issues/1093
 Patch0:           john-jumbo-inlines.patch
-# Patch3:           http://www.openwall.com/john/g/john-%%{version}-jumbo-%%{jumbo_version}.diff.gz
+
+# Patch needed to be able to compule with the support of opencl
+# already fixed in the upstream development version
+Patch1:           https://github.com/openwall/john/commit/4f5f6fc8dca0102da7e307e44d5600af04c00ca9.patch#/john-jumbo-opencl.patch
+
 BuildRoot:        %{_tmppath}/%{name}-%{version}-%{release}-root
 Requires:         john = %{version}
-
-Buildrequires:    nss-devel
-Buildrequires:    krb5-devel
-Buildrequires:    gmp-devel
 
 Buildrequires:    gcc
 Buildrequires:    make
@@ -29,8 +36,13 @@ Buildrequires:    python%{python3_pkgversion}-future
 BuildRequires:    python%{python3_pkgversion}-devel
 BuildRequires:    python%{python3_pkgversion}-setuptools
 
+Buildrequires:    nss-devel
+Buildrequires:    krb5-devel
+Buildrequires:    gmp-devel
+Buildrequires:    opencl-headers
 
-%if 0%{?fedora} <= 25
+
+%if 0%{?fedora} || ( 0%{?rhel} && 0%{?rhel} >= 8 )
 Buildrequires:    openssl-devel
 %else
 Buildrequires:    compat-openssl10-devel
