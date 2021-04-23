@@ -25,7 +25,7 @@ Buildrequires:  make
 Buildrequires:  sed
 
 #Requires:      ruby(abi) >= 2.0
-Requires:       /usr/bin/ruby
+Requires:       %{_bindir}/ruby
 Requires:       rubygem-addressable
 
 %if 0%{?rhel} && 0%{?rhel} <= 8
@@ -66,7 +66,6 @@ echo "Nothing to build."
 
 
 %install
-alias bundle='echo'
 make install DESTDIR=%{buildroot}
 rm -rf %{buildroot}%{_datadir}/doc/%{name}
 
@@ -75,21 +74,13 @@ rm -rf %{buildroot}%{_datadir}/doc/%{name}
 %doc CHANGELOG.md README.md whatweb.xsl
 %license LICENSE
 %{_bindir}/%{name}
-%dir %{_datadir}/%{name}
-%dir %{_datadir}/%{name}/addons
-%dir %{_datadir}/%{name}/lib
-%dir %{_datadir}/%{name}/plugins
-%dir %{_datadir}/%{name}/my-plugins
-%dir %{_datadir}/%{name}/plugin-development
-%dir %{_datadir}/%{name}/plugins-disabled
-%{_datadir}/%{name}/%{name}
-%{_datadir}/%{name}/addons/*
-%{_datadir}/%{name}/lib/*
-%{_datadir}/%{name}/plugins/*
-%{_datadir}/%{name}/my-plugins/*
-%{_datadir}/%{name}/plugin-development/*
-%{_datadir}/%{name}/plugins-disabled/*
+%{_datadir}/%{name}
 %{_mandir}/man1/%{name}.1*
+
+
+%check
+make test
+
 
 
 %changelog
