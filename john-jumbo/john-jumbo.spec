@@ -19,6 +19,7 @@ Buildrequires:    krb5-devel
 Buildrequires:    gmp-devel
 
 Buildrequires:    gcc
+Buildrequires:    make
 Buildrequires:    autoconf
 # For optional AES-NI support
 Buildrequires:    yasm
