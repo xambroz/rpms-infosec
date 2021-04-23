@@ -70,6 +70,8 @@ Provides:       bundled(xxHash) = 0.8.0
 BuildRequires:  cmake
 BuildRequires:  make
 BuildRequires:  gcc
+# librdkafka jemalloc and some cmake tests need c++
+BuildRequires:  gcc-c++
 BuildRequires:  pkgconfig(libxxhash)
 BuildRequires:  pkgconfig(jansson)
 
