@@ -1,8 +1,27 @@
 Name:           libemu
 Version:        0.2.0
 Summary:        The x86 shell-code detection and emulation
+%global         baserelease     19
+%if 0%{?rhel}
 # Group needed for EPEL
-%global         baserelease     11
+Group:          Applications/System
+%endif
+
+# By default building without test cases as they contain realistic shell codes
+# as seen by Metasploit and other exploits and some of them trigger the AV detection
+# of the package.
+# In case you need sctest with the original realistic test cases, please rebuild with
+# rpmbuild --rebuild libemu.src.rpm --with testcases
+%bcond_with	testcases
+
+
+
+%global         gituser         DinoTools
+%global         gitname         libemu
+# Current version
+%global         gitdate         20130410
+%global         commit          ab48695b7113db692982a1839e3d6eb9e73e90a9
+%global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
 # libemu package licensed with GPLv2+
@@ -10,6 +29,7 @@ Summary:        The x86 shell-code detection and emulation
 # the code is removed during build and unbundled libdasm library is used instead.
 License:        GPLv2+
 URL:            https://github.com/DinoTools/libemu/
+#               https://github.com/buffer/libemu
 # Other information sources:
 #    Original nepenthes site - is gone, but available from web archive
 #               http://libemu.mwcollect.org -> https://web.archive.org/web/20090122230505/http://libemu.mwcollect.org
@@ -45,12 +65,13 @@ URL:            https://github.com/DinoTools/libemu/
 #global         commit          09bbeb583be41b96b9e8a5876a18ac698a77abfa
 
 
-
-%if 0%{?fedora} || ( 0%{?rhel} && 0%{?rhel} >= 7 )
 # libemu currently doesn't work with python3
+%bcond_with     python3
+%if 0%{?fedora} || ( 0%{?rhel} && 0%{?rhel} >= 7 )
 %bcond_with     python3
 %endif
 
+# py2 module allowed only for the EPEL7
 %if ( 0%{?fedora} && 0%{?fedora} <= 30 ) || ( 0%{?rhel} && 0%{?rhel} <= 7 )
 %bcond_without  python2
 %else
@@ -60,25 +81,17 @@ URL:            https://github.com/DinoTools/libemu/
 
 # Exclude the private libemu in python sitearch dir
 %global __provides_exclude_from ^(%{python2_sitearch}/.*\\.so$
-%if 0%{?with_python3} >= 0
+%if 0%{?with_python3}
 %global __provides_exclude_from ^(%{python2_sitearch}|%{python%{python3_pkgversion}_sitearch})/.*\\.so$
 %endif
 
 
-# This stanza is needed for RHEL6
+# This stanza is needed only for RHEL6
 %if 0%{?rhel} && 0%{?rhel} <= 6
 %{!?__python2:        %global __python2 /usr/bin/python2}
 %{!?python2_sitelib:  %global python2_sitelib %(%{__python2} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
 %{!?python2_sitearch: %global python2_sitearch %(%{__python2} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
 %endif
-
-
-%global         gituser         DinoTools
-%global         gitname         libemu
-# Current version
-%global         gitdate         20130410
-%global         commit          ab48695b7113db692982a1839e3d6eb9e73e90a9
-%global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
 
@@ -96,7 +109,8 @@ Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{version}.tar.
 # Next release should be probably 0.3.0
 Release:        %{baserelease}.%{gitdate}git%{shortcommit}%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
-%endif #build_release
+# build_release
+%endif
 
 
 # Patches 1-5 taken from the Debian package - author David Martínez Moreno <ender@debian.org>
@@ -187,6 +201,7 @@ Patch14:        libemu-14_obsolete_m4.patch
 # https://github.com/DinoTools/libemu/pull/28
 Patch15:        libemu-15_python2_build.patch
 
+BuildRequires:  sed
 BuildRequires:  gcc
 BuildRequires:  make
 BuildRequires:  pkgconfig
@@ -219,6 +234,9 @@ intrusion/prevention detection and honeypots.
 %package        devel
 # ======================= devel package ==============================
 Summary:        Development files for the libemu x86 emulator
+%if 0%{?rhel} 
+Group:          Development/Libraries
+%endif
 Requires:       %{name}%{?_isa} = %{version}-%{release}
 
 %description    devel
@@ -230,26 +248,33 @@ developing applications that use %{name}.
 %package        -n python2-libemu
 # ======================= python2-libemu =============================
 Summary:        Python2 binding to the libemu x86 emulator
+%if 0%{?rhel} 
+Group:          Development/Libraries
+%endif
 Requires:       %{name}%{?_isa} = %{version}-%{release}
 %{?python_provide:%python_provide python2-%{name}}
 
 %description    -n python2-libemu
 Python2 binding to the libemu x86 emulator.
-%endif #with_python2
+#with_python2
+%endif
 
 
 %if 0%{?with_python3}
-%package        -n python3-libemu
+%package        -n python%{python3_pkgversion}-libemu
 # ======================= python3-libemu =============================
 Summary:        Python3 binding to the libemu x86 emulator
+%if 0%{?rhel} 
+Group:          Development/Libraries
+%endif
 Requires:       %{name}%{?_isa} = %{version}-%{release}
 %{?python_provide:%python_provide python%{python3_pkgversion}-%{name}}
 
-
-%description    -n python3-libemu
+%description    -n python%{python3_pkgversion}-libemu
 Python3 binding to the libemu x86 emulator.
 
-%endif #with_python3
+#with_python3
+%endif
 
 
 
@@ -286,7 +311,23 @@ git commit -q -a -m "downgrade autoconf for rhel6"
 # Create m4 directory if missing
 [ -d m4 ] || mkdir m4
 
+
+%if 0%{?with_testcases}
+echo "Compiling with testcases"
+export CFLAGS="%optflags -Wno-error=array-bounds"
+%else
+echo "Compiling without testcases"
+export CFLAGS="%optflags -Wno-error=array-bounds -D_NO_TESTS"
+%endif
+
+
+
 autoreconf --verbose --install --force --warnings=all
+
+# Disable suppression of the compilation warnings from the libtool
+# LIBTOOLFLAGS=-no-suppress works only for compilation, but ends with error for linking
+sed -i -e 's/\(^.*mode=compile $(CC).*\)\\/\1 -no-suppress\\/' src/Makefile.in
+
 
 %if 0%{?with_python2} || 0%{?with_python3}
 %configure --enable-python-bindings
@@ -296,39 +337,57 @@ cp -r bindings/python bindings/python3
 %configure
 %endif
 
-make %{?_smp_mflags} PYTHON=%{__python3}
+
+PYFLAGS=""
+%if 0%{?with_python2}
+PYFLAGS="PYTHON=%{__python2}"
+%endif
+%if 0%{?with_python3}
+PYFLAGS="PYTHON=%{__python3}"
+%endif
+%make_build $PYFLAGS
+
+
+
 
 %if 0%{?with_python2}
 # re-rebuild with the Fedora hardening options
 pushd bindings/python
 %py2_build
 popd
-%endif #with_python2
+# with_python2
+%endif
 
 %if 0%{?with_python3}
-# Ignore the python3 build at this point
 pushd bindings/python3
-%py3_build || touch python3_build_failed
+%py3_build
 popd
-%endif #with_python3
+# with_python3
+%endif
 
 %install
 # ======================= install ====================================
-%make_install pkgconfigdir=%{_libdir}/pkgconfig PYTHON=%{__python3}
+PYFLAGS=""
+%if 0%{?with_python2}
+PYFLAGS="PYTHON=%{__python2}"
+%endif
+%if 0%{?with_python3}
+PYFLAGS="PYTHON=%{__python3}"
+%endif
+%make_install pkgconfigdir=%{_libdir}/pkgconfig $PYFLAGS
+
 
 %if 0%{?with_python2}
-# do the python install explicitly
+# do the python2 install explicitly
 pushd bindings/python
 %py2_install
 popd
 %endif
 
 %if 0%{?with_python3}
-# Ignore the python3 build at this point
 pushd bindings/python3
 mkdir -p %{buildroot}/%{python3_sitearch}
-%py3_install || touch %{buildroot}/%{python3_sitearch}/python3_install_failed
-[ -f python3_build_failed ] && touch %{buildroot}/%{python3_sitearch}/python3_build_failed
+%py3_install
 popd
 %endif
 
@@ -336,36 +395,68 @@ popd
 find %{buildroot} -name '*.la' -exec rm -f {} ';'
 find %{buildroot} -name '*.a' -exec rm -f {} ';'
 
-
+%if ( 0%{?rhel} && 0%{?rhel} <= 7 )
 %ldconfig_scriptlets
+%endif
+
 
 %files
 # ======================= files ======================================
 %doc AUTHORS CHANGES README
 %{_bindir}/sctest
 %{_bindir}/scprofiler
-%{_libdir}/*.so.*
+%{_libdir}/%{name}.so.2*
 
 %files devel
 %{_includedir}/*
-%{_libdir}/*.so
+%{_libdir}/%{name}.so
 %{_libdir}/pkgconfig/%{name}.pc
 %{_mandir}/man3/%{name}.3*
 
 
 %if 0%{?with_python2}
 %files -n python2-libemu
-%{python2_sitearch}/*
+%{python2_sitearch}/%{name}.so
+%{python2_sitearch}/%{name}-*.egg-info
 %endif
 
 %if 0%{?with_python3}
-%files -n python3-libemu
-%{python3_sitearch}/*
-%endif #with_python3
+%files -n python%{python3_pkgversion}-libemu
+%{python3_sitearch}/%{name}.*.so
+%{python3_sitearch}/%{name}-*.egg-info
+# with_python3
+%endif
+
 
 %changelog
-* Mon Oct 14 2019 Michal Ambroz <rebus at, seznam.cz> - 0.2.0-11.20130410gitab48695
-- do not build the python2 package on f31+ and rhel8+
+* Tue Apr 20 2021 Michal Ambroz <rebus at, seznam.cz> - 0.2.0-19.20130410gitab48695
+- do not include the realistic shellcode tests to avoid AV trojan detections
+
+* Fri Apr 2 2021 Michal Ambroz <rebus at, seznam.cz> - 0.2.0-18.20130410gitab48695
+- trying to rebuild for F33/F34
+- do not treat the warnings about array-bounds as errors as the structs in emu_list are hitting this
+- remove trailing spaces
+- be more specific about the lib/python files to pack
+- explicit adding BR to gcc and make
+
+* Sat Aug 01 2020 Fedora Release Engineering <releng@fedoraproject.org> - 0.2.0-16.20130410gitab48695
+- Second attempt - Rebuilt for
+  https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
+
+* Tue Jul 28 2020 Fedora Release Engineering <releng@fedoraproject.org> - 0.2.0-15.20130410gitab48695
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
+
+* Wed Jan 29 2020 Fedora Release Engineering <releng@fedoraproject.org> - 0.2.0-14.20130410gitab48695
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
+
+* Wed Oct 16 2019 Michal Ambroz <rebus at, seznam.cz> - 0.2.0-13.20130410gitab48695
+- add back the Group tag for compatibility with EPEL
+
+* Wed Oct 16 2019 Miro Hrončok <mhroncok@redhat.com> - 0.2.0-12.20130410gitab48695
+- Remove Python 2
+
+* Tue Oct 15 2019 Michal Ambroz <rebus at, seznam.cz> - 0.2.0-11.20130410gitab48695
+- Remove Python 2
 
 * Fri Feb 01 2019 Fedora Release Engineering <releng@fedoraproject.org> - 0.2.0-10.20130410gitab48695.1
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
