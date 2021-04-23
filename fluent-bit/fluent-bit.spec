@@ -72,6 +72,8 @@ BuildRequires:  make
 BuildRequires:  gcc
 # librdkafka jemalloc and some cmake tests need c++
 BuildRequires:  gcc-c++
+BuildRequires:  flex
+BuildRequires:  bison
 BuildRequires:  pkgconfig(libxxhash)
 BuildRequires:  pkgconfig(jansson)
 
