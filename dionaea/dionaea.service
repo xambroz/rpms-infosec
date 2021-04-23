@@ -1,7 +1,7 @@
 [Unit]
 Description=Dionaea low interaction honeypot
 Documentation=man:dionaea https://dionaea.readthedocs.io/
-After=syslog.target network.target
+After=multi-user.target
 
 [Service]
 Type=forking
@@ -11,5 +11,5 @@ ExecStart=/usr/sbin/dionaea -D $DUSER $DGROUP $DWORKDIR $LOGLEVELS $LOGDOMAINS $
 
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=dionaea.target
 

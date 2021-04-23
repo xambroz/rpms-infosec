@@ -1,10 +1,13 @@
 Name:           dionaea
 Version:        0.7.0
 Summary:        Low interaction honeypot
-Group:          Applications/System
-
 # Show as the RPM release number (keep same number line for tarball and git builds)
-%global         rel              1
+%global         baserelease     11
+
+%if 0%{?rhel}
+# Group needed for EPEL
+Group:          Applications/System
+%endif
 
 # Dionaea package is licensed with GPLv2
 # On top of that it is granting one exception extra - it is permitted by the license
@@ -22,6 +25,7 @@ URL:            https://dionaea.readthedocs.io/
 #               https://github.com/RootingPuntoEs/DionaeaFR/
 #               https://github.com/ManiacTwister/dionaea/
 #               https://github.com/tklengyel/dionaea
+#               https://github.com/rep/dionaea
 #    Installation:
 #               https://www.aldeid.com/wiki/Dionaea/Installation
 
@@ -36,25 +40,25 @@ URL:            https://dionaea.readthedocs.io/
 
 
 # Use systemd unit files on Fedora and RHEL 7 and above.
-%global         _with_systemd   1
-
+%bcond_without  systemd
 %if (0%{?rhel} && 0%{?rhel} < 7)
-    %global     _with_systemd   0
+%bcond_with     systemd
 %endif
 
 
-# Build source is github release=1 or git commit=0
-%global         build_release    1
+# By default build from official release
+# leave option here to build from git snapshot instead
+%bcond_with     snapshot
 
 
-%if 0%{?build_release}  > 0
-Release:        %{rel}%{?dist}
-Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
-%else
-#               not using 0. on the beginning of release as this git snapshot is past the 0.6.0 release
-Release:        %{rel}.%{gitdate}git%{shortcommit}%{?dist}
+%if 0%{?with_snapshot}
+#               not using 0. on the beginning of release as this git snapshot is past the 0.7.0 release
+Release:        %{baserelease}.%{gitdate}git%{shortcommit}%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
-%endif #build_release
+%else
+Release:        %{baserelease}%{?dist}
+Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
+%endif
 
 Source1:        %{name}.sysconfig
 Source2:        %{name}.initd
@@ -134,19 +138,18 @@ BuildRequires:  libev-devel
 BuildRequires:  libemu-devel
 BuildRequires:  udns-devel
 BuildRequires:  libnl3-devel
-BuildRequires:  glib-devel
+BuildRequires:  glib2-devel
 BuildRequires:  curl-devel
 BuildRequires:  readline-devel
 BuildRequires:  libpcap-devel
 BuildRequires:  libsq3-devel
 BuildRequires:  sqlite
+BuildRequires:  openssl-devel
 
 BuildRequires:  python%{python3_pkgversion}-devel
 BuildRequires:  python%{python3_pkgversion}-Cython
 
-BuildRequires:  openssl-devel
-
-%if 0%{?_with_systemd}
+%if 0%{?with_systemd}
 BuildRequires:  systemd-units
 %endif
 
@@ -166,10 +169,14 @@ BuildRequires:  python-sphinx
 %else
 BuildRequires:  python3-sphinx
 %endif
+BuildRequires: make
 
 Requires:       logrotate
 
-%if 0%{?_with_systemd}
+# Base package can't run without the python module
+Requires:       python%{python3_pkgversion}-dionaea
+
+%if 0%{?with_systemd}
 %{?systemd_requires}
 %else
 Requires(post): chkconfig
@@ -190,7 +197,6 @@ ipv6 and TLS.
 # ============= documentation package ==========================================
 %package doc
 Summary:        Documentation for the dionaea honeypot package
-Group:          Development/Libraries
 BuildArch:      noarch
 
 
@@ -205,7 +211,6 @@ ipv6 and TLS.
 # ============= python3 package ================================================
 %package -n python%{python3_pkgversion}-%{gitname}
 Summary:        Python3 binding for the dionaea honeypot
-Group:          Development/Libraries
 %{?python_provide:%python_provide python%{python3_pkgversion}-%{gitname}}
 
 # Runtime dependencies
@@ -213,6 +218,7 @@ Requires:       python%{python3_pkgversion}-pyev
 Requires:       python%{python3_pkgversion}-bson
 Requires:       python%{python3_pkgversion}-PyYAML
 Requires:       python%{python3_pkgversion}-scapy
+Requires:       python%{python3_pkgversion}-sqlalchemy
 
 %description -n python%{python3_pkgversion}-%{gitname}
 This is a Python3 library that gives access to dionaea honeypot functionality.
@@ -221,13 +227,12 @@ This is a Python3 library that gives access to dionaea honeypot functionality.
 
 # ============= preparation ====================================================
 %prep
-%if 0%{?build_release} > 0
+%if 0%{?with_snapshot}
+# Build from git snapshot
+%autosetup -p 1 -n %{gitname}-%{commit} -N
+%else
 # Build from git release version
 %autosetup -p 1 -n %{gitname}-%{version} -N
-
-%else
-# Build from git commit
-%autosetup -p 1 -n %{gitname}-%{commit} -N
 %endif
 
 # Re-initialize the git repo, to track changes even on files ignored by the upstream
@@ -235,6 +240,8 @@ rm -rf .git
 # Remove the .gitignore to prevent ignoring changes in some files
 rm -f .gitignore
 git init -q
+git config user.email "rpmbuild"
+git config user.name "rpmbuild"
 git add .
 git commit -a -m "base"
 
@@ -323,11 +330,10 @@ git commit -a -m "finished prep"
 
 # ============= Build ==========================================================
 %build
-#autoreconf -vif
-#configure --enable-python --with-python=`which python3` --with-glib=glib --with-nl-include=/usr/include/libnl3
-#export CFLAGS="%{optflags} -Wno-error -D_GNU_SOURCE -std=c99"
-cmake .
-make %{?_smp_mflags}
+autoreconf -vif
+# --disable-werror because of https://github.com/DinoTools/dionaea/issues/225
+%configure --enable-python --with-python=`which python3` --with-glib=glib --with-nl-include=/usr/include/libnl3 --disable-werror
+make %{?_smp_mflags} CFLAGS="%{optflags} -Wno-error -D_GNU_SOURCE -std=c99"
 cd doc
 make html
 make man
@@ -367,7 +373,7 @@ mkdir -p %{buildroot}%{_sysconfdir}/sysconfig
 install -p -D -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/sysconfig/%{name}
 
 # install the service init files
-%if 0%{?_with_systemd}
+%if 0%{?with_systemd}
   # install systemd service files
   mkdir -p %{buildroot}%{_unitdir}
   install -p -D -m 644 %{SOURCE3} %{buildroot}%{_unitdir}/%{name}.service
@@ -393,18 +399,22 @@ mkdir -p %{buildroot}%{_sharedstatedir}/%{name}/roots/tftp || :
 mkdir -p %{buildroot}%{_sharedstatedir}/%{name}/roots/www  || :
 mkdir -p %{buildroot}%{_sharedstatedir}/%{name}/roots/upnp || :
 
+touch %{buildroot}%{_sharedstatedir}/%{name}/dionaea.sqlite
+touch %{buildroot}%{_sharedstatedir}/%{name}/dionaea_incident.sqlite
+touch %{buildroot}%{_sharedstatedir}/%{name}/sipaccounts.sqlite
+
 
 
 # ============= Scriptlets ==========================================================
 %post
-%if 0%{?_with_systemd}
+%if 0%{?with_systemd}
   %systemd_post %{name}.service
 %else
   /sbin/chkconfig --add %{name}
 %endif
 
 %preun
-%if 0%{?_with_systemd}
+%if 0%{?with_systemd}
   %systemd_preun %{name}.service
 %else
   if [ $1 -eq 0 ] ; then
@@ -414,7 +424,7 @@ mkdir -p %{buildroot}%{_sharedstatedir}/%{name}/roots/upnp || :
 %endif
 
 %postun
-%if 0%{?_with_systemd}
+%if 0%{?with_systemd}
   %systemd_postun %{name}.service
 %else
   if [ $1 -eq 1 ] ; then
@@ -452,8 +462,14 @@ getent passwd dionaea >/dev/null || \
 %attr(0750,dionaea,dionaea) %dir %{_sharedstatedir}/%{name}/bistreams
 %attr(-,dionaea,dionaea)        %{_sharedstatedir}/%{name}/roots/
 %attr(-,dionaea,dionaea)        %{_sharedstatedir}/%{name}/share/
+%attr(-,dionaea,dionaea)        %{_sharedstatedir}/%{name}/dionaea.sqlite
+%attr(-,dionaea,dionaea)        %{_sharedstatedir}/%{name}/dionaea_incident.sqlite
+%attr(-,dionaea,dionaea)        %{_sharedstatedir}/%{name}/sipaccounts.sqlite
 
-%if 0%{?_with_systemd}
+
+
+
+%if 0%{?with_systemd}
 %{_unitdir}/*.service
 %else
 %{_initrddir}/*
@@ -477,6 +493,50 @@ getent passwd dionaea >/dev/null || \
 
 
 %changelog
+* Tue Jan 26 2021 Fedora Release Engineering <releng@fedoraproject.org> - 0.7.0-11
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
+
+* Mon Jul 27 2020 Fedora Release Engineering <releng@fedoraproject.org> - 0.7.0-10
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
+
+* Tue May 26 2020 Miro Hrončok <mhroncok@redhat.com> - 0.7.0-9
+- Rebuilt for Python 3.9
+
+* Tue Jan 28 2020 Fedora Release Engineering <releng@fedoraproject.org> - 0.7.0-8
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
+
+* Thu Oct 24 2019 Michal Ambroz <rebus at, seznam.cz> 0.7.0-7
+- switch to glib2 based on #1766678 to modernize and prepare for epel8
+
+* Thu Oct 24 2019 Michal Ambroz <rebus at, seznam.cz> 0.7.0-6
+- rebuilt rawhide after ressurection of libdasm/libemu
+
+* Mon Aug 19 2019 Miro Hrončok <mhroncok@redhat.com> - 0.7.0-5.3
+- Rebuilt for Python 3.8
+
+* Wed Jul 24 2019 Fedora Release Engineering <releng@fedoraproject.org> - 0.7.0-5.2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
+
+* Thu Jan 31 2019 Fedora Release Engineering <releng@fedoraproject.org> - 0.7.0-5.1
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
+
+* Mon Jul 30 2018 Adam Williamson <awilliam@redhat.com> - 0.7.0-5
+- Disable -Werror to fix build (see upstream #225)
+
+* Thu Jul 12 2018 Fedora Release Engineering <releng@fedoraproject.org> - 0.7.0-4.2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
+
+* Tue Jun 19 2018 Miro Hrončok <mhroncok@redhat.com> - 0.7.0-4.1
+- Rebuilt for Python 3.7
+
+* Mon Jun 18 2018 Michal Ambroz <rebus at, seznam.cz> 0.7.0-4
+- anothe improvement of logrotate script
+- add the empty files for dionaea.sqlite dionaea_incident.sqlite sipaccounts.sqlite
+
+* Mon Jun 04 2018 Michal Ambroz <rebus at, seznam.cz> 0.7.0-3
+- fix logrotate script
+- use the current version of openssl (needs to be same as curllib is using)
+
 * Thu May 10 2018 Michal Ambroz <rebus at, seznam.cz> 0.7.0-1
 - bump to release 0.7.0
 
