@@ -1,7 +1,7 @@
 Name:           fluent-bit
 Summary:        Fast and Lightweight Log processor and forwarder for Linux, BSD and OSX
 Version:        1.7.4
-Release:        1%{?dist}
+Release:        2%{?dist}
 License:        ASL 2.0
 URL:            https://fluentbit.io
 Source0:        https://github.com/fluent/%{name}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
@@ -84,7 +84,7 @@ family operating systems. It's part of the Fluentd Ecosystem and a CNCF sub-proj
 
 %package devel
 Summary:        Development files for %{name}
-Requires:       %{name} = %{version}
+Requires:       %{name}%{_isa} = %{version}
 
 %description devel
 Development files for %{name}
@@ -111,5 +111,8 @@ Development files for %{name}
 %{_libdir}/fluent-bit/*.so
 
 %changelog
+* Fri Apr 23 2021 Michal Ambroz <rebus _AT seznam.cz> 1.7.4-2
+- shape the SPEC for Fedora
+
 * Thu Apr 22 2021 Florian Dubourg <florian.dubourg@dhl.com> 1.7.4-1
 - Original version for DHL
