@@ -1,7 +1,7 @@
 Name:           radare2
 Summary:        The reverse engineering framework
-Version:        5.2.0
-%global         rel             3
+Version:        5.2.1
+%global         rel             1
 URL:            https://radare.org/
 VCS:            https://github.com/radareorg/radare2
 
@@ -24,17 +24,6 @@ Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{version}.tar.
 Release:        0.%{rel}.%{gitdate}git%{shortcommit}%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{commit}.zip
 %endif
-
-# avoid requiring the stdc99 feature
-# declare the variable prior its usage in for cycle
-# https://github.com/radareorg/radare2/pull/18602
-Patch0:         https://github.com/radareorg/radare2/pull/18602.patch#/radare2-5.2.0-for_std99.patch
-
-# meson on EPEL8 - the version 0.49 - has bug preventing from processing split-lines
-# meson.build:13:18: ERROR:  Expecting eof got eol_cont.
-Patch1:         radare2-5.2.0-meson_rhel8.patch
-
-
 
 License:        LGPLv3+ and GPLv2+ and BSD and MIT and ASL 2.0 and MPLv2.0 and zlib
 # Radare2 as a package is targeting to be licensed/compiled as LGPLv3+
@@ -302,6 +291,9 @@ rm %{buildroot}/%{_datadir}/doc/%{name}/fortunes.fun
 
 
 %changelog
+* Thu Apr 22 2021 Henrik Nordstrom <henrik@henriknordstrom.net> - 5.2.1-1
+- Update to version 5.2.1
+
 * Wed Apr 21 2021 Michal Ambroz <rebus at, seznam.cz> 5.2.0-3
 - avoid c99 for(int i...
 
