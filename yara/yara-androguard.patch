@@ -1,0 +1,23 @@
+diff -ru yara-4.0.0/libyara/Makefile.am yara-4.0.0.new/libyara/Makefile.am
+--- yara-4.0.0/libyara/Makefile.am	2020-04-28 08:41:59.000000000 +0000
++++ yara-4.0.0.new/libyara/Makefile.am	2020-04-28 23:38:04.000225319 +0000
+@@ -29,6 +29,7 @@
+ 
+ if CUCKOO_MODULE
+ MODULES += modules/cuckoo/cuckoo.c
++MODULES += modules/androguard.c
+ endif
+ 
+ if MAGIC_MODULE
+Only in yara-4.0.0.new/libyara/modules: androguard.c
+diff -ru yara-4.0.0/libyara/modules/module_list yara-4.0.0.new/libyara/modules/module_list
+--- yara-4.0.0/libyara/modules/module_list	2020-04-28 08:41:59.000000000 +0000
++++ yara-4.0.0.new/libyara/modules/module_list	2020-04-28 23:36:01.885064719 +0000
+@@ -10,6 +10,7 @@
+ 
+ #ifdef CUCKOO_MODULE
+ MODULE(cuckoo)
++MODULE(androguard)
+ #endif
+ 
+ #ifdef MAGIC_MODULE
