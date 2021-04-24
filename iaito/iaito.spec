@@ -1,6 +1,6 @@
 Name:           iaito
-Version:        5.2.0
-Release:        3%{?dist}
+Version:        5.2.1
+Release:        1%{?dist}
 Summary:        GUI for radare2 reverse engineering framework
 
 %global         iaito_translations_commit 9e4b6de0d1cbf8f8bf077240b54532cc32b384b4
@@ -15,13 +15,16 @@ Source0:        https://github.com/radareorg/iaito/archive/%{version}/iaito-%{ve
 Source1:        https://github.com/radareorg/iaito-translations/archive/%{iaito_translations_commit}.tar.gz#/iaito-translations-%{iaito_translations_commit}.tar.gz
 
 # Fix icon and desktop launcher
-Patch0:         https://github.com/radareorg/iaito/pull/31.patch#/iaito-00-fix-desktop.patch
+# merged upstream in 5.2.1
+# Patch0:         https://github.com/radareorg/iaito/pull/31.patch#/iaito-00-fix-desktop.patch
 
 # Add manpage, install the appdata.xml metadata
-Patch1:         https://github.com/radareorg/iaito/pull/33.patch#/iaito-01-add-manpage.patch
+# merged upstream in 5.2.1
+# Patch1:         https://github.com/radareorg/iaito/pull/33.patch#/iaito-01-add-manpage.patch
 
 # Fix loading of the RIO list
-Patch2:         https://github.com/radareorg/iaito/commit/14afa872e2fb30a44ba4c2e13653c6c0564cfd08.patch#/iaito-02-fix-rio-list.patch
+# merged upstream in 5.2.1
+# Patch2:         https://github.com/radareorg/iaito/commit/14afa872e2fb30a44ba4c2e13653c6c0564cfd08.patch#/iaito-02-fix-rio-list.patch
 
 
 BuildRequires:  radare2-devel >= 5.2.0
@@ -135,6 +138,9 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
 %doc html
 
 %changelog
+* Sat Apr 24 2021 Michal Ambroz <rebus _AT seznam.cz> - 5.2.1-1
+- bump to 5.2.1
+
 * Wed Apr 21 2021 Michal Ambroz <rebus _AT seznam.cz> - 5.2.0-3
 - fix RIO list
 
