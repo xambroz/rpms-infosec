@@ -1,19 +1,20 @@
-diff -ru yara-4.0.0/libyara/Makefile.am yara-4.0.0.new/libyara/Makefile.am
---- yara-4.0.0/libyara/Makefile.am	2020-04-28 08:41:59.000000000 +0000
-+++ yara-4.0.0.new/libyara/Makefile.am	2020-04-28 23:38:04.000225319 +0000
-@@ -29,6 +29,7 @@
+diff --git a/libyara/Makefile.am b/libyara/Makefile.am
+index 4fa363a..a9242b2 100644
+--- a/libyara/Makefile.am
++++ b/libyara/Makefile.am
+@@ -48,6 +48,7 @@ MODULES += modules/pe/pe_utils.c
  
  if CUCKOO_MODULE
  MODULES += modules/cuckoo/cuckoo.c
-+MODULES += modules/androguard.c
++MODULES += modules/androguard/androguard.c
  endif
  
  if MAGIC_MODULE
-Only in yara-4.0.0.new/libyara/modules: androguard.c
-diff -ru yara-4.0.0/libyara/modules/module_list yara-4.0.0.new/libyara/modules/module_list
---- yara-4.0.0/libyara/modules/module_list	2020-04-28 08:41:59.000000000 +0000
-+++ yara-4.0.0.new/libyara/modules/module_list	2020-04-28 23:36:01.885064719 +0000
-@@ -10,6 +10,7 @@
+diff --git a/libyara/modules/module_list b/libyara/modules/module_list
+index d81b8f3..ba43609 100644
+--- a/libyara/modules/module_list
++++ b/libyara/modules/module_list
+@@ -10,6 +10,7 @@ MODULE(dotnet)
  
  #ifdef CUCKOO_MODULE
  MODULE(cuckoo)

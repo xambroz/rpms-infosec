@@ -1,5 +1,5 @@
 Name:           yara
-Version:        4.0.5
+Version:        4.1.0
 Release:        1%{?dist}
 Summary:        Pattern matching Swiss knife for malware researchers
 
@@ -13,8 +13,8 @@ URL:            http://VirusTotal.github.io/yara/
 
 %global         gituser         VirusTotal
 %global         gitname         yara
-# Commit of version 4.0.4
-%global         commit          814b6296f4ce389c8c16b5508b56f1f3d9af554d
+# Commit of version 4.1.0
+%global         commit          e1360f6cbe3d8daf350018661bc6772bd5b726f2
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 # additional module for yara
@@ -34,16 +34,16 @@ Source0:        https://github.com/%{gituser}/%{gitname}/archive/v%{version}.tar
 Source1:        https://github.com/%{androguard_gituser}/%{androguard_gitname}/archive/%{androguard_commit}/%{androguard_gitname}-%{androguard_gitdate}-%{androguard_shortcommit}.tar.gz
 
 # Patch based on the androguard-yara installation guide to enable the androguard module
-Patch0:         %{name}-androguard.patch
+Patch0:         yara-androguard.patch
 
 # Use default sphix theme to generate documentation rather than sphinx_rtd_theme
 # to avoid static installation of font files on fedora >= 24
-Patch1:         %{name}-docs-theme.patch
+Patch1:         yara-docs-theme.patch
 
 # Fixed in 3.6.0 upstream
 # Patch https://patch-diff.githubusercontent.com/raw/VirusTotal/yara/pull/627.patch
 # Fixes: CVE-2016-10210 CVE-2016-10211 CVE-2017-5923 CVE-2017-5924
-# Patch2:         %%{name}-pull627.patch
+# Patch2:       %%{name}-pull627.patch
 
 # API of yr_re_match changed, fix needed for Androguard
 # https://github.com/Koodous/androguard-yara/issues/8
@@ -52,6 +52,7 @@ Patch1:         %{name}-docs-theme.patch
 
 
 
+BuildRequires:  git
 BuildRequires:  gcc
 BuildRequires:  autoconf
 BuildRequires:  automake
@@ -103,26 +104,17 @@ developing applications that use %{name}.
 
 
 %prep
-# setup -qn %%{gitname}-%%{commit}
-%setup -q
+# autosetup -n %%{gitname}-%%{commit} -p 1 -S git
+%autosetup -p 1 -S git
 
 # Add the Androguard module
 # %%setup -qn %%{gitname}-%%{commit} -a 1 -D -T
 %setup -q -a 1 -D -T
 pushd %{androguard_gitname}-%{androguard_commit}
 
-# Patch yr_re_match api in androguard-yara
-# https://github.com/Koodous/androguard-yara/issues/8
-# %%patch3 -p 1 -b .matchapi
-
-cp -p androguard.c ../libyara/modules/
+mkdir -p ../libyara/modules/androguard
+cp -p androguard.c ../libyara/modules/androguard/
 popd
-# Patch based on the androguard-yara installation guide to enable the androguard module
-%patch0 -p 1 -b .androguard
-
-# Use default sphix theme to generate documentation rather than sphinx_rtd_theme
-# to avoid static installation of font files on fedora >= 24
-%patch1 -p 1 -b .fonts
 
 
 autoreconf --force --install
@@ -186,6 +178,12 @@ rm -f %{buildroot}%{_datadir}/doc/%{name}/html/.buildinfo
 
 
 %changelog
+* Mon Apr 26 2021 Michal Ambroz <rebus at, seznam.cz> - 4.1.0-1
+- bump to 4.1.0
+
+* Sun Apr 25 2021 Michal Ambroz <rebus at, seznam.cz> - 4.0.5-2
+- rebuild for epel
+
 * Fri Feb 5 2021 Michal Ambroz <rebus at, seznam.cz> - 4.0.5-1
 - bump to yara bugfix 4.0.5 release
 
