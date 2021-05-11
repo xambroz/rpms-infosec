@@ -1,5 +1,0 @@
-FedoraRPMS
-----------
-
-- Spec files which didn't make it yet to the Fedora
-
