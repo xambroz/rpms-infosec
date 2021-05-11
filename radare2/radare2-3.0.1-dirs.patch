@@ -1,0 +1,660 @@
+diff -ru radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.orig/binr/blob/Makefile radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.new/binr/blob/Makefile
+--- radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.orig/binr/blob/Makefile	2015-10-19 00:06:58.283010875 +0200
++++ radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.new/binr/blob/Makefile	2015-10-19 02:37:12.154802744 +0200
+@@ -121,8 +121,8 @@
+ 	mv version.k version.c
+ 
+ install:
+-	mkdir -p ${DESTDIR}/${PREFIX}/bin
++	mkdir -p ${DESTDIR}${BINDIR}
+ 	for a in r2 ${BINS2} ; do \
+-		rm -f ${DESTDIR}/${PREFIX}/bin/$$a ; \
+-		cp -af $$a ${DESTDIR}/${PREFIX}/bin/$$a ; \
++		rm -f ${DESTDIR}${BINDIR}/$$a ; \
++		cp -af $$a ${DESTDIR}${BINDIR}/$$a ; \
+ 	done
+diff -ru radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.orig/binr/Makefile radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.new/binr/Makefile
+--- radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.orig/binr/Makefile	2015-10-19 00:06:58.284010861 +0200
++++ radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.new/binr/Makefile	2015-10-19 02:37:12.154802744 +0200
+@@ -1,14 +1,14 @@
+ include ../global.mk
+ include ../libr/config.mk
+ 
+-DESTDIR:=$(call rmbdlslash,$(DESTDIR))
++DESTDIR:=$(DESTDIR)
+ BTOP=$(shell pwd)
+ 
+ .PHONY: all clean install install-symlink deinstall uninstall mrproper preload
+ 
+-PFX=$(call rmdblslash,${DESTDIR}/${PREFIX})
+-BFX=$(call rmdblslash,${DESTDIR}/${BINDIR})
+-LFX=$(call rmdblslash,${DESTDIR}/${LIBDIR})
++
++
++
+ 
+ BINS=rax2 rasm2 rabin2 rahash2 radiff2 radare2 rafind2 rarun2 ragg2 r2agent
+ # this command needs more love to bring it back
+@@ -23,42 +23,42 @@
+ 	$(MAKE) -C preload
+ 
+ install:
+-	mkdir -p "${BFX}"
++	mkdir -p "${DESTDIR}${BINDIR}"
+ 	for a in ${BINS} ; do \
+-		rm -f "${BFX}/$$a" ; \
+-		${INSTALL_PROGRAM} "$$a/$$a" "${BFX}/$$a" ; \
++		rm -f "${DESTDIR}${BINDIR}/$$a" ; \
++		${INSTALL_PROGRAM} "$$a/$$a" "${DESTDIR}${BINDIR}/$$a" ; \
+ 	done
+-	${INSTALL_SCRIPT} "$(BTOP)/r2pm/r2pm" "${BFX}/r2pm"
+-	rm -f "${BFX}/ragg2-cc"
+-	rm -rf "${PFX}/radare2/${VERSION}/r2pm"
+-	mkdir -p "${PFX}/radare2/${VERSION}/r2pm"
+-	cp -rf r2pm/d/* "${PFX}/radare2/${VERSION}/r2pm"
+-	${INSTALL_SCRIPT} ragg2/ragg2-cc "${BFX}/ragg2-cc"
+-	-cd "${BFX}" && rm -f r2 ; ln -fs radare2 r2
+-	${INSTALL_LIB} "preload/libr2.$(EXT_SO)" "$(LFX)"
+-	-cd "$(LFX)" && \
++	${INSTALL_SCRIPT} "$(BTOP)/r2pm/r2pm" "${DESTDIR}${BINDIR}/r2pm"
++	rm -f "${DESTDIR}${BINDIR}/ragg2-cc"
++	rm -rf "${DESTDIR}${PREFIX}/radare2/${VERSION}/r2pm"
++	mkdir -p "${DESTDIR}${PREFIX}/radare2/${VERSION}/r2pm"
++	cp -rf r2pm/d/* "${DESTDIR}${PREFIX}/radare2/${VERSION}/r2pm"
++	${INSTALL_SCRIPT} ragg2/ragg2-cc "${DESTDIR}${BINDIR}/ragg2-cc"
++	-cd "${DESTDIR}${BINDIR}" && rm -f r2 ; ln -fs radare2 r2
++	${INSTALL_LIB} "preload/libr2.$(EXT_SO)" "${DESTDIR}${LIBDIR}"
++	-cd "${DESTDIR}${LIBDIR}" && \
+ 		mv libr2.$(EXT_SO) $(LIBR2) && \
+ 		ln -fs $(LIBR2) libr2.$(EXT_SO)
+ 
+ symstall install-symlink:
+-	mkdir -p "${BFX}"
+-	for a in ${BINS} ; do ln -fs "${BTOP}/$$a/$$a" "${BFX}/$$a" ; done
+-	ln -fs "${BTOP}/ragg2/ragg2-cc" "${BFX}/ragg2-cc"
+-	ln -fs "${BTOP}/r2pm/r2pm" "${BFX}/r2pm"
+-	rm -rf "${PFX}/share/radare2/${VERSION}/r2pm"
+-	mkdir -p "${PFX}/share/radare2/${VERSION}/"
+-	ln -fs "$(BTOP)/r2pm/d" "${PFX}/share/radare2/${VERSION}/r2pm"
+-	-ln -fs "${PFX}/bin/radare2" "${BFX}/r2"
+-	-ln -fs "${BTOP}/preload/libr2.$(EXT_SO)" "${LFX}/libr2.$(EXT_SO)"
+-	-cd "$(LFX)" && \
++	mkdir -p "${DESTDIR}${BINDIR}"
++	for a in ${BINS} ; do ln -fs "${BTOP}/$$a/$$a" "${DESTDIR}${BINDIR}/$$a" ; done
++	ln -fs "${BTOP}/ragg2/ragg2-cc" "${DESTDIR}${BINDIR}/ragg2-cc"
++	ln -fs "${BTOP}/r2pm/r2pm" "${DESTDIR}${BINDIR}/r2pm"
++	rm -rf "${DESTDIR}${DATADIR}/radare2/${VERSION}/r2pm"
++	mkdir -p "${DESTDIR}${DATADIR}/radare2/${VERSION}/"
++	ln -fs "$(BTOP)/r2pm/d" "${DESTDIR}${DATADIR}/radare2/${VERSION}/r2pm"
++	-ln -fs "${DESTDIR}${BINDIR}/radare2" "${DESTDIR}${BINDIR}/r2"
++	-ln -fs "${BTOP}/preload/libr2.$(EXT_SO)" "${DESTDIR}${LIBDIR}/libr2.$(EXT_SO)"
++	-cd "${DESTDIR}${LIBDIR}" && \
+ 		mv libr2.$(EXT_SO) $(LIBR2) && \
+ 		ln -fs $(LIBR2) libr2.$(EXT_SO)
+ 
+ deinstall uninstall:
+-	for a in ${BINS} ; do rm -f "${BFX}/$$a" ; done
+-	-rm -f "${BFX}/ragg2-cc"
+-	-rm -f "${BFX}/r2pm"
+-	-rm -f "${BFX}/r2"
++	for a in ${BINS} ; do rm -f "${DESTDIR}${BINDIR}/$$a" ; done
++	-rm -f "${DESTDIR}${BINDIR}/ragg2-cc"
++	-rm -f "${DESTDIR}${BINDIR}/r2pm"
++	-rm -f "${DESTDIR}${BINDIR}/r2"
+ 
+ clean:
+ 	@for a in preload ${BINS} ; do (cd $$a && ${MAKE} clean); done
+diff -ru radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.orig/binr/rules.mk radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.new/binr/rules.mk
+--- radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.orig/binr/rules.mk	2015-10-19 00:06:58.284010861 +0200
++++ radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.new/binr/rules.mk	2015-10-19 01:21:38.077596070 +0200
+@@ -15,7 +15,7 @@
+ endif
+ 
+ ifeq ($(USE_RPATH),1)
+-LDFLAGS+=-Wl,-rpath "${PREFIX}/lib"
++LDFLAGS+=-Wl,-rpath "${LIBDIR}"
+ endif
+ 
+ OBJ+=${BIN}.o
+diff -ru radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.orig/global.mk radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.new/global.mk
+--- radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.orig/global.mk	2015-10-19 00:06:58.274011008 +0200
++++ radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.new/global.mk	2015-10-19 02:12:37.659649980 +0200
+@@ -27,8 +27,8 @@
+ 
+ rmdblslash=$(subst //,/,$(subst //,/,$(subst /$$,,$1)))
+ 
+-PFX=${DESTDIR}${PREFIX}
+-MDR=${DESTDIR}${MANDIR}
++
++
+ 
+ LIBDIR=${PREFIX}/lib
+ WWWROOT=${DATADIR}/radare2/${VERSION}/www
+diff -ru radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.orig/libr/asm/d/Makefile radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.new/libr/asm/d/Makefile
+--- radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.orig/libr/asm/d/Makefile	2015-10-19 00:06:58.300010625 +0200
++++ radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.new/libr/asm/d/Makefile	2015-10-19 00:35:33.281804833 +0200
+@@ -15,7 +15,7 @@
+ .PHONY: all clean install install-symlink symstall uninstall
+ 
+ # XXX rmdblslash not defined, but doesnt warns about it
+-#OPDIR=$(call rmdblslash,${DESTDIR}${LIBDIR}/radare2/${VERSION}/opcodes)
++#OPDIR=${DESTDIR}${LIBDIR}/radare2/${VERSION}/opcodes
+ OPDIR=${DESTDIR}${LIBDIR}/radare2/${VERSION}/opcodes
+ 
+ install: ${F_SDB}
+diff -ru radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.orig/libr/bin/d/Makefile radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.new/libr/bin/d/Makefile
+--- radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.orig/libr/bin/d/Makefile	2015-10-19 00:06:58.324010272 +0200
++++ radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.new/libr/bin/d/Makefile	2015-10-19 00:35:33.281804833 +0200
+@@ -1,8 +1,8 @@
+ include ../../../global.mk
+ include ../../../config-user.mk
+ 
+-SDBPATH=$(call rmdblslash,$(LTOP)/../shlr/sdb/)
+-SDB=$(call rmdblslash,$(SDBPATH)/sdb)
++SDBPATH=$(LTOP)/../shlr/sdb/
++SDB=$(SDBPATH)/sdb
+ 
+ P=${DESTDIR}${DATADIR}/radare2/${VERSION}/format
+ 
+diff -ru radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.orig/libr/include/r_userconf.h.acr radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.new/libr/include/r_userconf.h.acr
+--- radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.orig/libr/include/r_userconf.h.acr	2015-10-19 00:06:58.318010361 +0200
++++ radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.new/libr/include/r_userconf.h.acr	2015-10-19 00:21:39.091059958 +0200
+@@ -37,6 +37,6 @@
+ 
+ #define WITH_GPL @WITH_GPL@
+ 
+-#define R2_WWWROOT "@DATADIR@/radare2/@VERSION@/www"
++#define R2_WWWROOT "@WWWROOT@"
+ 
+ #endif
+diff -ru radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.orig/libr/magic/d/Makefile radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.new/libr/magic/d/Makefile
+--- radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.orig/libr/magic/d/Makefile	2015-10-19 00:06:58.330010184 +0200
++++ radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.new/libr/magic/d/Makefile	2015-10-19 01:18:09.950640529 +0200
+@@ -1,6 +1,6 @@
+ include ../../config.mk
+ 
+-MAGICDIR=$(call rmdblslash,${DESTDIR}${PREFIX}/lib/radare2/${VERSION}/magic)
++MAGICDIR=${DESTDIR}${LIBDIR}/radare2/${VERSION}/magic
+ install: ${F_SDB}
+ 	-rm -rf "$(MAGICDIR)"
+ 	mkdir -p "$(MAGICDIR)"
+diff -ru radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.orig/libr/Makefile radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.new/libr/Makefile
+--- radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.orig/libr/Makefile	2015-10-19 00:06:58.295010699 +0200
++++ radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.new/libr/Makefile	2015-10-19 02:37:12.155802729 +0200
+@@ -4,12 +4,12 @@
+ include ../mk/platform.mk
+ include ../mk/${COMPILER}.mk
+ 
+-DESTDIR:=$(call rmbdlslash,$(DESTDIR))
++DESTDIR:=$(DESTDIR)
+ PREFIX?=${PWD}/../prefix
+-PFX=$(call rmdblslash,${DESTDIR}/${PREFIX})
+-LFX=$(call rmdblslash,${DESTDIR}/${LIBDIR})
+-IFX=$(call rmdblslash,${DESTDIR}/${INCLUDEDIR})
+-PWD=$(call rmdblslash,$(shell pwd))
++
++
++
++PWD=$(shell pwd)
+ 
+ LIBS0=util hash
+ LIBS1=reg cons db magic bp search config socket
+@@ -69,115 +69,115 @@
+ 	# TODO: Magically generate libr.pc.acr here using LIBS and so :)
+ 
+ install-pkgconfig:
+-	${INSTALL_DIR} "${LFX}/pkgconfig"
++	${INSTALL_DIR} "${DESTDIR}${LIBDIR}/pkgconfig"
+ 	for a in ../pkgcfg/*.pc ; do \
+-		rm -f "${LFX}/pkgconfig/$$a" ; \
+-		${INSTALL_DATA} $$a "${LFX}/pkgconfig" ; done
++		rm -f "${DESTDIR}${LIBDIR}/pkgconfig/$$a" ; \
++		${INSTALL_DATA} $$a "${DESTDIR}${LIBDIR}/pkgconfig" ; done
+ 
+ install-includes:
+-	@-rm -f ${IFX}/libr/sflib
+-	@-rm -f ${IFX}/libr
+-	${INSTALL_DIR} "${IFX}/libr"
+-	(cd include && for a in *.h ; do ${INSTALL_DATA} $$a "${IFX}/libr" ; done)
+-	${INSTALL_DIR} "${IFX}/libr/sflib"
++	@-rm -f ${DESTDIR}${INCLUDEDIR}/libr/sflib
++	@-rm -f ${DESTDIR}${INCLUDEDIR}/libr
++	${INSTALL_DIR} "${DESTDIR}${INCLUDEDIR}/libr"
++	(cd include && for a in *.h ; do ${INSTALL_DATA} $$a "${DESTDIR}${INCLUDEDIR}/libr" ; done)
++	${INSTALL_DIR} "${DESTDIR}${INCLUDEDIR}/libr/sflib"
+ 	(cd include/sflib && for a in * ; do \
+-		${INSTALL_DIR} "${IFX}/libr/sflib/$$a" ; \
++		${INSTALL_DIR} "${DESTDIR}${INCLUDEDIR}/libr/sflib/$$a" ; \
+ 		for b in $$a/*.h ; do \
+-			${INSTALL_DATA} $$b "${IFX}/libr/sflib/$$b" ; \
++			${INSTALL_DATA} $$b "${DESTDIR}${INCLUDEDIR}/libr/sflib/$$b" ; \
+ 		done ; \
+ 	done)
+-	${INSTALL_DIR} "${IFX}/libr/sdb"
++	${INSTALL_DIR} "${DESTDIR}${INCLUDEDIR}/libr/sdb"
+ 	(cd include/sdb && for a in * ; do \
+-		${INSTALL_DATA} $$a "${IFX}/libr/sdb/$$a" ; \
++		${INSTALL_DATA} $$a "${DESTDIR}${INCLUDEDIR}/libr/sdb/$$a" ; \
+ 	done)
+ 
+ symstall install-symlink:
+-	mkdir -p "${PFX}/bin" \
+-		"${IFX}" \
+-		"${LFX}/pkgconfig" \
+-		"${LFX}/radare2/${VERSION}"
+-	rm -rf "${IFX}/libr" && ln -fs "${PWD}/include" "${IFX}/libr"
++	mkdir -p "${DESTDIR}${BINDIR}" \
++		"${DESTDIR}${INCLUDEDIR}" \
++		"${DESTDIR}${LIBDIR}/pkgconfig" \
++		"${DESTDIR}${LIBDIR}/radare2/${VERSION}"
++	rm -rf "${DESTDIR}${INCLUDEDIR}/libr" && ln -fs "${PWD}/include" "${DESTDIR}${INCLUDEDIR}/libr"
+ 	cd ../pkgcfg && for a in *.pc ; do \
+ 		if [ -e "${PWD}/../pkgcfg/$${a}" ] ; then \
+ 			ln -fs "${PWD}/../pkgcfg/$${a}" \
+-				"${LFX}/pkgconfig/$${a}" ; \
++				"${DESTDIR}${LIBDIR}/pkgconfig/$${a}" ; \
+ 		fi ; \
+ 	done
+ 	@$(foreach lib,${LIBS}, \
+ 	  ln -fs "${PWD}/$(lib)/libr_$(lib).${EXT_SO}" \
+-		"${LFX}/libr_$(lib).${EXT_SO}" ; \
++		"${DESTDIR}${LIBDIR}/libr_$(lib).${EXT_SO}" ; \
+ 	  ln -fs "${PWD}/$(lib)/libr_$(lib).${EXT_SO}" \
+-		"${LFX}/$(call libname-version,libr_$(lib).${EXT_SO},${LIBVERSION})" ; \
+-	  ln -fs "${PWD}/$(lib)/libr_$(lib).${EXT_AR}" "${LFX}/libr_$(lib).${EXT_AR}" ; \
++		"${DESTDIR}${LIBDIR}/$(call libname-version,libr_$(lib).${EXT_SO},${LIBVERSION})" ; \
++	  ln -fs "${PWD}/$(lib)/libr_$(lib).${EXT_AR}" "${DESTDIR}${LIBDIR}/libr_$(lib).${EXT_AR}" ; \
+ 	  $(foreach module,$(wildcard $(lib)/p/*.${EXT_SO}), \
+-	    ln -fs "${PWD}/$(module)" "${LFX}/radare2/${VERSION}/" ; \
++	    ln -fs "${PWD}/$(module)" "${DESTDIR}${LIBDIR}/radare2/${VERSION}/" ; \
+ 	  ) \
+ 	)
+-	cd "${LFX}/radare2" ; rm -f last ; ln -fs "${VERSION}" last
++	cd "${DESTDIR}${LIBDIR}/radare2" ; rm -f last ; ln -fs "${VERSION}" last
+ 
+ install: install-includes install-pkgconfig
+ 	# TODO :Use INSTALL_DATA_DIR instead of mkdir
+ 	# libraries
+-	@${INSTALL_DIR} "${LFX}"
++	@${INSTALL_DIR} "${DESTDIR}${LIBDIR}"
+ 	@$(foreach lib,$(shell find * -type f | grep -e '\.${EXT_SO}$$' | grep -Ev '(lib|parse)/t/' | grep lib | grep -v /bin/ | grep -v /p/), \
+-	  echo " ${LFX}/$(call libpath-to-name-version,$(lib),${LIBVERSION})"; \
+-	  rm -f "${LFX}/$(call libpath-to-name-version,$(lib),${LIBVERSION})"; \
+-	  ${INSTALL_LIB} "$(lib)" "${LFX}/$(call libpath-to-name-version,$(lib),${LIBVERSION})"; \
+-	  ( cd "${LFX}" ; ln -fs "$(call libpath-to-name-version,$(lib),${LIBVERSION})" "$(call libpath-to-name,$(lib))" ) ; \
++	  echo " ${DESTDIR}${LIBDIR}/$(call libpath-to-name-version,$(lib),${LIBVERSION})"; \
++	  rm -f "${DESTDIR}${LIBDIR}/$(call libpath-to-name-version,$(lib),${LIBVERSION})"; \
++	  ${INSTALL_LIB} "$(lib)" "${DESTDIR}${LIBDIR}/$(call libpath-to-name-version,$(lib),${LIBVERSION})"; \
++	  ( cd "${DESTDIR}${LIBDIR}" ; ln -fs "$(call libpath-to-name-version,$(lib),${LIBVERSION})" "$(call libpath-to-name,$(lib))" ) ; \
+ 	)
+ 	# object archives
+ 	@for a in `find * -type f | grep -e '\.a$$' | grep -v fs/p` ; do \
+-	  echo " ${LFX}/$$a"; ${INSTALL_DATA} $$a ${LFX} ; done
++	  echo " ${DESTDIR}${LIBDIR}/$$a"; ${INSTALL_DATA} $$a ${DESTDIR}${LIBDIR} ; done
+ 	# plugins
+-	@${INSTALL_DIR} "${LFX}/radare2/${VERSION}"
++	@${INSTALL_DIR} "${DESTDIR}${LIBDIR}/radare2/${VERSION}"
+ 	@for a in `find */p -perm -u+x -type f | grep -v exe | grep -v dll | grep ${EXT_SO}`; \
+-	  do echo " ${LFX}/radare2/${VERSION}/$$a"; \
+-	${INSTALL_LIB} "$$a" "${LFX}/radare2/${VERSION}" ; done
+-	cd "${LFX}/radare2" ; ln -fs "${VERSION}" last
++	  do echo " ${DESTDIR}${LIBDIR}/radare2/${VERSION}/$$a"; \
++	${INSTALL_LIB} "$$a" "${DESTDIR}${LIBDIR}/radare2/${VERSION}" ; done
++	cd "${DESTDIR}${LIBDIR}/radare2" ; ln -fs "${VERSION}" last
+ 
+-#@echo "lang/p/radare.* ${DESTDIR}/${PFX}/${LIBDIR}/radare2/${VERSION}"
+-#${INSTALL_DATA} lang/p/radare.* ${LFX}/radare2/${VERSION}
++#@echo "lang/p/radare.* ${DESTDIR}${DESTDIR}${PREFIX}/${LIBDIR}/radare2/${VERSION}"
++#${INSTALL_DATA} lang/p/radare.* ${DESTDIR}${LIBDIR}/radare2/${VERSION}
+ 
+ deinstall uninstall:
+ 	# libraries
+ 	-@for a in `find * | grep -e '\.${EXT_SO}$$' | grep -v 'lib/t' | grep lib` ; do \
+ 	a=`echo $$a | awk -F / '{ print $$NF; }'`; \
+-	echo "${LFX}/$$a" ; rm -f "${LFX}/$$a" ; done
++	echo "${DESTDIR}${LIBDIR}/$$a" ; rm -f "${DESTDIR}${LIBDIR}/$$a" ; done
+ 	# object archives
+ 	-@for a in `find * | grep -e '\.a$$'` ; do \
+ 	a=`echo $$a | awk -F / '{ print $$NF; }'`; \
+-	echo "${LFX}/$$a" ; rm -f "${LFX}/$$a" ; done
++	echo "${DESTDIR}${LIBDIR}/$$a" ; rm -f "${DESTDIR}${LIBDIR}/$$a" ; done
+ 	# includes
+-	-if [ -h "${IFX}/libr" ]; then \
+-		rm -f "${IFX}/libr" ; \
++	-if [ -h "${DESTDIR}${INCLUDEDIR}/libr" ]; then \
++		rm -f "${DESTDIR}${INCLUDEDIR}/libr" ; \
+ 	else \
+-		(cd include && for a in * ; do rm -f "${IFX}/libr/$$a" ; done) ; \
++		(cd include && for a in * ; do rm -f "${DESTDIR}${INCLUDEDIR}/libr/$$a" ; done) ; \
+ 	fi
+ 	# programs
+ 	-@for a in `find */t -perm -u+x -type f | grep 2`; do \
+ 	a=`echo $$a|awk -F / '{ print $$NF; }'`; \
+-	echo "${PFX}/bin/$$a" ; rm -f "${PFX}/bin/$$a" ; done
++	echo "${DESTDIR}${BINDIR}/$$a" ; rm -f "${DESTDIR}${BINDIR}/$$a" ; done
+ 	# plugins
+ 	-@for a in `find */p -perm -u+x -type f`; do \
+-	a="${LFX}/radare2/${VERSION}/`echo $$a|awk -F / '{ print $$NF; }'`"; \
++	a="${DESTDIR}${LIBDIR}/radare2/${VERSION}/`echo $$a|awk -F / '{ print $$NF; }'`"; \
+ 	echo $$a ; rm -f $$a ; done
+-	rm -rf "${LFX}/radare2/${VERSION}"
+-	rm -f "${LFX}/pkgconfig/libr.pc"
+-	rm -f "${LFX}/pkgconfig/r_"*.pc
++	rm -rf "${DESTDIR}${LIBDIR}/radare2/${VERSION}"
++	rm -f "${DESTDIR}${LIBDIR}/pkgconfig/libr.pc"
++	rm -f "${DESTDIR}${LIBDIR}/pkgconfig/r_"*.pc
+ 	# test programs
+-	rm -rf "${PFX}/bin/libr-test"
++	rm -rf "${DESTDIR}${BINDIR}/libr-test"
+ 	# TODO: use for a in LIBS (like in binr/Makefile)
+-	rm -rf "${IFX}/libr"
+-	rm -rf "${LFX}/libr_*.so.${LIBVERSION}"
+-	rm -rf "${LFX}/libr_*.so.0"
+-	rm -rf "${LFX}/libr_*.so"
+-	rm -rf "${LFX}/libr_*.a"
+-	rm -rf "${LFX}/libr2.so"*
+-	rm -rf "${LFX}/libr2.a"
+-	rm -rf "${LFX}/libr.so"*
+-	rm -rf "${LFX}/libr.a"
+-	rm -rf "${DESTDIR}${DATADIR}/share/doc/radare2"
+-	@echo libr aka radare2 has been uninstalled from PREFIX=${PFX}
++	rm -rf "${DESTDIR}${INCLUDEDIR}/libr"
++	rm -rf "${DESTDIR}${LIBDIR}/libr_*.so.${LIBVERSION}"
++	rm -rf "${DESTDIR}${LIBDIR}/libr_*.so.0"
++	rm -rf "${DESTDIR}${LIBDIR}/libr_*.so"
++	rm -rf "${DESTDIR}${LIBDIR}/libr_*.a"
++	rm -rf "${DESTDIR}${LIBDIR}/libr2.so"*
++	rm -rf "${DESTDIR}${LIBDIR}/libr2.a"
++	rm -rf "${DESTDIR}${LIBDIR}/libr.so"*
++	rm -rf "${DESTDIR}${LIBDIR}/libr.a"
++	rm -rf "${DESTDIR}${DATADIR}/doc/radare2"
++	@echo libr aka radare2 has been uninstalled from PREFIX=${DESTDIR}${PREFIX}
+ 
+ clean:
+ 	for lib in ${LIBS}; do ( cd $${lib} && ${MAKE} clean ); done
+diff -ru radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.orig/libr/rules.mk radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.new/libr/rules.mk
+--- radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.orig/libr/rules.mk	2015-10-19 00:06:58.294010713 +0200
++++ radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.new/libr/rules.mk	2015-10-19 01:21:38.077596070 +0200
+@@ -21,7 +21,7 @@
+ BEXE=$(BIN)$(EXT_EXE)
+ 
+ ifeq ($(USE_RPATH),1)
+-LINK+=-Wl,-rpath "${PREFIX}/lib"
++LINK+=-Wl,-rpath "${LIBDIR}"
+ endif
+ 
+ ifeq (${OSTYPE},gnulinux)
+diff -ru radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.orig/libr/syscall/d/Makefile radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.new/libr/syscall/d/Makefile
+--- radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.orig/libr/syscall/d/Makefile	2015-10-19 00:06:58.322010302 +0200
++++ radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.new/libr/syscall/d/Makefile	2015-10-19 00:35:33.281804833 +0200
+@@ -23,13 +23,13 @@
+ 
+ F_SDB=$(addsuffix .sdb,$F)
+ 
+-SDBPATH=$(call rmdblslash,$(LTOP)/../shlr/sdb/)
++SDBPATH=$(LTOP)/../shlr/sdb/
+ ifeq ($(BUILD_OS),windows)
+ BUILD_EXT_EXE=.exe
+ else
+ BUILD_EXT_EXE=
+ endif
+-SDB=$(call rmdblslash,$(SDBPATH)/sdb${BUILD_EXT_EXE})
++SDB=$(SDBPATH)/sdb${BUILD_EXT_EXE}
+ 
+ all: ${SDB}
+ 	@$(MAKE) compile
+diff -ru radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.orig/Makefile radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.new/Makefile
+--- radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.orig/Makefile	2015-10-19 00:06:58.286010831 +0200
++++ radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.new/Makefile	2015-10-19 02:26:13.008615669 +0200
+@@ -1,12 +1,8 @@
+ -include config-user.mk
+ include global.mk
+ 
+-DESTDIR:=$(call rmbdlslash,$(DESTDIR))
+-WWWROOT:=$(call rmbdlslash,$(WWWROOT))
+ R2R=radare2-regressions
+ R2R_URL=$(shell doc/repo REGRESSIONS)
+-DLIBDIR=$(call rmdblslash,$(DESTDIR)/$(LIBDIR))
+-WWWROOT=${DATADIR}/radare2/${VERSION}/www
+ R2BINS=$(shell cd binr ; echo r*2 r2agent r2pm)
+ DATADIRS=libr/cons/d libr/bin/d libr/asm/d libr/syscall/d libr/magic/d
+ R2VC=$(shell git rev-list --all --count)
+@@ -117,24 +113,24 @@
+ 	cd libr && ${MAKE} pkgcfg
+ 
+ install-man:
+-	mkdir -p "${MDR}/man1"
+-	for a in man/*.1 ; do ${INSTALL_MAN} "$$a" "${MDR}/man1" ; done
+-	cd "${MDR}/man1" && ln -fs radare2.1 r2.1
++	mkdir -p "${DESTDIR}${MANDIR}/man1"
++	for a in man/*.1 ; do ${INSTALL_MAN} "$$a" "${DESTDIR}${MANDIR}/man1" ; done
++	cd "${DESTDIR}${MANDIR}/man1" && ln -fs radare2.1 r2.1
+ 
+ install-man-symlink:
+-	mkdir -p "${MDR}/man1"
++	mkdir -p "${DESTDIR}${MANDIR}/man1"
+ 	cd man && for a in *.1 ; do \
+-		ln -fs "${PWD}/man/$$a" "${MDR}/man1/$$a" ; done
+-	cd "${MDR}/man1" && ln -fs radare2.1 r2.1
++		ln -fs "${PWD}/man/$$a" "${DESTDIR}${MANDIR}/man1/$$a" ; done
++	cd "${DESTDIR}${MANDIR}/man1" && ln -fs radare2.1 r2.1
+ 
+ install-doc:
+-	${INSTALL_DIR} "${PFX}/share/doc/radare2"
+-	for a in doc/* ; do ${INSTALL_DATA} $$a "${PFX}/share/doc/radare2" ; done
++	${INSTALL_DIR} "${DESTDIR}${DATADIR}/doc/radare2"
++	for a in doc/* ; do ${INSTALL_DATA} $$a "${DESTDIR}${DATADIR}/doc/radare2" ; done
+ 
+ install-doc-symlink:
+-	${INSTALL_DIR} "${PFX}/share/doc/radare2"
++	${INSTALL_DIR} "${DESTDIR}${DATADIR}/doc/radare2"
+ 	cd doc ; for a in * ; do \
+-		ln -fs "${PWD}/doc/$$a" "${PFX}/share/doc/radare2" ; done
++		ln -fs "${PWD}/doc/$$a" "${DESTDIR}${DATADIR}/doc/radare2" ; done
+ 
+ install love: install-doc install-man install-www
+ 	cd libr && ${MAKE} install PREFIX="${PREFIX}" DESTDIR="${DESTDIR}" PARENT=1
+@@ -143,10 +139,10 @@
+ 	for a in ${DATADIRS} ; do \
+ 	(cd $$a ; ${MAKE} install LIBDIR="${LIBDIR}" PREFIX="${PREFIX}" DESTDIR="${DESTDIR}" ); \
+ 	done
+-	rm -rf "${DLIBDIR}/radare2/${VERSION}/hud"
+-	mkdir -p "${DLIBDIR}/radare2/${VERSION}/hud"
+-	cp -f doc/hud "${DLIBDIR}/radare2/${VERSION}/hud/main"
+-	mkdir -p $(call rmdblslash,${DESTDIR}/${PREFIX}/share/radare2/${VERSION}/)
++	rm -rf "${DESTDIR}${LIBDIR}/radare2/${VERSION}/hud"
++	mkdir -p "${DESTDIR}${LIBDIR}/radare2/${VERSION}/hud"
++	cp -f doc/hud "${DESTDIR}${LIBDIR}/radare2/${VERSION}/hud/main"
++	mkdir -p ${DESTDIR}${DATADIR}/radare2/${VERSION}/
+ 	sys/ldconfig.sh
+ 
+ # Remove make .d files. fixes build when .c files are removed
+@@ -154,24 +150,24 @@
+ 	rm -f `find . -type f -iname *.d`
+ 
+ install-www:
+-	rm -rf $(call rmdblslash,${DESTDIR}/${WWWROOT})
+-	rm -rf ${DLIBDIR}/radare2/${VERSION}/www # old dir
+-	mkdir -p $(call rmdblslash,${DESTDIR}/${WWWROOT})
+-	cp -rf shlr/www/* $(call rmdblslash,${DESTDIR}/${WWWROOT})
++	rm -rf ${DESTDIR}${WWWROOT}
++	rm -rf ${DESTDIR}${LIBDIR}/radare2/${VERSION}/www # old dir
++	mkdir -p ${DESTDIR}${WWWROOT}
++	cp -rf shlr/www/* ${DESTDIR}${WWWROOT}
++
+ 
+-WWWDIR=$(call rmdblslash,${DESTDIR}/${DATADIR}/radare2/${VERSION}/www)
+ symstall-www:
+-	rm -rf $(call rmdblslash,${DESTDIR}/${WWWROOT})
+-	rm -rf ${DLIBDIR}/radare2/${VERSION}/www # old dir
+-	mkdir -p "$(call rmdblslash,${DESTDIR}/${WWWROOT})"
+-	cd $(call rmdblslash,${DESTDIR}/${WWWROOT}) ; \
++	rm -rf ${DESTDIR}${WWWROOT}
++	rm -rf ${DESTDIR}${LIBDIR}/radare2/${VERSION}/www # old dir
++	mkdir -p "${DESTDIR}${WWWROOT}"
++	cd ${DESTDIR}${WWWROOT} ; \
+ 		for a in "${PWD}/shlr/www/"* ; do \
+-			ln -fs $$a "$(WWWDIR)" ; done
++			ln -fs $$a "$(DESTDIR)$(WWWROOT)" ; done
+ 
+ install-pkgconfig-symlink:
+-	@${INSTALL_DIR} "${DLIBDIR}/pkgconfig"
++	@${INSTALL_DIR} "${DESTDIR}${LIBDIR}/pkgconfig"
+ 	cd pkgcfg ; for a in *.pc ; do \
+-		ln -fs "$${PWD}/$$a" "${DLIBDIR}/pkgconfig/$$a" ; done
++		ln -fs "$${PWD}/$$a" "${DESTDIR}${LIBDIR}/pkgconfig/$$a" ; done
+ 
+ 
+ symstall install-symlink: install-man-symlink install-doc-symlink install-pkgconfig-symlink symstall-www
+@@ -184,13 +180,13 @@
+ 		${MAKE} install-symlink LIBDIR="${LIBDIR}" \
+ 			PREFIX="${PREFIX}" DESTDIR="${DESTDIR}" ); \
+ 	done
+-	mkdir -p "${DLIBDIR}/radare2/${VERSION}/hud"
+-	cd "$(call rmdblslash,$(DESTDIR)/$(PREFIX)/lib/radare2/)" ;\
++	mkdir -p "${DESTDIR}${LIBDIR}/radare2/${VERSION}/hud"
++	cd "$(DESTDIR)$(LIBDIR)/radare2/" ;\
+ 		rm -f last ; ln -fs $(VERSION) last
+-	cd "$(call rmdblslash,$(DESTDIR)/$(PREFIX)/share/radare2/)" ;\
++	cd "$(DESTDIR)$(PREFIX)/share/radare2/" ;\
+ 		rm -f last ; ln -fs $(VERSION) last
+-	ln -fs "${PWD}/doc/hud" "${DLIBDIR}/radare2/${VERSION}/hud/main"
+-	mkdir -p "$(call rmdblslash,${DESTDIR}/${PREFIX}/share/radare2/${VERSION}/)"
++	ln -fs "${PWD}/doc/hud" "${DESTDIR}${LIBDIR}/radare2/${VERSION}/hud/main"
++	mkdir -p "${DESTDIR}${DATADIR}/radare2/${VERSION}/"
+ 	sys/ldconfig.sh
+ 
+ deinstall uninstall:
+@@ -203,9 +199,9 @@
+ 	@echo
+ 
+ purge-doc:
+-	rm -rf ${DESTDIR}/${PREFIX}/share/doc/radare2
+-	cd man ; for a in *.1 ; do rm -f "${MDR}/man1/$$a" ; done
+-	rm -f ${MDR}/man1/r2.1
++	rm -rf ${DESTDIR}${DATADIR}/doc/radare2
++	cd man ; for a in *.1 ; do rm -f "${DESTDIR}${MANDIR}/man1/$$a" ; done
++	rm -f ${DESTDIR}${MANDIR}/man1/r2.1
+ 
+ user-wrap=echo "\#!/bin/sh" > ~/bin/$1 \
+ ; echo "${PWD}/env.sh ${PREFIX} $1 \$$@" >> ~/bin/$1 \
+@@ -222,24 +218,24 @@
+ 	-rmdir ~/bin
+ 
+ purge-dev:
+-	rm -f ${DESTDIR}/${LIBDIR}/libr_*.${EXT_AR}
+-	rm -f ${DESTDIR}/${LIBDIR}/pkgconfig/r_*.pc
+-	rm -rf ${DESTDIR}/${INCLUDEDIR}/libr
+-	rm -f ${DESTDIR}/${LIBDIR}/radare2/${VERSION}/-*
++	rm -f ${DESTDIR}${LIBDIR}/libr_*.${EXT_AR}
++	rm -f ${DESTDIR}${LIBDIR}/pkgconfig/r_*.pc
++	rm -rf ${DESTDIR}${INCLUDEDIR}/libr
++	rm -f ${DESTDIR}${LIBDIR}/radare2/${VERSION}/-*
+ 
+ strip:
+-	-for a in ${R2BINS} ; do ${STRIP} -s ${DESTDIR}/${BINDIR}/$$a 2> /dev/null ; done
+-	-for a in ${DESTDIR}/${LIBDIR}/libr_*.${EXT_SO} \
+-		${DESTDIR}/${LIBDIR}/libr2.${EXT_SO} ; do ${STRIP} -s $$a ; done
++	-for a in ${R2BINS} ; do ${STRIP} -s ${DESTDIR}${BINDIR}/$$a 2> /dev/null ; done
++	-for a in ${DESTDIR}${LIBDIR}/libr_*.${EXT_SO} \
++		${DESTDIR}${LIBDIR}/libr2.${EXT_SO} ; do ${STRIP} -s $$a ; done
+ 
+ purge: purge-doc purge-dev
+-	for a in ${R2BINS} ; do rm -f ${DESTDIR}/${BINDIR}/$$a ; done
+-	rm -f ${DESTDIR}/${BINDIR}/ragg2-cc
+-	rm -f ${DESTDIR}/${BINDIR}/r2
+-	rm -f ${DESTDIR}/${LIBDIR}/libr_*
+-	rm -f ${DESTDIR}/${LIBDIR}/libr2.${EXT_SO}
+-	rm -rf ${DESTDIR}/${LIBDIR}/radare2
+-	rm -rf ${DESTDIR}/${INCLUDEDIR}/libr
++	for a in ${R2BINS} ; do rm -f ${DESTDIR}${BINDIR}/$$a ; done
++	rm -f ${DESTDIR}${BINDIR}/ragg2-cc
++	rm -f ${DESTDIR}${BINDIR}/r2
++	rm -f ${DESTDIR}${LIBDIR}/libr_*
++	rm -f ${DESTDIR}${LIBDIR}/libr2.${EXT_SO}
++	rm -rf ${DESTDIR}${LIBDIR}/radare2
++	rm -rf ${DESTDIR}${INCLUDEDIR}/libr
+ 
+ dist:
+ 	-[ configure -nt config-user.mk ] && ./configure --prefix=${PREFIX}
+diff -ru radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.orig/shlr/Makefile radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.new/shlr/Makefile
+--- radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.orig/shlr/Makefile	2015-10-19 00:06:58.268011096 +0200
++++ radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.new/shlr/Makefile	2015-10-19 00:40:54.399339757 +0200
+@@ -171,7 +171,7 @@
+ 	git add tcc
+ 	rm -rf _
+ 
+-D=$(call rmdblslash,${DESTDIR}/${PREFIX})
++D=${DESTDIR}${PREFIX}
+ install:
+ 	#mkdir -p ${D}/lib
+ 	#cp -f tcc/libr_tcc* ${D}/lib
+diff -ru radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.orig/shlr/sdb/Makefile radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.new/shlr/sdb/Makefile
+--- radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.orig/shlr/sdb/Makefile	2015-10-19 00:06:58.262011184 +0200
++++ radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.new/shlr/sdb/Makefile	2015-10-19 01:45:55.223277284 +0200
+@@ -2,7 +2,7 @@
+ VALADIR=bindings/vala
+ 
+ PWD=$(shell pwd)
+-PFX=${DESTDIR}${PREFIX}
++
+ HGFILES=`find sdb-${SDBVER} -type f | grep -v hg | grep -v swp`
+ MKDIR=mkdir
+ 
+diff -ru radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.orig/sys/android-build.sh radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.new/sys/android-build.sh
+--- radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.orig/sys/android-build.sh	2015-10-19 00:06:58.280010919 +0200
++++ radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.new/sys/android-build.sh	2015-10-19 02:37:12.153802759 +0200
+@@ -125,8 +125,8 @@
+ rm -rf ${PWD}/${D}/lib/pkgconfig
+ rm -rf ${PWD}/${D}/lib/libsdb.a
+ 
+-echo rm -rf ${PWD}/${D}/${PREFIX}/bin/*
+-rm -rf "${PWD}/${D}/${PREFIX}/bin/"*
++echo rm -rf ${PWD}/${D}/${BINDIR}/*
++rm -rf "${PWD}/${D}/${BINDIR}/"*
+ 
+ #end build
+ 
+@@ -141,12 +141,12 @@
+ :> ${HERE}/${D}/${PREFIX}/tmp/.empty
+ cd ../..
+ 
+-chmod +x "${HERE}/${D}/${PREFIX}/bin/"*
+-find ${D}/${PREFIX}/share/radare2/*/www
++chmod +x "${HERE}/${D}/${BINDIR}/"*
++find ${D}/${DATADIR}/radare2/*/www
+ # Remove development files
+-rm -f ${HERE}/${D}/${PREFIX}/lib/radare2/*/*.so
+-rm -f ${HERE}/${D}/${PREFIX}/lib/*.a
+-rm -rf ${HERE}/${D}/${PREFIX}/share/radare2/*/www/*/node_modules
++rm -f ${HERE}/${D}/${LIBDIR}/radare2/*/*.so
++rm -f ${HERE}/${D}/${LIBDIR}/*.a
++rm -rf ${HERE}/${D}/${DATADIR}/radare2/*/www/*/node_modules
+ rm -rf ${HERE}/${D}/${PREFIX}/include
+ eval `grep ^VERSION= ${HERE}/config-user.mk`
+ #WWWROOT="/data/data/org.radare2.installer/radare2/share/radare2/${VERSION}/www"
+diff -ru radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.orig/sys/farm.sh radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.new/sys/farm.sh
+--- radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.orig/sys/farm.sh	2015-10-19 00:06:58.281010905 +0200
++++ radare2-d79e5763052e32a11e50c06b591262fc99eb51d4.new/sys/farm.sh	2015-10-19 02:37:12.154802744 +0200
+@@ -226,9 +226,9 @@
+ fi
+ 
+ log "[==] Running some tests..."
+-export PATH=${DESTDIR}/${PREFIX}/bin:$PATH
+-export PKG_CONFIG_PATH=${DESTDIR}/${PREFIX}/lib/pkgconfig
+-export LD_LIBRARY_PATH=${DESTDIR}/${PREFIX}/lib
++export PATH=${DESTDIR}${BINDIR}:$PATH
++export PKG_CONFIG_PATH=${DESTDIR}${LIBDIR}/pkgconfig
++export LD_LIBRARY_PATH=${DESTDIR}${LIBDIR}
+ logcmd type r2
+ logcmd type rasm2
+ logcmd type rabin2
+@@ -259,7 +259,7 @@
+ logcmd time ${MAKE} install DESTDIR=${DESTDIR}
+ 
+ log "[==] Testing bindings.."
+-export PYTHONPATH=${DESTDIR}/${PREFIX}/lib/python2.5/site-packages/
++export PYTHONPATH=${DESTDIR}${LIBDIR}/python2.5/site-packages/
+ logcmd ${PYTHON} -c "'from r2.r_util import *;b=RBuffer()'"
+ logcmd ${PYTHON} -c "'from r2.r_asm import *;a=RAsm()'"
+ logcmd ${PYTHON} -c "'from r2.r_core import *;c=RCore()'"

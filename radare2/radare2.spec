@@ -1,7 +1,7 @@
 Name:           radare2
 Summary:        The reverse engineering framework
 Version:        5.2.1
-%global         rel             1
+%global         rel             2
 URL:            https://radare.org/
 VCS:            https://github.com/radareorg/radare2
 
@@ -24,6 +24,13 @@ Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{version}.tar.
 Release:        0.%{rel}.%{gitdate}git%{shortcommit}%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{commit}.zip
 %endif
+
+# make it possible to use older version of messon - needed for EPEL8 which has older version than EPEL7
+Patch0:         https://github.com/radareorg/radare2/pull/18684.patch#/radare2-5.2.1-meson_rhel8.patch
+
+# improve the detection of the system xxhash. pkgconfig module name is libxxhash not xhash
+Patch1:         https://github.com/radareorg/radare2/pull/18683.patch#/radare2-5.2.1-xxhash.patch
+
 
 License:        LGPLv3+ and GPLv2+ and BSD and MIT and ASL 2.0 and MPLv2.0 and zlib
 # Radare2 as a package is targeting to be licensed/compiled as LGPLv3+
@@ -65,26 +72,31 @@ BuildRequires:  sed
 BuildRequires:  gcc
 BuildRequires:  meson
 BuildRequires:  ninja-build
-BuildRequires:  file-devel
-BuildRequires:  xxhash-devel
 BuildRequires:  pkgconfig
-
-%if 0%{?rhel}
-BuildRequires:  bzip2-devel
-BuildRequires:  python3
-# %%meson macro using the %%set_build_flags from Fedora/EPEL, but not bringing the dependency
-# https://src.fedoraproject.org/rpms/meson/pull-request/9
-BuildRequires:  epel-rpm-macros
-
-%else
-BuildRequires:  pkgconfig(bzip2)
-%endif
+# xxhash-devel
+BuildRequires:  pkgconfig(libxxhash)
 BuildRequires:  pkgconfig(libzip)
 BuildRequires:  pkgconfig(zlib)
 BuildRequires:  pkgconfig(liblz4)
 BuildRequires:  pkgconfig(capstone) >= 3.0.4
 BuildRequires:  pkgconfig(libuv)
 BuildRequires:  pkgconfig(openssl)
+
+%if 0%{?rhel}
+BuildRequires:  file-devel
+BuildRequires:  bzip2-devel
+BuildRequires:  python3
+# %%meson macro using the %%set_build_flags from Fedora/EPEL, but not bringing the dependency
+# https://src.fedoraproject.org/rpms/meson/pull-request/9
+BuildRequires:  epel-rpm-macros
+# On RHEL xxhash-devel is not bringing the xxhash as dependency
+BuildRequires:  xxhash
+
+%else
+# file-devel
+BuildRequires:  pkgconfig(libmagic)
+BuildRequires:  pkgconfig(bzip2)
+%endif
 
 Requires:       %{name}-common = %{version}-%{release}
 
@@ -199,6 +211,10 @@ sed -i -e "s|%{version}-git|%{version}|g;" configure configure.acr
 %endif
 # Removing zip/lzip and lz4 files because we use system dependencies
 rm -rf shlr/zip shlr/lz4
+# Remove xxhash files because we use system dependencies
+rm -f libr/hash/xxhash.c libr/hash/xxhash.h
+
+
 
 # Webui contains pre-build and/or minimized versions of JS libraries without source code
 # Consider installing the web-interface from https://github.com/radare/radare2-webui
@@ -242,8 +258,9 @@ cp ./shlr/www/README.Fedora %{buildroot}/%{_datadir}/%{name}/%{version}/www/READ
 # remove unneeded fortunes
 rm %{buildroot}/%{_datadir}/doc/%{name}/fortunes.fun
 
+%if 0%{?rhel} && 0%{?rhel} <= 8
 %ldconfig_scriptlets
-
+%endif
 
 %check
 # Do not run the testsuite yet - it pulls another package
@@ -252,6 +269,7 @@ rm %{buildroot}/%{_datadir}/doc/%{name}/fortunes.fun
 
 
 %files
+%license COPYING COPYING.LESSER
 %doc CONTRIBUTING.md DEVELOPERS.md README.md
 %doc doc/3D/ doc/node.js/ doc/pdb/ doc/sandbox/
 %doc doc/avr.md doc/brainfuck.md doc/calling-conventions.md doc/debug.md
@@ -261,7 +279,6 @@ rm %{buildroot}/%{_datadir}/doc/%{name}/fortunes.fun
 %dir %{_datadir}/%{name}/%{version}/www
 # Webui removed cuz of having minified js code and missing source code
 %doc %{_datadir}/%{name}/%{version}/www/README.Fedora
-%license COPYING COPYING.LESSER
 %{_bindir}/r*
 %{_libdir}/libr_*.so.%{version}*
 %{_mandir}/man1/r*.1.*
@@ -291,6 +308,11 @@ rm %{buildroot}/%{_datadir}/doc/%{name}/fortunes.fun
 
 
 %changelog
+* Tue May 11 2021 Michal Ambroz <rebus at, seznam.cz> 5.2.1-2
+- patch for older version of meson used on EPEL8
+- use pkgconfig where possible for BR
+- use ldconfig_scriptlets only on older platforms
+
 * Thu Apr 22 2021 Henrik Nordstrom <henrik@henriknordstrom.net> - 5.2.1-1
 - Update to version 5.2.1
 

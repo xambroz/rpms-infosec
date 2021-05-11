@@ -1,0 +1,49 @@
+From abb813ebe328c7eb2480d63cbf100d66493cf09a Mon Sep 17 00:00:00 2001
+From: Michal Ambroz <723625+xambroz@users.noreply.github.com>
+Date: Tue, 11 May 2021 22:55:37 +0200
+Subject: [PATCH] Make meson compatible with older versions (RHEL8 meson 0.49)
+
+This patch makes it possible to build with older version of meson.
+It is needed to build radare2 on RedHat Enterprise Linux 8 where the meson version 0.49 is older than on RHEL7+EPEL7 or Fedora.
+
+Issues fixed:
+- set minimum meson version down to 0.49 (version available in RHEL8)
+- meson 0.49 has bug which prevents processing of '\' split-lines => build r2_version_number on single line
+- on meson 0.49 the ternary operator is not possible to use with some constructs (subdir in add_install_scripts) => replace one ternary operator with if-else construct
+---
+ meson.build | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
+
+diff --git a/meson.build b/meson.build
+index 271ebd71af1..0c47a07bcbc 100644
+--- a/meson.build
++++ b/meson.build
+@@ -1,4 +1,4 @@
+-project('radare2', 'c', license : 'LGPL3', meson_version : '>=0.50.1', version : '5.2.1')
++project('radare2', 'c', license : 'LGPL3', meson_version : '>=0.49', version : '5.2.1')
+ 
+ py3_exe = import('python').find_installation('python3')
+ git_exe = find_program('git', required: false)
+@@ -10,10 +10,7 @@ vers = r2_version.split('.')
+ r2_version_major = vers[0].to_int()
+ r2_version_minor = vers[1].to_int()
+ r2_version_patch = vers[2].split('-')[0].to_int()
+-r2_version_number \
+-  = (r2_version_major * 10000) \
+-  + (r2_version_minor * 100) \
+-  + (r2_version_patch)
++r2_version_number = (r2_version_major * 10000) + (r2_version_minor * 100) + (r2_version_patch)
+ 
+ repo = '.'
+ if meson.is_subproject()
+@@ -709,5 +706,9 @@ if cli_enabled
+     install_dir: r2_zsh_compdir
+   )
+ 
+-  meson.add_install_script(host_machine.system() == 'windows' ? 'sys/create_r2.bat' : 'sys/create_r2.sh')
++  if host_machine.system() == 'windows'
++    meson.add_install_script('sys/create_r2.bat')
++  else
++    meson.add_install_script('sys/create_r2.sh')
++  endif
+ endif
