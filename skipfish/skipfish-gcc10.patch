@@ -1,0 +1,37 @@
+diff -ru skipfish-2.10b/src/signatures.h skipfish-2.10b.new/src/signatures.h
+--- skipfish-2.10b/src/signatures.h	2012-12-04 13:27:53.000000000 +0000
++++ skipfish-2.10b.new/src/signatures.h	2020-04-25 22:57:23.106943671 +0000
+@@ -80,7 +80,7 @@
+ void signature_problem(struct signature *sig, struct http_request *req, struct http_response *res);
+ 
+ 
+-struct signature** sig_list;       /* The one and only: signature list       */
++extern struct signature** sig_list;       /* The one and only: signature list       */
+ 
+ extern u32 slist_max_cnt;          /* Allocated space in the signature lists */
+ u32 slist_cnt;                     /* Actual elements in the signature lists */
+Only in skipfish-2.10b.new: skipfish
+diff -ru skipfish-2.10b/src/http_client.c skipfish-2.10b.new/src/http_client.c
+--- skipfish-2.10b/src/http_client.c	2012-12-04 13:27:53.000000000 +0000
++++ skipfish-2.10b.new/src/http_client.c	2020-04-25 23:16:12.069153357 +0000
+@@ -89,7 +89,7 @@
+     bytes_inflated,
+     iterations_cnt = 0;
+ 
+-u8 *auth_user,
++extern u8 *auth_user,
+    *auth_pass;
+ 
+ 
+diff -ru skipfish-2.10b/src/signatures.h skipfish-2.10b.new/src/signatures.h
+--- skipfish-2.10b/src/signatures.h	2020-04-25 23:10:56.108978513 +0000
++++ skipfish-2.10b.new/src/signatures.h	2020-04-25 23:14:24.271364307 +0000
+@@ -83,7 +83,7 @@
+ extern struct signature** sig_list;       /* The one and only: signature list       */
+ 
+ extern u32 slist_max_cnt;          /* Allocated space in the signature lists */
+-u32 slist_cnt;                     /* Actual elements in the signature lists */
++extern u32 slist_cnt;              /* Actual elements in the signature lists */
+ 
+ #define TYPE_PLAIN 0               /* Content type: static string            */
+ #define TYPE_REGEX 1               /* Content type: regular expression       */

@@ -1,0 +1,95 @@
+diff -ru skipfish-2.10b.orig/Makefile skipfish-2.10b/Makefile
+--- skipfish-2.10b.orig/Makefile	2012-12-04 14:27:54.000000000 +0100
++++ skipfish-2.10b/Makefile	2013-12-08 15:53:44.442596915 +0100
+@@ -33,14 +33,18 @@
+ OBJFILES   = $(patsubst %,$(SRCDIR)/%,$(SFILES))
+ INCFILES   = $(patsubst %,$(SRCDIR)/%,$(IFILES))
+ 
+-CFLAGS_GEN = -Wall -funsigned-char -g -ggdb -I/usr/local/include/ \
+-             -I/opt/local/include/ $(CFLAGS) -DVERSION=\"$(VERSION)\"
++CFLAGS_GEN = -Wall -Werror=format-security -Wformat -funsigned-char -g -ggdb  \
++             $(CFLAGS) -DVERSION=\"$(VERSION)\"
+ CFLAGS_DBG = -DLOG_STDERR=1 -DDEBUG_ALLOCATOR=1 \
+              $(CFLAGS_GEN)
+ CFLAGS_OPT =  -O3 -Wno-format $(CFLAGS_GEN)
+ 
+-LDFLAGS   += -L/usr/local/lib/ -L/opt/local/lib
++#LDFLAGS   += 
+ LIBS      += -lcrypto -lssl -lidn -lz -lpcre
++PREFIX     = /usr
++DATADIR    = /share/skipfish
++BINDIR     = /bin
++
+ 
+ all: $(PROGNAME)
+ 
+@@ -54,6 +58,19 @@
+ 	@echo "http://code.google.com/p/skipfish/wiki/KnownIssues"
+ 	@echo
+ 
++install: $(PROGNAME)
++	install -m 755 -d $(DESTDIR)$(PREFIX)$(DATADIR)
++	install -m 755 -d $(DESTDIR)$(PREFIX)$(BINDIR)
++	install -m 755 skipfish $(DESTDIR)$(PREFIX)$(BINDIR)
++	install -m 755 tools/sfscandiff $(DESTDIR)$(PREFIX)$(BINDIR)
++	cp -r assets $(DESTDIR)$(PREFIX)$(DATADIR)
++	cp -r dictionaries $(DESTDIR)$(PREFIX)$(DATADIR)
++	cp -r signatures $(DESTDIR)$(PREFIX)$(DATADIR)
++#	gzip doc/skipfish.1
++	install -m 755 -d $(DESTDIR)$(PREFIX)/share/man/man1
++#	cp -r doc/skipfish.1.gz $(DESTDIR)$(PREFIX)/share/man/man1
++	install -m 644 doc/skipfish.1 $(DESTDIR)$(PREFIX)/share/man/man1
++
+ debug: $(SRCDIR)/$(PROGNAME).c $(OBJFILES) $(INCFILES)
+ 	$(CC) $(LDFLAGS) $(SRCDIR)/$(PROGNAME).c -o $(PROGNAME) \
+         $(CFLAGS_DBG) $(OBJFILES) $(LIBS)
+Only in skipfish-2.10b/: Makefile.orig
+diff -ru skipfish-2.10b.orig/signatures/signatures.conf skipfish-2.10b/signatures/signatures.conf
+--- skipfish-2.10b.orig/signatures/signatures.conf	2012-12-04 14:27:53.000000000 +0100
++++ skipfish-2.10b/signatures/signatures.conf	2013-12-08 15:28:53.054458277 +0100
+@@ -6,23 +6,23 @@
+ # The mime signatures warn about server responses that have an interesting
+ # mime. For example anything that is presented as php-source will likely
+ # be interesting
+-include signatures/mime.sigs
++include /usr/share/skipfish/signatures/mime.sigs
+ 
+ # The files signature will use the content to determine if a response
+ # is an interesting file. For example, a SVN file.
+-include signatures/files.sigs
++include /usr/share/skipfish/signatures/files.sigs
+ 
+ # The messages signatures look for interesting server messages. Most
+ # are based on errors, such as caused by incorrect SQL queries or PHP
+ # execution failures.
+-include signatures/messages.sigs
++include /usr/share/skipfish/signatures/messages.sigs
+ 
+ # The apps signatures will help to find pages and applications who's
+ # functionality is a security risk by default. For example, phpinfo()
+ # pages that leak information or CMS admin interfaces.
+-include signatures/apps.sigs
++include /usr/share/skipfish/signatures/apps.sigs
+ 
+ # Context signatures are linked to injection tests. They look for strings
+ # that are relevant to the current injection test and help to highlight
+ # potential vulnerabilities.
+-include signatures/context.sigs
++include /usr/share/skipfish/signatures/context.sigs
+diff -ru skipfish-2.10b.orig/src/config.h skipfish-2.10b/src/config.h
+--- skipfish-2.10b.orig/src/config.h	2012-12-04 14:27:53.000000000 +0100
++++ skipfish-2.10b/src/config.h	2013-12-08 15:28:53.055458280 +0100
+@@ -29,10 +29,10 @@
+ 
+ /* Default paths to runtime files: */
+ 
+-#define ASSETS_DIR              "assets"
++#define ASSETS_DIR              "/usr/share/skipfish/assets"
+ 
+ /* Default signature file */
+-#define SIG_FILE                "signatures/signatures.conf"
++#define SIG_FILE                "/usr/share/skipfish/signatures/signatures.conf"
+ 
+ /* Various default settings for HTTP client (cmdline override): */
+ 
+Only in skipfish-2.10b/src: config.h.orig

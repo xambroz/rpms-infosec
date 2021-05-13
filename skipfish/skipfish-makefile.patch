@@ -1,0 +1,82 @@
+diff -ru skipfish-2.08b.orig/Makefile skipfish-2.08b/Makefile
+--- skipfish-2.08b.orig/Makefile	2012-09-02 01:08:13.392632247 +0100
++++ skipfish-2.08b/Makefile	2012-09-02 01:44:04.253870317 +0100
+@@ -39,6 +39,10 @@
+ 
+ LDFLAGS   += -L/usr/local/lib/ -L/opt/local/lib
+ LIBS      += -lcrypto -lssl -lidn -lz -lpcre
++PREFIX     = /usr
++DATADIR    = /share/skipfish
++BINDIR     = /bin
++
+ 
+ all: $(PROGNAME)
+ 
+@@ -52,6 +56,19 @@
+ 	@echo "http://code.google.com/p/skipfish/wiki/KnownIssues"
+ 	@echo
+ 
++install: $(PROGNAME)
++	install -m 755 -d $(DESTDIR)$(PREFIX)$(DATADIR)
++	install -m 755 -d $(DESTDIR)$(PREFIX)$(BINDIR)
++	install -m 755 skipfish $(DESTDIR)$(PREFIX)$(BINDIR)
++	install -m 755 tools/sfscandiff $(DESTDIR)$(PREFIX)$(BINDIR)
++	cp -r assets $(DESTDIR)$(PREFIX)$(DATADIR)
++	cp -r dictionaries $(DESTDIR)$(PREFIX)$(DATADIR)
++	cp -r signatures $(DESTDIR)$(PREFIX)$(DATADIR)
++#	gzip doc/skipfish.1
++	install -m 755 -d $(DESTDIR)$(PREFIX)/share/man/man1
++#	cp -r doc/skipfish.1.gz $(DESTDIR)$(PREFIX)/share/man/man1
++	install -m 644 doc/skipfish.1 $(DESTDIR)$(PREFIX)/share/man/man1
++
+ debug: $(SRCDIR)/$(PROGNAME).c $(OBJFILES) $(INCFILES)
+ 	$(CC) $(LDFLAGS) $(SRCDIR)/$(PROGNAME).c -o $(PROGNAME) \
+         $(CFLAGS_DBG) $(OBJFILES) $(LIBS)
+diff -ru skipfish-2.08b.orig/signatures/signatures.conf skipfish-2.08b/signatures/signatures.conf
+--- skipfish-2.08b.orig/signatures/signatures.conf	2012-09-02 01:08:13.391632237 +0100
++++ skipfish-2.08b/signatures/signatures.conf	2012-09-02 01:59:14.734636146 +0100
+@@ -6,23 +6,23 @@
+ # The mime signatures warn about server responses that have an interesting
+ # mime. For example anything that is presented as php-source will likely
+ # be interesting
+-include signatures/mime.sigs
++include /usr/share/skipfish/signatures/mime.sigs
+ 
+ # The files signature will use the content to determine if a response
+ # is an interesting file. For example, a SVN file.
+-include signatures/files.sigs
++include /usr/share/skipfish/signatures/files.sigs
+ 
+ # The messages signatures look for interesting server messages. Most
+ # are based on errors, such as caused by incorrect SQL queries or PHP
+ # execution failures.
+-include signatures/messages.sigs
++include /usr/share/skipfish/signatures/messages.sigs
+ 
+ # The apps signatures will help to find pages and applications who's
+ # functionality is a security risk by default. For example, phpinfo()
+ # pages that leak information or CMS admin interfaces.
+-include signatures/apps.sigs
++include /usr/share/skipfish/signatures/apps.sigs
+ 
+ # Context signatures are linked to injection tests. They look for strings
+ # that are relevant to the current injection test and help to highlight
+ # potential vulnerabilities.
+-include signatures/context.sigs
++include /usr/share/skipfish/signatures/context.sigs
+diff -ru skipfish-2.08b.orig/src/config.h skipfish-2.08b/src/config.h
+--- skipfish-2.08b.orig/src/config.h	2012-09-02 01:08:13.395632276 +0100
++++ skipfish-2.08b/src/config.h	2012-09-02 01:10:24.812720452 +0100
+@@ -35,10 +35,10 @@
+ 
+ /* Default paths to runtime files: */
+ 
+-#define ASSETS_DIR              "assets"
++#define ASSETS_DIR              "/usr/share/skipfish/assets"
+ 
+ /* Default signature file */
+-#define SIG_FILE                "signatures/signatures.conf"
++#define SIG_FILE                "/usr/share/skipfish/signatures/signatures.conf"
+ 
+ /* Various default settings for HTTP client (cmdline override): */
+ 

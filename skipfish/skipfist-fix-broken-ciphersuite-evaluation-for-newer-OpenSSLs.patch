@@ -1,0 +1,139 @@
+From 21a6780ce8b5a17ffe2b17eda2abf5ca60fd6f46 Mon Sep 17 00:00:00 2001
+From: Igor Bezzubchenko <garikello@gmail.com>
+Date: Thu, 7 Jan 2021 14:21:32 +0300
+Subject: [PATCH] fixing broken ciphersuite evaluation for newer OpenSSLs
+
+---
+ src/http_client.c | 107 ++++++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 104 insertions(+), 3 deletions(-)
+
+diff --git a/src/http_client.c b/src/http_client.c
+index 8721791..c907699 100644
+--- a/src/http_client.c
++++ b/src/http_client.c
+@@ -1956,18 +1956,119 @@ static u8 match_cert_name(char* req_host, char* host) {
+ 
+    We might eventually want to check aliases or support TLS SNI. */
+ 
++/* helper function: return 1 is the cipher should be avoided: */
++static int is_cipher_weak(const SSL_CIPHER* c) {
++	// according to https://www.openssl.org/news/openssl-1.1.0-notes.html,
++	// we can access private structures only before 1.1.0
++#if OPENSSL_VERSION_NUMBER < 0x10100000
++	return (!(c->algo_strength & SSL_MEDIUM) && !(c->algo_strength & SSL_HIGH));
++#else
++	int enc = SSL_CIPHER_get_cipher_nid(c);
++	int mac = SSL_CIPHER_get_digest_nid(c);
++	int suite_id = SSL_CIPHER_get_id(c);
++
++	// First, reject obviously broken algos to avoid further lookups
++	
++	// Drop old encryptions
++	if (enc < NID_aes_128_cbc) return 1;
++	// Drop old hashes
++	// NOTE1: according to Qualys, SHA1 can be used other if parts are good
++	// NOTE2: GOST R 4.11-94 is outdates since 2013 in Russia
++	if (mac == NID_md5 || mac == NID_id_GostR3411_94) return 1;
++
++	if (
++		// Chacha20/Poly1305-based are safe
++		(suite_id >= TLS1_CK_ECDHE_RSA_WITH_CHACHA20_POLY1305 &&
++		 suite_id <= TLS1_CK_RSA_PSK_WITH_CHACHA20_POLY1305) ||
++#if OPENSSL_VERSION_NUMBER >= 0x10101000 // from 1.1.1
++		// TLS1.3 ciphersuites are safe
++		(suite_id >= TLS1_3_CK_AES_128_GCM_SHA256 &&
++		 suite_id <= TLS1_3_CK_AES_128_CCM_8_SHA256) ||
++#endif
++		// Camellia with strong hash are safe
++		(suite_id >= TLS1_CK_ECDHE_ECDSA_WITH_CAMELLIA_128_CBC_SHA256 &&
++		 suite_id <= TLS1_CK_ECDHE_PSK_WITH_CAMELLIA_256_CBC_SHA384) ||
++		// some of ECDHE are safe (i.e. excluding RC4- and 3DES-based)
++		(suite_id >= TLS1_CK_ECDHE_PSK_WITH_AES_128_CBC_SHA &&
++		 suite_id <= TLS1_CK_ECDHE_PSK_WITH_AES_256_CBC_SHA384) ||
++		// ECDH GCM are safe
++		(suite_id >= TLS1_CK_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256 &&
++		 suite_id <= TLS1_CK_ECDH_RSA_WITH_AES_256_GCM_SHA384) ||
++		// ECDH HMAC are safe
++		(suite_id >= TLS1_CK_ECDHE_ECDSA_WITH_AES_128_SHA256 &&
++		 suite_id <= TLS1_CK_ECDH_RSA_WITH_AES_256_SHA384) ||
++		// some of ECC from RFC4492 are safe
++		suite_id == TLS1_CK_ECDH_ECDSA_WITH_AES_128_CBC_SHA ||
++		suite_id == TLS1_CK_ECDH_ECDSA_WITH_AES_256_CBC_SHA ||
++		suite_id == TLS1_CK_ECDHE_ECDSA_WITH_AES_128_CBC_SHA ||
++		suite_id == TLS1_CK_ECDHE_ECDSA_WITH_AES_256_CBC_SHA ||
++		suite_id == TLS1_CK_ECDH_RSA_WITH_AES_128_CBC_SHA ||
++		suite_id == TLS1_CK_ECDH_RSA_WITH_AES_256_CBC_SHA ||
++		suite_id == TLS1_CK_ECDHE_RSA_WITH_AES_128_CBC_SHA ||
++		suite_id == TLS1_CK_ECDHE_RSA_WITH_AES_256_CBC_SHA ||
++		// some of TLS1.2 Camellia are safe
++		(suite_id >= TLS1_CK_RSA_WITH_CAMELLIA_128_CBC_SHA256 &&
++		 suite_id <= TLS1_CK_DHE_RSA_WITH_CAMELLIA_128_CBC_SHA256) ||
++		(suite_id >= TLS1_CK_RSA_WITH_CAMELLIA_256_CBC_SHA256 &&
++		 suite_id <= TLS1_CK_DHE_RSA_WITH_CAMELLIA_256_CBC_SHA256) ||
++		// CCM from RFC6655 are safe
++		(suite_id >= TLS1_CK_RSA_WITH_AES_128_CCM &&
++		 suite_id <= TLS1_CK_DHE_PSK_WITH_AES_256_CCM_8) ||
++		// almost all TLS1.2 GCM from RFC5288 are safe
++		(suite_id >= TLS1_CK_RSA_WITH_AES_128_GCM_SHA256 &&
++		 suite_id <= TLS1_CK_DH_DSS_WITH_AES_256_GCM_SHA384) ||
++		// almost all Camelia from RFC4132 are safe
++		(suite_id >= TLS1_CK_RSA_WITH_CAMELLIA_256_CBC_SHA &&
++		 suite_id <= TLS1_CK_DHE_RSA_WITH_CAMELLIA_256_CBC_SHA) ||
++		(suite_id >= TLS1_CK_RSA_WITH_CAMELLIA_128_CBC_SHA &&
++ 		 suite_id <= TLS1_CK_DHE_RSA_WITH_CAMELLIA_128_CBC_SHA) ||
++		// some from TLS1.2 are safe
++		(suite_id >= TLS1_CK_DHE_RSA_WITH_AES_128_SHA256 &&
++		 suite_id <= TLS1_CK_DHE_RSA_WITH_AES_256_SHA256) ||
++		(suite_id >= TLS1_CK_RSA_WITH_AES_128_SHA256 &&
++		 suite_id <=TLS1_CK_DHE_DSS_WITH_AES_128_SHA256) ||
++		// AES+SHA1 based are only safe if DHE, not kex DH
++		suite_id == TLS1_CK_DHE_DSS_WITH_AES_128_SHA ||
++		suite_id == TLS1_CK_DHE_RSA_WITH_AES_128_SHA ||
++		suite_id == TLS1_CK_DHE_DSS_WITH_AES_256_SHA ||
++		suite_id == TLS1_CK_DHE_RSA_WITH_AES_256_SHA ||
++		// PSK-based are safe except NULL-encrypted
++		suite_id == TLS1_CK_PSK_WITH_AES_128_GCM_SHA256 ||
++		suite_id == TLS1_CK_PSK_WITH_AES_256_GCM_SHA384 ||
++		suite_id == TLS1_CK_DHE_PSK_WITH_AES_128_GCM_SHA256 ||
++		suite_id == TLS1_CK_DHE_PSK_WITH_AES_256_GCM_SHA384 ||
++		suite_id == TLS1_CK_RSA_PSK_WITH_AES_128_GCM_SHA256 ||
++		suite_id == TLS1_CK_RSA_PSK_WITH_AES_256_GCM_SHA384 ||
++		suite_id == TLS1_CK_PSK_WITH_AES_128_CBC_SHA256 ||
++		suite_id == TLS1_CK_PSK_WITH_AES_256_CBC_SHA384 ||
++		suite_id == TLS1_CK_DHE_PSK_WITH_AES_128_CBC_SHA256 ||
++		suite_id == TLS1_CK_DHE_PSK_WITH_AES_256_CBC_SHA384 ||
++		suite_id == TLS1_CK_RSA_PSK_WITH_AES_128_CBC_SHA256 ||
++		suite_id == TLS1_CK_RSA_PSK_WITH_AES_256_CBC_SHA384 ||
++		// PSK-based with SHA1 are safe if strong encryption
++		suite_id == TLS1_CK_PSK_WITH_AES_128_CBC_SHA ||
++		suite_id == TLS1_CK_PSK_WITH_AES_256_CBC_SHA ||
++		suite_id == TLS1_CK_DHE_PSK_WITH_AES_128_CBC_SHA ||
++		suite_id == TLS1_CK_DHE_PSK_WITH_AES_256_CBC_SHA ||
++		suite_id == TLS1_CK_RSA_PSK_WITH_AES_128_CBC_SHA ||
++		suite_id == TLS1_CK_RSA_PSK_WITH_AES_256_CBC_SHA
++	)
++		return 0;
++	
++	return 1;
++#endif // OPENSSL_VERSION_NUMBER < 0x10100000
++}
++
+ static void check_ssl(struct conn_entry* c) {
+   X509 *p;
+   const SSL_CIPHER *cp;
+ 
+   /* Test if a weak cipher has been negotiated  */
+   cp = SSL_get_current_cipher(c->srv_ssl);
+-  int strength_bits = SSL_CIPHER_get_bits(cp, NULL);
+-  if(!(strength_bits & SSL_MEDIUM) && !(strength_bits & SSL_HIGH))
++  if (is_cipher_weak(cp))
+       problem(PROB_SSL_WEAK_CIPHER, c->q->req, 0,
+         (u8*)SSL_CIPHER_get_name(cp),host_pivot(c->q->req->pivot), 0);
+ 
+-
+   p = SSL_get_peer_certificate(c->srv_ssl);
+ 
+   if (p) {
+-- 
+2.29.2
+
