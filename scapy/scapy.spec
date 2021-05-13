@@ -48,13 +48,13 @@ BuildArch:      noarch
 BuildRequires:  make
 BuildRequires:  sed
 
-%if 0%{?with_python2}
+%if %{with python2}
 BuildRequires:  python2-devel
 BuildRequires:  python2-setuptools
 BuildRequires:  python2-tox
 %endif
 
-%if 0%{?with_python3}
+%if %{with python3}
 BuildRequires:  python%{python3_pkgversion}-devel
 BuildRequires:  python%{python3_pkgversion}-setuptools
 BuildRequires:  python%{python3_pkgversion}-tox
@@ -69,7 +69,7 @@ Recommends:     wireshark-cli
 
 %description %{common_desc}
 
-%if 0%{?with_python2}
+%if %{with python2}
 %package -n python2-%{name}
 Summary:        Interactive packet manipulation tool and network scanner
 
@@ -87,7 +87,7 @@ Recommends:     ipython2
 %endif
 
 
-%if 0%{?with_python3}
+%if %{with python3}
 %package -n python%{python3_pkgversion}-%{name}
 Summary:        Interactive packet manipulation tool and network scanner
 
@@ -104,7 +104,7 @@ Recommends:     ipython3
 %{common_desc}
 %endif
 
-%if 0%{?with_doc}
+%if %{with doc}
 %package doc
 Summary:        Interactive packet manipulation tool and network scanner
 
@@ -132,15 +132,15 @@ done
 
 
 %build
-%if 0%{?with_python2}
+%if %{with python2}
 %py2_build
 %endif
 
-%if 0%{?with_python3}
+%if %{with python3}
 %py3_build
 %endif
 
-%if 0%{?with_doc}
+%if %{with doc}
 make -C doc/scapy html BUILDDIR=_build_doc SPHINXBUILD=sphinx-build-%python3_version
 
 rm -f doc/scapy/_build_doc/html/.buildinfo
@@ -153,7 +153,7 @@ rm -f doc/scapy/_build_doc/html/_static/_dummy
 install -dp -m0755 %{buildroot}%{_mandir}/man1
 install -Dp -m0644 doc/scapy.1* %{buildroot}%{_mandir}/man1/
 
-%if 0%{?with_python2}
+%if %{with python2}
 %py2_install
 rm -f %{buildroot}%{python2_sitelib}/*egg-info/requires.txt
 
@@ -162,14 +162,14 @@ rm -f %{buildroot}%{python2_sitelib}/*egg-info/requires.txt
 mv -f %{buildroot}%{_bindir}/scapy   %{buildroot}%{_bindir}/scapy2
 mv -f %{buildroot}%{_bindir}/UTscapy %{buildroot}%{_bindir}/UTscapy2
 
-%if ! 0%{?with_python3}
+%if ! %{with python3}
 # Link the default to the py2 version of executables if py3 not built
 ln -s %{_bindir}/scapy2   %{buildroot}%{_bindir}/scapy
 ln -s %{_bindir}/UTscapy2 %{buildroot}%{_bindir}/UTscapy
 %endif
 %endif
 
-%if 0%{?with_python3}
+%if %{with python3}
 %py3_install
 rm -f %{buildroot}%{python3_sitelib}/*egg-info/requires.txt
 
@@ -192,10 +192,10 @@ ln -s %{_bindir}/UTscapy3 %{buildroot}%{_bindir}/UTscapy
 
 
 
-%if 0%{?with_python2}
+%if %{with python2}
 %files -n python2-%{name}
 %license LICENSE
-%if ! 0%{?with_python3}
+%if ! %{with python3}
 %doc %{_mandir}/man1/scapy.1*
 %{_bindir}/scapy
 %{_bindir}/UTscapy
@@ -208,7 +208,7 @@ ln -s %{_bindir}/UTscapy3 %{buildroot}%{_bindir}/UTscapy
 
 
 
-%if 0%{?with_python3}
+%if %{with python3}
 %files -n python%{python3_pkgversion}-%{name}
 %license LICENSE
 %doc %{_mandir}/man1/scapy.1*
@@ -221,7 +221,7 @@ ln -s %{_bindir}/UTscapy3 %{buildroot}%{_bindir}/UTscapy
 %endif
 
 
-%if 0%{?with_doc}
+%if %{with doc}
 %files doc
 %doc doc/scapy/_build_doc/html
 %endif
