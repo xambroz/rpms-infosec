@@ -1,0 +1,109 @@
+From: Igor Bezzubchenko <garikello@gmail.com>
+Date: Sun, 3 Jan 2021 22:49:21 +0300
+Subject: Fix for openssl 1.1
+
+Origin: https://gitlab.com/kalilinux/packages/skipfish/-/merge_requests/1
+---
+ src/http_client.c | 30 +++++++++++++++++++-----------
+ src/signatures.h  |  4 ++--
+ 2 files changed, 21 insertions(+), 13 deletions(-)
+
+diff --git a/src/http_client.c b/src/http_client.c
+index 1ef5b6a..8721791 100644
+--- a/src/http_client.c
++++ b/src/http_client.c
+@@ -89,8 +89,8 @@ u64 bytes_sent,
+     bytes_inflated,
+     iterations_cnt = 0;
+ 
+-u8 *auth_user,
+-   *auth_pass;
++extern u8 *auth_user,
++          *auth_pass;
+ 
+ 
+ #ifdef PROXY_SUPPORT
+@@ -1962,7 +1962,8 @@ static void check_ssl(struct conn_entry* c) {
+ 
+   /* Test if a weak cipher has been negotiated  */
+   cp = SSL_get_current_cipher(c->srv_ssl);
+-  if(!(cp->algo_strength & SSL_MEDIUM) && !(cp->algo_strength & SSL_HIGH))
++  int strength_bits = SSL_CIPHER_get_bits(cp, NULL);
++  if(!(strength_bits & SSL_MEDIUM) && !(strength_bits & SSL_HIGH))
+       problem(PROB_SSL_WEAK_CIPHER, c->q->req, 0,
+         (u8*)SSL_CIPHER_get_name(cp),host_pivot(c->q->req->pivot), 0);
+ 
+@@ -1972,41 +1973,48 @@ static void check_ssl(struct conn_entry* c) {
+   if (p) {
+     u32 cur_time = time(0);
+     u32 i, acnt;
+-    char *issuer, *host, *req_host;
++    char *issuer, *subject, *host, *req_host;
+     STACK_OF(GENERAL_NAME) *altnames;
+     char *buf = 0;
+     u8 found = 0;
+ 
+     /* Check for certificate expiration... */
+ 
+-    if (ASN1_UTCTIME_cmp_time_t(p->cert_info->validity->notBefore, cur_time)
++	ASN1_TIME* notBefore = X509_get_notBefore(p);
++	ASN1_TIME* notAfter = X509_get_notAfter(p);
++    if (ASN1_UTCTIME_cmp_time_t(notBefore, cur_time)
+         != -1 ||
+-        ASN1_UTCTIME_cmp_time_t(p->cert_info->validity->notAfter, cur_time)
++        ASN1_UTCTIME_cmp_time_t(notAfter, cur_time)
+         != 1)
+       problem(PROB_SSL_CERT_DATE, c->q->req, 0, 0,
+               host_pivot(c->q->req->pivot), 0);
+ 
+     /* Check for self-signed certs or no issuer data. */
+ 
+-    issuer = X509_NAME_oneline(p->cert_info->issuer,NULL,0);
++	X509_NAME* issuer_name = X509_get_issuer_name(p);
++    issuer = X509_NAME_oneline(issuer_name, NULL, 0);
++	X509_NAME* subject_name = X509_get_subject_name(p);
++    subject = X509_NAME_oneline(subject_name, NULL, 0);	
+ 
+-    if (!issuer || !p->name || !strcmp(issuer, p->name))
++    if (!issuer || !subject || !strcmp(issuer, subject))
+       problem(PROB_SSL_SELF_CERT, c->q->req, 0, (u8*)issuer,
+               host_pivot(c->q->req->pivot), 0);
+     else
+       problem(PROB_SSL_CERT, c->q->req, 0, (u8*)issuer,
+               host_pivot(c->q->req->pivot), 0);
+ 
+-    free(issuer);
+-
+     /* Extract CN= from certificate name, compare to destination host. If
+        it doesn't match, step 2 is to look for alternate names and compare
+        those to the hostname */
+ 
+-    host = strrchr(p->name, '=');
++    host = strrchr(subject, '=');
++	
+     if (host) host++; /* Strip the = */
+     req_host = (char*)c->q->req->host;
+ 
++    free(issuer);
++	free(subject);
++
+     /* Step 1: compare the common name value */
+     found = match_cert_name(req_host, host);
+ 
+diff --git a/src/signatures.h b/src/signatures.h
+index 00f8c88..25cb763 100644
+--- a/src/signatures.h
++++ b/src/signatures.h
+@@ -80,10 +80,10 @@ void destroy_signature_lists(void);
+ void signature_problem(struct signature *sig, struct http_request *req, struct http_response *res);
+ 
+ 
+-struct signature** sig_list;       /* The one and only: signature list       */
++extern struct signature** sig_list;/* The one and only: signature list       */
+ 
+ extern u32 slist_max_cnt;          /* Allocated space in the signature lists */
+-u32 slist_cnt;                     /* Actual elements in the signature lists */
++extern u32 slist_cnt;              /* Actual elements in the signature lists */
+ 
+ #define TYPE_PLAIN 0               /* Content type: static string            */
+ #define TYPE_REGEX 1               /* Content type: regular expression       */
