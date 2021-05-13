@@ -1,7 +1,14 @@
 Name:           whatweb
 Version:        0.5.5
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Web scanner to identify what websites are running
+
+
+# The tests are normally disabled in the build phase as whatweb is networking
+# tool and Fedora has networking disabled during builds
+# In order to try rebuild with tests locally run
+# rpmbuild --rebuild whatweb*.src.rpm --with tests
+%bcond_with     tests
 
 
 %global         gituser         urbanadventurer
@@ -12,7 +19,7 @@ Summary:        Web scanner to identify what websites are running
 Group:          Applications/Internet
 %endif
 
-License:        GPLv2
+License:        GPLv2+
 URL:            http://www.morningstarsecurity.com/research/whatweb
 VCS:            https://github.com/urbanadventurer/WhatWeb
 #               https://github.com/urbanadventurer/WhatWeb/releases/
@@ -24,10 +31,11 @@ BuildArch:      noarch
 Buildrequires:  make
 Buildrequires:  sed
 
-#Requires:      ruby(abi) >= 2.0
+# Requires:      ruby(abi) >= 2.0
 Requires:       %{_bindir}/ruby
 Requires:       rubygem-addressable
 
+# On RHEL7 the Recommends statement is not available
 %if 0%{?rhel} && 0%{?rhel} <= 8
 Requires:       rubygem-bson
 Requires:       rubygem-mongo
@@ -35,6 +43,11 @@ Requires:       rubygem-mongo
 Recommends:     rubygem-bson
 Recommends:     rubygem-mongo
 %endif
+
+%if %{with tests}
+Requires:       rubygem-minitest
+%endif
+
 
 %description
 Identify content management systems (CMS), blogging platforms, stats/analytic
@@ -48,11 +61,15 @@ these hints and reports what it finds.
 %prep
 %autosetup -p 1 -n %{gitname}-%{version}
 
+# Remove IP2Country database with problematic license
+# Reported upstream https://github.com/urbanadventurer/WhatWeb/issues/366
+echo "" > plugins/IpToCountry.csv
+
 # Fedora using Rubypick
 sed -i -e 's|#!/usr/bin/env ruby|#!/usr/bin/ruby|; s|#!/bin/env ruby|#!/usr/bin/ruby|;' \
     whatweb plugin-development/find-common-stuff plugin-development/get-pattern
 
-# Unknown macros in manpage
+# Remove unknown macros in manpage - probably Ubuntu specific macros
 sed -i -e 's|^.ni||; s|^\./plugins-disabled|+\./plugins-disabled|' whatweb.1
 
 # Disable bundle install in the Makefile
@@ -69,21 +86,38 @@ echo "Nothing to build."
 make install DESTDIR=%{buildroot}
 rm -rf %{buildroot}%{_datadir}/doc/%{name}
 
+# addons and plugin-development not crucial for runtime, move them to documentation
+rm -rf %{buildroot}%{_datadir}/%{name}/addons
+rm -rf %{buildroot}%{_datadir}/%{name}/plugin-deveplopment
+chmod -x addons/*
+chmod -x plugin-development/*
 
 %files
-%doc CHANGELOG.md README.md whatweb.xsl
 %license LICENSE
+%doc CHANGELOG.md README.md whatweb.xsl
+%doc addons
+%doc plugin-development
 %{_bindir}/%{name}
 %{_datadir}/%{name}
 %{_mandir}/man1/%{name}.1*
 
 
 %check
-make test
+%if %{with tests}
+# make test
+ruby test/integration.rb
+%endif
 
 
 
 %changelog
+* Thu May 13 2021 Michal Ambroz <rebus at, seznam.cz> - 0.5.5-2
+- removed alias bundle - needs to be solved by
+- added conditional for the (network) tests
+- license is GPLv2+
+- empty the plugin/IpToCountry.csv with problematic 
+- move addons and plugin-development to doc folder
+
 * Sun Apr 18 2021 Michal Ambroz <rebus at, seznam.cz> - 0.5.5-1
 - bump to 0.5.5, adding mak+sed as BR
 
