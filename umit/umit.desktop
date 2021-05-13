@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Umit
+GenericName=Nmap Security Scanner
+Comment=GUI frontend for Nmap security/port scanner
+Exec=umit
+Icon=umit
+Terminal=false
+Type=Application
+Categories=System;

@@ -1,0 +1,13 @@
+diff -up umit-1.0/setup.py.orig umit-1.0/setup.py
+--- umit-1.0/setup.py.orig	2011-03-27 16:49:58.000000000 +0300
++++ umit-1.0/setup.py	2013-03-27 13:47:36.860492699 +0200
+@@ -266,9 +266,6 @@ class umit_install(install):
+         install.run(self)
+ 
+         self.set_perms()
+-        self.set_modules_path()
+-        self.fix_paths()
+-        self.create_uninstaller()
+         self.finish_banner()
+ 
+     def create_uninstaller(self):

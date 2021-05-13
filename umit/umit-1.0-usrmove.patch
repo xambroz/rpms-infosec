@@ -1,0 +1,13 @@
+diff -up umit-1.0/umit/core/BasePaths.py.orig umit-1.0/umit/core/BasePaths.py
+--- umit-1.0/umit/core/BasePaths.py.orig	2011-03-27 16:50:00.000000000 +0300
++++ umit-1.0/umit/core/BasePaths.py	2013-03-27 13:50:26.667860888 +0200
+@@ -54,6 +54,9 @@ else:
+         # checkout.
+         main_dir = os.path.abspath(os.path.join(main_dir, os.path.pardir))
+ 
++# Fedora Features/UsrMove workaround
++main_dir = '/usr'
++
+ CONFIG_DIR = os.path.join(main_dir, "share", "umit", "config")
+ LOCALE_DIR = os.path.join(main_dir, "share", "locale")
+ MISC_DIR = os.path.join(main_dir, "share", "umit", "misc")
