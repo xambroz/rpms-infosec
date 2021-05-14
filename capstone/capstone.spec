@@ -1,18 +1,19 @@
 Name:           capstone
-Version:        4.0.1
-Release:        12%{?dist}
+Version:        4.0.2
+Release:        5%{?dist}
 Summary:        A lightweight multi-platform, multi-architecture disassembly framework
 
 %global         gituser         aquynh
 %global         gitname         capstone
-# 4.0.1 release
-%global         commit          f9c6a90489be7b3637ff1c7298e45efafe7cf1b9
+# 4.0.2 release
+%global         commit          1d230532840a37ac032c6ab80128238fc930c6c1
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 License:        BSD
 URL:            http://www.capstone-engine.org/
+VCS:            https://github.com/aquynh/capstone/
 #               https://github.com/aquynh/capstone/releases
-#Source0:       https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
+# Source0:      https://github.com/%%{gituser}/%%{gitname}/archive/%%{commit}/%%{name}-%%{version}-%%{shortcommit}.tar.gz
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
 # Test suite binary samples to be used for disassembly
@@ -24,7 +25,7 @@ Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{version}.tar.
 
 # Upstream patch which fixes libcapstone.pc.
 # See: https://github.com/aquynh/capstone/issues/1339
-Patch1:         0001-Fix-include-path-in-pkg-config-for-Makefile-too-1339.patch
+# Patch1:         0001-Fix-include-path-in-pkg-config-for-Makefile-too-1339.patch
 
 %global         common_desc %{expand:
 Capstone is a disassembly framework with the target of becoming the ultimate
@@ -44,21 +45,22 @@ disasm engine for binary analysis and reversing in the security community.}
 %global srcname distribute
 
 BuildRequires:  gcc
+BuildRequires:  make
 BuildRequires:  git
 BuildRequires:  jna
 BuildRequires:  java-devel
 
-%if 0%{?with_python2}
+%if %{with python2}
 BuildRequires:  python2
 BuildRequires:  python2-devel
 BuildRequires:  python2-setuptools
-%endif # if with_python2
+%endif
 
-%if 0%{?with_python3}
+%if %{with python3}
 BuildRequires:  python%{python3_pkgversion}
 BuildRequires:  python%{python3_pkgversion}-devel
 BuildRequires:  python%{python3_pkgversion}-setuptools
-%endif # if with_python3
+%endif
 
 %global _hardened_build 1
 
@@ -77,7 +79,7 @@ developing applications that use %{name}.
 
 
 
-%if 0%{?with_python2}
+%if %{with python2}
 %package        -n python2-capstone
 %{?python_provide:%python_provide python2-capstone}
 # Remove before F30
@@ -90,11 +92,12 @@ Requires:       %{name}%{?_isa} = %{version}-%{release}
 %description    -n python2-capstone
 %{common_desc}
 The python2-capstone package contains python bindings for %{name}.
-%endif          # with_python2
+# with_python2
+%endif
 
 
 
-%if 0%{?with_python3}
+%if %{with python3}
 %package	-n python%{python3_pkgversion}-capstone
 %{?python_provide:%python_provide python%{python3_pkgversion}-capstone}
 Provides:       %{name}-python%{python3_pkgversion} = %{version}-%{release}
@@ -107,7 +110,8 @@ Summary:        Python3 bindings for %{name}
 %description    -n python%{python3_pkgversion}-capstone
 %{common_desc}
 The python%{python3_pkgversion}-capstone package contains python3 bindings for %{name}.
-%endif # with_python3
+#with python3
+%endif
 
 
 
@@ -123,16 +127,15 @@ The %{name}-java package contains java bindings for %{name}.
 
 
 %prep
-# autosetup -n %{gitname}-%{commit} -S git
+# autosetup -n %%{gitname}-%%{commit} -S git
 %autosetup -n %{gitname}-%{version} -S git
 
 
 
 %build
-#DESTDIR="%{buildroot}"
 V=1 CFLAGS="%{optflags}" \
 PREFIX="%{_prefix}" LIBDIRARCH="%{_lib}" INCDIR="%{_includedir}" \
-make PYTHON2=%{__python2} PYTHON3=%{__python3} %{?_smp_mflags}
+%make_build PYTHON2=%{__python2} PYTHON3=%{__python3}
 
 # Fix pkgconfig file
 sed -i 's;%{buildroot};;' capstone.pc
@@ -143,21 +146,21 @@ mv capstone.pc.tmp capstone.pc
 # build python bindings
 pushd bindings/python
 
-%if 0%{?with_python2}
-CFLAGS="%{optflags}" %{__python2} setup.py build
-%endif # with_python2
+%if %{with python2}
+%py2_build
+%endif
 
-%if 0%{?with_python3}
-CFLAGS="%{optflags}" %{__python3} setup.py build
-%endif # with_python3
+%if %{with python3}
+%py3_build
+%endif
 popd
 
 # build java bindings needs some python
 pushd bindings/java
-%if 0%{?with_python3}
-make PYTHON2=%{__python3} PYTHON3=%{__python3} CFLAGS="%{optflags}" # %{?_smp_mflags} parallel seems broken
+%if %{with python3}
+%make_build PYTHON2=%{__python3} PYTHON3=%{__python3} CFLAGS="%{optflags}" # %{?_smp_mflags} parallel seems broken
 %else
-make PYTHON2=%{__python2} PYTHON3=%{__python2} CFLAGS="%{optflags}" # %{?_smp_mflags} parallel seems broken
+%make_build PYTHON2=%{__python2} PYTHON3=%{__python2} CFLAGS="%{optflags}" # %{?_smp_mflags} parallel seems broken
 %endif
 popd
 
@@ -171,13 +174,13 @@ find %{buildroot} -name '*.a' -exec rm -f {} ';'
 
 # install python bindings
 pushd bindings/python
-%if 0%{?with_python2}
-%{__python2} setup.py install --skip-build --root %{buildroot}
-%endif # with_python2
+%if %{with python2}
+%py2_install
+%endif
 
-%if 0%{?with_python3}
-%{__python3} setup.py install --skip-build --root %{buildroot}
-%endif # with_python3
+%if %{with python3}
+%py3_install
+%endif
 popd
 
 # install java bindings
@@ -185,26 +188,17 @@ install -D -p -m 0644 bindings/java/%{name}.jar  %{buildroot}/%{_javadir}/%{name
 
 
 
-#%check
-#ln -s libcapstone.so libcapstone.so.4
-#make check LD_LIBRARY_PATH="`pwd`"
+%check
+ln -s libcapstone.so.4 libcapstone.so
+make check LD_LIBRARY_PATH="`pwd`"
 
-%if 0%{?rhel} && 0%{?rhel} == 7 
-%post -p /sbin/ldconfig
-%postun -p /sbin/ldconfig
-%else
+
 %ldconfig_scriptlets
-%endif
 
 
 
 %files
-# %license does not work for RHEL<7
-%if 0%{?rhel} || 0%{?fedora} < 21
-%doc LICENSE.TXT LICENSE_LLVM.TXT
-%else
 %license LICENSE.TXT LICENSE_LLVM.TXT
-%endif # %license workarond for RHEL<7
 %doc CREDITS.TXT ChangeLog README.md SPONSORS.TXT
 %{_libdir}/*.so.*
 %{_bindir}/cstool
@@ -218,19 +212,19 @@ install -D -p -m 0644 bindings/java/%{name}.jar  %{buildroot}/%{_javadir}/%{name
 
 
 
-%if 0%{?with_python2}
+%if %{with python2}
 %files -n python2-capstone
 %{python2_sitelib}/*egg-info
 %{python2_sitelib}/%{name}
-%endif # _with_python2
+%endif
 
 
 
-%if 0%{?with_python3}
+%if %{with python3}
 %files -n python%{python3_pkgversion}-capstone
 %{python3_sitelib}/*egg-info
 %{python3_sitelib}/%{name}
-%endif # _with_python3
+%endif
 
 
 
@@ -238,6 +232,24 @@ install -D -p -m 0644 bindings/java/%{name}.jar  %{buildroot}/%{_javadir}/%{name
 %{_javadir}/
 
 %changelog
+* Fri May 14 2021 Michal Ambroz <rebus AT_ seznam.cz> - 4.0.2-5
+- modernize specfile, using with bcond and py*_build macros
+
+* Tue Jan 26 2021 Fedora Release Engineering <releng@fedoraproject.org> - 4.0.2-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
+
+* Mon Jul 27 2020 Fedora Release Engineering <releng@fedoraproject.org> - 4.0.2-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
+
+* Wed Jul 22 2020 Riccardo Schirone <rschirone91@gmail.com> - 4.0.2-2
+- Use make_build macro instead of make (thanks to tstellar)
+
+* Mon Jul 20 2020 Riccardo Schirone <rschirone91@gmail.com> - 4.0.2-1
+- Rebase to upstream version 4.0.2
+
+* Fri Jul 10 2020 Jiri Vanek <jvanek@redhat.com> - 4.0.1-13
+- Rebuilt for JDK-11, see https://fedoraproject.org/wiki/Changes/Java11
+
 * Tue May 26 2020 Miro Hrončok <mhroncok@redhat.com> - 4.0.1-12
 - Rebuilt for Python 3.9
 
