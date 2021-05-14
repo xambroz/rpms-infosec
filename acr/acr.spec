@@ -1,5 +1,5 @@
 Name:           acr
-Version:        1.7.2
+Version:        1.9.4
 Release:        1%{?dist}
 Group:          Applications/Internet
 Summary:        ACR is an autoconf like tool that allows you to create configure scripts for your programs. 
@@ -7,7 +7,7 @@ Summary:        ACR is an autoconf like tool that allows you to create configure
 
 %global         gituser         radare
 %global         gitname         acr
-%global         commit          f119ad28a80ae89dda04569e36eca289deca19d6
+%global         commit          5469ff54aa52eca42840d97f7b4db08d401cf740
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
@@ -34,7 +34,7 @@ to generate portable shellscript.
 
 %build
 %configure
-%make_build %{?_smp_mflags}
+%make_build
 
 
 
@@ -59,6 +59,9 @@ to generate portable shellscript.
 
 
 %changelog
+* Fri May 14 2021 Michal Ambroz <rebus at, seznam.cz> - 1.9.4-1
+- bump to 1.9.4
+
 * Sun Oct 20 2019 Michal Ambroz <rebus at, seznam.cz> - 1.7.2-1
 - bump to 1.7.2
 
