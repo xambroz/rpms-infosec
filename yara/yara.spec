@@ -122,10 +122,10 @@ autoreconf --force --install
 
 %build
 
-# Add missing definition on RHEL7                                                                                                      
-%if 0%{?rhel} && 0%{?rhel} == 7                                                                                                        
-export CFLAGS="$CFLAGS -D PROTOBUF_C_FIELD_FLAG_ONEOF=4"                                                                               
-%endif    
+# Add missing definition on RHEL7
+%if 0%{?rhel} && 0%{?rhel} == 7
+export CFLAGS="$CFLAGS -D PROTOBUF_C_FIELD_FLAG_ONEOF=4"
+%endif
 
 # macro %%configure already does use CFLAGS="\{optflags}" and yara build
 # scripts configure/make already honors that CFLAGS
@@ -133,7 +133,7 @@ export CFLAGS="$CFLAGS -D PROTOBUF_C_FIELD_FLAG_ONEOF=4"
         --enable-macho --enable-dex --enable-pb-tests \
         --with-crypto \
         --htmldir=%{_datadir}/doc/%{name}/html
-make %{?_smp_mflags}
+%make_build
 
 # build the HTML documentation
 pushd docs
@@ -142,7 +142,7 @@ popd
 
 
 %install
-make install DESTDIR=%{buildroot}
+%make_install
 
 # Remove static libraries
 rm %{buildroot}%{_libdir}/lib%{name}.la
