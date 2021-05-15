@@ -1,9 +1,18 @@
 Name:           radare2
 Summary:        The reverse engineering framework
 Version:        5.2.1
-%global         rel             2
+%global         rel             3
 URL:            https://radare.org/
 VCS:            https://github.com/radareorg/radare2
+#               https://github.com/radareorg/radare2/releases
+
+%if 0%{?rhel} && 0%{?rhel} == 8
+# Radare2 fails to build on EPEL8+s390x
+# https://bugzilla.redhat.com/show_bug.cgi?id=1960046
+# https://docs.fedoraproject.org/en-US/packaging-guidelines/#_architecture_build_failures
+ExcludeArch:    s390x
+%endif
+
 
 # by default it builds from the released version of radare2
 # to build from git use rpmbuild --without=releasetag
@@ -214,8 +223,6 @@ rm -rf shlr/zip shlr/lz4
 # Remove xxhash files because we use system dependencies
 rm -f libr/hash/xxhash.c libr/hash/xxhash.h
 
-
-
 # Webui contains pre-build and/or minimized versions of JS libraries without source code
 # Consider installing the web-interface from https://github.com/radare/radare2-webui
 rm -rf ./shlr/www/*
@@ -229,7 +236,6 @@ echo "Available under https://github.com/radare/radare2-webui" >> ./shlr/www/REA
 # meson_version : '>=0.50.1' => meson_version : '>=0.49.1'
 sed -i -e "s|meson_version : '>=......'|meson_version : '>=0.49.1'|;" meson.build
 %endif
-
 
 
 %build
@@ -250,6 +256,7 @@ sed -i -e "s|meson_version : '>=......'|meson_version : '>=0.49.1'|;" meson.buil
     -Denable_r2r=false
 %meson_build
 
+
 %install
 %meson_install
 # install README.Fedora for the www part
@@ -258,14 +265,19 @@ cp ./shlr/www/README.Fedora %{buildroot}/%{_datadir}/%{name}/%{version}/www/READ
 # remove unneeded fortunes
 rm %{buildroot}/%{_datadir}/doc/%{name}/fortunes.fun
 
+# Make directory for the plugins
+# Users can learn the dirname by "r2 -H"
+mkdir -p %{buildroot}%{_libdir}/%{name}/%{version}
+
+
 %if 0%{?rhel} && 0%{?rhel} <= 8
 %ldconfig_scriptlets
 %endif
 
+
 %check
 # Do not run the testsuite yet - it pulls another package
 # https://github.com/radare/radare2-regressions from github make tests
-
 
 
 %files
@@ -281,6 +293,8 @@ rm %{buildroot}/%{_datadir}/doc/%{name}/fortunes.fun
 %doc %{_datadir}/%{name}/%{version}/www/README.Fedora
 %{_bindir}/r*
 %{_libdir}/libr_*.so.%{version}*
+# Empty directory for plugins
+%{_libdir}/%{name}
 %{_mandir}/man1/r*.1.*
 %{_mandir}/man7/esil.7.*
 %{_datadir}/zsh/site-functions/_r*
@@ -308,10 +322,14 @@ rm %{buildroot}/%{_datadir}/doc/%{name}/fortunes.fun
 
 
 %changelog
+* Sat May 15 2021 Michal Ambroz <rebus at, seznam.cz> 5.2.1-3
+- adding the global plugins directory - for example /usr/lib64/radare2/5.2.1
+
 * Tue May 11 2021 Michal Ambroz <rebus at, seznam.cz> 5.2.1-2
 - patch for older version of meson used on EPEL8
 - use pkgconfig where possible for BR
 - use ldconfig_scriptlets only on older platforms
+- add ExcludeArch for s390x on EPEL8
 
 * Thu Apr 22 2021 Henrik Nordstrom <henrik@henriknordstrom.net> - 5.2.1-1
 - Update to version 5.2.1
