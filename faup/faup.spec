@@ -5,6 +5,8 @@ URL:            https://github.com/stricaud/faup
 License:        WTFPL
 Group:          System Environment/Libraries
 Version:        1.5
+Release:        1%{?dist}
+
 
 %global         gituser         stricaud
 %global         gitname         faup
@@ -13,14 +15,13 @@ Version:        1.5
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
-Release:        1%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
 
 BuildRequires:  cmake
-BuildRequires:  lua-devel
 BuildRequires:  gcc-c++
 BuildRequires:  make
+BuildRequires:  pkgconfig(lua)
 
 
 %description
@@ -40,19 +41,16 @@ Development libraries and headers for use with %{name}.
 
 %prep
 %autosetup
-export CFLAGS="%{optflags}"
-[ -d build ] || mkdir build
-cd build
-%cmake -DLOCALSTATEDIR:PATH=%{_var} -DBUILD_WITH_LDAP=ON ..
 
 
 %build
-export CFLAGS="%{optflags}"
-make build
+%set_build_flags
+# %%cmake -DLOCALSTATEDIR:PATH=%%{_var} -DBUILD_WITH_LDAP=ON ..
+%cmake_build
+
 
 %install
-cd build
-%make_install
+%cmake_install
 
 # Remove static libraries
 find %{buildroot} -name '*.la' -exec rm -f {} ';'
@@ -60,11 +58,13 @@ find %{buildroot} -name '*.la' -exec rm -f {} ';'
 # Remove static libraries
 find %{buildroot} -name '*.a' -exec rm -f {} ';'
 
-%post -p /sbin/ldconfig
-%postun -p /sbin/ldconfig
+
+%ldconfig_scriptlets
+
 
 %files
-%doc README.md LICENSE 
+%license LICENSE
+%doc README.md
 %{_bindir}/faup
 %{_mandir}/man1/faup.1*
 %{_libdir}/libfaupl.so.*
@@ -72,12 +72,14 @@ find %{buildroot} -name '*.a' -exec rm -f {} ';'
 
 
 %files devel
-%defattr(-,root,root,-)
 %{_includedir}/faup/
 %{_libdir}/libfaupl.so
 
 
 %changelog
+* Sun May 16 2021 Michal Ambroz <rebus at, seznam.cz> - 1.5-2
+- modernize spec file
+
 * Fri Aug 02 2019 Michal Ambroz <rebus at, seznam.cz> - 1.5-1
 - initial spec
 
