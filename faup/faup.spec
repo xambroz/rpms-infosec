@@ -44,8 +44,7 @@ Development libraries and headers for use with %{name}.
 
 
 %build
-%set_build_flags
-# %%cmake -DLOCALSTATEDIR:PATH=%%{_var} -DBUILD_WITH_LDAP=ON ..
+%cmake
 %cmake_build
 
 
