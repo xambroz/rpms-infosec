@@ -44,7 +44,7 @@ Development libraries and headers for use with %{name}.
 
 
 %build
-%cmake
+%cmake .
 %cmake_build
 
 
