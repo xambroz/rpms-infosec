@@ -44,11 +44,13 @@ Development libraries and headers for use with %{name}.
 
 
 %build
-%cmake .
+cd build
+%cmake ..
 %cmake_build
 
 
 %install
+cd build
 %cmake_install
 
 # Remove static libraries
