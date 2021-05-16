@@ -23,6 +23,10 @@ BuildRequires:  gcc-c++
 BuildRequires:  make
 BuildRequires:  pkgconfig(lua)
 
+%if 0%{?rhel}
+BuildRequires:  epel-rpm-macros
+%endif
+
 
 %description
 Faup stands for Finally An Url Parser and is a library and command line tool to parse URLs and normalize fields with two constraints:
