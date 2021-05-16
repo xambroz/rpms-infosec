@@ -41,6 +41,7 @@ Patch2:         rsakeyfind-20_includes.patch
 
 
 Buildrequires:  gcc
+Buildrequires:  gcc-c++
 Buildrequires:  make
 BuildRequires:  gnupg2
 
