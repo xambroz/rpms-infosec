@@ -1,30 +1,11 @@
-Patch from legacy to modern version of openssl
-diff -ru samdump2-3.0.0.old/Makefile samdump2-3.0.0.new/Makefile
---- samdump2-3.0.0.old/Makefile	2019-10-20 02:48:09.916426807 +0200
-+++ samdump2-3.0.0.new/Makefile	2019-10-20 03:44:30.307001144 +0200
-@@ -30,7 +30,7 @@
- INSTALL   = $(shell which install)
- CC	  = $(shell which gcc)
- CFLAGS    = -Wall 
--LIBS      = -lssl
-+LIBS      = -lssl -lcrypto
- OWNER     = root
- GROUP     = root
- 
-Only in samdump2-3.0.0.new: samdump2
-diff -ru samdump2-3.0.0.old/samdump2.c samdump2-3.0.0.new/samdump2.c
---- samdump2-3.0.0.old/samdump2.c	2019-10-20 02:48:09.916426807 +0200
-+++ samdump2-3.0.0.new/samdump2.c	2019-10-20 03:33:27.394802654 +0200
-@@ -58,7 +58,7 @@
- 
- void str_to_key(unsigned char *str,unsigned char *key)
- {
--	// void des_set_odd_parity(des_cblock *);
-+	// void DES_set_odd_parity(DES_cblock *);
- 	int i;
- 
- 	key[0] = str[0]>>1;
-@@ -72,7 +72,7 @@
+Description: fix a FTBFS with OpenSSL 1.1.0. (Closes: #828537)
+Author: Joao Eriberto Mota Filho <eriberto@debian.org>
+Last-Update: 2016-11-22
+Index: samdump2-3.0.0/samdump2.c
+===================================================================
+--- samdump2-3.0.0.orig/samdump2.c
++++ samdump2-3.0.0/samdump2.c
+@@ -72,7 +72,7 @@ void str_to_key(unsigned char *str,unsig
  	for (i=0;i<8;i++) {
  		key[i] = (key[i]<<1);
  	}
@@ -33,7 +14,7 @@ diff -ru samdump2-3.0.0.old/samdump2.c samdump2-3.0.0.new/samdump2.c
  }
  
  /*
-@@ -210,8 +210,8 @@
+@@ -210,8 +210,8 @@ unsigned char* utf16_to_utf8 (unsigned c
    unsigned char hbootkey[0x20];
    
    /* Des */
@@ -44,15 +25,15 @@ diff -ru samdump2-3.0.0.old/samdump2.c samdump2-3.0.0.new/samdump2.c
    
    int i, j;
    
-@@ -419,15 +419,15 @@
+@@ -419,15 +419,15 @@ unsigned char* utf16_to_utf8 (unsigned c
        
        /* Get the two decrpt keys. */
        sid_to_key1(rid,(unsigned char *)deskey1);
 -      des_set_key_checked((des_cblock *)deskey1,ks1);
-+      DES_set_key_checked((DES_cblock *)deskey1,&ks1);
++      DES_set_key_checked((DES_cblock *)deskey1, &ks1);
        sid_to_key2(rid,(unsigned char *)deskey2);
 -      des_set_key_unchecked((des_cblock *)deskey2,ks2);
-+      DES_set_key_unchecked((DES_cblock *)deskey2,&ks2);
++      DES_set_key_unchecked((DES_cblock *)deskey2, &ks2);
        
        /* Decrypt the lanman password hash as two 8 byte blocks. */
 -      des_ecb_encrypt((des_cblock *)obfkey,
@@ -66,7 +47,7 @@ diff -ru samdump2-3.0.0.old/samdump2.c samdump2-3.0.0.new/samdump2.c
        
        
        
-@@ -472,16 +472,16 @@
+@@ -472,16 +472,16 @@ unsigned char* utf16_to_utf8 (unsigned c
        if (lm_size != 0x14) {
  	/* Get the two decrpt keys. */
  	sid_to_key1(rid,(unsigned char *)deskey1);
@@ -89,4 +70,3 @@ diff -ru samdump2-3.0.0.old/samdump2.c samdump2-3.0.0.new/samdump2.c
        
        /* sf27 wrap to sf25 */
        //sf27( obfkey, (int*)&rid, fb );
-Only in samdump2-3.0.0.new: samdump2.o

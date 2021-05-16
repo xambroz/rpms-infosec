@@ -1,26 +1,23 @@
 Name:           samdump2
 Version:        3.0.0
-Release:        16%{?dist}
+Release:        20%{?dist}
 Summary:        Retrieves syskey and extracts hashes from Windows 2k/NT/XP/Vista SAM
 
 #MD5 RC4 DES functions are linked from openssl library
 #Code of samdump2 is GPLv2+
 License:        GPLv2+
 URL:            http://sourceforge.net/projects/ophcrack/files/samdump2
-#               https://gitlab.com/objectifsecurite/ophcrack
 Source0:        http://downloads.sourceforge.net/ophcrack/%{name}-%{version}.tar.bz2
 
-# Makefile target for installation
 Patch0:         %{name}-install.patch
 
-# Patch from legacy to modern openssl version
-# same was already applied upstream
-# https://gitlab.com/objectifsecurite/ophcrack/blob/master/src/samdump2/samdump2.c
+# Patch from Debian to move from legacy openssl version to contemporary version
+# Author: Joao Eriberto Mota Filho <eriberto@debian.org>
 Patch1:         %{name}-openssl.patch
 
-
-BuildRequires:  gcc
 BuildRequires:  openssl-devel
+BuildRequires:  make
+BuildRequires:  gcc
 
 
 %description
@@ -33,7 +30,7 @@ system hive and uses it to decrypt and dump password hashes from the SAM hive.
 
 
 %build
-make %{?_smp_mflags} CFLAGS="%{optflags}" LIBS="-lssl -lcrypto"
+make %{?_smp_mflags} CFLAGS="%{optflags}" LIBS="-lcrypto"
 
 
 %install
@@ -52,8 +49,22 @@ make install DESTDIR=%{buildroot} BINDIR=%{_bindir} MANDIR=%{_mandir}/man1/ OWNE
 
 
 %changelog
-* Sun Oct 20 2019 Michal Ambroz <rebus AT seznam.cz> - 3.0.0-16
-- patch from legacy to modern openssl version, add build requirement to gcc
+* Wed Feb 17 2021 Michal Ambroz <rebus AT seznam.cz> - 3.0.0-20
+- use Debian patch to switch to the current version of openssl for crypto
+- adding dependencies to make and gcc
+
+* Thu Aug 06 2020 Jeff Law <law@redhat.com> - 3.0.0-19
+- Add gcc as build requirement
+
+* Sat Aug 01 2020 Fedora Release Engineering <releng@fedoraproject.org> - 3.0.0-18
+- Second attempt - Rebuilt for
+  https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
+
+-* Wed Jul 29 2020 Fedora Release Engineering <releng@fedoraproject.org> - 3.0.0-17
+-- Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
+
+-* Fri Jul 26 2019 Fedora Release Engineering <releng@fedoraproject.org> - 3.0.0-16
+-- Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
 
 * Sat Feb 02 2019 Fedora Release Engineering <releng@fedoraproject.org> - 3.0.0-15
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
