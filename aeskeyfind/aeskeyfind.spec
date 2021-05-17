@@ -71,7 +71,7 @@ This package is useful to several activities, as forensics investigations.
 
 %build
 %set_build_flags
-%make_build %{?_smp_mflags}
+%make_build
 
 
 %install
