@@ -36,7 +36,8 @@ sed '/<blockquote class="rights">/!d;
      P;D' ent.html > license.txt
 
 %build
-make %{?_smp_mflags} CFLAGS="%{optflags}"
+%set_build_flags
+%make_build
 
 
 %install
