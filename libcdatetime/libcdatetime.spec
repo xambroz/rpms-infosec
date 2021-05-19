@@ -55,7 +55,7 @@ developing applications that use %{name}.
 
 %build
 %configure --disable-static --enable-wide-character-type
-make %{?_smp_mflags}
+%make_build
 
 
 %install

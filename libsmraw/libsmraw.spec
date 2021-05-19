@@ -116,7 +116,7 @@ from Python scripts.
 %configure --disable-static --enable-wide-character-type \
 	--enable-multi-threading-support --enable-verbose-output \
 	%{pythonopts}
-make %{?_smp_mflags}
+%make_build
 
 
 %install

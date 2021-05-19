@@ -63,7 +63,7 @@ Python bindings for libevtx
 
 %build
 %configure --prefix=/usr --libdir=%{_libdir} --mandir=%{_mandir} %{pythonopts}
-make %{?_smp_mflags}
+%make_build
 
 %install
 rm -rf ${RPM_BUILD_ROOT}

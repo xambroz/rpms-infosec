@@ -96,7 +96,7 @@ aclocal
            --enable-wide-character-type \
            --enable-multi-threading-support
 
-make %{?_smp_mflags}
+%make_build
 
 
 %install
