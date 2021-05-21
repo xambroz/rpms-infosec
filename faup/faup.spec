@@ -18,7 +18,6 @@ Release:        1%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
 
-BuildRequires:  cmake
 BuildRequires:  gcc-c++
 BuildRequires:  make
 BuildRequires:  pkgconfig(lua)
@@ -26,6 +25,14 @@ BuildRequires:  pkgconfig(lua)
 %if 0%{?rhel}
 BuildRequires:  epel-rpm-macros
 %endif
+
+%if 0%{?fedora} || 0%{?rhel} >= 8
+BuildRequires:  cmake
+BuildRequires:  cmake-rpm-macros
+%else
+BuildRequires:  cmake3
+%endif
+
 
 
 %description
@@ -49,13 +56,13 @@ Development libraries and headers for use with %{name}.
 
 %build
 cd build
-%cmake ..
-%cmake_build
+%cmake3 ..
+%cmake3_build
 
 
 %install
 cd build
-%cmake_install
+%cmake3_install
 
 # Remove static libraries
 find %{buildroot} -name '*.la' -exec rm -f {} ';'
@@ -64,7 +71,9 @@ find %{buildroot} -name '*.la' -exec rm -f {} ';'
 find %{buildroot} -name '*.a' -exec rm -f {} ';'
 
 
+%if 0%{?rhel} && 0%{?rhel} <= 7
 %ldconfig_scriptlets
+%endif
 
 
 %files
