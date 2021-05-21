@@ -1,0 +1,17 @@
+diff -ru impacket-0.9.22/setup.py impacket-0.9.22.new/setup.py
+--- impacket-0.9.22/setup.py	2020-11-23 14:58:25.000000000 +0100
++++ impacket-0.9.22.new/setup.py	2021-05-02 23:38:58.269732430 +0200
+@@ -58,11 +58,9 @@
+                 'impacket.examples.ntlmrelayx.attacks'],
+       scripts = glob.glob(os.path.join('examples', '*.py')),
+       data_files = data_files,
+-      install_requires=['pyasn1>=0.2.3', 'pycryptodomex', 'pyOpenSSL>=0.13.1', 'six', 'ldap3>=2.5,!=2.5.2,!=2.5.0,!=2.6', 'ldapdomaindump>=0.9.0', 'flask>=1.0'],
+-      extras_require={
+-                      'pyreadline:sys_platform=="win32"': [],
+-                    },
++      install_requires=['pyasn1>=0.2.3', 'pycryptodomex', 'pyOpenSSL>=0.13.1', 'six', 'ldap3>=2.5.1', 'ldapdomaindump>=0.9.0', 'flask>=1.0'],
+       classifiers = [
++          "Programming Language :: Python :: 3.9",
+           "Programming Language :: Python :: 3.8",
+           "Programming Language :: Python :: 3.7",
+           "Programming Language :: Python :: 3.6",

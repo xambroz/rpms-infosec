@@ -1,0 +1,553 @@
+From 6e7217d0b0b37bb37934918aa8b3e855445bb0fe Mon Sep 17 00:00:00 2001
+From: Martin Gallo <mgallo@secureauth.com>
+Date: Tue, 13 Apr 2021 17:41:09 -0700
+Subject: [PATCH 1/3] Attempt to fix Python 3.9 compatibility issue with
+ array.array tostring method
+
+Python 3.2 removed the `array.array` `tostring` method (see https://docs.python.org/3/whatsnew/3.9.html#removed).
+Note that the `tostring` method was already deprecated since Python 3.2, but an alias to the new `tobytes` was provided (see https://docs.python.org/3/library/array.html#array.array.tobytes).
+
+This PR:
+- Adds helper function to use `tostring` in Python <3.2 versions and `tobytes` in Python>=3.2.
+- Replaces uses of `tostring` with the new helper function.
+---
+ impacket/ImpactPacket.py | 27 +++++++++++++++++----------
+ 1 file changed, 17 insertions(+), 10 deletions(-)
+
+diff --git a/impacket/ImpactPacket.py b/impacket/ImpactPacket.py
+index 5e84c42d1..ad49bcdcf 100644
+--- a/impacket/ImpactPacket.py
++++ b/impacket/ImpactPacket.py
+@@ -22,6 +22,13 @@
+ from binascii import hexlify
+ from functools import reduce
+ 
++
++def array_tobytes(array_object):
++    """ Alias function for compatibility with both Python <3.2 `tostring` method, and Python >3.2 `tobytes`
++    """
++    return array_object.tobytes() if sys.version_info[1] >= 2 else array_object.tostring()
++
++
+ """Classes to build network packets programmatically.
+ 
+ Each protocol layer is represented by an object, and these objects are
+@@ -60,7 +67,7 @@ def set_bytes_from_string(self, data):
+ 
+     def get_buffer_as_string(self):
+         "Returns the packet buffer as a string object"
+-        return self.__bytes.tostring()
++        return array_tobytes(self.__bytes)
+ 
+     def get_bytes(self):
+         "Returns the packet buffer as an array"
+@@ -97,7 +104,7 @@ def get_word(self, index, order = '!'):
+             bytes = self.__bytes[index:]
+         else:
+             bytes = self.__bytes[index:index+2]
+-        (value,) = struct.unpack(order + 'H', bytes.tostring())
++        (value,) = struct.unpack(order + 'H', array_tobytes(bytes))
+         return value
+ 
+     def set_long(self, index, value, order = '!'):
+@@ -116,7 +123,7 @@ def get_long(self, index, order = '!'):
+             bytes = self.__bytes[index:]
+         else:
+             bytes = self.__bytes[index:index+4]
+-        (value,) = struct.unpack(order + 'L', bytes.tostring())
++        (value,) = struct.unpack(order + 'L', array_tobytes(bytes))
+         return value
+ 
+     def set_long_long(self, index, value, order = '!'):
+@@ -135,7 +142,7 @@ def get_long_long(self, index, order = '!'):
+             bytes = self.__bytes[index:]
+         else:
+             bytes = self.__bytes[index:index+8]
+-        (value,) = struct.unpack(order + 'Q', bytes.tostring())
++        (value,) = struct.unpack(order + 'Q', array_tobytes(bytes))
+         return value
+ 
+ 
+@@ -146,7 +153,7 @@ def get_ip_address(self, index):
+             bytes = self.__bytes[index:]
+         else:
+             bytes = self.__bytes[index:index+4]
+-        return socket.inet_ntoa(bytes.tostring())
++        return socket.inet_ntoa(bytes.tobytes())
+ 
+     def set_ip_address(self, index, ip_string):
+         "Set 4-byte value at 'index' from 'ip_string'"
+@@ -719,7 +726,7 @@ def set_addr(self, addr):
+ 
+     def get_addr(self):
+         "Returns the sender's address field"
+-        return self.get_bytes()[6:14].tostring()
++        return array_tobytes(self.get_bytes()[6:14])
+ 
+     def set_ether_type(self, aValue):
+         "Set ethernet data type field to 'aValue'"
+@@ -809,9 +816,9 @@ def get_packet(self):
+             self.set_ip_sum(self.compute_checksum(my_bytes))
+ 
+         if child_data is None:
+-            return my_bytes.tostring()
++            return array_tobytes(my_bytes)
+         else:
+-            return my_bytes.tostring() + child_data
++            return array_tobytes(my_bytes) + child_data
+ 
+ 
+ 
+@@ -1505,9 +1512,9 @@ def get_packet(self):
+         data = self.get_data_as_string()
+ 
+         if data:
+-            return bytes.tostring() + data
++            return array_tobytes(bytes) + data
+         else:
+-            return bytes.tostring()
++            return array_tobytes(bytes)
+ 
+     def load_header(self, aBuffer):
+         self.set_bytes_from_string(aBuffer[:20])
+
+From 342e97bd5b524872687cd2702ae8cc8bc8983e3a Mon Sep 17 00:00:00 2001
+From: Martin Gallo <mgallo@secureauth.com>
+Date: Tue, 13 Apr 2021 18:33:04 -0700
+Subject: [PATCH 2/3] Static definition of the helper function, arranged other
+ instances of tostring
+
+---
+ examples/nmapAnswerMachine.py |  4 ++--
+ impacket/ICMP6.py             | 16 ++++++++--------
+ impacket/ImpactPacket.py      | 10 +++++-----
+ impacket/NDP.py               | 14 +++++++-------
+ impacket/cdp.py               | 12 ++++++------
+ impacket/dot11.py             | 10 +++++-----
+ impacket/helper.py            |  4 ++--
+ impacket/wps.py               |  7 ++++---
+ 8 files changed, 39 insertions(+), 38 deletions(-)
+
+diff --git a/examples/nmapAnswerMachine.py b/examples/nmapAnswerMachine.py
+index 104b84736..54fc6d928 100755
+--- a/examples/nmapAnswerMachine.py
++++ b/examples/nmapAnswerMachine.py
+@@ -8,7 +8,7 @@
+ 
+ from impacket import ImpactPacket
+ from impacket import ImpactDecoder
+-from impacket.ImpactPacket import TCPOption
++from impacket.ImpactPacket import TCPOption, array_tobytes
+ from impacket.examples import logger
+ from impacket.examples import os_ident
+ 
+@@ -354,7 +354,7 @@ def isMine(self, in_onion):
+           #in_onion[O_UDP].get_uh_dport() == self.port)
+ 
+    def buildAnswer(self, in_onion):
+-       cmd = in_onion[O_UDP_DATA].get_bytes().tostring()
++       cmd = array_tobytes(in_onion[O_UDP_DATA].get_bytes())
+        if cmd[:4] == 'cmd:': cmd = cmd[4:].strip()
+        print("Got command: %r" % cmd)
+ 
+diff --git a/impacket/ICMP6.py b/impacket/ICMP6.py
+index 904768050..21cfc3ad4 100644
+--- a/impacket/ICMP6.py
++++ b/impacket/ICMP6.py
+@@ -8,7 +8,7 @@
+ import array
+ import struct
+ 
+-from impacket.ImpactPacket import Header, Data
++from impacket.ImpactPacket import Header, Data, array_tobytes
+ from impacket.IP6_Address import IP6_Address
+ 
+ 
+@@ -234,7 +234,7 @@ def __build_echo_message(class_object, type, id, sequence_number, arbitrary_data
+         icmp_bytes = struct.pack('>H', id)
+         icmp_bytes += struct.pack('>H', sequence_number)
+         if (arbitrary_data is not None):
+-            icmp_bytes += array.array('B', arbitrary_data).tostring()
++            icmp_bytes += array_tobytes(array.array('B', arbitrary_data))
+         icmp_payload = Data()
+         icmp_payload.set_data(icmp_bytes)
+         
+@@ -273,9 +273,9 @@ def __build_error_message(class_object, type, code, data, originating_packet_dat
+         icmp_packet.set_code(code)
+         
+         #Pack ICMP payload
+-        icmp_bytes = array.array('B', data).tostring()
++        icmp_bytes = array_tobytes(array.array('B', data))
+         if (originating_packet_data is not None):
+-            icmp_bytes += array.array('B', originating_packet_data).tostring()
++            icmp_bytes += array_tobytes(array.array('B', originating_packet_data))
+         icmp_payload = Data()
+         icmp_payload.set_data(icmp_bytes)
+         
+@@ -302,11 +302,11 @@ def __build_neighbor_message(class_object, msg_type, target_address):
+         icmp_packet.set_code(0)
+         
+         # Flags + Reserved
+-        icmp_bytes = array.array('B', [0x00] * 4).tostring()       
++        icmp_bytes = array_tobytes(array.array('B', [0x00] * 4))
+         
+         # Target Address: The IP address of the target of the solicitation.
+         # It MUST NOT be a multicast address.
+-        icmp_bytes += array.array('B', IP6_Address(target_address).as_bytes()).tostring()
++        icmp_bytes += array_tobytes(array.array('B', IP6_Address(target_address).as_bytes()))
+         
+         icmp_payload = Data()
+         icmp_payload.set_data(icmp_bytes)
+@@ -394,10 +394,10 @@ def __build_node_information_message(class_object, type, code, payload = None):
+         
+         icmp_bytes = struct.pack('>H', qtype)
+         icmp_bytes += struct.pack('>H', flags)
+-        icmp_bytes += array.array('B', nonce).tostring()
++        icmp_bytes += array_tobytes(array.array('B', nonce))
+         
+         if payload is not None:
+-            icmp_bytes += array.array('B', payload).tostring()
++            icmp_bytes += array_tobytes(array.array('B', payload))
+         
+         icmp_payload = Data()
+         icmp_payload.set_data(icmp_bytes)
+diff --git a/impacket/ImpactPacket.py b/impacket/ImpactPacket.py
+index ad49bcdcf..2378e9eb3 100644
+--- a/impacket/ImpactPacket.py
++++ b/impacket/ImpactPacket.py
+@@ -22,11 +22,11 @@
+ from binascii import hexlify
+ from functools import reduce
+ 
+-
+-def array_tobytes(array_object):
+-    """ Alias function for compatibility with both Python <3.2 `tostring` method, and Python >3.2 `tobytes`
+-    """
+-    return array_object.tobytes() if sys.version_info[1] >= 2 else array_object.tostring()
++# Alias function for compatibility with both Python <3.2 `tostring` method, and Python >3.2 `tobytes`
++if sys.version_info[0] >= 3 and sys.version_info[1] >= 2:
++    array_tobytes = lambda array_object: array_object.tobytes()
++else:
++    array_tobytes = lambda array_object: array_object.tostring()
+ 
+ 
+ """Classes to build network packets programmatically.
+diff --git a/impacket/NDP.py b/impacket/NDP.py
+index 25519da6e..bacd35367 100644
+--- a/impacket/NDP.py
++++ b/impacket/NDP.py
+@@ -51,7 +51,7 @@ def Router_Advertisement(class_object, current_hop_limit,
+     @classmethod
+     def Neighbor_Solicitation(class_object, target_address):        
+         message_data = struct.pack('>L', 0) #Reserved bytes
+-        message_data += target_address.as_bytes().tostring()
++        message_data += ImpactPacket.array_tobytes(target_address.as_bytes())
+         return class_object.__build_message(NDP.NEIGHBOR_SOLICITATION, message_data)
+ 
+ 
+@@ -66,15 +66,15 @@ def Neighbor_Advertisement(class_object, router_flag, solicited_flag, override_f
+             flag_byte |= 0x20
+             
+         message_data = struct.pack('>BBBB', flag_byte, 0x00, 0x00, 0x00) #Flag byte and three reserved bytes
+-        message_data += target_address.as_bytes().tostring()
++        message_data += array_tobytes(target_address.as_bytes())
+         return class_object.__build_message(NDP.NEIGHBOR_ADVERTISEMENT, message_data)
+ 
+ 
+     @classmethod
+     def Redirect(class_object, target_address, destination_address):        
+         message_data = struct.pack('>L', 0)# Reserved bytes
+-        message_data += target_address.as_bytes().tostring()
+-        message_data += destination_address.as_bytes().tostring()
++        message_data += ImpactPacket.array_tobytes(target_address.as_bytes())
++        message_data += ImpactPacket.array_tobytes(destination_address.as_bytes())
+         return class_object.__build_message(NDP.REDIRECT, message_data)
+ 
+     
+@@ -118,7 +118,7 @@ def Target_Link_Layer_Address(class_object, link_layer_address):
+     #link_layer_address must have a size that is a multiple of 8 octets
+     def __Link_Layer_Address(class_object, option_type, link_layer_address):
+         option_length = (len(link_layer_address) / 8) + 1
+-        option_data = array.array("B", link_layer_address).tostring()
++        option_data = ImpactPacket.array_tobytes(array.array("B", link_layer_address))
+         return class_object.__build_option(option_type, option_length, option_data)
+ 
+     @classmethod
+@@ -134,7 +134,7 @@ def Prefix_Information(class_object, prefix_length, on_link_flag, autonomous_fla
+         
+         option_data = struct.pack('>BBLL', prefix_length, flag_byte, valid_lifetime, preferred_lifetime)
+         option_data += struct.pack('>L', 0) #Reserved bytes
+-        option_data += array.array("B", prefix).tostring()
++        option_data += ImpactPacket.array_tobytes(array.array("B", prefix))
+         option_length = 4        
+         return class_object.__build_option(NDP_Option.PREFIX_INFORMATION, option_length, option_data)
+         
+@@ -142,7 +142,7 @@ def Prefix_Information(class_object, prefix_length, on_link_flag, autonomous_fla
+     @classmethod    
+     def Redirected_Header(class_object, original_packet):
+         option_data = struct.pack('>BBBBBB', 0x00, 0x00, 0x00, 0x00, 0x00, 0x00)# Reserved bytes
+-        option_data += array.array("B", original_packet).tostring()
++        option_data += ImpactPacket.array_tobytes(array.array("B", original_packet))
+         option_length = (len(option_data) + 4) / 8  
+         return class_object.__build_option(NDP_Option.REDIRECTED_HEADER, option_length, option_data)
+     
+diff --git a/impacket/cdp.py b/impacket/cdp.py
+index a65ba8c27..8b20e880b 100644
+--- a/impacket/cdp.py
++++ b/impacket/cdp.py
+@@ -14,7 +14,7 @@
+ from struct import unpack
+ import socket
+ 
+-from impacket.ImpactPacket import Header
++from impacket.ImpactPacket import Header, array_tobytes
+ from impacket import LOG
+ 
+ IP_ADDRESS_LENGTH = 4
+@@ -124,11 +124,11 @@ def get_length(self):
+         return self.get_word(2)
+                 
+     def get_data(self):        
+-        return self.get_bytes().tostring()[4:self.get_length()]
++        return array_tobytes(self.get_bytes())[4:self.get_length()]
+ 
+     def get_ip_address(self, offset = 0, ip = None):
+         if not ip:
+-            ip = self.get_bytes().tostring()[offset : offset + IP_ADDRESS_LENGTH]
++            ip = array_tobytes(self.get_bytes())[offset : offset + IP_ADDRESS_LENGTH]
+         return socket.inet_ntoa( ip )
+         
+ class CDPDevice(CDPElement):
+@@ -149,7 +149,7 @@ class Address(CDPElement):
+     def __init__(self, aBuffer = None):
+         CDPElement.__init__(self, aBuffer)
+         if aBuffer:
+-            data = self.get_bytes().tostring()[8:]
++            data = array_tobytes(self.get_bytes())[8:]
+             self._generateAddressDetails(data)
+ 
+     def _generateAddressDetails(self, buff):
+@@ -353,10 +353,10 @@ def get_status(self):
+         return self.get_byte(19)
+ 
+     def get_cluster_command_mac(self):
+-        return self.get_bytes().tostring()[20:20+6]
++        return array_tobytes(self.get_bytes())[20:20+6]
+             
+     def get_switch_mac(self):
+-        return self.get_bytes().tostring()[28:28+6]
++        return array_tobytes(self.get_bytes())[28:28+6]
+             
+     def get_management_vlan(self):
+         return self.get_word(36)
+diff --git a/impacket/dot11.py b/impacket/dot11.py
+index e1ab757d5..73ca97c79 100644
+--- a/impacket/dot11.py
++++ b/impacket/dot11.py
+@@ -13,7 +13,7 @@
+ import struct
+ from binascii import crc32
+ 
+-from impacket.ImpactPacket import ProtocolPacket
++from impacket.ImpactPacket import ProtocolPacket, array_tobytes
+ from impacket.Dot11Crypto import RC4
+ frequency = {
+     2412: 1,    2417: 2,    2422: 3,    2427: 4,    2432: 5,    2437: 6,    2442: 7,    2447: 8,    2452: 9,
+@@ -997,9 +997,9 @@ def __init__(self, aBuffer = None):
+ 
+     def get_OUI(self):
+         "Get the three-octet Organizationally Unique Identifier (OUI) SNAP frame"
+-        b=self.header.get_bytes()[0:3].tostring()
++        b = array_tobytes(self.header.get_bytes()[0:3])
+         #unpack requires a string argument of length 4 and b is 3 bytes long
+-        (oui,)=struct.unpack('!L', b'\x00'+b)
++        (oui,) = struct.unpack('!L', b'\x00'+b)
+         return oui
+ 
+     def set_OUI(self, value):
+@@ -1040,9 +1040,9 @@ def is_WEP(self):
+             
+     def get_iv(self):
+         'Return the \'WEP IV\' field'
+-        b=self.header.get_bytes()[0:3].tostring()
++        b = array_tobytes(self.header.get_bytes()[0:3])
+         #unpack requires a string argument of length 4 and b is 3 bytes long
+-        (iv,)=struct.unpack('!L', b'\x00'+b)
++        (iv,) = struct.unpack('!L', b'\x00'+b)
+         return iv
+ 
+     def set_iv(self, value):
+diff --git a/impacket/helper.py b/impacket/helper.py
+index f56054b90..7821d5c06 100644
+--- a/impacket/helper.py
++++ b/impacket/helper.py
+@@ -100,9 +100,9 @@ def __init__(self, index):
+         Field.__init__(self, index)
+                 
+     def getter(self, o):
+-        b=o.header.get_bytes()[self.index:self.index+3].tostring()
++        b = ip.array_tobytes(o.header.get_bytes()[self.index:self.index+3])
+         #unpack requires a string argument of length 4 and b is 3 bytes long
+-        (value,)=struct.unpack('!L', b'\x00'+b)
++        (value,) = struct.unpack('!L', b'\x00'+b)
+         return value
+ 
+     def setter(self, o, value):
+diff --git a/impacket/wps.py b/impacket/wps.py
+index 697006bdb..0cdad4c14 100644
+--- a/impacket/wps.py
++++ b/impacket/wps.py
+@@ -14,6 +14,7 @@
+ import array
+ import struct
+ 
++from impacket.ImpactPacket import array_tobytes
+ from impacket.helper import ProtocolPacket, Byte, Bit
+ from functools import reduce
+ 
+@@ -36,7 +37,7 @@ def to_ary(self, value):
+     
+ class StringBuilder(object):
+     def from_ary(self, ary):
+-        return ary.tostring()
++        return array_tobytes(ary)
+         
+     def to_ary(self, value):
+         return array.array('B', value)
+@@ -115,7 +116,7 @@ def to_ary(self):
+ 
+     
+     def get_packet(self):
+-        return self.to_ary().tostring()
++        return array_tobytes(self.to_ary())
+     
+     def set_parent(self, my_parent):
+         self.__parent = my_parent
+@@ -127,7 +128,7 @@ def n2ary(self, n):
+         return array.array("B", struct.pack(">H",n))
+     
+     def ary2n(self, ary, i=0):
+-        return struct.unpack(">H", ary[i:i+2].tostring())[0]
++        return struct.unpack(">H", array_tobytes(ary[i:i+2]))[0]
+     
+     def __repr__(self):
+         def desc(kind):
+
+From 2ada1250232970d841b321d6b3ad4dfd1b5c8c4b Mon Sep 17 00:00:00 2001
+From: Martin Gallo <mgallo@secureauth.com>
+Date: Tue, 13 Apr 2021 18:55:35 -0700
+Subject: [PATCH 3/3] Adding compat with fromstring
+
+---
+ impacket/IP6.py          |  6 +++---
+ impacket/ImpactPacket.py | 19 +++++++++++--------
+ 2 files changed, 14 insertions(+), 11 deletions(-)
+
+diff --git a/impacket/IP6.py b/impacket/IP6.py
+index 259fa0087..e5bd46b93 100644
+--- a/impacket/IP6.py
++++ b/impacket/IP6.py
+@@ -8,7 +8,7 @@
+ import struct
+ import array
+ 
+-from impacket.ImpactPacket import Header
++from impacket.ImpactPacket import Header, array_frombytes
+ from impacket.IP6_Address import IP6_Address
+ from impacket.IP6_Extension_Headers import IP6_Extension_Header
+ 
+@@ -78,9 +78,9 @@ def get_pseudo_header(self):
+         pseudo_header = array.array('B')        
+         pseudo_header.extend(source_address)
+         pseudo_header.extend(destination_address)
+-        pseudo_header.fromstring(struct.pack('!L', upper_layer_packet_length))
++        array_frombytes(pseudo_header, struct.pack('!L', upper_layer_packet_length))
+         pseudo_header.fromlist(reserved_bytes)
+-        pseudo_header.fromstring(struct.pack('B', upper_layer_protocol_number))
++        array_frombytes(pseudo_header, struct.pack('B', upper_layer_protocol_number))
+         return pseudo_header
+     
+ ############################################################################
+diff --git a/impacket/ImpactPacket.py b/impacket/ImpactPacket.py
+index 2378e9eb3..1300ad6c9 100644
+--- a/impacket/ImpactPacket.py
++++ b/impacket/ImpactPacket.py
+@@ -22,11 +22,14 @@
+ from binascii import hexlify
+ from functools import reduce
+ 
+-# Alias function for compatibility with both Python <3.2 `tostring` method, and Python >3.2 `tobytes`
++# Alias function for compatibility with both Python <3.2 `tostring` and `fromstring` methods, and
++# Python >=3.2 `tobytes` and `tostring`
+ if sys.version_info[0] >= 3 and sys.version_info[1] >= 2:
+     array_tobytes = lambda array_object: array_object.tobytes()
++    array_frombytes = lambda array_object, bytes: array_object.frombytes(bytes)
+ else:
+     array_tobytes = lambda array_object: array_object.tostring()
++    array_frombytes = lambda array_object, bytes: array_object.fromstring(bytes)
+ 
+ 
+ """Classes to build network packets programmatically.
+@@ -153,7 +156,7 @@ def get_ip_address(self, index):
+             bytes = self.__bytes[index:]
+         else:
+             bytes = self.__bytes[index:index+4]
+-        return socket.inet_ntoa(bytes.tobytes())
++        return socket.inet_ntoa(array_tobytes(bytes))
+ 
+     def set_ip_address(self, index, ip_string):
+         "Set 4-byte value at 'index' from 'ip_string'"
+@@ -203,7 +206,7 @@ def __validate_index(self, index, size):
+ 
+         diff = index + size - curlen
+         if diff > 0:
+-            self.__bytes.fromstring('\0' * diff)
++            array_frombytes(self.__bytes, '\0' * diff)
+             if orig_index < 0:
+                 orig_index -= diff
+ 
+@@ -804,7 +807,7 @@ def get_packet(self):
+         # Pad to a multiple of 4 bytes
+         num_pad = (4 - (len(my_bytes) % 4)) % 4
+         if num_pad:
+-            my_bytes.fromstring(b"\0"* num_pad)
++            array_frombytes(my_bytes, b"\0" * num_pad)
+ 
+         # only change ip_hl value if options are present
+         if len(self.__option_list):
+@@ -842,7 +845,7 @@ def get_pseudo_header(self):
+ 
+         size_str = struct.pack("!H", tmp_size)
+ 
+-        pseudo_buf.fromstring(size_str)
++        array_frombytes(pseudo_buf, size_str)
+         return pseudo_buf
+ 
+     def add_option(self, option):
+@@ -1303,7 +1306,7 @@ def calculate_checksum(self):
+             buffer += self.get_bytes()
+             data = self.get_data_as_string()
+             if(data):
+-                buffer.fromstring(data)
++                array_frombytes(buffer, data)
+             self.set_uh_sum(self.compute_checksum(buffer))
+ 
+     def get_header_size(self):
+@@ -1493,7 +1496,7 @@ def calculate_checksum(self):
+ 
+         data = self.get_data_as_string()
+         if(data):
+-            buffer.fromstring(data)
++            array_frombytes(buffer, data)
+ 
+         res = self.compute_checksum(buffer)
+ 
+@@ -1569,7 +1572,7 @@ def get_padded_options(self):
+             op_buf += op.get_bytes()
+         num_pad = (4 - (len(op_buf) % 4)) % 4
+         if num_pad:
+-            op_buf.fromstring("\0" * num_pad)
++            array_frombytes(op_buf, "\0" * num_pad)
+         return op_buf
+ 
+     def __str__(self):
