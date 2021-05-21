@@ -1,8 +1,4 @@
-Summary:	fcrackzip - a Free/Fast Zip Password Cracker
-
-Packager:	Lawrence R. Rogers (lrr@cert.org)
-
-Vendor:		cert.org
+Summary:	A Free/Fast Zip Password Cracker
 Name:		fcrackzip
 Version:	1.0
 Release:	1%{?dist}
@@ -14,9 +10,10 @@ Group:		Applications/Forensics Tools
 Source:		http://oldhome.schmorp.de/marc/data/%{name}-%{version}.tar.gz
 
 BuildRoot:	%{_tmppath}/rpm-root-%{name}-v%{version}
-BuildRequires:	/usr/bin/aclocal
-BuildRequires:	/usr/bin/automake
-BuildRequires:	/usr/bin/autoconf
+BuildRequires:	automake
+BuildRequires:	autoconf
+BuildRequires:	gcc
+BuildRequires:	make
 
 %description
 Fcrackzip searches each zipfile given for encrypted files and tries to
@@ -24,26 +21,22 @@ guess the password. All files must be encrypted with the same password,
 the more files you provide, the better.
 
 %prep
-%setup
+%autosetup
 
 %build
 mv configure.in configure.ac
-aclocal
-automake --add-missing
-autoconf
+autoreconf -i
 %configure
-%{__make}
+%make_build
 
 %install
-%makeinstall
+%make_install
 mv %{buildroot}/%{_bindir}/zipinfo %{buildroot}/%{_bindir}/fczipinfo
 
-%clean
-%{__rm} -rf %{buildroot}
 
 %files
-%doc NEWS THANKS AUTHORS TODO README ChangeLog COPYING INSTALL
 %license COPYING
+%doc NEWS THANKS AUTHORS TODO README ChangeLog
 %{_bindir}/%{name}
 %{_bindir}/fczipinfo
 %{_mandir}/man1/%{name}.1*
