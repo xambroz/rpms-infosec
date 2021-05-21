@@ -327,7 +327,7 @@ rm -f %{buildroot}%{_defaultdocdir}/%{name}/LICENSE
 
 
 %changelog
-* Fri May 07 2021 Michal Ambroz <rebus _AT seznam.cz> - 0.9.22-4
+* Fri May 21 2021 Michal Ambroz <rebus _AT seznam.cz> - 0.9.22-4
 - remove the dependency to python-crypto
 
 * Fri May 07 2021 Michal Ambroz <rebus _AT seznam.cz> - 0.9.22-3
