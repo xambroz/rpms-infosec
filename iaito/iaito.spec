@@ -1,6 +1,6 @@
 Name:           iaito
 Version:        5.2.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        GUI for radare2 reverse engineering framework
 
 %global         iaito_translations_commit       93c0bb887c1a0de66d55fb84f3aa75e662a1dfd5
@@ -17,7 +17,6 @@ Source1:        https://github.com/radareorg/iaito-translations/archive/%{iaito_
 
 BuildRequires:  radare2-devel >= 5.2.0
 BuildRequires:  git
-BuildRequires:  cmake
 BuildRequires:  make
 BuildRequires:  gcc-c++
 BuildRequires:  kf5-syntax-highlighting-devel
@@ -28,9 +27,22 @@ BuildRequires:  desktop-file-utils
 BuildRequires:  libappstream-glib
 BuildRequires:  graphviz-devel
 BuildRequires:  qt5-linguist
+
 %ifarch %{qt5_qtwebengine_arches}
 BuildRequires:  qt5-qtwebengine-devel
 %endif
+
+%if 0%{?rhel}
+BuildRequires:  epel-rpm-macros
+%endif
+
+%if 0%{?fedora} || 0%{?rhel} >= 8
+BuildRequires:  cmake
+BuildRequires:  cmake-rpm-macros
+%else
+BuildRequires:  cmake3
+%endif
+
 
 # Generate documentation
 BuildRequires:  doxygen
@@ -85,8 +97,8 @@ tar --strip-component=1 -xvf %{SOURCE1} -C src/translations
 
 
 %build
-%cmake -DAIATO_EXTRA_PLUGIN_DIRS=%{_libdir}/iaito src
-%cmake_build
+%cmake3 -DAIATO_EXTRA_PLUGIN_DIRS=%{_libdir}/iaito src
+%cmake3_build
 
 
 
@@ -97,7 +109,7 @@ mv build/html ../
 
 
 %install
-%cmake_install
+%cmake3_install
 
 
 %check
@@ -126,6 +138,9 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
 %doc html
 
 %changelog
+* Sat May 22 2021 Michal Ambroz <rebus _AT seznam.cz> - 5.2.2-2
+- trying build for EPEL
+
 * Thu Apr 29 2021 Michal Ambroz <rebus _AT seznam.cz> - 5.2.2-1
 - bump to 5.2.2
 
