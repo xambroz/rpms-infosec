@@ -1,0 +1,57 @@
+From 5957a560e5a0fe8becd61699ef97fbef525e8605 Mon Sep 17 00:00:00 2001
+From: Michal Ambroz <723625+xambroz@users.noreply.github.com>
+Date: Sun, 23 May 2021 16:50:39 +0200
+Subject: [PATCH] Rename PyModule_AddType to PyModule_Utils_AddType
+
+The python3.9 came with a helper function PyModule_AddType with purpose similar to this one, but missing the name in the function arguments.
+Renaming this one to PyModule_Utils_AddType to avoid this collision.
+---
+ src/pyev.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/src/pyev.c b/src/pyev.c
+index 47aa4bf..b38cd2b 100644
+--- a/src/pyev.c
++++ b/src/pyev.c
+@@ -318,7 +318,7 @@ pyev_allocator(void *ptr, long size)
+ 
+ /* Add a type to a module */
+ int
+-_PyModule_AddType(PyObject *module, const char *name, PyTypeObject *type)
++_PyModule_Utils_AddType(PyObject *module, const char *name, PyTypeObject *type)
+ {
+     Py_INCREF(type);
+     if (PyModule_AddObject(module, name, (PyObject *)type)) {
+@@ -338,12 +338,12 @@ PyType_ReadyWatcher(PyTypeObject *type, PyTypeObject *base)
+ 
+ 
+ int
+-PyModule_AddType(PyObject *module, const char *name, PyTypeObject *type)
++PyModule_Utils_AddType(PyObject *module, const char *name, PyTypeObject *type)
+ {
+     if (PyType_Ready(type)) {
+         return -1;
+     }
+-    return _PyModule_AddType(module, name, type);
++    return _PyModule_Utils_AddType(module, name, type);
+ }
+ 
+ 
+@@ -354,7 +354,7 @@ PyModule_AddWatcher(PyObject *module, const char *name, PyTypeObject *type,
+     if (PyType_ReadyWatcher(type, base)) {
+         return -1;
+     }
+-    return _PyModule_AddType(module, name, type);
++    return _PyModule_Utils_AddType(module, name, type);
+ }
+ 
+ 
+@@ -555,7 +555,7 @@ init_pyev(void)
+     /* types and constants */
+     if (
+         /* loop */
+-        PyModule_AddType(pyev, "Loop", &LoopType) ||
++        PyModule_Utils_AddType(pyev, "Loop", &LoopType) ||
+         PyModule_AddUnsignedIntMacro(pyev, EVFLAG_AUTO) ||
+         PyModule_AddUnsignedIntMacro(pyev, EVFLAG_NOENV) ||
+         PyModule_AddUnsignedIntMacro(pyev, EVFLAG_FORKCHECK) ||
