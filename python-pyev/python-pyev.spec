@@ -43,11 +43,15 @@ Patch0:         https://github.com/gabrielfalcao/pyev/pull/2.patch#/python-pyev-
 
 
 BuildRequires:  gcc
+BuildRequires:  make
 BuildRequires:  libtool
 BuildRequires:  libev-devel
+
+%if %{with python2}
 BuildRequires:  python2
 BuildRequires:  python2-devel
 BuildRequires:  python2-setuptools
+%endif
 
 %if %{with python3}
 BuildRequires:  python%{python3_pkgversion}-devel
@@ -56,7 +60,7 @@ BuildRequires:  python%{python3_pkgversion}-setuptools
 %endif
 
 # html doc generation
-BuildRequires:  python-sphinx
+BuildRequires:  /usr/bin/sphinx-build
 
 
 %description
