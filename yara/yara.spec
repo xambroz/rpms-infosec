@@ -1,5 +1,5 @@
 Name:           yara
-Version:        4.1.0
+Version:        4.1.1
 Release:        1%{?dist}
 Summary:        Pattern matching Swiss knife for malware researchers
 
@@ -7,14 +7,15 @@ Summary:        Pattern matching Swiss knife for malware researchers
 # bison grammar parsers in libyara/* are dual licensed under ASL 2.0 and GPLv3+ license.
 # resulting binary package licensed as ASL 2.0
 License:        ASL 2.0
+VCS:            http://github.com/VirusTotal/yara/
 #               http://github.com/VirusTotal/yara/releases
 URL:            http://VirusTotal.github.io/yara/
 
 
 %global         gituser         VirusTotal
 %global         gitname         yara
-# Commit of version 4.1.0
-%global         commit          e1360f6cbe3d8daf350018661bc6772bd5b726f2
+# Commit of version 4.1.1
+%global         commit          8206dc6f728fe50e21af92cb40e454b68ef6af05
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 # additional module for yara
@@ -152,12 +153,14 @@ rm %{buildroot}%{_libdir}/lib%{name}.a
 rm -f %{buildroot}%{_datadir}/doc/%{name}/html/.buildinfo
 
 
+%if 0%{?rhel} && 0%{?rhel} <= 7
 %ldconfig_scriptlets
+%endif
 
 
 %files
-%doc AUTHORS CONTRIBUTORS README.md
 %license COPYING
+%doc AUTHORS CONTRIBUTORS README.md
 %{_bindir}/%{name}
 %{_bindir}/%{name}c
 %{_libdir}/lib%{name}.so.*
@@ -178,6 +181,9 @@ rm -f %{buildroot}%{_datadir}/doc/%{name}/html/.buildinfo
 
 
 %changelog
+* Mon May 24 2021 Michal Ambroz <rebus at, seznam.cz> - 4.1.1-1
+- bump to 4.1.1
+
 * Mon Apr 26 2021 Michal Ambroz <rebus at, seznam.cz> - 4.1.0-1
 - bump to 4.1.0
 
