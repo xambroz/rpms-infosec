@@ -1,0 +1,28 @@
+Declaration of variable in the for loop requires at least c99 compatibility mode
+This is specific to 5.6.0 and is already fixed in the git
+diff -ru radare2-5.6.0/libr/anal/p/anal_loongarch_gnu.c radare2-5.6.0.new/libr/anal/p/anal_loongarch_gnu.c
+--- radare2-5.6.0/libr/anal/p/anal_loongarch_gnu.c	2022-02-02 13:29:26.000000000 +0100
++++ radare2-5.6.0.new/libr/anal/p/anal_loongarch_gnu.c	2022-02-12 00:24:15.787894773 +0100
+@@ -1228,7 +1228,8 @@
+ 					ase->la_opcode_ht[LA_INSN_HASH(it->match)] = it;
+ 				}
+ 			}
+-			for (int i=0; i<HT_NUM; i++) {
++			int i;
++			for (i=0; i<HT_NUM; i++) {
+ 				if(!ase->la_opcode_ht[i]){
+ 					ase->la_opcode_ht[i]=it;
+ 				}
+diff -ru radare2-5.6.0/libr/core/disasm.c radare2-5.6.0.new/libr/core/disasm.c
+--- radare2-5.6.0/libr/core/disasm.c	2022-02-02 13:29:26.000000000 +0100
++++ radare2-5.6.0.new/libr/core/disasm.c	2022-02-12 00:28:26.325298373 +0100
+@@ -5483,7 +5483,8 @@
+ 		if (p) {
+ 			core->asmqjmps_size = R_CORE_ASMQJMPS_NUM;
+ 			core->asmqjmps = p;
+-			for (int i = 0; i < R_CORE_ASMQJMPS_NUM; i++) {
++			int i;
++			for (i = 0; i < R_CORE_ASMQJMPS_NUM; i++) {
+ 				core->asmqjmps[i] = UT64_MAX;
+ 			}
+ 		}
