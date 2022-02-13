@@ -1,17 +1,17 @@
 Name:           radare2
 Summary:        The reverse engineering framework
-Version:        5.2.1
-%global         rel             3
+Version:        5.6.0
+%global         rel             2
 URL:            https://radare.org/
 VCS:            https://github.com/radareorg/radare2
 #               https://github.com/radareorg/radare2/releases
 
-%if 0%{?rhel} && 0%{?rhel} == 8
+# %%if 0%%{?rhel} && 0i%%{?rhel} == 8
 # Radare2 fails to build on EPEL8+s390x
 # https://bugzilla.redhat.com/show_bug.cgi?id=1960046
 # https://docs.fedoraproject.org/en-US/packaging-guidelines/#_architecture_build_failures
-ExcludeArch:    s390x
-%endif
+# ExcludeArch:    s390x
+# %%endif
 
 
 # by default it builds from the released version of radare2
@@ -21,8 +21,8 @@ ExcludeArch:    s390x
 %global         gituser         radareorg
 %global         gitname         radare2
 
-%global         gitdate         20210411
-%global         commit          cf3db945083fb4dab951874e5ec1283128deab11
+%global         gitdate         20220202
+%global         commit          e9e600a9a4c22a1e4aa901ab50e1d744648bd722
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
@@ -34,11 +34,9 @@ Release:        0.%{rel}.%{gitdate}git%{shortcommit}%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{commit}.zip
 %endif
 
-# make it possible to use older version of messon - needed for EPEL8 which has older version than EPEL7
-Patch0:         https://github.com/radareorg/radare2/pull/18684.patch#/radare2-5.2.1-meson_rhel8.patch
-
-# improve the detection of the system xxhash. pkgconfig module name is libxxhash not xhash
-Patch1:         https://github.com/radareorg/radare2/pull/18683.patch#/radare2-5.2.1-xxhash.patch
+# Declaration of variable in the for loop requires at least c99 compatibility mode
+# This is specific to 5.6.0 and is already fixed in the git
+Patch0:         radare2-5.6.0-dec99.patch
 
 
 License:        LGPLv3+ and GPLv2+ and BSD and MIT and ASL 2.0 and MPLv2.0 and zlib
@@ -219,7 +217,7 @@ information
 sed -i -e "s|%{version}-git|%{version}|g;" configure configure.acr
 %endif
 # Removing zip/lzip and lz4 files because we use system dependencies
-rm -rf shlr/zip shlr/lz4
+rm -rf shlr/zip/{zip,zlib,include} shlr/lz4
 # Remove xxhash files because we use system dependencies
 rm -f libr/hash/xxhash.c libr/hash/xxhash.h
 
@@ -322,6 +320,40 @@ mkdir -p %{buildroot}%{_libdir}/%{name}/%{version}
 
 
 %changelog
+* Wed Feb 09 2022 Michal Ambroz <rebus at, seznam.cz> 5.6.0-2
+- patch declaration of int i in for cycle to avoid C99 mode on EPEL7
+
+* Wed Feb 09 2022 Michal Ambroz <rebus at, seznam.cz> 5.6.0-1
+- bump to 5.6.0
+- fix CVE-2022-0419
+- fix CVE-2021-4021
+
+* Wed Jan 26 2022 Henrik Nordstrom <henrik@henriknordstrom.net> - 5.5.4-1
+- Update to version 5.5.4
+- should be fixing CVE-2021-4021
+
+* Fri Jan 21 2022 Fedora Release Engineering <releng@fedoraproject.org> - 5.4.2-1.1
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
+
+* Thu Sep 23 2021 Henrik Nordstrom <henrik@henriknordstrom.net> - 5.4.2-1
+- Update to version 5.4.2
+
+* Sat Sep 18 2021 Henrik Nordstrom <henrik@henriknordstrom.net> - 5.4.0-1
+- Update to version 5.4.0
+- Fix CVE-2021-3673
+
+* Fri Jul 23 2021 Fedora Release Engineering <releng@fedoraproject.org> - 5.3.1-1.1
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
+
+* Fri Jun 11 2021 Michal Ambroz <rebus at, seznam.cz> 5.3.1-1
+- bump to 5.3.1
+
+* Wed Jun 09 2021 Michal Ambroz <rebus at, seznam.cz> 5.3.0-1
+- re-enable build for s390x on EPEL8 (libuv should be available for 8.4)
+- bump to 5.3.0
+- remove radare2-5.2.1-meson_rhel8.patch - accepted upstream
+- remove radare2-5.2.1-xxhash.patch - accepted upstream 
+
 * Sat May 15 2021 Michal Ambroz <rebus at, seznam.cz> 5.2.1-3
 - adding the global plugins directory - for example /usr/lib64/radare2/5.2.1
 
@@ -360,10 +392,13 @@ mkdir -p %{buildroot}%{_libdir}/%{name}/%{version}
 
 * Mon Jul 20 2020 Riccardo Schirone <rschirone91@gmail.com> - 4.5.0-1
 - Rebase to upstream version 4.5.0
+
 * Fri May 8 2020 Riccardo Schirone <rschirone91@gmail.com> - 4.4.0-2
 - Just re-build
+
 * Mon May 4 2020 Riccardo Schirone <rschirone91@gmail.com> - 4.4.0-1
 - Rebase to upstream version 4.4.0
+
 * Mon Feb 3 2020 Riccardo Schirone <rschirone91@gmail.com> - 4.2.1-1
 - Rebase to upstream version 4.2.1
 - Fix CVE-2019-19647

@@ -160,7 +160,7 @@ echo "Available under https://github.com/radare/radare2-webui" >>               
 # Link binaries to the SO name with version
 # HAVE_LIBVERSION=1
 
-CFLAGS="%{optflags} -fPIC -I../include" make %{?_smp_mflags} \
+CFLAGS="%{optflags} -fPIC -I../include" %make_build \
     LIBDIR=%{_libdir} PREFIX=%{_prefix} DATADIR=%{_datadir} HAVE_LIBVERSION=1
 
 %check
