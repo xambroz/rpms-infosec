@@ -1,22 +1,46 @@
 Name:           iaito
-Version:        5.2.2
-Release:        2%{?dist}
 Summary:        GUI for radare2 reverse engineering framework
+Version:        5.6.0
+%global         rel             1
+%global         upversion       %{version}-beta
+URL:            https://radare.org/n/iaito.html
+VCS:            https://github.com/radareorg/iaito/
+#               https://github.com/radareorg/iaito/releases
+
+
+# by default it builds from the released version of radare2
+# to build from git use rpmbuild --without=releasetag
+%bcond_with     releasetag
+
+%global         gituser         radareorg
+%global         gitname         iaito
+
+%global         gitdate         20220206
+%global         commit          28a1099603b3fa671bfbb226025d1a8c45558471
+%global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 %global         iaito_translations_commit       93c0bb887c1a0de66d55fb84f3aa75e662a1dfd5
+
+%if %{with releasetag}
+Release:        %{rel}%{?dist}
+Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
+%else
+Release:        0.%{rel}.%{gitdate}git%{shortcommit}%{?dist}
+Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{commit}.tar.gz
+%endif
 
 
 # CC-BY-SA: src/img/icons/
 # CC0: src/fonts/Anonymous Pro.ttf
 License:        GPLv3 and CC-BY-SA and CC0
 
-URL:            https://github.com/radareorg/iaito/
-Source0:        https://github.com/radareorg/iaito/archive/%{version}/iaito-%{version}.tar.gz
 Source1:        https://github.com/radareorg/iaito-translations/archive/%{iaito_translations_commit}.tar.gz#/iaito-translations-%{iaito_translations_commit}.tar.gz
+Patch0:         iaito-5.6.0-norpath.patch
 
 
-BuildRequires:  radare2-devel >= 5.2.0
-BuildRequires:  git
+BuildRequires:  radare2-devel >= 5.5.0
+# BuildRequires:  git
+BuildRequires:  cmake
 BuildRequires:  make
 BuildRequires:  gcc-c++
 BuildRequires:  kf5-syntax-highlighting-devel
@@ -27,22 +51,9 @@ BuildRequires:  desktop-file-utils
 BuildRequires:  libappstream-glib
 BuildRequires:  graphviz-devel
 BuildRequires:  qt5-linguist
-
 %ifarch %{qt5_qtwebengine_arches}
 BuildRequires:  qt5-qtwebengine-devel
 %endif
-
-%if 0%{?rhel}
-BuildRequires:  epel-rpm-macros
-%endif
-
-%if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:  cmake
-BuildRequires:  cmake-rpm-macros
-%else
-BuildRequires:  cmake3
-%endif
-
 
 # Generate documentation
 BuildRequires:  doxygen
@@ -92,13 +103,21 @@ information.
 
 
 %prep
-%autosetup -p1 -n iaito-%{version} -S git_am
+%if %{with releasetag}
+# Build from git release version
+%autosetup -p1 -n %{gitname}-%{version} 
+%else
+%autosetup -p1 -n %{gitname}-%{commit}
+# Rename internal "version-git" to "version"
+sed -i -e "s|%{version}-git|%{version}|g;" configure configure.acr
+%endif
+
 tar --strip-component=1 -xvf %{SOURCE1} -C src/translations
 
 
 %build
-%cmake3 -DAIATO_EXTRA_PLUGIN_DIRS=%{_libdir}/iaito src
-%cmake3_build
+%cmake -DIAITO_EXTRA_PLUGIN_DIRS=%{_libdir}/iaito src
+%cmake_build
 
 
 
@@ -109,7 +128,7 @@ mv build/html ../
 
 
 %install
-%cmake3_install
+%cmake_install
 
 
 %check
@@ -138,8 +157,35 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
 %doc html
 
 %changelog
-* Sat May 22 2021 Michal Ambroz <rebus _AT seznam.cz> - 5.2.2-2
-- trying build for EPEL
+* Sun Feb 13 2022 Michal Ambroz <rebus _AT seznam.cz> - 5.6.0-0.1.20220206git28a1099
+- bump to git version 20220206git28a1099 to be able to upgrade radare2 to 5.6.0
+
+* Sun Feb 13 2022 Michal Ambroz <rebus _AT seznam.cz> - 5.5.0-0.beta.1
+- bump to 5.5.0
+
+* Thu Jan 20 2022 Fedora Release Engineering <releng@fedoraproject.org> - 5.3.1-6
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
+
+* Fri Oct 15 2021 Ivan Mironov <mironov.ivan@gmail.com> - 5.3.1-5
+- Fix plugin search paths
+
+* Mon Oct 04 2021 Henrik Nordstrom <henrik@henriknordstrom.net> - 5.3.1-4
+- rebuilt with radare2 5.4.2
+
+* Sat Sep 18 2021 Henrik Nordstrom <henrik@henriknordstrom.net> - 5.3.1-3
+- rebuilt with radare2 5.4.0
+
+* Sat Sep 18 2021 Henrik Nordstrom <henrik@henriknordstrom.net> - 5.3.1-2
+- rebuilt with radare2 5.4.0
+
+* Wed Jul 21 2021 Henrik Nordstrom <henrik@henriknordstrom.net> - 5.3.1-1
+- Update to release 5.3.1
+
+* Fri Jun 11 2021 Michal Ambroz <rebus _AT seznam.cz> - 5.2.2-3
+- rebuild with radare2 5.3.1
+
+* Wed Jun 09 2021 Michal Ambroz <rebus _AT seznam.cz> - 5.2.2-2
+- rebuild with radare2 5.3.0
 
 * Thu Apr 29 2021 Michal Ambroz <rebus _AT seznam.cz> - 5.2.2-1
 - bump to 5.2.2
