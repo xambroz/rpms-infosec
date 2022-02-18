@@ -1,5 +1,5 @@
 Name:           perl-Email-Outlook-Message
-Version:        0.920
+Version:        0.921
 Release:        1%{?dist}
 Summary:        Read Outlook .msg files
 License:        GPL+ or Artistic
@@ -51,7 +51,7 @@ Parses .msg message files as produced by Microsoft Outlook.
 
 %build
 perl Makefile.PL INSTALLDIRS=vendor
-make %{?_smp_mflags}
+%make_build
 
 
 %install
@@ -85,5 +85,8 @@ make test
 
 
 %changelog
+* Fri Feb 18 2022 Michal Ambroz <rebus AT_ seznam.cz> - 0.921-1
+- bump to 0.921
+
 * Thu Apr 08 2021 Michal Ambroz <rebus AT_ seznam.cz> - 0.920-1
 - initial package
