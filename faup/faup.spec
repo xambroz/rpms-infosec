@@ -4,18 +4,29 @@ URL:            https://github.com/stricaud/faup
 #               https://github.com/stricaud/faup/releases
 License:        WTFPL
 Group:          System Environment/Libraries
-Version:        1.5
-Release:        1%{?dist}
+Version:        1.6
+%global         rel             1
+
 
 
 %global         gituser         stricaud
 %global         gitname         faup
-%global         gitdate         20190701
-%global         commit          a5268839130d76ebe2a26e9d7ff497e7d81dc142
+%global         gitdate         20210621
+%global         commit          8e81b170d205485de587c2f4bca54e5dcdf678a4
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
+# by default it builds from the git snapshot version of faup
+# to build from release use rpmbuild --with=releasetag
+%bcond_with     releasetag
 
+%if %{with releasetag}
+Release:        %{rel}%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
+%else
+Release:        0.%{rel}.%{gitdate}git%{shortcommit}%{?dist}
+Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.zip
+%endif
+
 
 
 BuildRequires:  gcc-c++
@@ -51,7 +62,13 @@ Development libraries and headers for use with %{name}.
 
 
 %prep
-%autosetup
+%if %{with releasetag}
+# Build from git release version
+%autosetup -p 1 -n %{gitname}-%{version}
+%else
+# Build from git commit
+%autosetup -p 1 -n %{gitname}-%{commit}
+%endif
 
 
 %build
@@ -88,9 +105,13 @@ find %{buildroot} -name '*.a' -exec rm -f {} ';'
 %files devel
 %{_includedir}/faup/
 %{_libdir}/libfaupl.so
+%{_libdir}/pkgconfig/%{name}.pc
 
 
 %changelog
+* Fri Feb 18 2022 Michal Ambroz <rebus at, seznam.cz> - 1.6-0.1
+- bump to current git snapshot
+
 * Sun May 16 2021 Michal Ambroz <rebus at, seznam.cz> - 1.5-2
 - modernize spec file
 
