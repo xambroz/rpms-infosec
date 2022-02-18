@@ -1,0 +1,13 @@
+diff --git gnulib-68df637/tests/unistr/test-u8-strstr.c~ gnulib-68df637/tests/unistr/test-u8-strstr.c
+index 9fbf28e6e5..2e90d32a50 100644
+--- gnulib-68df637/tests/unistr/test-u8-strstr.c
++++ gnulib-68df637/tests/unistr/test-u8-strstr.c
+@@ -41,7 +41,7 @@ main (void)
+      same system that we did the check to ensure it has linear
+      performance characteristics.  */
+   signal (SIGALRM, SIG_DFL);
+-  alarm (5);
++  alarm (25);
+ #endif
+ 
+   test_u_strstr ();
