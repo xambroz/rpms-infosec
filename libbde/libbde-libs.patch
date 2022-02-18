@@ -1,11 +1,10 @@
-diff -ru libbde-7985ac45c98ae264c4bc2f5854e561db8fcdbda1.orig/configure.ac libbde-7985ac45c98ae264c4bc2f5854e561db8fcdbda1.new/configure.ac
---- libbde-7985ac45c98ae264c4bc2f5854e561db8fcdbda1.orig/configure.ac	2016-04-18 18:04:37.000000000 +0200
-+++ libbde-7985ac45c98ae264c4bc2f5854e561db8fcdbda1.new/configure.ac	2016-06-20 20:05:49.518864008 +0200
-@@ -216,26 +216,26 @@
+diff -ru libbde-ac7bb8586041b69e56e3dbbcbeb0ccb19917c88e/configure.ac libbde-ac7bb8586041b69e56e3dbbcbeb0ccb19917c88e.new/configure.ac
+--- libbde-ac7bb8586041b69e56e3dbbcbeb0ccb19917c88e/configure.ac	2022-01-21 17:19:11.000000000 +0100
++++ libbde-ac7bb8586041b69e56e3dbbcbeb0ccb19917c88e.new/configure.ac	2022-02-19 00:54:21.193937580 +0100
+@@ -182,23 +182,23 @@
  AC_CONFIG_FILES([Makefile])
  AC_CONFIG_FILES([include/Makefile])
  AC_CONFIG_FILES([common/Makefile])
--AC_CONFIG_FILES([libcstring/Makefile])
 -AC_CONFIG_FILES([libcerror/Makefile])
 -AC_CONFIG_FILES([libcthreads/Makefile])
 -AC_CONFIG_FILES([libcdata/Makefile])
@@ -23,7 +22,6 @@ diff -ru libbde-7985ac45c98ae264c4bc2f5854e561db8fcdbda1.orig/configure.ac libbd
 -AC_CONFIG_FILES([libfvalue/Makefile])
 -AC_CONFIG_FILES([libhmac/Makefile])
 -AC_CONFIG_FILES([libcaes/Makefile])
-+dnl AC_CONFIG_FILES([libcstring/Makefile])
 +dnl AC_CONFIG_FILES([libcerror/Makefile])
 +dnl AC_CONFIG_FILES([libcthreads/Makefile])
 +dnl AC_CONFIG_FILES([libcdata/Makefile])
@@ -42,19 +40,15 @@ diff -ru libbde-7985ac45c98ae264c4bc2f5854e561db8fcdbda1.orig/configure.ac libbd
 +dnl AC_CONFIG_FILES([libhmac/Makefile])
 +dnl AC_CONFIG_FILES([libcaes/Makefile])
  AC_CONFIG_FILES([libbde/Makefile])
--AC_CONFIG_FILES([libcsystem/Makefile])
-+dnl AC_CONFIG_FILES([libcsystem/Makefile])
- AC_CONFIG_FILES([bdetools/Makefile])
  AC_CONFIG_FILES([pybde/Makefile])
  AC_CONFIG_FILES([pybde-python2/Makefile])
-diff -ru libbde-7985ac45c98ae264c4bc2f5854e561db8fcdbda1.orig/Makefile.am libbde-7985ac45c98ae264c4bc2f5854e561db8fcdbda1.new/Makefile.am
---- libbde-7985ac45c98ae264c4bc2f5854e561db8fcdbda1.orig/Makefile.am	2016-04-18 18:04:37.000000000 +0200
-+++ libbde-7985ac45c98ae264c4bc2f5854e561db8fcdbda1.new/Makefile.am	2016-06-20 20:05:18.893312881 +0200
-@@ -3,26 +3,7 @@
+diff -ru libbde-ac7bb8586041b69e56e3dbbcbeb0ccb19917c88e/Makefile.am libbde-ac7bb8586041b69e56e3dbbcbeb0ccb19917c88e.new/Makefile.am
+--- libbde-ac7bb8586041b69e56e3dbbcbeb0ccb19917c88e/Makefile.am	2022-01-21 17:19:11.000000000 +0100
++++ libbde-ac7bb8586041b69e56e3dbbcbeb0ccb19917c88e.new/Makefile.am	2022-02-19 00:56:15.933899733 +0100
+@@ -3,23 +3,6 @@
  SUBDIRS = \
  	include \
  	common \
--	libcstring \
 -	libcerror \
 -	libcthreads \
 -	libcdata \
@@ -73,15 +67,12 @@ diff -ru libbde-7985ac45c98ae264c4bc2f5854e561db8fcdbda1.orig/Makefile.am libbde
 -	libhmac \
 -	libcaes \
  	libbde \
--	libcsystem \
  	bdetools \
  	pybde \
- 	pybde-python2 \
-@@ -83,24 +64,6 @@
+@@ -81,23 +64,6 @@
  
  library:
  	(cd $(srcdir)/common && $(MAKE) $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libcstring && $(MAKE) $(AM_MAKEFLAGS))
 -	(cd $(srcdir)/libcerror && $(MAKE) $(AM_MAKEFLAGS))
 -	(cd $(srcdir)/libcthreads && $(MAKE) $(AM_MAKEFLAGS))
 -	(cd $(srcdir)/libcdata && $(MAKE) $(AM_MAKEFLAGS))
@@ -102,11 +93,10 @@ diff -ru libbde-7985ac45c98ae264c4bc2f5854e561db8fcdbda1.orig/Makefile.am libbde
  	(cd $(srcdir)/libbde && $(MAKE) $(AM_MAKEFLAGS))
  	(cd $(srcdir)/po && $(MAKE) $(AM_MAKEFLAGS))
  
-@@ -117,26 +80,7 @@
+@@ -114,23 +80,6 @@
  	done && test -z "$$fail"
  
  splint:
--	(cd $(srcdir)/libcstring && $(MAKE) splint $(AM_MAKEFLAGS))
 -	(cd $(srcdir)/libcerror && $(MAKE) splint $(AM_MAKEFLAGS))
 -	(cd $(srcdir)/libcthreads && $(MAKE) splint $(AM_MAKEFLAGS))
 -	(cd $(srcdir)/libcdata && $(MAKE) splint $(AM_MAKEFLAGS))
@@ -125,7 +115,5 @@ diff -ru libbde-7985ac45c98ae264c4bc2f5854e561db8fcdbda1.orig/Makefile.am libbde
 -	(cd $(srcdir)/libhmac && $(MAKE) splint $(AM_MAKEFLAGS))
 -	(cd $(srcdir)/libcaes && $(MAKE) splint $(AM_MAKEFLAGS))
  	(cd $(srcdir)/libbde && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libcsystem && $(MAKE) splint $(AM_MAKEFLAGS))
  	(cd $(srcdir)/bdetools && $(MAKE) splint $(AM_MAKEFLAGS))
  	(cd $(srcdir)/pybde && $(MAKE) splint $(AM_MAKEFLAGS))
- 	(cd $(srcdir)/po && $(MAKE) splint $(AM_MAKEFLAGS))
