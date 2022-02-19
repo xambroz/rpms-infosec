@@ -1,16 +1,21 @@
 %global         gituser         libyal
 %global         gitname         libhmac
-#20150703
-#%global        commit          a95f04ccab1c8c23def380e19814855a7a6a05d0
-#20160731
-#%global         commit          a9762ac45955a37b9e9f6bd7d14c11ffadd9d9d8
+%global         gitdate         20200104
+%global         commit          5ca9bd3b4ec99c998b629600115e51a4d8bc0082
+
+# Previous builds
 #20160802
-%global         commit          91b621fd9df85a0d20cb83a283ffc4e0171e6305
+#%%global       commit          91b621fd9df85a0d20cb83a283ffc4e0171e6305
+#20160731
+#%%global       commit          a9762ac45955a37b9e9f6bd7d14c11ffadd9d9d8
+#20150703
+#%%global       commit          a95f04ccab1c8c23def380e19814855a7a6a05d0
+
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
 Name:           libhmac
-Version:        20160802
+Version:        %{gitdate}
 Release:        1%{?dist}
 Summary:        Libyal library to support various Hash-based Message Authentication Codes (HMAC)
 
@@ -86,6 +91,9 @@ find %{buildroot} -name '*.la' -exec rm -f {} ';'
 %{_mandir}/man3/%{name}.3*
 
 %changelog
+* Fri Feb 18 2022 Michal Ambroz <rebus AT seznam.cz> - 20200104-1
+- bump to 20200104
+
 * Mon Aug 01 2016 Michal Ambroz <rebus AT seznam.cz> - 20160802-1
 - bump to 20160802 - WINCRYPT
 
