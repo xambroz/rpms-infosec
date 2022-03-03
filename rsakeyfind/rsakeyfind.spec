@@ -79,6 +79,9 @@ install -p -m644 %{SOURCE3} %{buildroot}%{_mandir}/man1
 
 
 %changelog
+* Thu Mar 3 2022 Michal Ambroz <rebus at, seznam.cz> - 1.0-2
+- add dependency to g++ 
+
 * Fri Feb 28 2020 Michal Ambroz <rebus at, seznam.cz> - 1.0-1
 - package based on the aeskeyfind
 
