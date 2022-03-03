@@ -1,6 +1,6 @@
 Name:           rsakeyfind
 Version:        1.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 # 3-clause BSD license
 License:        BSD
 Summary:        Locate BER-encoded RSA private and public keys in memory images
