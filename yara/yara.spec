@@ -1,5 +1,5 @@
 Name:           yara
-Version:        4.1.1
+Version:        4.2.0
 Release:        1%{?dist}
 Summary:        Pattern matching Swiss knife for malware researchers
 
@@ -14,8 +14,8 @@ URL:            http://VirusTotal.github.io/yara/
 
 %global         gituser         VirusTotal
 %global         gitname         yara
-# Commit of version 4.1.1
-%global         commit          8206dc6f728fe50e21af92cb40e454b68ef6af05
+# Commit of version 4.2.0-rc1
+%global         commit          45a2883daad5b40a516b7fa1245beb2a45d586a6
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 # additional module for yara
@@ -106,11 +106,11 @@ developing applications that use %{name}.
 
 %prep
 # autosetup -n %%{gitname}-%%{commit} -p 1 -S git
-%autosetup -p 1 -S git
+%autosetup -n %{gitname}-%{version} -p 1 -S git
 
 # Add the Androguard module
 # %%setup -qn %%{gitname}-%%{commit} -a 1 -D -T
-%setup -q -a 1 -D -T
+%setup -n %{gitname}-%{version} -q -a 1 -D -T
 pushd %{androguard_gitname}-%{androguard_commit}
 
 mkdir -p ../libyara/modules/androguard
@@ -181,6 +181,30 @@ rm -f %{buildroot}%{_datadir}/doc/%{name}/html/.buildinfo
 
 
 %changelog
+* Sat Mar 12 2022 Michal Ambroz <rebus at, seznam.cz> - 4.2.0-1
+- bump to 4.2.0
+
+* Thu Feb 17 2022 Michal Ambroz <rebus at, seznam.cz> - 4.2.0-0.rc1.1
+- bump to 4.2.0-rc1
+
+* Sat Jan 22 2022 Fedora Release Engineering <releng@fedoraproject.org> - 4.1.3-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
+
+* Wed Nov 10 2021 Michal Ambroz <rebus at, seznam.cz> - 4.1.3-1
+- bump to 4.1.3
+
+* Sat Nov 06 2021 Adrian Reber <adrian@lisas.de> - 4.1.1-5
+- Rebuilt for protobuf 3.19.0
+
+* Mon Oct 25 2021 Adrian Reber <adrian@lisas.de> - 4.1.1-4
+- Rebuilt for protobuf 3.18.1
+
+* Tue Sep 14 2021 Sahana Prasad <sahana@redhat.com> - 4.1.1-3
+- Rebuilt with OpenSSL 3.0.0
+
+* Fri Jul 23 2021 Fedora Release Engineering <releng@fedoraproject.org> - 4.1.1-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
+
 * Mon May 24 2021 Michal Ambroz <rebus at, seznam.cz> - 4.1.1-1
 - bump to 4.1.1
 
