@@ -27,7 +27,7 @@ autoreconf
 
 %build
 %configure --enable-opt
-make %{?_smp_mflags}
+%make_build
 
 
 %install
