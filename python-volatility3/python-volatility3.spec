@@ -1,6 +1,6 @@
 Name:           python-volatility3
 Summary:        The volatile memory extraction framework
-Version:        1.0.1
+Version:        2.0.1
 %global         baserelease     1
 
 
@@ -10,14 +10,15 @@ URL:            https://github.com/volatilityfoundation/volatility3
 
 # https://lists.fedoraproject.org/archives/list/legal@lists.fedoraproject.org/thread/OHECHDPLDJ7LLFUZXQMBBAXEXYTQMXOR/
 # https://www.volatilityfoundation.org/license/vsl-v1.0
+# https://github.com/volatilityfoundation/volatility3/issues/208
 License:        vslv1
 
 %global         gituser         volatilityfoundation
 # this is hosted on github as...
 %global         gitname         volatility3
 %global         pyname          volatility3
-%global         commit          8ecc7df9eb6b83ad1c82a9ad3b9790bffb568681
-%global         gitdate         20210201
+%global         commit          20386d723bff16c31e754bd592ecbd27b9f86b56
+%global         gitdate         20210317
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
@@ -138,6 +139,12 @@ ln -s volatility3 %{buildroot}%{_bindir}/volatility
 
 
 %changelog
+* Wed Jun 01 2022 Michal Ambroz <rebus AT_ seznam.cz> - 2.0.1-1
+- bump to new upstream version 2.0.1
+
+* Thu Jan 13 2022 Michal Ambroz <rebus AT_ seznam.cz> - 2.0.0-1
+- bump to new upstream version 2.0.0
+
 * Tue Mar 23 2021 Michal Ambroz <rebus AT_ seznam.cz> - 1.0.1-1
 - bump to new upstream version 1.0.1
 
