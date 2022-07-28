@@ -1,0 +1,22 @@
+Remove the bundled libraries from the build.
+diff -ru oletools-0.55.orig/setup.py oletools-0.55.new/setup.py
+--- oletools-0.55.orig/setup.py	2019-12-03 23:31:25.000000000 +0000
++++ oletools-0.55.new/setup.py	2019-12-04 20:55:09.904293977 +0000
+@@ -92,7 +92,6 @@
+     "oletools.common.log_helper",
+     'oletools.thirdparty',
+     'oletools.thirdparty.xxxswf',
+-    'oletools.thirdparty.prettytable',
+     'oletools.thirdparty.xglob',
+     'oletools.thirdparty.tablestream',
+     'oletools.thirdparty.oledump',
+@@ -177,9 +176,6 @@
+     'oletools.thirdparty.xxxswf': [
+         'LICENSE.txt',
+         ],
+-    'oletools.thirdparty.prettytable': [
+-        'CHANGELOG', 'COPYING', 'README'
+-        ],
+     'oletools.thirdparty.DridexUrlDecoder': [
+         'LICENSE.txt',
+         ],
