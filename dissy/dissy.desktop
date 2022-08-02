@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Dissy Disassembler
+Comment=Graphical frontend to the objdump disassembler
+GenericName=Dissy Disassembler
+Exec=dissy %f
+Icon=dissy
+Categories=Development;Debugger;
+Terminal=false
