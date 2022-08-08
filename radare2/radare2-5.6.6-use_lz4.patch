@@ -1,0 +1,12 @@
+diff -ru radare2-5.6.6-orig/libr/util/zip.c radare2-5.6.6/libr/util/zip.c
+--- radare2-5.6.6-orig/libr/util/zip.c	2022-03-22 20:06:43.000000000 +0100
++++ radare2-5.6.6/libr/util/zip.c	2022-04-13 02:48:30.050632855 +0200
+@@ -2,7 +2,7 @@
+ 
+ #include <r_util.h>
+ #include <zlib.h>
+-#include "../../../shlr/lz4/lz4.h"
++#include <lz4.h>
+ 
+ // set a maximum output buffer of 50MB
+ #define MAXOUT 50000000

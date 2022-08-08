@@ -1,0 +1,40 @@
+--- radare2-5.6.6-orig/libr/magic/meson.build	2022-03-22 20:06:43.000000000 +0100
++++ radare2-5.6.6/libr/magic/meson.build	2022-04-13 02:36:10.031944601 +0200
+@@ -1,14 +1,3 @@
+-r_magic_sources = [
+-  'apprentice.c',
+-  'ascmagic.c',
+-  'fsmagic.c',
+-  'funcs.c',
+-  'is_tar.c',
+-  'magic.c',
+-  # XXX not used? 'print.c',
+-  'softmagic.c'
+-]
+-
+ r_magic_deps = [r_util_dep]
+ if get_option('blob')
+   r_magic_static_deps = [r_util_static_dep]
+@@ -20,8 +9,22 @@
+   if get_option('blob')
+     r_magic_static_deps += [sys_magic]
+   endif
++  r_magic_sources = [
++    'magic-libmagic.c',
++    'ascmagic-libmagic.c',
++  ]
+ else
+   message('Use bundled magic library')
++  r_magic_sources = [
++    'apprentice.c',
++    'ascmagic.c',
++    'fsmagic.c',
++    'funcs.c',
++    'is_tar.c',
++    'magic.c',
++    # XXX not used? 'print.c',
++    'softmagic.c'
++  ]
+ endif
+ 
+ r_magic = library('r_magic', r_magic_sources,

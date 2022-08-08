@@ -1,0 +1,11 @@
+--- radare2-5.6.6/libr/socket/meson.build.orig	2022-04-13 02:03:18.003440078 +0200
++++ radare2-5.6.6/libr/socket/meson.build	2022-04-13 02:03:22.879431434 +0200
+@@ -11,6 +11,8 @@
+ ]
+ 
+ r_util_deps = [utl, r_util_dep, platform_deps]
++r_util_static_deps = []
++
+ if get_option('blob')
+   r_util_static_deps = [utl, r_util_static_dep, platform_deps]
+   if use_sys_openssl

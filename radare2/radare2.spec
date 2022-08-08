@@ -1,7 +1,7 @@
 Name:           radare2
 Summary:        The reverse engineering framework
-Version:        5.6.0
-%global         rel             2
+Version:        5.7.6
+%global         rel             1
 URL:            https://radare.org/
 VCS:            https://github.com/radareorg/radare2
 #               https://github.com/radareorg/radare2/releases
@@ -21,8 +21,8 @@ VCS:            https://github.com/radareorg/radare2
 %global         gituser         radareorg
 %global         gitname         radare2
 
-%global         gitdate         20220202
-%global         commit          e9e600a9a4c22a1e4aa901ab50e1d744648bd722
+%global         gitdate         20220228
+%global         commit          b636941cefcbc12b2031054e736b1f8e5458be32
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
@@ -31,12 +31,16 @@ Release:        %{rel}%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
 %else
 Release:        0.%{rel}.%{gitdate}git%{shortcommit}%{?dist}
-Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{commit}.zip
+Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{commit}.zip#/%{name}-%{version}-%{shortcommit}.zip
 %endif
 
-# Declaration of variable in the for loop requires at least c99 compatibility mode
-# This is specific to 5.6.0 and is already fixed in the git
-Patch0:         radare2-5.6.0-dec99.patch
+# Specific to Fedora - build with system libraries
+Patch1:         radare2-5.6.6-use_openssl.patch
+Patch3:         radare2-5.7.6-use_magic.patch
+Patch4:         radare2-5.6.6-use_lz4.patch
+
+# Build with new libmagic which is missing EBCDIC transform functions
+Patch5:         https://github.com/radareorg/radare2/commit/ddf483893e92f9edcd3d65f1098231b000bfe28a.patch#/radare2-5.7.6-ebcdic.patch
 
 
 License:        LGPLv3+ and GPLv2+ and BSD and MIT and ASL 2.0 and MPLv2.0 and zlib
@@ -51,16 +55,17 @@ License:        LGPLv3+ and GPLv2+ and BSD and MIT and ASL 2.0 and MPLv2.0 and z
 # shlr/java - Apache 2.0
 # shlr/sdb/src - MIT
 # shlr/lz4 - 3 clause BSD (system installed shared lz4 is used instead)
-# shlr/spp - MIT
 # shlr/squashfs/src - GPLv2+
-# shlr/tcc - LGPLv2+
+# libr/parse/c - LGPLv2+
 # shlr/udis86 - 2 clause BSD
-# shlr/wind - LGPL v3+
+# shlr/winkd - LGPL v3+
 # shlr/spp - MIT
 # shlr/zip/zlib - zlib/libpng License (system installed shared libzip is used instead)
 # shlr/zip/zip - 3 clause BSD (system installed shared zlib is used instead)
 # shlr/ptrace-wrap - LGPL v3+
 # shlr/tree-sitter - MIT
+# shlr/mpc - 2 clause BSD
+# shlr/yxml - MIT
 
 # Removed from the final package because of the presence of minified JS and
 # absence of the source JS - this should be packaged with radare2-webui
@@ -125,6 +130,7 @@ Requires:       %{name}-common = %{version}-%{release}
 # compiled with -D use_sys_xxhash=true instead
 
 # ./libr/hash/{md4,md5,sha1,sha2}.{c,h}
+# ./libr/util/big.c
 # compiled with -D use_sys_openssl=true instead
 
 # ./shlr/spp/README.md
@@ -135,7 +141,7 @@ Provides:       bundled(spp) = 1.2.0
 # ./shlr/sdb/README.md
 # sdb is a simple string key/value database based on djb's cdb
 # https://github.com/radare/sdb
-Provides:       bundled(sdb) = 1.7.0
+Provides:       bundled(sdb) = 1.8.6
 
 # ./shlr/sdb/src/json/README
 # Based on js0n with a lot of modifications
@@ -149,7 +155,7 @@ Provides:       bundled(js0n) = 2018
 # version from 2010/11/21 00:02:30, version of files ranges from v1.11 to v1.20
 Provides:       bundled(openbsdregex) = 1.11
 
-# ./shlr/tcc/README.md
+# ./libr/parse/c/README.md
 # This is a stripped down version of tcc without the code generators and heavily modified.
 Provides:       bundled(tcc) = 0.9.26
 
@@ -169,13 +175,23 @@ Provides:       bundled(vavrdisasm) = 1.6
 # It is not clear which version has been copied
 Provides:       bundled(grub2) = 1.99~beta0
 
-# ./shlr/ptrace-wrap
+# ./libr/io/ptrace_wrap.c
 # https://github.com/thestr4ng3r/ptrace-wrap
 Provides:       bundled(ptrace-wrap) = 20181018
 
 # ./shlr/tree-sitter
 # https://github.com/tree-sitter/tree-sitter
 Provides:       bundled(tree-sitter) = 0.17.2
+
+# ./shlr/mpc
+# https://github.com/orangeduck/mpc
+Provides:       bundled(mpc) = 0.8.7
+
+# ./shlr/yxml
+# https://dev.yorhel.nl/yxml
+Provides:       bundled(yxml) = 20201108
+
+# and likely some more in libr/... borrowed from other projects
 
 %description
 The radare2 is a reverse-engineering framework that is multi-architecture,
@@ -216,10 +232,20 @@ information
 # Rename internal "version-git" to "version"
 sed -i -e "s|%{version}-git|%{version}|g;" configure configure.acr
 %endif
-# Removing zip/lzip and lz4 files because we use system dependencies
-rm -rf shlr/zip/{zip,zlib,include} shlr/lz4
+# Removing zip/lzip files because we use system dependencies
+rm -rf shlr/zip/{zip,zlib,include}
+# Remove lx4 files because we use system dependencies
+rm -rf shlr/lz4/{deps.mk,LICENSE,lz4.*,Makefile,README.md}
 # Remove xxhash files because we use system dependencies
 rm -f libr/hash/xxhash.c libr/hash/xxhash.h
+# Remove magic files because we use system dependencies
+awk 'BEGIN {p=1} /#if USE_LIB_MAGIC/ {p=2; next} p==2 && /#else/ {p=0} p>0 {print}' libr/magic/magic.c > libr/magic/magic.c.stripped
+awk 'BEGIN {p=1} /#if !USE_LIB_MAGIC/ {p=0; next} p==2 && /#else/ {p=0} p>0 {print}' libr/magic/ascmagic.c > libr/magic/ascmagic.c.stripped
+rm -rf libr/magic/*.c
+mv libr/magic/magic.c.stripped libr/magic/magic-libmagic.c
+mv libr/magic/ascmagic.c.stripped libr/magic/ascmagic-libmagic.c
+# Remove openssl files because we use system dependencies
+rm -f libr/hash/{md4,md5,sha1,sha2}.[ch]
 
 # Webui contains pre-build and/or minimized versions of JS libraries without source code
 # Consider installing the web-interface from https://github.com/radare/radare2-webui
@@ -244,6 +270,7 @@ sed -i -e "s|meson_version : '>=......'|meson_version : '>=0.49.1'|;" meson.buil
     -Duse_sys_zlib=true \
     -Duse_sys_lz4=true \
     -Duse_sys_xxhash=true \
+    -Duse_ssl=true \
     -Duse_sys_openssl=true \
     -Duse_libuv=true \
 %ifarch s390x
@@ -251,7 +278,8 @@ sed -i -e "s|meson_version : '>=......'|meson_version : '>=0.49.1'|;" meson.buil
 %endif
     -Duse_sys_capstone=true \
     -Denable_tests=false \
-    -Denable_r2r=false
+    -Denable_r2r=false \
+    -Dwant_threads=false     # multithreading doesn't work well with Iaito package
 %meson_build
 
 
@@ -320,6 +348,34 @@ mkdir -p %{buildroot}%{_libdir}/%{name}/%{version}
 
 
 %changelog
+* Tue Aug 02 2022 Michal Ambroz <rebus at, seznam.cz> 5.7.6-1
+- bump to 5.7.6
+- cherrypicked patch for new libmagic from upstream
+
+* Sat Jul 23 2022 Fedora Release Engineering <releng@fedoraproject.org> - 5.6.8-1.1
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_37_Mass_Rebuild
+
+* Thu Apr 21 2022 Henrik Nordstrom <henrik@henriknordstrom.net> - 5.6.8-1
+- bump to 5.6.8
+
+* Wed Apr 13 2022 Henrik Nordstrom <henrik@henriknordstrom.net> 5.6.6-2
+- refresh list of bundled libraries and associated cleanup
+
+* Tue Apr 12 2022 Henrik Nordstrom <henrik@henriknordstrom.net> 5.6.6-2
+- Fixes for CVE-2022-1061 CVE-2022-1207 CVE-2022-1237 CVE-2022-1238
+  CVE-2022-1240 CVE-2022-1244 CVE-2022-1283 CVE-2022-1284 CVE-2022-1296
+  CVE-2022-1297
+
+* Tue Apr 12 2022 Henrik Nordstrom <henrik@henriknordstrom.net> 5.6.6-1
+- bump to 5.6.6
+
+* Mon Feb 28 2022 Michal Ambroz <rebus at, seznam.cz> 5.6.4-1
+- bump to 5.6.4
+
+* Wed Feb 09 2022 Michal Ambroz <rebus at, seznam.cz> 5.6.2-1
+- bump to 5.6.2
+- disable multithreading for now to be able to compile with iaito
+
 * Wed Feb 09 2022 Michal Ambroz <rebus at, seznam.cz> 5.6.0-2
 - patch declaration of int i in for cycle to avoid C99 mode on EPEL7
 

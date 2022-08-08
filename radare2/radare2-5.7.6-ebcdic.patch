@@ -1,0 +1,538 @@
+From ddf483893e92f9edcd3d65f1098231b000bfe28a Mon Sep 17 00:00:00 2001
+From: pancake <pancake@nopcode.org>
+Date: Sun, 7 Aug 2022 13:17:58 +0200
+Subject: [PATCH] Test and benchmark --with-sysmagic in the CI ##search
+
+* Improve output of search.verbose
+* Remove conflictive magic signature
+---
+ .github/workflows/ci.yml          |  28 ++++++++
+ dist/plugins-cfg/plugins.nocs.cfg |   1 +
+ libr/core/cmd_magic.c             |  42 ++++++-----
+ libr/include/r_magic.h            |   8 +--
+ libr/magic/apprentice.c           |   3 +-
+ libr/magic/ascmagic.c             | 112 +++++++++++++++---------------
+ libr/magic/d/default/archive      | 110 +++++++++++++++--------------
+ libr/magic/magic.c                |   4 +-
+ 8 files changed, 171 insertions(+), 137 deletions(-)
+
+diff --git a/.github/workflows/ci.yml b/.github/workflows/ci.yml
+index a640d44a02f7..0767be9d6a52 100644
+--- a/.github/workflows/ci.yml
++++ b/.github/workflows/ci.yml
+@@ -47,10 +47,38 @@ jobs:
+     - name: Linting
+       run: sys/lint.sh
+     - name: Building without capstone
++      env:
++        CFLAGS: -O0
+       run: |
+         cp -f dist/plugins-cfg/plugins.nocs.cfg plugins.cfg
+         ./configure --without-capstone --with-rpath && make -j
+         sudo make install
++    - name: Running c/m with self-hosted libmagic
++      run:
++        time r2 -a gb -e search.verbose=false -qc/m test/bins/mach0/ls-m1 > /tmp/m.1 2>&1 || true
++        cat /tmp/m.1
++    - name: Uninstall test
++      run: |
++        sudo make uninstall
++    - name: Building with libmagic
++      env:
++        CFLAGS: -O0
++      run: |
++        sudo apt install -y libmagic-dev
++        git clean -xdf ; rm -rf shlr/capstone
++        cp -f dist/plugins-cfg/plugins.nocs.cfg plugins.cfg
++        ./configure --with-sysmagic --without-capstone --with-rpath && make -j
++        sudo make install
++    - name: Running c/m with system libmagic
++      run:
++        time r2 -a gb -e search.verbose=false -qc/m test/bins/mach0/ls-m1 > /tmp/m.2 2>&1 || true
++        cat /tmp/m.2
++    - name: Compare magic times and results
++      run: |
++        echo ===== m.1
++        cat /tmp/m.1
++        echo ===== m.2
++        cat /tmp/m.2
+     #- name: Building muon/samu
+     #  run: |
+     #    r2pm -gci muon # installs samurai as dependency
+diff --git a/dist/plugins-cfg/plugins.nocs.cfg b/dist/plugins-cfg/plugins.nocs.cfg
+index 9a9dee5fc5a9..504cce94782e 100644
+--- a/dist/plugins-cfg/plugins.nocs.cfg
++++ b/dist/plugins-cfg/plugins.nocs.cfg
+@@ -62,6 +62,7 @@ asm.x86_as
+ asm.x86_nz
+ asm.x86_nasm
+ bin.any
++bin.s390
+ bin.wasm
+ bin.nro
+ bin.nso
+diff --git a/libr/core/cmd_magic.c b/libr/core/cmd_magic.c
+index d1862b64462b..083e90d30329 100644
+--- a/libr/core/cmd_magic.c
++++ b/libr/core/cmd_magic.c
+@@ -18,8 +18,8 @@ static int r_core_magic_at(RCore *core, const char *file, ut64 addr, int depth,
+ 	const char *str;
+ 	int delta = 0, adelta = 0, ret;
+ 	ut64 curoffset = core->offset;
+-	int maxHits = r_config_get_i (core->config, "search.maxhits");
+-	if (maxHits > 0 && *hits >= maxHits) {
++	int max_hits = r_config_get_i (core->config, "search.maxhits");
++	if (max_hits > 0 && *hits >= max_hits) {
+ 		return 0;
+ 	}
+ 
+@@ -27,8 +27,15 @@ static int r_core_magic_at(RCore *core, const char *file, ut64 addr, int depth,
+ 		ret = 0;
+ 		goto seek_exit;
+ 	}
++	bool must_report_progress = !pj;
++	if (must_report_progress) {
++		must_report_progress = r_config_get_b (core->config, "search.verbose");
++		if (must_report_progress) {
++			must_report_progress = r_config_get_b (core->config, "scr.interactive");
++		}
++	}
+ 	if (addr != core->offset) {
+-		if (addr >= core->offset && (addr+NAH) < (core->offset + core->blocksize)) {
++		if (addr >= core->offset && (addr + NAH) < (core->offset + core->blocksize)) {
+ 			delta = addr - core->offset;
+ 		} else {
+ 			r_core_seek (core, addr, true);
+@@ -37,18 +44,21 @@ static int r_core_magic_at(RCore *core, const char *file, ut64 addr, int depth,
+ 	if (core->search->align) {
+ 		int mod = addr % core->search->align;
+ 		if (mod) {
+-			eprintf ("Unaligned search at %d\n", mod);
++			R_LOG_WARN ("Unaligned search result at %d", mod);
+ 			ret = mod;
+ 			goto seek_exit;
+ 		}
+ 	}
+-	if (((addr&7)==0) && ((addr&(7<<8))==0))
+-		if (!pj) { // update search display
++	if (((addr & 7) == 0) && ((addr & (7 << 8)) == 0)) {
++		if (must_report_progress) {
+ 			eprintf ("0x%08" PFMT64x " [%d matches found]\r", addr, *hits);
+ 		}
++	}
+ 	if (file) {
+-		if (*file == ' ') file++;
+-		if (!*file) file = NULL;
++		file = r_str_trim_head_ro (file);
++		if (R_STR_ISEMPTY (file)) {
++			file = NULL;
++		}
+ 	}
+ 	if (file && ofile && file != ofile) {
+ 		if (strcmp (file, ofile)) {
+@@ -65,7 +75,7 @@ static int r_core_magic_at(RCore *core, const char *file, ut64 addr, int depth,
+ 			free (ofile);
+ 			ofile = strdup (file);
+ 			if (!r_magic_load (ck, file)) {
+-				eprintf ("failed r_magic_load (\"%s\") %s\n", file, r_magic_error (ck));
++				R_LOG_ERROR ("failed r_magic_load (\"%s\") %s", file, r_magic_error (ck));
+ 				ck = NULL;
+ 				ret = -1;
+ 				goto seek_exit;
+@@ -74,7 +84,7 @@ static int r_core_magic_at(RCore *core, const char *file, ut64 addr, int depth,
+ 			const char *magicpath = r_config_get (core->config, "dir.magic");
+ 			if (!r_magic_load (ck, magicpath)) {
+ 				ck = NULL;
+-				eprintf ("failed r_magic_load (dir.magic) %s\n", r_magic_error (ck));
++				R_LOG_ERROR ("failed r_magic_load (dir.magic) %s", r_magic_error (ck));
+ 				ret = -1;
+ 				goto seek_exit;
+ 			}
+@@ -82,7 +92,7 @@ static int r_core_magic_at(RCore *core, const char *file, ut64 addr, int depth,
+ 	}
+ 	//if (v) r_cons_printf ("  %d # pm %s @ 0x%"PFMT64x"\n", depth, r_str_get (file), addr);
+ 	if (delta + 2 > core->blocksize) {
+-		eprintf ("EOB\n");
++		R_LOG_WARN ("magic result happens between block reads");
+ 		ret = -1;
+ 		goto seek_exit;
+ 	}
+@@ -90,7 +100,7 @@ static int r_core_magic_at(RCore *core, const char *file, ut64 addr, int depth,
+ 	if (str) {
+ 		const char *cmdhit;
+ #if USE_LIB_MAGIC
+-		if (!v && (!strcmp (str, "data") || strstr(str, "ASCII") || strstr(str, "ISO") || strstr(str, "no line terminator"))) {
++		if (!v && (!strcmp (str, "data") || strstr(str, "ASCII") || strstr (str, "ISO") || strstr (str, "no line terminator"))) {
+ #else
+ 		if (!v && (!strcmp (str, "data"))) {
+ #endif
+@@ -126,7 +136,7 @@ static int r_core_magic_at(RCore *core, const char *file, ut64 addr, int depth,
+ 		}
+ 		// TODO: This must be a callback .. move this into RSearch?
+ 		if (!pj) {
+-			r_cons_printf ("0x%08"PFMT64x" %d %s\n", addr + adelta, magicdepth-depth, p);
++			r_cons_printf ("0x%08"PFMT64x" %d %s\n", addr + adelta, magicdepth - depth, p);
+ 		} else {
+ 			pj_o (pj);
+ 			pj_kN (pj, "offset", addr + adelta);
+@@ -134,7 +144,9 @@ static int r_core_magic_at(RCore *core, const char *file, ut64 addr, int depth,
+ 			pj_ks (pj, "info", p);
+ 			pj_end (pj);
+ 		}
+-		r_cons_clear_line (1);
++		if (must_report_progress) {
++			r_cons_clear_line (1);
++		}
+ 		//eprintf ("0x%08"PFMT64x" 0x%08"PFMT64x" %d %s\n", addr+adelta, addr+adelta, magicdepth-depth, p);
+ 		// walking children
+ 		for (q = p; *q; q++) {
+@@ -171,13 +183,11 @@ static int r_core_magic_at(RCore *core, const char *file, ut64 addr, int depth,
+ 	r_magic_free (ck);
+ 	ck = NULL;
+ #endif
+-{
+ 	int mod = core->search->align;
+ 	if (mod) {
+ 		ret = mod; //adelta%addr + deR_ABS(mod-adelta)+1;
+ 		goto seek_exit;
+ 	}
+-}
+ 	ret = adelta; //found;
+ 
+ seek_exit:
+diff --git a/libr/include/r_magic.h b/libr/include/r_magic.h
+index 488dbf9686ff..bb36c04e153b 100644
+--- a/libr/include/r_magic.h
++++ b/libr/include/r_magic.h
+@@ -1,4 +1,4 @@
+-/* radare - LGPL - Copyright 2011-2014 - pancake */
++/* radare - LGPL - Copyright 2011-2022 - pancake */
+ 
+ #ifndef R2_MAGIC_H
+ #define R2_MAGIC_H
+@@ -13,12 +13,6 @@ R_LIB_VERSION_HEADER (r_magic);
+ 
+ #ifdef R_API
+ 
+-#ifdef __EMX__
+-#define PATHSEP	';'
+-#else
+-#define PATHSEP	':'
+-#endif
+-
+ /* limits */
+ #ifndef HOWMANY
+ # define HOWMANY    (256 * 1024)    /* how much of the file to look at */
+diff --git a/libr/magic/apprentice.c b/libr/magic/apprentice.c
+index 6a4428e3f1bd..89eae490ddab 100644
+--- a/libr/magic/apprentice.c
++++ b/libr/magic/apprentice.c
+@@ -296,7 +296,7 @@ struct mlist * file_apprentice(RMagic *ms, const char *fn, size_t fn_size, int a
+ 	mlist->next = mlist->prev = mlist;
+ 
+ 	while (fn) {
+-		p = strchr (fn, PATHSEP);
++		p = strstr (fn, R_SYS_ENVSEP);
+ 		if (p) {
+ 			*p++ = '\0';
+ 		}
+@@ -2045,6 +2045,7 @@ static ut32 swap4(ut32 sv) {
+  * swap a quad
+  */
+ static ut64 swap8(ut64 sv) {
++	// we have r_read apis for that, dont dupe!
+ 	ut64 rv;
+ 	ut8 *s = (ut8 *)(void *)&sv;
+ 	ut8 *d = (ut8 *)(void *)&rv;
+diff --git a/libr/magic/ascmagic.c b/libr/magic/ascmagic.c
+index f7de1f472e3b..59b5ab22bd72 100644
+--- a/libr/magic/ascmagic.c
++++ b/libr/magic/ascmagic.c
+@@ -39,6 +39,57 @@
+ #include <r_userconf.h>
+ #include <r_types.h>
+ 
++/*
++ * This table maps each EBCDIC character to an (8-bit extended) ASCII
++ * character, as specified in the rationale for the dd(1) command in
++ * draft 11.2 (September, 1991) of the POSIX P1003.2 standard.
++ *
++ * Unfortunately it does not seem to correspond exactly to any of the
++ * five variants of EBCDIC documented in IBM's _Enterprise Systems
++ * Architecture/390: Principles of Operation_, SA22-7201-06, Seventh
++ * Edition, July, 1999, pp. I-1 - I-4.
++ *
++ * Fortunately, though, all versions of EBCDIC, including this one, agree
++ * on most of the printing characters that also appear in (7-bit) ASCII.
++ * Of these, only '|', '!', '~', '^', '[', and ']' are in question at all.
++ *
++ * Fortunately too, there is general agreement that codes 0x00 through
++ * 0x3F represent control characters, 0x41 a nonbreaking space, and the
++ * remainder printing characters.
++ *
++ * This is sufficient to allow us to identify EBCDIC text and to distinguish
++ * between old-style and internationalized examples of text.
++ */
++
++static ut8 ebcdic_to_ascii[] = {
++  0,   1,   2,   3, 156,   9, 134, 127, 151, 141, 142,  11,  12,  13,  14,  15,
++ 16,  17,  18,  19, 157, 133,   8, 135,  24,  25, 146, 143,  28,  29,  30,  31,
++128, 129, 130, 131, 132,  10,  23,  27, 136, 137, 138, 139, 140,   5,   6,   7,
++144, 145,  22, 147, 148, 149, 150,   4, 152, 153, 154, 155,  20,  21, 158,  26,
++' ', 160, 161, 162, 163, 164, 165, 166, 167, 168, 213, '.', '<', '(', '+', '|',
++'&', 169, 170, 171, 172, 173, 174, 175, 176, 177, '!', '$', '*', ')', ';', '~',
++'-', '/', 178, 179, 180, 181, 182, 183, 184, 185, 203, ',', '%', '_', '>', '?',
++186, 187, 188, 189, 190, 191, 192, 193, 194, '`', ':', '#', '@', '\'','=', '"',
++195, 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 196, 197, 198, 199, 200, 201,
++202, 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', '^', 204, 205, 206, 207, 208,
++209, 229, 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 210, 211, 212, '[', 214, 215,
++216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, ']', 230, 231,
++'{', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 232, 233, 234, 235, 236, 237,
++'}', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 238, 239, 240, 241, 242, 243,
++'\\',159, 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 244, 245, 246, 247, 248, 249,
++'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 250, 251, 252, 253, 254, 255
++};
++
++/*
++ * Copy buf[0 ... nbytes-1] into out[], translating EBCDIC to ASCII.
++ */
++R_API void r_magic_from_ebcdic(const ut8 *buf, size_t nbytes, ut8 *out) {
++	size_t i;
++	for (i = 0; i < nbytes; i++) {
++		out[i] = ebcdic_to_ascii[buf[i]];
++	}
++}
++
+ #if !USE_LIB_MAGIC
+ 
+ #include "file.h"
+@@ -147,9 +198,9 @@ return 0;
+ 		type = "text";
+ 		code_mime = "unknown";
+ 	} else {
+-		r_magic_from_ebcdic(buf, nbytes, nbuf);
++		r_magic_from_ebcdic (buf, nbytes, nbuf);
+ 
+-		if (looks_ascii(nbuf, nbytes, ubuf, &ulen)) {
++		if (looks_ascii (nbuf, nbytes, ubuf, &ulen)) {
+ 			code = "EBCDIC";
+ 			type = "character data";
+ 			code_mime = "ebcdic";
+@@ -534,9 +585,7 @@ static int looks_extended(const ut8 *buf, size_t nbytes, unichar *ubuf, size_t *
+  * Encode Unicode string as UTF-8, returning pointer to character
+  * after end of string, or NULL if an invalid character is found.
+  */
+-static ut8 *
+-encode_utf8(ut8 *buf, size_t len, unichar *ubuf, size_t ulen)
+-{
++static ut8 * encode_utf8(ut8 *buf, size_t len, unichar *ubuf, size_t ulen) {
+ 	size_t i;
+ 	ut8 *end = buf + len;
+ 
+@@ -732,48 +781,7 @@ static int looks_ucs16(const ut8 *buf, size_t nbytes, unichar *ubuf, size_t *ule
+ 
+ #endif
+ 
+-/*
+- * This table maps each EBCDIC character to an (8-bit extended) ASCII
+- * character, as specified in the rationale for the dd(1) command in
+- * draft 11.2 (September, 1991) of the POSIX P1003.2 standard.
+- *
+- * Unfortunately it does not seem to correspond exactly to any of the
+- * five variants of EBCDIC documented in IBM's _Enterprise Systems
+- * Architecture/390: Principles of Operation_, SA22-7201-06, Seventh
+- * Edition, July, 1999, pp. I-1 - I-4.
+- *
+- * Fortunately, though, all versions of EBCDIC, including this one, agree
+- * on most of the printing characters that also appear in (7-bit) ASCII.
+- * Of these, only '|', '!', '~', '^', '[', and ']' are in question at all.
+- *
+- * Fortunately too, there is general agreement that codes 0x00 through
+- * 0x3F represent control characters, 0x41 a nonbreaking space, and the
+- * remainder printing characters.
+- *
+- * This is sufficient to allow us to identify EBCDIC text and to distinguish
+- * between old-style and internationalized examples of text.
+- */
+-
+-static ut8 ebcdic_to_ascii[] = {
+-  0,   1,   2,   3, 156,   9, 134, 127, 151, 141, 142,  11,  12,  13,  14,  15,
+- 16,  17,  18,  19, 157, 133,   8, 135,  24,  25, 146, 143,  28,  29,  30,  31,
+-128, 129, 130, 131, 132,  10,  23,  27, 136, 137, 138, 139, 140,   5,   6,   7,
+-144, 145,  22, 147, 148, 149, 150,   4, 152, 153, 154, 155,  20,  21, 158,  26,
+-' ', 160, 161, 162, 163, 164, 165, 166, 167, 168, 213, '.', '<', '(', '+', '|',
+-'&', 169, 170, 171, 172, 173, 174, 175, 176, 177, '!', '$', '*', ')', ';', '~',
+-'-', '/', 178, 179, 180, 181, 182, 183, 184, 185, 203, ',', '%', '_', '>', '?',
+-186, 187, 188, 189, 190, 191, 192, 193, 194, '`', ':', '#', '@', '\'','=', '"',
+-195, 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 196, 197, 198, 199, 200, 201,
+-202, 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', '^', 204, 205, 206, 207, 208,
+-209, 229, 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 210, 211, 212, '[', 214, 215,
+-216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, ']', 230, 231,
+-'{', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 232, 233, 234, 235, 236, 237,
+-'}', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 238, 239, 240, 241, 242, 243,
+-'\\',159, 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 244, 245, 246, 247, 248, 249,
+-'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 250, 251, 252, 253, 254, 255
+-};
+-
+-#ifdef notdef
++#if 0
+ /*
+  * The following EBCDIC-to-ASCII table may relate more closely to reality,
+  * or at least to modern reality.  It comes from
+@@ -807,13 +815,3 @@ static ut8 ebcdic_1047_to_8859[] = {
+ 0x30,0x31,0x32,0x33,0x34,0x35,0x36,0x37,0x38,0x39,0xB3,0xDB,0xDC,0xD9,0xDA,0x9F
+ };
+ #endif
+-
+-/*
+- * Copy buf[0 ... nbytes-1] into out[], translating EBCDIC to ASCII.
+- */
+-R_API void r_magic_from_ebcdic(const ut8 *buf, size_t nbytes, ut8 *out) {
+-	size_t i;
+-	for (i = 0; i < nbytes; i++) {
+-		out[i] = ebcdic_to_ascii[buf[i]];
+-	}
+-}
+diff --git a/libr/magic/d/default/archive b/libr/magic/d/default/archive
+index 0f7cb77866a2..17dbed94e1cd 100755
+--- a/libr/magic/d/default/archive
++++ b/libr/magic/d/default/archive
+@@ -133,60 +133,62 @@
+ # ZIP footer
+ 0       string      PK\005\006      End of Zip archive
+ 
+-# OpenOffice.org / KOffice / StarOffice documents
+-# From: Abel Cheung <abel@oaka.org>
+-# Listed here because they are basically zip files
+->>30	string		mimetype
+-
+-# KOffice (1.2 or above) formats
+->>>50	string	vnd.kde.		KOffice (>=1.2)
+->>>>58	string	karbon			Karbon document
+->>>>58	string	kchart			KChart document
+->>>>58	string	kformula		KFormula document
+->>>>58	string	kivio			Kivio document
+->>>>58	string	kontour			Kontour document
+->>>>58	string	kpresenter		KPresenter document
+->>>>58	string	kspread			KSpread document
+->>>>58	string	kword			KWord document
+-
+-# OpenOffice formats (for OpenOffice 1.x / StarOffice 6/7)
+->>>50	string	vnd.sun.xml.		OpenOffice.org 1.x
+->>>>62	string	writer			Writer
+->>>>>68	byte	!0x2e			document
+->>>>>68	string	.template		template
+->>>>>68	string	.global			global document
+->>>>62	string	calc			Calc
+->>>>>66	byte	!0x2e			spreadsheet
+->>>>>66	string	.template		template
+->>>>62	string	draw			Draw
+->>>>>66	byte	!0x2e			document
+->>>>>66	string	.template		template
+->>>>62	string	impress			Impress
+->>>>>69	byte	!0x2e			presentation
+->>>>>69	string	.template		template
+->>>>62	string	math			Math document
+-
+-# OpenDocument formats (for OpenOffice 2.x / StarOffice >= 8)
+-# http://lists.oasis-open.org/archives/office/200505/msg00006.html
+->>>50	string	vnd.oasis.opendocument.	OpenDocument
+->>>>73	string	text
+->>>>>77	byte	!0x2d			Text
+-!:mime	application/vnd.oasis.opendocument.text
+->>>>>77	string	-template		Text Template
+->>>>>77	string	-web			HTML Document Template
+->>>>>77	string	-master			Master Document
+->>>>73	string	graphics		Drawing
+->>>>>81	string	-template		Template
+->>>>73	string	presentation		Presentation
+->>>>>85	string	-template		Template
+->>>>73	string	spreadsheet		Spreadsheet
+->>>>>84	string	-template		Template
+->>>>73	string	chart			Chart
+->>>>>78	string	-template		Template
+->>>>73	string	formula			Formula
+->>>>>80	string	-template		Template
+->>>>73	string	database		Database
+->>>>73	string	image			Image
++# commented because barely used and barely used
++#
++# # OpenOffice.org / KOffice / StarOffice documents
++# # From: Abel Cheung <abel@oaka.org>
++# # Listed here because they are basically zip files
++# >>30	string		mimetype
++# 
++# # KOffice (1.2 or above) formats
++# >>>50	string	vnd.kde.		KOffice (>=1.2)
++# >>>>58	string	karbon			Karbon document
++# >>>>58	string	kchart			KChart document
++# >>>>58	string	kformula		KFormula document
++# >>>>58	string	kivio			Kivio document
++# >>>>58	string	kontour			Kontour document
++# >>>>58	string	kpresenter		KPresenter document
++# >>>>58	string	kspread			KSpread document
++# >>>>58	string	kword			KWord document
++# 
++# # OpenOffice formats (for OpenOffice 1.x / StarOffice 6/7)
++# >>>50	string	vnd.sun.xml.		OpenOffice.org 1.x
++# >>>>62	string	writer			Writer
++# >>>>>68	byte	!0x2e			document
++# >>>>>68	string	.template		template
++# >>>>>68	string	.global			global document
++# >>>>62	string	calc			Calc
++# >>>>>66	byte	!0x2e			spreadsheet
++# >>>>>66	string	.template		template
++# >>>>62	string	draw			Draw
++# >>>>>66	byte	!0x2e			document
++# >>>>>66	string	.template		template
++# >>>>62	string	impress			Impress
++# >>>>>69	byte	!0x2e			presentation
++# >>>>>69	string	.template		template
++# >>>>62	string	math			Math document
++# 
++# # OpenDocument formats (for OpenOffice 2.x / StarOffice >= 8)
++# # http://lists.oasis-open.org/archives/office/200505/msg00006.html
++# >>>50	string	vnd.oasis.opendocument.	OpenDocument
++# >>>>73	string	text
++# >>>>>77	byte	!0x2d			Text
++# !:mime	application/vnd.oasis.opendocument.text
++# >>>>>77	string	-template		Text Template
++# >>>>>77	string	-web			HTML Document Template
++# >>>>>77	string	-master			Master Document
++# >>>>73	string	graphics		Drawing
++# >>>>>81	string	-template		Template
++# >>>>73	string	presentation		Presentation
++# >>>>>85	string	-template		Template
++# >>>>73	string	spreadsheet		Spreadsheet
++# >>>>>84	string	-template		Template
++# >>>>73	string	chart			Chart
++# >>>>>78	string	-template		Template
++# >>>>73	string	formula			Formula
++# >>>>>80	string	-template		Template
++# >>>>73	string	database		Database
++# >>>>73	string	image			Image
+ 
+ # Zoo archiver
+ 20	lelong		0xfdc4a7dc	Zoo archive data
+diff --git a/libr/magic/magic.c b/libr/magic/magic.c
+index 70d2b54dbb74..7f7bf77999dc 100644
+--- a/libr/magic/magic.c
++++ b/libr/magic/magic.c
+@@ -106,7 +106,7 @@ static const char *file_or_fd(RMagic *ms, const char *inname, int fd) {
+ 	 * one extra for terminating '\0', and
+ 	 * some overlapping space for matches near EOF
+ 	 */
+-#define SLOP (1 + sizeof(union VALUETYPE))
++#define SLOP (1 + sizeof (union VALUETYPE))
+ 	if (!(buf = malloc (HOWMANY + SLOP))) {
+ 		return NULL;
+ 	}
+@@ -126,7 +126,7 @@ static const char *file_or_fd(RMagic *ms, const char *inname, int fd) {
+ 			ispipe = true;
+ 		}
+ 	} else {
+-		int flags = O_RDONLY|O_BINARY;
++		int flags = O_RDONLY | O_BINARY;
+ 
+ 		if (stat (inname, &sb) == 0 && S_ISFIFO (sb.st_mode)) {
+ #if O_NONBLOCK

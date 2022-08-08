@@ -1,0 +1,23 @@
+diff -ru radare2-3b774834dcc4c4d1cf78e4675c05589e77d8f969/libr/util/meson.build radare2-3b774834dcc4c4d1cf78e4675c05589e77d8f969.new/libr/util/meson.build
+--- radare2-3b774834dcc4c4d1cf78e4675c05589e77d8f969/libr/util/meson.build	2022-02-21 23:54:38.000000000 +0100
++++ radare2-3b774834dcc4c4d1cf78e4675c05589e77d8f969.new/libr/util/meson.build	2022-02-22 04:44:58.160380939 +0100
+@@ -98,13 +98,13 @@
+ 
+ r_util_deps = [ldl, mth, spp_dep, pth, utl, sdb_dep, zlib_dep, platform_deps]
+ if lz4_dep.found() and get_option('use_sys_lz4')
+-  # r_util_deps += lz4_dep
++  r_util_deps += lz4_dep
++else
++  # r_util_sources += '../../shlr/lz4/lz4.c'
+   r_util_deps += declare_dependency(
+     link_with: libr2lz4,
+     include_directories: lz4_inc
+   )
+-else
+-  r_util_sources += '../../shlr/lz4/lz4.c'
+ endif
+ if host_machine.system().startswith('freebsd') or host_machine.system().startswith('netbsd') or host_machine.system().startswith('haiku')
+   # backtrace_symbols_fd requires -lexecinfo
+Only in radare2-3b774834dcc4c4d1cf78e4675c05589e77d8f969.new: redhat-linux-build
+Only in radare2-3b774834dcc4c4d1cf78e4675c05589e77d8f969.new/shlr/sdb/src: sdb_version.h
+Only in radare2-3b774834dcc4c4d1cf78e4675c05589e77d8f969.new/shlr/spp: config.h

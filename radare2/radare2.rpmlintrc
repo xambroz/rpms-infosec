@@ -1,0 +1,8 @@
+from Config import addFilter
+
+
+# radare2.src: W: spelling-error %description -l en_US scriptable -> scrip table, scrip-table, script able
+addFilter('radare2.*: spelling-error.*scriptable')
+
+# radare2.src: W: spelling-error %description -l en_US opcode -> op code, op-code, code
+addFilter('radare2.*: spelling-error.*opcode')

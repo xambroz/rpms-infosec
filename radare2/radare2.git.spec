@@ -1,7 +1,7 @@
 Name:           radare2
 Summary:        The reverse engineering framework
-Version:        5.6.0
-%global         rel             3
+Version:        5.6.3
+%global         rel             1
 URL:            https://radare.org/
 VCS:            https://github.com/radareorg/radare2
 #               https://github.com/radareorg/radare2/releases
@@ -21,8 +21,8 @@ VCS:            https://github.com/radareorg/radare2
 %global         gituser         radareorg
 %global         gitname         radare2
 
-%global         gitdate         20220214
-%global         commit          5a7ffe4c0a71794fbb0b945d52065c7c11d1eec2
+%global         gitdate         20220221
+%global         commit          3b774834dcc4c4d1cf78e4675c05589e77d8f969
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
@@ -31,12 +31,15 @@ Release:        %{rel}%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
 %else
 Release:        0.%{rel}.%{gitdate}git%{shortcommit}%{?dist}
-Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{commit}.zip
+Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.zip
 %endif
 
 # Declaration of variable in the for loop requires at least c99 compatibility mode
 # This is specific to 5.6.0 and is already fixed in the git
-Patch0:         radare2-5.6.0-dec99.patch
+# Patch0:         radare2-5.6.0-dec99.patch
+
+Patch1:         radare2-5.6.3-lz4.patch
+
 
 
 License:        LGPLv3+ and GPLv2+ and BSD and MIT and ASL 2.0 and MPLv2.0 and zlib
@@ -217,7 +220,11 @@ information
 sed -i -e "s|%{version}-git|%{version}|g;" configure configure.acr
 %endif
 # Removing zip/lzip and lz4 files because we use system dependencies
-rm -rf shlr/zip/{zip,zlib,include} shlr/lz4
+rm -rf shlr/zip/{zip,zlib,include}
+
+# Unbundling lz4 doesn't work
+# rm -rf shlr/lz4
+
 # Remove xxhash files because we use system dependencies
 rm -f libr/hash/xxhash.c libr/hash/xxhash.h
 
@@ -242,7 +249,7 @@ sed -i -e "s|meson_version : '>=......'|meson_version : '>=0.49.1'|;" meson.buil
     -Duse_sys_magic=true \
     -Duse_sys_zip=true \
     -Duse_sys_zlib=true \
-    -Duse_sys_lz4=true \
+    -Duse_sys_lz4=false \
     -Duse_sys_xxhash=true \
     -Duse_sys_openssl=true \
     -Duse_libuv=true \
@@ -251,7 +258,8 @@ sed -i -e "s|meson_version : '>=......'|meson_version : '>=0.49.1'|;" meson.buil
 %endif
     -Duse_sys_capstone=true \
     -Denable_tests=false \
-    -Denable_r2r=false
+    -Denable_r2r=false \
+    -Dwant_threads=false
 %meson_build
 
 
@@ -320,7 +328,7 @@ mkdir -p %{buildroot}%{_libdir}/%{name}/%{version}
 
 
 %changelog
-* Mon Feb 14 2022 Michal Ambroz <rebus at, seznam.cz> 5.6.0-3
+* Mon Feb 14 2022 Michal Ambroz <rebus at, seznam.cz> 5.6.1-0.1
 - switch to current git snapshot
 
 * Wed Feb 09 2022 Michal Ambroz <rebus at, seznam.cz> 5.6.0-2
