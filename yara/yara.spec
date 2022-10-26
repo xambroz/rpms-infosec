@@ -1,21 +1,21 @@
 Name:           yara
-Version:        4.2.0
+Version:        4.2.3
 Release:        1%{?dist}
 Summary:        Pattern matching Swiss knife for malware researchers
 
-# yara package itself is licensed as ASL 2.0
-# bison grammar parsers in libyara/* are dual licensed under ASL 2.0 and GPLv3+ license.
-# resulting binary package licensed as ASL 2.0
-License:        ASL 2.0
-VCS:            http://github.com/VirusTotal/yara/
-#               http://github.com/VirusTotal/yara/releases
-URL:            http://VirusTotal.github.io/yara/
+# yara package itself is licensed with BSD 3 clause license
+# bison grammar parsers in libyara/* are licensed with  GPLv3+ license with exception from FSF alloving usage in larger work
+# resulting binary package licensed as BSD
+License:        BSD
+VCS:            https://github.com/VirusTotal/yara/
+#               https://github.com/VirusTotal/yara/releases
+URL:            https://VirusTotal.github.io/yara/
 
 
 %global         gituser         VirusTotal
 %global         gitname         yara
-# Commit of version 4.2.0-rc1
-%global         commit          45a2883daad5b40a516b7fa1245beb2a45d586a6
+# Commit of version 4.2.3
+%global         commit          ba94b4f8ebb6d56786d14f6a0f7529b32d7c216f
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 # additional module for yara
@@ -31,7 +31,7 @@ URL:            http://VirusTotal.github.io/yara/
 # Build from git release version
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
-#               http://github.com/Koodous/androguard-yara/
+#               https://github.com/Koodous/androguard-yara/
 Source1:        https://github.com/%{androguard_gituser}/%{androguard_gitname}/archive/%{androguard_commit}/%{androguard_gitname}-%{androguard_gitdate}-%{androguard_shortcommit}.tar.gz
 
 # Patch based on the androguard-yara installation guide to enable the androguard module
@@ -40,16 +40,6 @@ Patch0:         yara-androguard.patch
 # Use default sphix theme to generate documentation rather than sphinx_rtd_theme
 # to avoid static installation of font files on fedora >= 24
 Patch1:         yara-docs-theme.patch
-
-# Fixed in 3.6.0 upstream
-# Patch https://patch-diff.githubusercontent.com/raw/VirusTotal/yara/pull/627.patch
-# Fixes: CVE-2016-10210 CVE-2016-10211 CVE-2017-5923 CVE-2017-5924
-# Patch2:       %%{name}-pull627.patch
-
-# API of yr_re_match changed, fix needed for Androguard
-# https://github.com/Koodous/androguard-yara/issues/8
-# merged in https://github.com/Koodous/androguard-yara/commit/034f0a49e58d798abcaa28c9864451da9da29413
-# Patch3: yara-androguard-matchapi.patch
 
 
 
@@ -157,6 +147,9 @@ rm -f %{buildroot}%{_datadir}/doc/%{name}/html/.buildinfo
 %ldconfig_scriptlets
 %endif
 
+%check
+make check
+
 
 %files
 %license COPYING
@@ -181,6 +174,27 @@ rm -f %{buildroot}%{_datadir}/doc/%{name}/html/.buildinfo
 
 
 %changelog
+* Tue Aug 09 2022 Mikel Olasagasti Uranga <mikel@olasagasti.info> - 4.2.3-1
+- Update to 4.2.3 (#2116594)
+
+* Sat Jul 23 2022 Fedora Release Engineering <releng@fedoraproject.org> - 4.2.2-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_37_Mass_Rebuild
+
+* Mon Jul 18 2022 Mikel Olasagasti Uranga <mikel@olasagasti.info> - 4.2.2-1
+- Update to 4.2.2 (#2103444)
+- BUGFIX: Fix buffer overrun in "dex" module (#1728).
+- BUGFIX: Wrong offset used when checking Version string of .net metadata (#1708).
+- BUGFIX: YARA doesn't compile if --with-debug-verbose flag is enabled (#1719).
+- BUGFIX: Null-pointer dereferences while loading corrupted compiled rules (#1727).
+
+* Mon May 23 2022 Michal Ambroz <rebus at, seznam.cz> - 4.2.1-1
+- bump to 4.2.1
+- adding changes based on proposal of Mikel Olasagasti Uranga:
+- change to BSD license as yara was relicensed in 2016
+- minor changes to spec, like using https for URL
+- remove old patches
+- enable checks
+
 * Sat Mar 12 2022 Michal Ambroz <rebus at, seznam.cz> - 4.2.0-1
 - bump to 4.2.0
 
