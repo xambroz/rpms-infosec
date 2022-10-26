@@ -1,6 +1,6 @@
 Name:           python-olefile
 Version:        0.46
-Release:        8%{?dist}
+Release:        18%{?dist}
 Summary:        Python package to parse, read and write Microsoft OLE2 files
 
 %global         srcname         olefile
@@ -19,8 +19,7 @@ antivirus quarantine files, etc.
 # Build without python2 package for newer releases > fc32 and > rhel8
 # python2 package already released for rhel8
 # https://pagure.io/fesco/issue/2266
-# 
-%if (0%{?fedora} && 0%{?fedora} > 32 ) || ( 0%{?rhel} && 0%{?rhel} > 8 )
+%if (0%{?fedora} && 0%{?fedora} > 33 ) || ( 0%{?rhel} && 0%{?rhel} > 8 ) || 0%{?flatpak}
 %bcond_with     python2
 %else
 %bcond_without  python2
@@ -28,12 +27,13 @@ antivirus quarantine files, etc.
 
 
 License:        BSD
-URL:            https://www.decalage.info/python/olefile
+URL:            https://www.decalage.info/olefile
 #               https://pypi.python.org/pypi/olefile/
 #               https://github.com/decalage2/olefile/releases
 Source0:        https://files.pythonhosted.org/packages/source/o/%{srcname}/%{srcname}-%{version}.zip
 
 BuildArch:      noarch
+BuildRequires: make
 BuildRequires:  dos2unix
 BuildRequires:  /usr/bin/find
 
@@ -42,11 +42,11 @@ BuildRequires:  /usr/bin/find
 %package doc
 Summary:        %{summary}
 BuildArch:      noarch
-# Requiring the binary of sphinx-build to avoid py2/py3 uncertaininty
-# There is python-sphinx in RHEL 7, but it's possibly too old.
 # Fedora >= 31 does not have python2-sphinx anymore.
-BuildRequires:  /usr/bin/sphinx-build
-BuildRequires:  python-sphinx_rtd_theme
+# There is python-sphinx in RHEL 7, but it's possibly too old.
+# Python26 sphinx works
+BuildRequires:  python%{python3_pkgversion}-sphinx
+BuildRequires:  python%{python3_pkgversion}-sphinx_rtd_theme
 
 %description doc %{_description}
 This package contains documentation for %{name}.
@@ -85,6 +85,7 @@ Python3 version.
 
 # Fix windows EOL
 find ./ -type f -name '*.py' -exec dos2unix '{}' ';'
+dos2unix doc/*.rst
 
 
 %build
@@ -96,7 +97,7 @@ find ./ -type f -name '*.py' -exec dos2unix '{}' ';'
 %py3_build
 %endif
 
-make -C doc html BUILDDIR=_doc_build SPHINXBUILD=sphinx-build
+make -C doc html BUILDDIR=_doc_build SPHINXBUILD=sphinx-build-%{python3_version}
 
 
 
@@ -145,6 +146,36 @@ PYTHONPATH=%{buildroot}%{python3_sitelib} %{__python3} tests/test_olefile.py
 
 
 %changelog
+* Fri Jul 22 2022 Fedora Release Engineering <releng@fedoraproject.org> - 0.46-18
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_37_Mass_Rebuild
+
+* Mon Jun 13 2022 Python Maint <python-maint@redhat.com> - 0.46-17
+- Rebuilt for Python 3.11
+
+* Fri Jan 21 2022 Fedora Release Engineering <releng@fedoraproject.org> - 0.46-16
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
+
+* Fri Jul 23 2021 Fedora Release Engineering <releng@fedoraproject.org> - 0.46-15
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
+
+* Thu Jun 03 2021 Python Maint <python-maint@redhat.com> - 0.46-14
+- Rebuilt for Python 3.10
+
+* Wed Jan 27 2021 Fedora Release Engineering <releng@fedoraproject.org> - 0.46-13
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
+
+* Wed Jul 29 2020 Fedora Release Engineering <releng@fedoraproject.org> - 0.46-12
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
+
+* Sat May 30 2020 Sandro Mani <manisandro@gmail.com> - 0.46-11
+- Build python2 subpackage on F33, python2-pillow is still around
+
+* Sat May 23 2020 Miro Hrončok <mhroncok@redhat.com> - 0.46-10
+- Rebuilt for Python 3.9
+
+* Thu Jan 30 2020 Fedora Release Engineering <releng@fedoraproject.org> - 0.46-9
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
+
 * Fri Nov 08 2019 Michal Ambroz <rebus AT_ seznam.cz> - 0.46-8
 - rebuild for new version of oletools
 - conditional stop building python2 subpackage on fc>32 and rhel>8
