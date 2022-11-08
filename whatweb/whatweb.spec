@@ -1,6 +1,6 @@
 Name:           whatweb
 Version:        0.5.5
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Web scanner to identify what websites are running
 
 
@@ -70,7 +70,7 @@ sed -i -e 's|#!/usr/bin/env ruby|#!/usr/bin/ruby|; s|#!/bin/env ruby|#!/usr/bin/
     whatweb plugin-development/find-common-stuff plugin-development/get-pattern
 
 # Remove unknown macros in manpage - probably Ubuntu specific macros
-sed -i -e 's|^.ni||; s|^\./plugins-disabled|+\./plugins-disabled|' whatweb.1
+sed -i -e 's|^\.ni||; s|^\./plugins-disabled|+\./plugins-disabled|' whatweb.1
 
 # Disable bundle install in the Makefile
 sed -i -e 's|bundle install|#bundle install|' Makefile
@@ -111,6 +111,9 @@ ruby test/integration.rb
 
 
 %changelog
+* Wed May 19 2021 Michal Ambroz <rebus at, seznam.cz> - 0.5.5-3
+- fix sed
+
 * Thu May 13 2021 Michal Ambroz <rebus at, seznam.cz> - 0.5.5-2
 - removed alias bundle - needs to be solved by
 - added conditional for the (network) tests
