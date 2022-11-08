@@ -1,7 +1,6 @@
 Name:           bkhive
 Version:        1.1.1
-Release:        21%{?dist}
-#Needed for EPEL
+Release:        25%{?dist}
 Summary:        Dump the syskey bootkey from a Windows system hive
 
 License:        GPLv2+
@@ -12,7 +11,12 @@ Source0:        http://downloads.sourceforge.net/ophcrack/%{name}-%{version}.tar
 Patch0:         %{name}-install.patch
 
 BuildRequires:  gcc
-BuildRequires: make
+BuildRequires:  make
+%if 0%{?rhel}
+BuildRequires:  epel-rpm-macros
+%endif
+
+
 
 %description
 This tool is designed to recover the syskey bootkey from a Windows NT/2K/XP
@@ -23,16 +27,15 @@ Syskey is a Windows feature that adds an additional encryption layer to the
 password hashes stored in the SAM database.
 
 %prep
-%setup -q
-%patch0 -p 1 -b .install
+%autosetup -p 1
 
 
 %build
-make %{?_smp_mflags} CFLAGS="%{optflags}"
+%set_build_flags
+%make_build CFLAGS="$CFLAGS"
 
 
 %install
-rm -rf %{buildroot}
 OWNER=`id -un`
 GROUP=`id -gn`
 
@@ -40,13 +43,26 @@ make install DESTDIR=%{buildroot} BINDIR=%{_bindir} MANDIR=%{_mandir}/man1/ OWNE
 
 
 %files
-%doc AUTHORS COPYING README
+%license COPYING
+%doc AUTHORS README
 %{_bindir}/%{name}
 %{_mandir}/man1/%{name}.1*
 
 
 
 %changelog
+* Tue Nov 08 2022 Michal Ambroz <rebus AT seznam.cz> - 1.1.1-25
+- modernize spec file
+
+* Wed Jul 20 2022 Fedora Release Engineering <releng@fedoraproject.org> - 1.1.1-24
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_37_Mass_Rebuild
+
+* Wed Jan 19 2022 Fedora Release Engineering <releng@fedoraproject.org> - 1.1.1-23
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
+
+* Wed Jul 21 2021 Fedora Release Engineering <releng@fedoraproject.org> - 1.1.1-22
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
+
 * Tue Jan 26 2021 Fedora Release Engineering <releng@fedoraproject.org> - 1.1.1-21
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
 
