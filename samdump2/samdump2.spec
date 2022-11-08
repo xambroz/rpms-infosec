@@ -30,7 +30,7 @@ system hive and uses it to decrypt and dump password hashes from the SAM hive.
 
 
 %build
-make %{?_smp_mflags} CFLAGS="%{optflags}" LIBS="-lcrypto"
+%make_build CFLAGS="%{optflags}" LIBS="-lcrypto"
 
 
 %install
