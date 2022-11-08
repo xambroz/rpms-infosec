@@ -1,7 +1,8 @@
 Name:           pe-bear
-Version:        0.5.3.2
+Version:        0.5.5
 Release:        1%{?dist}
 Summary:        reversing tool for PE files
+%global         qtversion    qt5.15
 
 # pe-bear package licensed as "freeware" but closed source
 # https://hshrzd.wordpress.com/pe-bear/
@@ -18,7 +19,7 @@ VCS:            https://github.com/hasherezade/pe-bear-releases
 
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
 NoSource:       0
-Source1:        https://github.com/%{gituser}/%{gitname}/releases/download/%{version}/PE-bear_%{version}_x64_linux.tar.xz
+Source1:        https://github.com/%{gituser}/%{gitname}/releases/download/%{version}/PE-bear_%{version}_%{qtversion}_x64_linux.tar.xz
 NoSource:       1
 Source2:        pe-bear.desktop
 BuildArch:      x86_64
