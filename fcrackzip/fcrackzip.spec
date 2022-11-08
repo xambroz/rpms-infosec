@@ -4,7 +4,7 @@ Version:	1.0
 Release:	1%{?dist}
 URL:		http://oldhome.schmorp.de/marc/fcrackzip.html
 
-License:	GPL
+License:	GPLv2
 
 Group:		Applications/Forensics Tools
 Source:		http://oldhome.schmorp.de/marc/data/%{name}-%{version}.tar.gz
