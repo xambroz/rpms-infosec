@@ -1,11 +1,12 @@
 %global         gituser         libyal
 %global         gitname         libbde
-%global         commit          51ebab0ecabc32d6bcd5bb7494ac2d1372e2e0e2
+%global         gitdate         20220121
+%global         commit          ac7bb8586041b69e56e3dbbcbeb0ccb19917c88e
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
 Name:           libbde
-Version:        20200413
+Version:        %{gitdate}
 Release:        1%{?dist}
 Summary:        Library to support cross-platform AES encryption 
 
@@ -25,6 +26,21 @@ BuildRequires:  gettext-devel
 BuildRequires:  libcstring-devel
 BuildRequires:  libcerror-devel
 BuildRequires:  libcthreads-devel
+BuildRequires:  libcdata-devel
+BuildRequires:  libclocale-devel
+BuildRequires:  libcnotify-devel
+BuildRequires:  libcsplit-devel
+BuildRequires:  libuna-devel
+BuildRequires:  libcfile-devel
+BuildRequires:  libcpath-devel
+BuildRequires:  libbfio-devel
+BuildRequires:  libfcache-devel
+BuildRequires:  libfdata-devel
+BuildRequires:  libfdatetime-devel
+BuildRequires:  libfguid-devel
+BuildRequires:  libfvalue-devel
+BuildRequires:  libhmac-devel
+BuildRequires:  libcaes-devel
 
 %description
 Library to support cross-platform AES encryption.
@@ -72,5 +88,8 @@ find %{buildroot} -name '*.la' -exec rm -f {} ';'
 %{_mandir}/man3/%{name}.3*
 
 %changelog
+* Fri Feb 18 2022 Michal Ambroz <rebus AT seznam.cz> - 20220121-1
+- bump to 20220121
+
 * Mon Jun 20 2016 Michal Ambroz <rebus AT seznam.cz> - 20160418-1
 - Initial build for Fedora
