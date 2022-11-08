@@ -5,10 +5,10 @@ Summary:        The string database from radare reverse engineering framework
 Group:          Applications/Engineering
 License:        MIT
 URL:            https://github.com/radareorg/sdb/
-%global         rel              2
+%global         rel              3
 
 # by default it builds from the released version of sdb
-%bcond_without  build_release
+%bcond_without  release
 
 %global         gituser         radareorg
 %global         gitname         sdb
@@ -17,7 +17,7 @@ URL:            https://github.com/radareorg/sdb/
 %global         commit          ecc90f0c6c631f2c0ecc079ef54fbc6632b8eb05
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
-%if %{with build_release}
+%if %{with release}
 Release:        %{rel}%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
 %else
@@ -58,7 +58,7 @@ information.
 
 
 %prep
-%if %{with build_release}
+%if %{with release}
 # Build from git release version
 %autosetup -n %{gitname}-%{version}
 %else
@@ -70,11 +70,13 @@ sed -i -e "s|%{version}-git|%{version}|g;" configure configure.acr
 
 
 %build
-CFLAGS="%{optflags}" make %{?_smp_mflags} LIBDIR=%{_libdir} PREFIX=%{_prefix} DATADIR=%{_datadir} LDFLAGS="%{__global_ldflags}"
+%set_build_flags
+%make_build LIBDIR=%{_libdir} PREFIX=%{_prefix} DATADIR=%{_datadir} LDFLAGS="%{__global_ldflags}"
 
 
 %install
-make install DESTDIR=%{buildroot} LIBDIR=%{_libdir} PREFIX=%{_prefix}
+# make install DESTDIR=%%{buildroot} LIBDIR=%%{_libdir} PREFIX=%%{_prefix}
+%make_install
 find %{buildroot} -name '*.a' -delete
 
 
@@ -82,8 +84,7 @@ find %{buildroot} -name '*.a' -delete
 make test
 
 
-%post -p /sbin/ldconfig
-%postun -p /sbin/ldconfig
+%ldconfig_scriptlets
 
 
 %files
