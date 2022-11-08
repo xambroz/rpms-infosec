@@ -1,36 +1,36 @@
 Name:		cowrie
-Version:	1.6.0
+Version:	2.3.0
 Release:	1%{?dist}
 Summary:	Medium interaction SSH honeypot
 License:	BSD
 
 
-%global         gituser         micheloosterhof
+%global         gituser         cowrie
 %global         gitname         cowrie
-%global         commit          f0ed16ee14afc5719ebc63fc2ff55fd4a54fc42d
+%global         commit          555ff10d95f6239d9d6efee8a2d05def316ab144
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
-#               http://www.micheloosterhof.com/cowrie/
-#               https://github.com/micheloosterhof/cowrie/
-URL:            https://github.com/%{gituser}/%{gitname}
+# was           http://www.micheloosterhof.com/cowrie/
+# was URL:      https://github.com/micheloosterhof/cowrie/
+URL:            https://github.com/cowrie/cowrie/
 #Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
 BuildArch:	noarch
-BuildRequires:	python2-devel python-setuptools openssl-devel libffi-devel
-BuildRequires:  python2-cffi
-Requires:       python2-virtualenv
-Requires:       python2-twisted
-Requires:       python2-cryptography
-Requires:       python2-configparser
-Requires:       pyOpenSSL
-Requires:       python2-pyparsing
-Requires:       python2-packaging
-Requires:       python2-appdirs
-Requires:       python2-pyasn1-modules
-Requires:       python2-attrs
+BuildRequires:	python3-devel python-setuptools openssl-devel libffi-devel
+BuildRequires:  python3-cffi
+Requires:       python3-twisted
+Requires:       python3-cryptography
+Requires:       python3-virtualenv
+Requires:       python3-configparser
+Requires:       python3-pyOpenSSL
+Requires:       python3-pyparsing
+Requires:       python3-packaging
+Requires:       python3-appdirs
+Requires:       python3-pyasn1-modules
+Requires:       python3-attrs
 Requires:       python-service-identity
-Requires:       python2-dateutil
+Requires:       python3-dateutil
 Requires:       python-tftpy
 
 %description
