@@ -1,0 +1,4 @@
+from Config import addFilter
+
+addFilter('capstone.*: rpm-buildroot-usage %build sed -i .s;%{buildroot};;.*')
+

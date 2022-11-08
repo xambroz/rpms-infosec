@@ -1,6 +1,6 @@
 Name:           capstone
 Version:        4.0.2
-Release:        5%{?dist}
+Release:        11%{?dist}
 Summary:        A lightweight multi-platform, multi-architecture disassembly framework
 
 %global         gituser         aquynh
@@ -47,8 +47,11 @@ disasm engine for binary analysis and reversing in the security community.}
 BuildRequires:  gcc
 BuildRequires:  make
 BuildRequires:  git
+
+%ifarch %{java_arches}
 BuildRequires:  jna
 BuildRequires:  java-devel
+%endif
 
 %if %{with python2}
 BuildRequires:  python2
@@ -114,7 +117,7 @@ The python%{python3_pkgversion}-capstone package contains python3 bindings for %
 %endif
 
 
-
+%ifarch %{java_arches}
 %package        java
 Summary:        Java bindings for %{name}
 Requires:       %{name} = %{version}-%{release}
@@ -123,7 +126,7 @@ BuildArch:      noarch
 %description    java
 %{common_desc}
 The %{name}-java package contains java bindings for %{name}.
-
+%endif
 
 
 %prep
@@ -155,6 +158,7 @@ pushd bindings/python
 %endif
 popd
 
+%ifarch %{java_arches}
 # build java bindings needs some python
 pushd bindings/java
 %if %{with python3}
@@ -163,6 +167,7 @@ pushd bindings/java
 %make_build PYTHON2=%{__python2} PYTHON3=%{__python2} CFLAGS="%{optflags}" # %{?_smp_mflags} parallel seems broken
 %endif
 popd
+%endif
 
 
 
@@ -183,9 +188,10 @@ pushd bindings/python
 %endif
 popd
 
+%ifarch %{java_arches}
 # install java bindings
 install -D -p -m 0644 bindings/java/%{name}.jar  %{buildroot}/%{_javadir}/%{name}.jar
-
+%endif
 
 
 %check
@@ -227,11 +233,31 @@ make check LD_LIBRARY_PATH="`pwd`"
 %endif
 
 
-
+%ifarch %{java_arches}
 %files java
 %{_javadir}/
+%endif
 
 %changelog
+* Wed Jul 20 2022 Fedora Release Engineering <releng@fedoraproject.org> - 4.0.2-11
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_37_Mass_Rebuild
+- drop java binding for platforms not in %%{java_arches}
+
+* Mon Jun 13 2022 Python Maint <python-maint@redhat.com> - 4.0.2-10
+- Rebuilt for Python 3.11
+
+* Sat Feb 05 2022 Jiri Vanek <jvanek@redhat.com> - 4.0.2-9
+- Rebuilt for java-17-openjdk as system jdk
+
+* Wed Jan 19 2022 Fedora Release Engineering <releng@fedoraproject.org> - 4.0.2-8
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
+
+* Wed Jul 21 2021 Fedora Release Engineering <releng@fedoraproject.org> - 4.0.2-7
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
+
+* Fri Jun 04 2021 Python Maint <python-maint@redhat.com> - 4.0.2-6
+- Rebuilt for Python 3.10
+
 * Fri May 14 2021 Michal Ambroz <rebus AT_ seznam.cz> - 4.0.2-5
 - modernize specfile, using with bcond and py*_build macros
 

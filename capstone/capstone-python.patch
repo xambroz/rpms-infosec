@@ -1,0 +1,158 @@
+diff -ru capstone-db19431d4bb787019ca94d8f2a558f0ed46341a7.orig/bindings/java/Makefile capstone-db19431d4bb787019ca94d8f2a558f0ed46341a7.new/bindings/java/Makefile
+--- capstone-db19431d4bb787019ca94d8f2a558f0ed46341a7.orig/bindings/java/Makefile	2018-07-18 18:17:10.000000000 +0200
++++ capstone-db19431d4bb787019ca94d8f2a558f0ed46341a7.new/bindings/java/Makefile	2018-08-28 10:58:38.806217484 +0200
+@@ -20,6 +20,8 @@
+   endif
+ endif
+ 
++PYTHON2 = python
++
+ CAPSTONE_JAVA = Capstone.java Arm_const.java Arm64_const.java Mips_const.java \
+ 				X86_const.java Xcore_const.java Ppc_const.java Sparc_const.java\
+ 				Sysz_const.java \
+@@ -47,7 +49,7 @@
+ 		TestPpc.java TestSparc.java TestSystemz.java
+ 
+ gen_const:
+-	cd ../ && python const_generator.py java
++	cd ../ && $(PYTHON2) const_generator.py java
+ 
+ jna:
+ 	@if [ ! $(JNA) ]; then echo "*** Unable to find JNA ***"; exit 1; fi
+diff -ru capstone-db19431d4bb787019ca94d8f2a558f0ed46341a7.orig/bindings/Makefile capstone-db19431d4bb787019ca94d8f2a558f0ed46341a7.new/bindings/Makefile
+--- capstone-db19431d4bb787019ca94d8f2a558f0ed46341a7.orig/bindings/Makefile	2018-07-18 18:17:10.000000000 +0200
++++ capstone-db19431d4bb787019ca94d8f2a558f0ed46341a7.new/bindings/Makefile	2018-08-28 11:01:51.152374258 +0200
+@@ -12,6 +12,8 @@
+ TEST_X86 = $(TMPDIR)/test_x86
+ TEST_XCORE = $(TMPDIR)/test_xcore
+ 
++PYTHON2 = python
++
+ .PHONY: all expected python java ocaml
+ 
+ all:
+@@ -39,15 +41,15 @@
+ 
+ python: FORCE
+ 	cd python && $(MAKE)
+-	python python/test.py > $(TEST)_o
+-	python python/test_arm.py > $(TEST_ARM)_o
+-	python python/test_arm64.py > $(TEST_ARM64)_o
+-	python python/test_mips.py > $(TEST_MIPS)_o
+-	python python/test_ppc.py > $(TEST_PPC)_o
+-	python python/test_sparc.py > $(TEST_SPARC)_o
+-	python python/test_systemz.py > $(TEST_SYSZ)_o
+-	python python/test_x86.py > $(TEST_X86)_o
+-	python python/test_xcore.py > $(TEST_XCORE)_o
++	$(PYTHON2) python/test.py > $(TEST)_o
++	$(PYTHON2) python/test_arm.py > $(TEST_ARM)_o
++	$(PYTHON2) python/test_arm64.py > $(TEST_ARM64)_o
++	$(PYTHON2) python/test_mips.py > $(TEST_MIPS)_o
++	$(PYTHON2) python/test_ppc.py > $(TEST_PPC)_o
++	$(PYTHON2) python/test_sparc.py > $(TEST_SPARC)_o
++	$(PYTHON2) python/test_systemz.py > $(TEST_SYSZ)_o
++	$(PYTHON2) python/test_x86.py > $(TEST_X86)_o
++	$(PYTHON2) python/test_xcore.py > $(TEST_XCORE)_o
+ 	$(MAKE) test_diff
+ 
+ java: FORCE
+diff -ru capstone-db19431d4bb787019ca94d8f2a558f0ed46341a7.orig/bindings/ocaml/Makefile capstone-db19431d4bb787019ca94d8f2a558f0ed46341a7.new/bindings/ocaml/Makefile
+--- capstone-db19431d4bb787019ca94d8f2a558f0ed46341a7.orig/bindings/ocaml/Makefile	2018-07-18 18:17:10.000000000 +0200
++++ capstone-db19431d4bb787019ca94d8f2a558f0ed46341a7.new/bindings/ocaml/Makefile	2018-08-28 10:58:06.166700040 +0200
+@@ -3,6 +3,7 @@
+ 
+ LIB = capstone
+ FLAGS = '-Wall -Wextra -Wwrite-strings'
++PYTHON2 = python
+ 
+ all: arm_const.cmxa arm64_const.cmxa mips_const.cmxa ppc_const.cmxa sparc_const.cmxa sysz_const.cmxa x86_const.cmxa xcore_const.cmxa arm.cmxa arm64.cmxa mips.cmxa ppc.cmxa x86.cmxa sparc.cmxa systemz.cmxa xcore.cmxa capstone.cmxa test_basic.cmx test_detail.cmx test_x86.cmx test_arm.cmx test_arm64.cmx test_mips.cmx test_ppc.cmx test_sparc.cmx test_systemz.cmx test_xcore.cmx ocaml.o
+ 	ocamlopt -o test_basic -ccopt $(FLAGS) ocaml.o capstone.cmx test_basic.cmx -cclib -l$(LIB)
+@@ -258,7 +259,7 @@
+ 	rm -f *.[oa] *.so *.cm[ixoa] *.cmxa *.mli test_basic test_detail test_x86 test_arm test_arm64 test_mips test_ppc test_sparc test_systemz test_xcore
+ 
+ gen_const:
+-	cd .. && python const_generator.py ocaml
++	cd .. && $(PYTHON2) const_generator.py ocaml
+ 
+ TESTS = test_basic test_detail test_arm test_arm64 test_mips test_ppc
+ TESTS += test_sparc test_systemz test_x86 test_xcore
+diff -ru capstone-db19431d4bb787019ca94d8f2a558f0ed46341a7.orig/bindings/python/Makefile capstone-db19431d4bb787019ca94d8f2a558f0ed46341a7.new/bindings/python/Makefile
+--- capstone-db19431d4bb787019ca94d8f2a558f0ed46341a7.orig/bindings/python/Makefile	2018-07-18 18:17:10.000000000 +0200
++++ capstone-db19431d4bb787019ca94d8f2a558f0ed46341a7.new/bindings/python/Makefile	2018-08-28 10:56:16.869315933 +0200
+@@ -1,60 +1,63 @@
++PYTHON2 = python
++PYTHON3 = python3
++
+ .PHONY: gen_const install install3 install_cython sdist sdist3 bdist bdist3 clean check
+ 
+ gen_const:
+-	cd .. && python const_generator.py python
++	cd .. && $(PYTHON2) const_generator.py python
+ 
+ install:
+ 	rm -rf src/
+ 	if test -n "${DESTDIR}"; then \
+-		python setup.py build install --root="${DESTDIR}"; \
++		$(PYTHON2) setup.py build install --root="${DESTDIR}"; \
+ 	else \
+-		python setup.py build install; \
++		$(PYTHON2) setup.py build install; \
+ 	fi
+ 
+ install3:
+ 	rm -rf src/
+ 	if test -n "${DESTDIR}"; then \
+-		python3 setup.py build install --root="${DESTDIR}"; \
++		$(PYTHON3) setup.py build install --root="${DESTDIR}"; \
+ 	else \
+-		python3 setup.py build install; \
++		$(PYTHON3) setup.py build install; \
+ 	fi
+ 
+ # NOTE: Newer cython can be installed by: sudo pip install --upgrade cython
+ install_cython:
+ 	rm -rf src/
+ 	if test -n "${DESTDIR}"; then \
+-		python setup_cython.py build install --root="${DESTDIR}"; \
++		$(PYTHON2) setup_cython.py build install --root="${DESTDIR}"; \
+ 	else \
+-		python setup_cython.py build install; \
++		$(PYTHON2) setup_cython.py build install; \
+ 	fi
+ 
+ install3_cython:
+ 	rm -rf src/
+ 	if test -n "${DESTDIR}"; then \
+-		python3 setup_cython.py build install --root="${DESTDIR}"; \
++		$(PYTHON3) setup_cython.py build install --root="${DESTDIR}"; \
+ 	else \
+-		python3 setup_cython.py build install; \
++		$(PYTHON3) setup_cython.py build install; \
+ 	fi
+ 
+ # build & upload PyPi package with source code of the core
+ sdist:
+ 	rm -rf src/ dist/
+-	python setup.py sdist register upload
++	$(PYTHON2) setup.py sdist register upload
+ 
+ # build & upload PyPi package with source code of the core
+ sdist3:
+ 	rm -rf src/ dist/
+-	python3 setup.py sdist register upload
++	$(PYTHON3) setup.py sdist register upload
+ 
+ # build & upload PyPi package with prebuilt core
+ bdist:
+ 	rm -rf src/ dist/
+-	python setup.py bdist_wheel register upload
++	$(PYTHON2) setup.py bdist_wheel register upload
+ 
+ # build & upload PyPi package with prebuilt core
+ bdist3:
+ 	rm -rf src/ dist/
+-	python3 setup.py bdist_wheel register upload
++	$(PYTHON3) setup.py bdist_wheel register upload
+ 
+ clean:
+ 	rm -rf build/ src/ dist/ *.egg-info
