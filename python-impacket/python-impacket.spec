@@ -1,6 +1,6 @@
 Name:           python-impacket
-Version:        0.9.22
-%global         baserelease     4
+Version:        0.10.0
+%global         baserelease     1
 
 License:        ASL 1.1 and zlib
 URL:            https://github.com/SecureAuthCorp/impacket
@@ -24,8 +24,8 @@ the object oriented API makes it simple to work with deep protocol hierarchies.}
 
 %global         gituser         SecureAuthCorp
 %global         gitname         impacket
-%global         commit          2438fb66cea4c6a9b4a04939e1ef9c4208d60134
-%global         gitdate         20201123
+%global         commit          7a18ef5c8b06aac5e36334927789429777382928
+%global         gitdate         20220504
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 %global         sum             Collection of Python classes providing access to network packets
@@ -34,17 +34,6 @@ the object oriented API makes it simple to work with deep protocol hierarchies.}
 # By defualt build with python3
 # To disable python3 subpackage do: rpmbuild --rebuild python-impacket.*.src.rpm --without python3
 %bcond_without  python3
-
-
-# By default the package is not build with support of python2
-# But the project still supports the execution in python2 or python3
-# To build with python2 support do:
-# rpmbuild --rebuild python-impacket.*.src.rpm --with python2
-%bcond_with     python2
-# Build also the python2 package when rebuilding on older releases
-%if %{with python2} || (0%{?fedora} && 0%{?fedora} <= 31 ) || ( 0%{?rhel} && 0%{?rhel} <= 7 )
-%global         with_python2    1
-%endif
 
 
 %global         pkgver          %(echo %{version} | sed 's/\\./_/g')
@@ -64,93 +53,19 @@ Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{nam
 
 Summary:        %{sum}
 
-# Fedora specific fixing:
-# ldap3 version - we need 2.8.1 as minimum (20210501), but tested to work with 2.5.1 (previous version EL7)
-# win32 - we do not want package to advertise for libraries needed on win32
-# python3.9 - allow build on python3.9 neede for >= fc34
-Patch0:         python-impacket-setup.patch
-
-# Build with python3.9 - needed on >= FC34
-# reported to upstream https://github.com/SecureAuthCorp/impacket/issues/1032
-Patch1:         https://patch-diff.githubusercontent.com/raw/SecureAuthCorp/impacket/pull/1054.patch#/python-impacket-python39.patch
-
-# Fix CVE-2021-31800 - 1957428, 1957427 during 0.9.22 lifecycle
-# fix path traversal in smbserver.py
-Patch2:         https://github.com/SecureAuthCorp/impacket/commit/49c643bf66620646884ed141c94e5fdd85bcdd2f.patch#/python-impacket-CVE-2021-31800.patch
-
-
 BuildArch:      noarch
 
 BuildRequires:  sed
 BuildRequires:  grep
 
-%if %{with python2}
-BuildRequires:  python2-devel
-BuildRequires:  python2-setuptools
-%endif
-
-%if %{with python3}
 BuildRequires:  python%{python3_pkgversion}-devel
 BuildRequires:  python%{python3_pkgversion}-setuptools
-%endif
 
 
 %description
 %{common_desc}
 
-#===== the python2 package definition
-%if %{with python2}
-%package -n python2-%{gitname}
-Summary:        %{sum}
-%{?python_provide:%python_provide python2-%{gitname}}
-Provides:       impacket = %{version}-%{release}
-
-# Used by many
-Requires:       python2-pycryptodomex
-
-# Used by /usr/bin/psexec.py
-Requires:       python2-pyasn1
-
-# On Fedora and RHEL8 we can use "Recommends" clause for non-essential stuff
-%if 0%{?fedora} || 0%{?rhel} >= 8
-# Used by /usr/bin/nsplit.py
-Requires:       python2-pcapy
-# Used by impacket/examples/ntlmrelayx/servers/socksserver.py
-Recommends:     python2-httplib2
-Recommends:     python2-flask
-# Used by /usr/bin/ntlmrelayx.py
-Recommends:     python2-pyOpenSSL
-Requires:       python2-ldap3
-
-%else
-# OnRHEL7 there is no Recommends clause so we need to handle it here
-# Used by /usr/bin/nsplit.py
-Requires:       pcapy
-# Used by impacket/examples/ntlmrelayx/servers/socksserver.py
-Requires:       python2-httplib2
-# Recommends:   python2-flask     - package not available any pore on EPEL7
-# Used by /usr/bin/ntlmrelayx.py
-# Recommends:   python2-pyOpenSSL - package not available any more on EPEL7
-Requires:       python2-ldap3
-
-# #1900077 - https://bugzilla.redhat.com/show_bug.cgi?id=1900077
-# pytho2 packages for Flask and pyOpenSSL not available on RHEL7
-# Functionality not needed for majority of use-cases.
-# Missing libraries can still be installed from pip or Centos if needed
-%global __requires_exclude                     ^python2-pyOpenSSL
-%global __requires_exclude %__requires_exclude|^python2-flask
-%endif
-
-
-%description -n python2-%{gitname}
-Python2 package of %{name}. %{common_desc}
-
-# with python2
-%endif
-
-
 #===== the python3 package definition
-%if %{with python3}
 %package -n python%{python3_pkgversion}-%{gitname}
 Summary:        %{sum}
 %{?python_provide:%python_provide python%{python3_pkgversion}-%{gitname}}
@@ -176,7 +91,7 @@ Recommends:     python%{python3_pkgversion}-flask
 # python3 package for pcapy currently missing in EPEL7
 # Used by /usr/bin/nsplit.py
 %global __requires_exclude pcapy|ldapdomaindump|flask|httplib2
-# Requires:       python%{python3_pkgversion}-pcapy
+# Requires:       python%%{python3_pkgversion}-pcapy
 # Used by impacket/examples/ntlmrelayx/servers/socksserver.py
 Requires:       python%{python3_pkgversion}-httplib2
 Requires:       python%{python3_pkgversion}-flask
@@ -185,8 +100,6 @@ Requires:       python%{python3_pkgversion}-flask
 
 %description -n python%{python3_pkgversion}-%{gitname}
 Python3 package of %{name}. %{common_desc}
- # with_python3
-%endif
 
 
 
@@ -217,43 +130,18 @@ sed -i -e 's|^import uncrc32|from impacket.examples import uncrc32|;' examples/n
 
 #===== Build
 %build
-%if %{with python2}
-%py2_build
-%endif
-
-%if %{with python3}
 %py3_build
-%endif
 
 
 #===== Check
 %check
-%if %{with python2}
-PYTHONPATH=$BUILD_ROOT/usr/lib/python%{python2_version}/site-packages/ python2 -c \
-    'import impacket.ImpactPacket ; impacket.ImpactPacket.IP().get_packet()'
-%endif
-%if %{with python3}
 PYTHONPATH=$BUILD_ROOT/usr/lib/python%{python3_version}/site-packages/ python3 -c \
     'import impacket.ImpactPacket ; impacket.ImpactPacket.IP().get_packet()'
-%endif
 
 
 
 #===== Install
 %install
-%if %{with python2}
-%py2_install
-pushd %{buildroot}%{_bindir}
-for I in *.py ; do
-    BASENAME=$(basename "$I" .py)
-    mv "$I" "${BASENAME}-%{python2_version}"
-    ln -s "${BASENAME}-%{python2_version}" "${BASENAME}-2"
-
-done
-popd
-%endif
-
-%if %{with python3}
 %py3_install
 pushd %{buildroot}%{_bindir}
 for I in *.py ; do
@@ -262,24 +150,15 @@ for I in *.py ; do
     ln -s "${BASENAME}-%{python3_version}" "${BASENAME}-3"
 done
 popd
-%endif
 
 # Default link
 pushd %{buildroot}%{_bindir}
 
-%if (0%{?fedora} && 0%{?fedora} <= 30 ) || ( 0%{?rhel} && 0%{?rhel} <= 7 )
-    #Link to python2 as default on fedora up to 30 and rhel up to 7
-    for I in *-2 ; do
-        BASENAME=$(basename "$I" "-2" )
-        ln -s "${I}" "${BASENAME}.py"
-    done
-%else
-    #Link to python3 as default on fedora 31+ and rhel8+ and everything else
-    for I in *-3 ; do
-        BASENAME=$(basename "$I" "-3" )
-        ln -s "${I}" "${BASENAME}.py"
-    done
-%endif
+#Link to python3 as default on fedora 31+ and rhel8+ and everything else
+for I in *-3 ; do
+    BASENAME=$(basename "$I" "-3" )
+    ln -s "${I}" "${BASENAME}.py"
+done
 popd
 
 #now in license directory
@@ -287,31 +166,11 @@ rm -f %{buildroot}%{_defaultdocdir}/%{name}/LICENSE
 
 
 
-#===== files for python2 package
-%if %{with python2}
-%files -n       python2-%{gitname}
-%license        LICENSE
-%doc            ChangeLog README.md
-%{python2_sitelib}/%{gitname}/
-%{python2_sitelib}/%{gitname}*.egg-info
-%exclude %{_defaultdocdir}/%{gitname}
-# %%exclude %%{_defaultdocdir}/%%{gitname}/testcases/*
-%exclude %{_defaultdocdir}/%{gitname}/README.md
-%{_bindir}/*-%{python2_version}
-%{_bindir}/*-2
-%if (0%{?fedora} && 0%{?fedora} <= 30 ) || ( 0%{?rhel} && 0%{?rhel} <= 7 )
-%{_bindir}/*.py
-%endif
-# with python2
-%endif
-
-
-
 #===== files for python3 package
 %if %{with python3}
 %files -n       python%{python3_pkgversion}-%{gitname}
 %license        LICENSE
-%doc            ChangeLog README.md
+%doc            ChangeLog.md README.md
 %{python3_sitelib}/%{gitname}/
 %{python3_sitelib}/%{gitname}*.egg-info
 %exclude %{_defaultdocdir}/%{gitname}
@@ -319,14 +178,34 @@ rm -f %{buildroot}%{_defaultdocdir}/%{name}/LICENSE
 %exclude %{_defaultdocdir}/%{gitname}/README.md
 %{_bindir}/*-%{python3_version}
 %{_bindir}/*-3
-%if (0%{?fedora} && 0%{?fedora} >= 31 ) || ( 0%{?rhel} && 0%{?rhel} >= 8 )
 %{_bindir}/*.py
-%endif
 # with python3
 %endif
 
 
 %changelog
+* Wed Oct 26 2022 Michal Ambroz <rebus _AT seznam.cz> - 0.10.0-1
+- bump to 0.10.0
+- version 0.10.0 is dropping support for python2.7
+
+* Fri Jul 22 2022 Fedora Release Engineering <releng@fedoraproject.org> - 0.9.23-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_37_Mass_Rebuild
+
+* Mon Jun 13 2022 Python Maint <python-maint@redhat.com> - 0.9.23-3
+- Rebuilt for Python 3.11
+
+* Fri Jan 21 2022 Fedora Release Engineering <releng@fedoraproject.org> - 0.9.23-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
+
+* Thu Aug 26 2021 Fabian Affolter <mail@fabian-affolter.ch> - 0.9.23-1
+- Update to latest upstream release 0.9.23 (closes rhbz#1969986)
+
+* Fri Jul 23 2021 Fedora Release Engineering <releng@fedoraproject.org> - 0.9.22-6
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
+
+* Fri Jun 04 2021 Python Maint <python-maint@redhat.com> - 0.9.22-5
+- Rebuilt for Python 3.10
+
 * Fri May 21 2021 Michal Ambroz <rebus _AT seznam.cz> - 0.9.22-4
 - remove the dependency to python-crypto
 
