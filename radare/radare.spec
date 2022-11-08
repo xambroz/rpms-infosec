@@ -40,7 +40,7 @@ Development libraries and headers for use with  %{name}.
 
 %build
 %configure
-make %{?_smp_mflags}
+%make_build
 
 
 
