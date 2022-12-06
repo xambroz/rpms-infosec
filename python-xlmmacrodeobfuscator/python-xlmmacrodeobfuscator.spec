@@ -9,7 +9,7 @@ URL:            https://github.com/DissectMalware/XLMMacroDeobfuscator
 Source0:        https://github.com/DissectMalware/XLMMacroDeobfuscator/releases/download/v%{version}/XLMMacroDeobfuscator-%{version}.tar.gz
 BuildArch:      noarch
 
-BuildRequires:  python3-devel
+BuildRequires:  python%{python3_pkgversion}-devel
 BuildRequires:  python3dist(setuptools)
 
 %description
@@ -20,9 +20,9 @@ xls, xlsm, and xlsb formats. It uses [xlrd2]( [pyxlsb2]( and its own parser to
 extract cells and other information from xls, xlsb and xlsm files,
 respectively.
 
-%package -n     python3-xlmmacrodeobfuscator
+%package -n     python%{python3_pkgversion}-xlmmacrodeobfuscator
 Summary:        %{summary}
-%{?python_provide:%python_provide python3-xlmmacrodeobfuscator}
+%{?python_provide:%python_provide python%{python3_pkgversion}-xlmmacrodeobfuscator}
 
 Requires:       python3dist(defusedxml)
 Requires:       python3dist(lark-parser)
@@ -32,7 +32,7 @@ Requires:       python3dist(roman)
 Requires:       python3dist(setuptools)
 Requires:       python3dist(untangle) = 1.2.1
 Requires:       python3dist(xlrd2)
-%description -n python3-xlmmacrodeobfuscator
+%description -n python%{python3_pkgversion}-xlmmacrodeobfuscator
  XLMMacroDeobfuscator XLMMacroDeobfuscator can be used to decode obfuscated XLM
 macros (also known as Excel 4.0 macros). It utilizes an internal XLM emulator
 to interpret the macros, without fully performing the code.It supports both
@@ -52,7 +52,7 @@ rm -rf xlmmacrodeobfuscator.egg-info
 %install
 %py3_install
 
-%files -n python3-xlmmacrodeobfuscator
+%files -n python%{python3_pkgversion}-xlmmacrodeobfuscator
 %license LICENSE
 %doc README.md
 %{_bindir}/xlmdeobfuscator
