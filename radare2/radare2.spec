@@ -1,6 +1,6 @@
 Name:           radare2
 Summary:        The reverse engineering framework
-Version:        5.7.6
+Version:        5.7.8
 %global         rel             1
 URL:            https://radare.org/
 VCS:            https://github.com/radareorg/radare2
@@ -21,8 +21,8 @@ VCS:            https://github.com/radareorg/radare2
 %global         gituser         radareorg
 %global         gitname         radare2
 
-%global         gitdate         20220228
-%global         commit          b636941cefcbc12b2031054e736b1f8e5458be32
+%global         gitdate         20220913
+%global         commit          8e965bef30457a12e07a32a9047a9620a944bc39
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
@@ -40,7 +40,8 @@ Patch3:         radare2-5.7.6-use_magic.patch
 Patch4:         radare2-5.6.6-use_lz4.patch
 
 # Build with new libmagic which is missing EBCDIC transform functions
-Patch5:         https://github.com/radareorg/radare2/commit/ddf483893e92f9edcd3d65f1098231b000bfe28a.patch#/radare2-5.7.6-ebcdic.patch
+# imported upstream
+# Patch5:         https://github.com/radareorg/radare2/commit/ddf483893e92f9edcd3d65f1098231b000bfe28a.patch#/radare2-5.7.6-ebcdic.patch
 
 
 License:        LGPLv3+ and GPLv2+ and BSD and MIT and ASL 2.0 and MPLv2.0 and zlib
@@ -348,6 +349,9 @@ mkdir -p %{buildroot}%{_libdir}/%{name}/%{version}
 
 
 %changelog
+* Tue Aug 02 2022 Michal Ambroz <rebus at, seznam.cz> 5.7.8-1
+- bump to 5.7.8
+
 * Tue Aug 02 2022 Michal Ambroz <rebus at, seznam.cz> 5.7.6-1
 - bump to 5.7.6
 - cherrypicked patch for new libmagic from upstream
