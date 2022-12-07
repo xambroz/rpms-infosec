@@ -10,7 +10,7 @@ Source0:        https://github.com/DissectMalware/XLMMacroDeobfuscator/releases/
 BuildArch:      noarch
 
 BuildRequires:  python%{python3_pkgversion}-devel
-BuildRequires:  python3dist(setuptools)
+BuildRequires:  python%{python3_pkgversion}-setuptools
 
 %description
  XLMMacroDeobfuscator XLMMacroDeobfuscator can be used to decode obfuscated XLM
@@ -29,7 +29,6 @@ Requires:       python3dist(lark-parser)
 Requires:       python3dist(msoffcrypto-tool)
 Requires:       python3dist(pyxlsb2)
 Requires:       python3dist(roman)
-Requires:       python3dist(setuptools)
 Requires:       python3dist(untangle) = 1.2.1
 Requires:       python3dist(xlrd2)
 %description -n python%{python3_pkgversion}-xlmmacrodeobfuscator
