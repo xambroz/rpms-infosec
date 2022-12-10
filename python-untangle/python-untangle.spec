@@ -10,6 +10,7 @@ BuildArch:      noarch
 
 BuildRequires:  python3-devel
 BuildRequires:  python3dist(setuptools)
+BuildRequires:  python3dist(defusedxml)
 
 %description
 [![Build Status]( [![PyPi version]( <a href" alt"Code style: black" src"
