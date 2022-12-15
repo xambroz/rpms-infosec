@@ -1,5 +1,4 @@
 %global pypi_name xlrd2
-%global pypi_version 1.3.4
 
 Name:           python-xlrd2
 Version:        1.3.4
@@ -31,7 +30,6 @@ spreadsheet files. It is not an end-user tool.**Versions of Python supported**:
 Summary:        %{summary}
 %description -n python%{python3_pkgversion}-xlrd2 %_description
 %{?python_provide:%python_provide python%{python3_pkgversion}-xlrd2}
-
 
 
 %package -n python-xlrd2-doc
