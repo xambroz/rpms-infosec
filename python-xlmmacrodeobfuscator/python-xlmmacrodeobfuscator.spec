@@ -12,13 +12,16 @@ BuildArch:      noarch
 BuildRequires:  python%{python3_pkgversion}-devel
 BuildRequires:  python%{python3_pkgversion}-setuptools
 
-%description
+%global _description %{expand:
  XLMMacroDeobfuscator XLMMacroDeobfuscator can be used to decode obfuscated XLM
 macros (also known as Excel 4.0 macros). It utilizes an internal XLM emulator
 to interpret the macros, without fully performing the code.It supports both
 xls, xlsm, and xlsb formats. It uses [xlrd2]( [pyxlsb2]( and its own parser to
 extract cells and other information from xls, xlsb and xlsm files,
 respectively.
+}
+
+%description %_description
 
 %package -n     python%{python3_pkgversion}-xlmmacrodeobfuscator
 Summary:        %{summary}
@@ -31,13 +34,9 @@ Requires:       python3dist(pyxlsb2)
 Requires:       python3dist(roman)
 Requires:       python3dist(untangle) = 1.2.1
 Requires:       python3dist(xlrd2)
-%description -n python%{python3_pkgversion}-xlmmacrodeobfuscator
- XLMMacroDeobfuscator XLMMacroDeobfuscator can be used to decode obfuscated XLM
-macros (also known as Excel 4.0 macros). It utilizes an internal XLM emulator
-to interpret the macros, without fully performing the code.It supports both
-xls, xlsm, and xlsb formats. It uses [xlrd2]( [pyxlsb2]( and its own parser to
-extract cells and other information from xls, xlsb and xlsm files,
-respectively.
+
+%description -n python%{python3_pkgversion}-xlmmacrodeobfuscator %_description
+
 
 
 %prep
