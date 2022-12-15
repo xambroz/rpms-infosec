@@ -13,6 +13,7 @@ BuildArch:      noarch
 BuildRequires:  python%{python3_pkgversion}-devel
 BuildRequires:  python3dist(setuptools)
 BuildRequires:  python3dist(sphinx)
+BuildRequires:  python3dist(pkginfo)
 
 %global _description %{expand:
  xlrd2xlrd2 is an effort to extend [xlrd project]( which is no longer mintained
