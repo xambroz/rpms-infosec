@@ -10,6 +10,15 @@ License:        Apache License 2.0
 URL:            https://github.com/DissectMalware/pyxlsb2
 BuildArch:      noarch
 
+%global _description %{expand:
+pyxlsb2 (a variant of pyxlsb - is an Excel 2007+ Binary Workbook (xlsb) parser
+written in Python.pyxslb2 offers the following improvements/changes in
+comparison to pyxlsb:1. By default, keeps all data in memory instead of
+creating temporary files. This is mainly to speed up the processing and also
+not changing the local filesystem during the processing. 2. relies on both
+"xl\\workbook.bin" and...
+}
+
 %global         gituser         DissectMalware
 %global         gitname         pyxlsb2
 %global         commit          0a1ff1be329aa282ecbc347ff44fc6c07351685b
@@ -24,32 +33,18 @@ Release:        %{baserelease}.%{gitdate}git%{shortcommit}%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz#/%{name}-%{version}-%{gitdate}-%{shortcommit}.tar.gz
 %endif
 
-
-
-
 BuildRequires:  python%{python3_pkgversion}-devel
 BuildRequires:  python3dist(setuptools)
 
-%description
-pyxlsb2 (a variant of pyxlsb - is an Excel 2007+ Binary Workbook (xlsb) parser
-written in Python.pyxslb2 offers the following improvements/changes in
-comparison to pyxlsb:1. By default, keeps all data in memory instead of
-creating temporary files. This is mainly to speed up the processing and also
-not changing the local filesystem during the processing. 2. relies on both
-"xl\\workbook.bin" and...
+%description %_description
+
 
 %package -n     python%{python3_pkgversion}-pyxlsb2
 
 Summary:        %{summary}
 %{?python_provide:%python_provide python%{python3_pkgversion}-pyxlsb2 }
 
-%description -n python%{python3_pkgversion}-pyxlsb2
-pyxlsb2 (a variant of pyxlsb - is an Excel 2007+ Binary Workbook (xlsb) parser
-written in Python.pyxslb2 offers the following improvements/changes in
-comparison to pyxlsb:1. By default, keeps all data in memory instead of
-creating temporary files. This is mainly to speed up the processing and also
-not changing the local filesystem during the processing. 2. relies on both
-"xl\\workbook.bin" and...
+%description -n python%{python3_pkgversion}-pyxlsb2 %_description
 
 
 %prep
