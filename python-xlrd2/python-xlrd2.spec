@@ -42,6 +42,7 @@ Documentation for xlrd2
 %autosetup -n xlrd2-%{version}
 # Remove bundled egg-info
 rm -rf .egg-info
+sed -i -e 's/from xlrd/from xlrd2/;' scripts/runxlrd2.py docs/vulnerabilities.rst
 
 %build
 %py3_build
