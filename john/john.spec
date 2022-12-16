@@ -14,7 +14,7 @@ Source0:        https://www.openwall.com/john/k/john-%{version}.tar.xz
 Source1:        https://www.openwall.com/john/k/john-%{version}.tar.xz.sign
 
 # Extra charsets - not needed anymore, part of 1.9.0 core release
-# %global       extra_date 20130529
+# %%global       extra_date 20130529
 # Source2:      https://www.openwall.com/john/j/john-extra-%%{extra_date}.tar.xz
 # Source3:      https://www.openwall.com/john/j/john-extra-%%{extra_date}.tar.xz.sign
 
