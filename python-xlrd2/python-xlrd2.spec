@@ -11,9 +11,9 @@ Source0:        https://github.com/DissectMalware/xlrd2/releases/download/v%{ver
 BuildArch:      noarch
 
 BuildRequires:  python%{python3_pkgversion}-devel
-BuildRequires:  python3dist(setuptools)
-BuildRequires:  python3dist(sphinx)
-BuildRequires:  python3dist(pkginfo)
+BuildRequires:  python%{python3_pkgversion}-setuptools
+BuildRequires:  python%{python3_pkgversion}-sphinx
+BuildRequires:  python%{python3_pkgversion}-pkginfo
 
 %global _description %{expand:
  xlrd2xlrd2 is an effort to extend [xlrd project]( which is no longer mintained
@@ -45,7 +45,9 @@ rm -rf .egg-info
 sed -i -e 's/from xlrd/from xlrd2/;' scripts/runxlrd2.py docs/vulnerabilities.rst
 
 %build
+# package doesn't support pyproject yet
 %py3_build
+
 # generate html docs
 PYTHONPATH=${PWD} sphinx-build-3 docs html
 # remove the sphinx-build leftovers
@@ -54,8 +56,10 @@ rm -rf html/.{doctrees,buildinfo}
 %install
 %py3_install
 
+
 %check
 %{__python3} setup.py test &&
+
 
 %files -n python%{python3_pkgversion}-xlrd2
 %license LICENSE docs/licenses.rst
