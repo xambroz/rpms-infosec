@@ -1,12 +1,9 @@
 Name:           john
 Summary:        John the Ripper password cracker
 Version:        1.9.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 
-%global         BUILD_AVX 1
-%global         BUILD_XOP 1
-%global         BUILD_OMP 1
-
+%bcond_without  check
 
 URL:            https://www.openwall.com/john
 License:        GPLv2
@@ -38,37 +35,80 @@ sed -i 's#\$JOHN/john.conf#%{_sysconfdir}/john.conf#' src/params.h
 
 %build
 
-%global target_non_mmx generic
+# Prevent stripping
+export LDFLAGS="-g"
+export ASFLAGS="-g"
+
+# By default build with "make generic"
+ARCH_CHAIN="generic"
+%global with_fallback 0
 
 %ifarch %{ix86}
-%global target_non_mmx linux-x86-any
-%global target_mmx linux-x86-mmx
+ARCH_CHAIN="linux-x86-any linux-x86-mmx linux-x86-sse2 linux-x86-avx linux-x86-xop linux-x86-avx2 linux-x86-avx512"
+%global with_fallback 1
 %endif
 
 %ifarch x86_64
-%global target_non_mmx linux-x86-64
+ARCH_CHAIN="linux-x86-64 linux-x86-64-avx linux-x86-64-xop linux-x86-64-avx2 linux-x86-64-avx512"
+%global with_fallback 1
 %endif
 
 %ifarch ppc
-%global target_non_mmx linux-ppc32
+ARCH_CHAIN="linux-ppc32 linux-ppc32-altivec"
 %endif
 
 %ifarch ppc64
-%global target_non_mmx linux-ppc64
+ARCH_CHAIN="linux-ppc64 linux-ppc64-altivec"
 %endif
 
 export CFLAGS="-c %optflags -DJOHN_SYSTEMWIDE=1"
 
-make -C src %{target_non_mmx} CFLAGS="${CFLAGS}" LDFLAGS="%optflags"
+# Compile the fallback binary
+ARCH_FIRST=$( echo "${ARCH_CHAIN}" | cut -d ' ' -f 1 )
+make -C src "${ARCH_FIRST}" CFLAGS="${CFLAGS}" LDFLAGS="-g"
 
-%if 0%{?target_mmx:1}
-    mv run/john run/john-non-mmx
+# Compile whole chain of binaries, if configured
+set $ARCH_CHAIN
+while true ; do
+    if [ -z $2 ] ; then
+        break
+    fi
+    PREV="$1"
+    TARGET="$2"
+    CPU_FALLBACK="john-${PREV}"
+    mv run/john "run/${CPU_FALLBACK}"
+    make -C src clean
+    make -C src "${TARGET}" CFLAGS="${CFLAGS} -DCPU_FALLBACK=1 -DCPU_FALLBACK_BINARY='\\\"${CPU_FALLBACK}\\\"'" LDFLAGS="-g"
+    shift
+done
 
-    CFLAGS="${CFLAGS} -DCPU_FALLBACK=1"
-    LDFLAGS="${CFLAGS}"
+ARCH_LAST=$( echo "${ARCH_CHAIN}" | sed -e 's/.*[ ]//' )
+mv run/john "run/john-${ARCH_LAST}"
 
-    make -C src-mmx %{target_mmx}  CFLAGS="${CFLAGS}" LDFLAGS=""
-%endif
+# Compile the OMP binary with fallback to CPU binary
+make -C src clean
+ARCH_FIRST=$( echo "${ARCH_CHAIN}" | cut -d ' ' -f 1 )
+OMP_FALLBACK="john-${ARCH_FIRST}"
+make -C src "${ARCH_FIRST}" CFLAGS="${CFLAGS} -fopenmp -DOMP_FALLBACK=1 -DOMP_FALLBACK_BINARY='\\\"$OMP_FALLBACK\\\"'" OMPFLAGS=-fopenmp LDFLAGS="-g -s -fopenmp"
+
+# Compile whole chain of OMP binaries
+set $ARCH_CHAIN
+while true ; do
+    if [ -z $2 ] ; then
+        break
+    fi
+    PREV="$1"
+    TARGET="$2"
+    CPU_FALLBACK="john-omp-${PREV}"
+    OMP_FALLBACK="john-${TARGET}"
+    mv run/john "run/${CPU_FALLBACK}"
+    make -C src clean
+    make -C src "${TARGET}" CFLAGS="${CFLAGS} -fopenmp -DCPU_FALLBACK=1 -DCPU_FALLBACK_BINARY='\\\"$CPU_FALLBACK\\\"' -DOMP_FALLBACK=1 -DOMP_FALLBACK_BINARY='\\\"$OMP_FALLBACK\\\"'" OMPFLAGS=-fopenmp LDFLAGS="-g -s -fopenmp"
+    shift
+done
+
+
+
 
 %install
 rm -rf %{buildroot}
@@ -79,9 +119,9 @@ install -m 755 run/{john,mailer} %{buildroot}%{_bindir}
 install -m 644 run/{*.chr,password.lst} %{buildroot}%{_datadir}/john
 install -m 644 run/john.conf %{buildroot}%{_sysconfdir}
 
-%if 0%{?target_mmx:1}
+%if 0%{?with_fallback:1}
     install -d -m 755 %{buildroot}%{_libexecdir}/john
-    install -m 755 run/john-non-mmx %{buildroot}%{_libexecdir}/john/
+    install -m 755 run/john-* %{buildroot}%{_libexecdir}/john/
 %endif
 
 pushd %{buildroot}%{_bindir}
@@ -100,11 +140,12 @@ rm doc/INSTALL
 %{_bindir}/unique
 %{_bindir}/unshadow
 %{_datadir}/john/
-%if 0%{?target_mmx:1}
 %{_libexecdir}/john/
-%endif
 
 %changelog
+* Fri Dec 16 2022 Michal Ambroz <rebus _AT seznam.cz> - 1.9.0-2
+- use cpu/omp fallback chaining for binaries
+
 * Fri Dec 16 2022 Michal Ambroz <rebus _AT seznam.cz> - 1.9.0-1
 - bump to version 1.9.0
 
