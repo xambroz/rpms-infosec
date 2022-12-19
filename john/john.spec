@@ -44,12 +44,18 @@ ARCH_CHAIN="generic"
 %global with_fallback 0
 
 %ifarch %{ix86}
-ARCH_CHAIN="linux-x86-any linux-x86-mmx linux-x86-sse2 linux-x86-avx linux-x86-xop linux-x86-avx2 linux-x86-avx512"
+ARCH_CHAIN="linux-x86-any linux-x86-mmx linux-x86-sse2 linux-x86-avx linux-x86-xop linux-x86-avx2"
+%if (0%{?fedora}) || ( 0%{?rhel} >= 8 )
+ARCH_CHAIN="ARCH_CHAIN linux-x86-avx512"
+%endif
 %global with_fallback 1
 %endif
 
 %ifarch x86_64
 ARCH_CHAIN="linux-x86-64 linux-x86-64-avx linux-x86-64-xop linux-x86-64-avx2 linux-x86-64-avx512"
+%if (0%{?fedora}) || ( 0%{?rhel} >= 8 )
+ARCH_CHAIN="ARCH_CHAIN linux-x86-64-avx512"
+%endif
 %global with_fallback 1
 %endif
 
@@ -140,7 +146,9 @@ rm doc/INSTALL
 %{_bindir}/unique
 %{_bindir}/unshadow
 %{_datadir}/john/
+%if 0%{?with_fallback:1}
 %{_libexecdir}/john/
+%endif
 
 %changelog
 * Fri Dec 16 2022 Michal Ambroz <rebus _AT seznam.cz> - 1.9.0-2
