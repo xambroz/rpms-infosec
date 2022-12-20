@@ -52,7 +52,7 @@ ARCH_CHAIN="$ARCH_CHAIN linux-x86-avx512"
 %endif
 
 %ifarch x86_64
-ARCH_CHAIN="linux-x86-64 linux-x86-64-avx linux-x86-64-xop linux-x86-64-avx2 linux-x86-64-avx512"
+ARCH_CHAIN="linux-x86-64 linux-x86-64-avx linux-x86-64-xop linux-x86-64-avx2"
 %if (0%{?fedora}) || ( 0%{?rhel} >= 8 )
 ARCH_CHAIN="$ARCH_CHAIN linux-x86-64-avx512"
 %endif
