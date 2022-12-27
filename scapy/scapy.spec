@@ -1,5 +1,5 @@
 Name:           scapy
-Version:        2.4.5
+Version:        2.5.0
 Release:        1%{?dist}
 Summary:        Interactive packet manipulation tool and network scanner
 
@@ -228,6 +228,24 @@ ln -s %{_bindir}/UTscapy3 %{buildroot}%{_bindir}/UTscapy
 
 
 %changelog
+* Tue Dec 27 2022 Michal Ambroz <rebus _AT seznam.cz> - 2.5.0-1
+- bump to 2.5.0 release
+
+* Sat Jul 23 2022 Fedora Release Engineering <releng@fedoraproject.org> - 2.4.5-6
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_37_Mass_Rebuild
+
+* Mon Jun 13 2022 Python Maint <python-maint@redhat.com> - 2.4.5-5
+- Rebuilt for Python 3.11
+
+* Sat Jan 22 2022 Fedora Release Engineering <releng@fedoraproject.org> - 2.4.5-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
+
+* Fri Jul 23 2021 Fedora Release Engineering <releng@fedoraproject.org> - 2.4.5-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
+
+* Fri Jun 04 2021 Python Maint <python-maint@redhat.com> - 2.4.5-2
+- Rebuilt for Python 3.10
+
 * Tue Apr 20 2021 Michal Ambroz <rebus _AT seznam.cz> - 2.4.5-1
 - bump to 2.4.5 release
 
