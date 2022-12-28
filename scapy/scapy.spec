@@ -190,6 +190,7 @@ ln -s %{_bindir}/scapy3   %{buildroot}%{_bindir}/scapy
 
 %if %{with python2}
 %files -n python2-%{name}
+%exclude %{python2_sitelib}/test/
 %license LICENSE
 %if ! %{with python3}
 %doc %{_mandir}/man1/scapy.1*
@@ -204,6 +205,7 @@ ln -s %{_bindir}/scapy3   %{buildroot}%{_bindir}/scapy
 
 %if %{with python3}
 %files -n python%{python3_pkgversion}-%{name}
+%exclude %{python3_sitelib}/test/
 %license LICENSE
 %doc %{_mandir}/man1/scapy.1*
 %{_bindir}/scapy
