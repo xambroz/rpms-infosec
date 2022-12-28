@@ -160,12 +160,10 @@ rm -f %{buildroot}%{python2_sitelib}/*egg-info/requires.txt
 
 # Rename the executables
 mv -f %{buildroot}%{_bindir}/scapy   %{buildroot}%{_bindir}/scapy2
-mv -f %{buildroot}%{_bindir}/UTscapy %{buildroot}%{_bindir}/UTscapy2
 
 %if ! %{with python3}
 # Link the default to the py2 version of executables if py3 not built
 ln -s %{_bindir}/scapy2   %{buildroot}%{_bindir}/scapy
-ln -s %{_bindir}/UTscapy2 %{buildroot}%{_bindir}/UTscapy
 %endif
 %endif
 
@@ -175,11 +173,9 @@ rm -f %{buildroot}%{python3_sitelib}/*egg-info/requires.txt
 
 # Rename the executables
 mv -f %{buildroot}%{_bindir}/scapy   %{buildroot}%{_bindir}/scapy3
-mv -f %{buildroot}%{_bindir}/UTscapy %{buildroot}%{_bindir}/UTscapy3
 
 # Link the default to the python3 version of executables
 ln -s %{_bindir}/scapy3   %{buildroot}%{_bindir}/scapy
-ln -s %{_bindir}/UTscapy3 %{buildroot}%{_bindir}/UTscapy
 %endif
 
 
@@ -198,10 +194,8 @@ ln -s %{_bindir}/UTscapy3 %{buildroot}%{_bindir}/UTscapy
 %if ! %{with python3}
 %doc %{_mandir}/man1/scapy.1*
 %{_bindir}/scapy
-%{_bindir}/UTscapy
 %endif
 %{_bindir}/scapy2
-%{_bindir}/UTscapy2
 %{python2_sitelib}/scapy/
 %{python2_sitelib}/scapy-*.egg-info
 %endif
@@ -213,9 +207,7 @@ ln -s %{_bindir}/UTscapy3 %{buildroot}%{_bindir}/UTscapy
 %license LICENSE
 %doc %{_mandir}/man1/scapy.1*
 %{_bindir}/scapy
-%{_bindir}/UTscapy
 %{_bindir}/scapy3
-%{_bindir}/UTscapy3
 %{python3_sitelib}/scapy/
 %{python3_sitelib}/scapy-*.egg-info
 %endif
