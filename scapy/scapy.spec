@@ -47,19 +47,18 @@ BuildArch:      noarch
 
 BuildRequires:  make
 BuildRequires:  sed
+BuildRequires:  /usr/bin/tox
 
 %if %{with python2}
 BuildRequires:  python2
 BuildRequires:  python2-devel
 BuildRequires:  python2-setuptools
-BuildRequires:  python2-tox
 %endif
 
 %if %{with python3}
 BuildRequires:  python%{python3_pkgversion}
 BuildRequires:  python%{python3_pkgversion}-devel
 BuildRequires:  python%{python3_pkgversion}-setuptools
-BuildRequires:  python%{python3_pkgversion}-tox
 %endif
 
 # Recommends only supported on fedora and rhel8+
