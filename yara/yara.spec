@@ -1,6 +1,8 @@
 Name:           yara
-Version:        4.2.3
-Release:        1%{?dist}
+Version:        4.3.0
+%global         upversion         %{version}-rc1
+
+Release:        0.rc1.1%{?dist}
 Summary:        Pattern matching Swiss knife for malware researchers
 
 # yara package itself is licensed with BSD 3 clause license
@@ -14,28 +16,17 @@ URL:            https://VirusTotal.github.io/yara/
 
 %global         gituser         VirusTotal
 %global         gitname         yara
-# Commit of version 4.2.3
-%global         commit          ba94b4f8ebb6d56786d14f6a0f7529b32d7c216f
+# Commit of version 4.3.0rc1
+%global         commit          8b8384d15fc5358cee449d88070cc9c8be9ec4ce
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
-# additional module for yara
-%global         androguard_gituser         Koodous
-%global         androguard_gitname         androguard-yara
-# Commit from 2020-04-22
-%global         androguard_commit          3eea86ae2c4ee6ad3cc1cb3c2711b03db078831a
-%global         androguard_shortcommit     %(c=%{androguard_commit}; echo ${c:0:7})
-%global         androguard_gitdate         2020-04-22
 
 # Build from git commit baseline
 #Source0:       https://github.com/%%{gituser}/%%{gitname}/archive/%%{commit}/%%{name}-%%{version}-%%{shortcommit}.tar.gz
 # Build from git release version
-Source0:        https://github.com/%{gituser}/%{gitname}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
+# Source0:        https://github.com/%%{gituser}/%%{gitname}/archive/v%%{version}.tar.gz#/%%{name}-%%{version}.tar.gz
+Source0:        https://github.com/%{gituser}/%{gitname}/archive/v%{upversion}.tar.gz#/%{name}-%{upversion}.tar.gz
 
-#               https://github.com/Koodous/androguard-yara/
-Source1:        https://github.com/%{androguard_gituser}/%{androguard_gitname}/archive/%{androguard_commit}/%{androguard_gitname}-%{androguard_gitdate}-%{androguard_shortcommit}.tar.gz
-
-# Patch based on the androguard-yara installation guide to enable the androguard module
-Patch0:         yara-androguard.patch
 
 # Use default sphix theme to generate documentation rather than sphinx_rtd_theme
 # to avoid static installation of font files on fedora >= 24
@@ -96,18 +87,7 @@ developing applications that use %{name}.
 
 %prep
 # autosetup -n %%{gitname}-%%{commit} -p 1 -S git
-%autosetup -n %{gitname}-%{version} -p 1 -S git
-
-# Add the Androguard module
-# %%setup -qn %%{gitname}-%%{commit} -a 1 -D -T
-%setup -n %{gitname}-%{version} -q -a 1 -D -T
-pushd %{androguard_gitname}-%{androguard_commit}
-
-mkdir -p ../libyara/modules/androguard
-cp -p androguard.c ../libyara/modules/androguard/
-popd
-
-
+%autosetup -n %{gitname}-%{upversion} -p 1 -S git
 autoreconf --force --install
 
 
@@ -174,6 +154,10 @@ make check
 
 
 %changelog
+* Tue Jan 03 2023 Michal Ambroz <rebus at, seznam.cz> - 4.3.0-0.rc1.1
+- bump to 4.3.0 rc1
+- remove the androguard module which is no longer available from github
+
 * Tue Aug 09 2022 Mikel Olasagasti Uranga <mikel@olasagasti.info> - 4.2.3-1
 - Update to 4.2.3 (#2116594)
 
