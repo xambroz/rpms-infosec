@@ -130,8 +130,14 @@ rm -f %{buildroot}%{_datadir}/doc/%{name}/html/.buildinfo
 %check
 %ifarch s390x
     # test-pe and test-dotnet fails for x390x at this point
-    make check &&
-    [ -f ./test-suite.log ] && cat ./test-suite.log
+    make check || (
+        echo "===== ./test-suite.log"
+        [ -f ./test-suite.log ] && cat ./test-suite.log
+        echo "===== test-pe.log"
+        [ -f ./test-pe.log ] && cat ./test-pe.log
+        echo "===== test-dotnet.log"
+        [ -f ./test-dotnet.log ] && cat ./test-dotnet.log
+    )
 %else
     make check
 %endif
