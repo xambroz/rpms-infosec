@@ -133,20 +133,18 @@ rm -f %{buildroot}%{_datadir}/doc/%{name}/html/.buildinfo
 %endif
 
 %check
+# test-pe fails for RHEL9
+make check || (
+    echo "===== ./test-suite.log"
+    [ -f ./test-suite.log ] && cat ./test-suite.log
 %ifarch s390x
     # test-pe and test-dotnet fails for x390x at this point
-    make check || (
-        echo "===== ./test-suite.log"
-        [ -f ./test-suite.log ] && cat ./test-suite.log
-        echo "===== test-pe.log"
-        [ -f ./test-pe.log ] && cat ./test-pe.log
-        echo "===== test-dotnet.log"
-        [ -f ./test-dotnet.log ] && cat ./test-dotnet.log
-    )
+    true
 %else
-    make check
+    # test-pe fails for RHEL9 x86 at this point
+    false
 %endif
-
+)
 
 %files
 %license COPYING
