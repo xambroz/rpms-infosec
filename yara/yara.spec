@@ -43,6 +43,7 @@ BuildRequires:  binutils
 BuildRequires:  coreutils
 BuildRequires:  sharutils
 BuildRequires:  file
+BuildRequires:  sed
 BuildRequires:  gawk
 BuildRequires:  gzip
 BuildRequires:  xz
@@ -96,14 +97,18 @@ developing applications that use %{name}.
 autoreconf --force --install
 
 
+
+
+
 %build
 
-# Add missing definition on RHEL7
+# Add missing protobuf definition on RHEL7, and also configure for the libcrypto11/openssl11 from EPEL
 %if 0%{?rhel} && 0%{?rhel} == 7
-export CFLAGS="$CFLAGS -D PROTOBUF_C_FIELD_FLAG_ONEOF=4"
+export CFLAGS="%{optflags} -D PROTOBUF_C_FIELD_FLAG_ONEOF=4 $(pkg-config --cflags libcrypto11)"
+export LDFLAGS="$LDFLAGS $(pkg-config --libs libcrypto11)"
 %endif
 
-# macro %%configure already does use CFLAGS="\{optflags}" and yara build
+# macro %%configure already does use CFLAGS="%%{optflags}" and yara build
 # scripts configure/make already honors that CFLAGS
 %configure --enable-magic --enable-cuckoo --enable-debug --enable-dotnet \
         --enable-macho --enable-dex --enable-pb-tests \
