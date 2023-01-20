@@ -138,15 +138,22 @@ rm -f %{buildroot}%{_datadir}/doc/%{name}/html/.buildinfo
 %endif
 
 %check
-# test-pe fails for RHEL9
 make check || (
+    # print more verbose info in case the test(s) fail
     echo "===== ./test-suite.log"
     [ -f ./test-suite.log ] && cat ./test-suite.log
+    echo "===== /proc/cpu"
+    head -n 35 /proc/cpuinfo
+    echo "===== /etc/os-release"
+    cat /etc/os-release
+    echo "===== uname -a"
+    uname -a
+
 %ifarch s390x
-    # test-pe and test-dotnet fails for x390x at this point
+    # test-pe and test-dotnet fails for x390x at this point - ignored for rc1
     true
 %else
-    # test-pe fails for RHEL9 x86 at this point
+    # test-pe fails for RHEL9 x86 at this point in copr
     false
 %endif
 )
