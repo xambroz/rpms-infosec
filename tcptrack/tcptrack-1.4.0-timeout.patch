@@ -1,0 +1,11 @@
+--- tcptrack-1.4.0/src/TextUI.cc.timeout	2010-09-27 17:02:01.000000000 -0600
++++ tcptrack-1.4.0/src/TextUI.cc	2010-12-15 14:49:09.139756158 -0700
+@@ -136,7 +136,7 @@
+ 		FD_ZERO(&fdset);
+ 		FD_SET(0,&fdset);
+ 		tv.tv_sec=0;
+-		tv.tv_usec=100;
++		tv.tv_usec=10000;
+ 
+ 		rv=select(1,&fdset,NULL,NULL,&tv);
+ 		if( rv )
