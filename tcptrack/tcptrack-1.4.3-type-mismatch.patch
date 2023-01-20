@@ -1,0 +1,37 @@
+From 409007afbce8ec5a81312a2a4123dd83b62b4494 Mon Sep 17 00:00:00 2001
+From: Sergei Trofimovich <slyich@gmail.com>
+Date: Fri, 19 Nov 2021 08:49:56 +0000
+Subject: [PATCH] src/TextUI.cc: fix format arguments
+
+-Wformat detects type mismatch as:
+
+    TextUI.cc:315:34: error: format '%d' expects argument of type 'int',
+        but argument 2 has type 'time_t' {aka 'long int'} [-Werror=format=]
+      315 |                         printw("%ds",ic->getIdleSeconds());
+          |                                 ~^   ~~~~~~~~~~~~~~~~~~~~
+          |                                  |                     |
+          |                                  int                   time_t {aka long int}
+          |                                 %ld
+---
+ src/TextUI.cc | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/src/TextUI.cc b/src/TextUI.cc
+index 057046d..25cc5d6 100644
+--- a/src/TextUI.cc
++++ b/src/TextUI.cc
+@@ -312,11 +312,11 @@ void TextUI::drawui()
+ 
+ 		move(row,58);
+ 		if( ic->getIdleSeconds() < 60 )
+-			printw("%ds",ic->getIdleSeconds());
++			printw("%ds",(int)(ic->getIdleSeconds()));
+ 		else if( ic->getIdleSeconds() < 3600 ) 
+-			printw("%dm",ic->getIdleSeconds()/60);
++			printw("%dm",(int)(ic->getIdleSeconds()/60));
+ 		else
+-			printw("%dh",ic->getIdleSeconds()/3600);
++			printw("%ldh",(long)(ic->getIdleSeconds()/3600));
+ 
+ 		move(row,63);
+ 		if( ic->activityToggle() )

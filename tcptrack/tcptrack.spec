@@ -7,6 +7,10 @@ License:        LGPLv2+
 URL:            https://github.com/bchretien/tcptrack
 Source0:        https://github.com/bchretien/tcptrack/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
+# Build on F36+ has stronger argument type checking and needs this patch
+# was already reported upstream in https://github.com/bchretien/tcptrack/pull/10/
+Patch0:         https://github.com/bchretien/tcptrack/commit/409007afbce8ec5a81312a2a4123dd83b62b4494.patch#/tcptrack-1.4.3-type-mismatch.patch
+
 BuildRequires: make
 BuildRequires:  gcc-c++
 BuildRequires:  gcc
@@ -38,6 +42,9 @@ and bandwidth usage
 %{_mandir}/man*/%{name}.*
 
 %changelog
+* Thu Jan 19 2023 Michal Ambroz <rebus _AT seznam.cz> - 1.4.3-11
+- cherrypick patch to fix format typs
+
 * Sat Jul 23 2022 Fedora Release Engineering <releng@fedoraproject.org> - 1.4.3-10
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_37_Mass_Rebuild
 
