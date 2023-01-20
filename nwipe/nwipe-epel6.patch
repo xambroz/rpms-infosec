@@ -1,0 +1,6 @@
+diff -ru nwipe-d01b00b4f82ea1899eee1f0ffb47ebc6ac7e5dc2.orig/configure.ac nwipe-d01b00b4f82ea1899eee1f0ffb47ebc6ac7e5dc2/configure.ac
+--- nwipe-d01b00b4f82ea1899eee1f0ffb47ebc6ac7e5dc2.orig/configure.ac	2016-07-27 09:33:17.000000000 +0200
++++ nwipe-d01b00b4f82ea1899eee1f0ffb47ebc6ac7e5dc2/configure.ac	2016-08-03 17:27:19.235806431 +0200
+@@ -4 +4 @@
+-AC_PREREQ([2.64])
++AC_PREREQ([2.63])
