@@ -55,6 +55,12 @@ a few changes:
 
 
 %build
+
+# On RHEL7 it is needed to explicitly pregress to c99 compatibility mode
+%if 0%{?rhel} && 0%{?rhel} <= 7
+export CFLAGS="%{optflags} -std=c99 -D_XOPEN_SOURCE=500"
+%endif
+
 autoreconf -vif
 %configure
 make %{?_smp_mflags}
