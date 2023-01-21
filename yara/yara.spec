@@ -111,6 +111,13 @@ export CFLAGS="%{optflags} -D PROTOBUF_C_FIELD_FLAG_ONEOF=4 $(pkg-config --cflag
 export LDFLAGS="$LDFLAGS $(pkg-config --libs libcrypto11)"
 %endif
 
+%if 0%{?rhel} && 0%{?rhel} == 9
+%ifarch x86_64
+# test-pe of 4.3.0 fails on AMD EPYC processor, possibly due to compatibility issue of some extended instruction set
+export CFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection'
+%endif
+%endif
+
 # macro %%configure already does use CFLAGS="%%{optflags}" and yara build
 # scripts configure/make already honors that CFLAGS
 %configure --enable-magic --enable-cuckoo --enable-debug --enable-dotnet \
