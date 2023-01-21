@@ -35,7 +35,7 @@ Patch1:         yara-docs-theme.patch
 # https://github.com/VirusTotal/yara/commit/90c43e24f0dedd130bea199e6c23094271c3f491
 # test-pe fails on s390x
 Patch2:         https://github.com/VirusTotal/yara/commit/90c43e24f0dedd130bea199e6c23094271c3f491.patch#/yara-4.3.0-test-pe-s390x.patch
-
+Patch3:         https://github.com/VirusTotal/yara/commit/d1a6ef20c049d86a136111dce53b4eb65c4df1bd.patch#/yara-4.3.0-test-pe2-s390x.patch
 
 BuildRequires:  git
 BuildRequires:  gcc
