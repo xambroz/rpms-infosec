@@ -9,6 +9,7 @@ Source0:        https://github.com/bchretien/tcptrack/archive/v%{version}.tar.gz
 
 # Build on F36+ has stronger argument type checking and needs this patch
 # was already reported upstream in https://github.com/bchretien/tcptrack/pull/10/
+# line changed
 Patch0:         https://github.com/bchretien/tcptrack/commit/409007afbce8ec5a81312a2a4123dd83b62b4494.patch#/tcptrack-1.4.3-type-mismatch.patch
 
 BuildRequires: make
@@ -26,7 +27,7 @@ source and destination addresses and ports, connection state, idle time,
 and bandwidth usage
 
 %prep
-%autosetup
+%autosetup -p 1
 
 %build
 %configure

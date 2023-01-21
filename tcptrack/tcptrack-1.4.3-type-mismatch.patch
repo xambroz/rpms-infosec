@@ -1,3 +1,4 @@
+https://github.com/bchretien/tcptrack/commit/409007afbce8ec5a81312a2a4123dd83b62b4494.patch#/tcptrack-1.4.3-type-mismatch.patch
 From 409007afbce8ec5a81312a2a4123dd83b62b4494 Mon Sep 17 00:00:00 2001
 From: Sergei Trofimovich <slyich@gmail.com>
 Date: Fri, 19 Nov 2021 08:49:56 +0000
@@ -16,20 +17,20 @@ Subject: [PATCH] src/TextUI.cc: fix format arguments
  src/TextUI.cc | 6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/src/TextUI.cc b/src/TextUI.cc
-index 057046d..25cc5d6 100644
---- a/src/TextUI.cc
-+++ b/src/TextUI.cc
-@@ -312,11 +312,11 @@ void TextUI::drawui()
+diff -ru tcptrack-1.4.3/src/TextUI.cc tcptrack-1.4.3.new/src/TextUI.cc
+--- tcptrack-1.4.3/src/TextUI.cc	2015-04-23 10:04:40.000000000 +0200
++++ tcptrack-1.4.3.new/src/TextUI.cc	2023-01-20 09:34:15.223578489 +0100
+@@ -309,11 +309,11 @@
  
  		move(row,58);
  		if( ic->getIdleSeconds() < 60 )
 -			printw("%ds",ic->getIdleSeconds());
-+			printw("%ds",(int)(ic->getIdleSeconds()));
- 		else if( ic->getIdleSeconds() < 3600 ) 
+-		else if( ic->getIdleSeconds() > 59 ) 
 -			printw("%dm",ic->getIdleSeconds()/60);
++			printw("%ds",(int)(ic->getIdleSeconds()));
++		else if( ic->getIdleSeconds() > 59 )
 +			printw("%dm",(int)(ic->getIdleSeconds()/60));
- 		else
+ 		else if( ic->getIdleSeconds() > 3559 )
 -			printw("%dh",ic->getIdleSeconds()/3600);
 +			printw("%ldh",(long)(ic->getIdleSeconds()/3600));
  
