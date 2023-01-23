@@ -148,6 +148,7 @@ rm -f %{buildroot}%{_datadir}/doc/%{name}/html/.buildinfo
 %endif
 
 %check
+export OPENSSL_ENABLE_SHA1_SIGNATURES=yes
 make check || (
     # print more verbose info in case the test(s) fail
     echo "===== ./test-suite.log"
