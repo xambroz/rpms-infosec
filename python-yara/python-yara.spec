@@ -127,7 +127,7 @@ export PYTHONDONTWRITEBYTECODE=1
 export PYTEST_XDIST_AUTO_NUM_WORKERS=%{_smp_build_ncpus}}
 pytest-3 -k "$EXCLUDE" tests.py -v
 %else
-%pytest3 -k "$EXCLUDE" tests.py -v
+%pytest -k "$EXCLUDE" tests.py -v
 %endif
 
 
