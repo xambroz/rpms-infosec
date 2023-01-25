@@ -1,6 +1,6 @@
 Name:           radare2
 Summary:        The reverse engineering framework
-Version:        5.7.8
+Version:        5.8.2
 %global         rel             1
 URL:            https://radare.org/
 VCS:            https://github.com/radareorg/radare2
@@ -21,16 +21,16 @@ VCS:            https://github.com/radareorg/radare2
 %global         gituser         radareorg
 %global         gitname         radare2
 
-%global         gitdate         20220913
-%global         commit          8e965bef30457a12e07a32a9047a9620a944bc39
+%global         gitdate         20230123
+%global         commit          0b6793f37d9dae5b43fa96beae93008e197dc87a
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
 %if %{with releasetag}
-Release:        %{rel}%{?dist}
+Release:        %{rel}%{?dist}.1
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
 %else
-Release:        0.%{rel}.%{gitdate}git%{shortcommit}%{?dist}
+Release:        0.%{rel}.%{gitdate}git%{shortcommit}%{?dist}.1
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{commit}.zip#/%{name}-%{version}-%{shortcommit}.zip
 %endif
 
@@ -349,6 +349,12 @@ mkdir -p %{buildroot}%{_libdir}/%{name}/%{version}
 
 
 %changelog
+* Wed Jan 25 2023 Michal Ambroz <rebus at, seznam.cz> 5.8.2-1
+- bump to 5.8.2
+
+* Fri Jan 20 2023 Fedora Release Engineering <releng@fedoraproject.org> - 5.7.8-1.1
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_38_Mass_Rebuild
+
 * Tue Aug 02 2022 Michal Ambroz <rebus at, seznam.cz> 5.7.8-1
 - bump to 5.7.8
 
