@@ -27,10 +27,10 @@ VCS:            https://github.com/radareorg/radare2
 
 
 %if %{with releasetag}
-Release:        %{rel}%{?dist}.1
+Release:        %{rel}%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
 %else
-Release:        0.%{rel}.%{gitdate}git%{shortcommit}%{?dist}.1
+Release:        0.%{rel}.%{gitdate}git%{shortcommit}%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{commit}.zip#/%{name}-%{version}-%{shortcommit}.zip
 %endif
 
@@ -272,7 +272,6 @@ sed -i -e "s|meson_version : '>=......'|meson_version : '>=0.49.1'|;" meson.buil
     -Duse_sys_lz4=true \
     -Duse_sys_xxhash=true \
     -Duse_ssl=true \
-    -Duse_sys_openssl=true \
     -Duse_libuv=true \
 %ifarch s390x
     -Ddebugger=false \
