@@ -1,5 +1,5 @@
 Name:           hcxtools
-Version:        4.2.1
+Version:        6.2.7
 Release:        1%{?dist}
 Summary:        Portable solution for capturing wlan traffic and conversion to hashcat formats
 Group:          Development/Libraries
@@ -10,8 +10,9 @@ URL:            https://github.com/ZerBea/hcxtools
 %global         gituser         ZerBea
 %global         gitname         hcxtools
 
-# Commit of version 4.2.1
-%global         commit          9bd744c382dc3dc98e5880b617220977ef164227
+# Commit of version 6.2.7
+%global         gitdate         20220426
+%global         commit          23b1fb3bafc2fe1c558f22b7aa031a9b57b1d532
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
@@ -64,7 +65,8 @@ sed -i -e 's|install: build|install:|g' Makefile
 
 %install
 make install DESTDIR=%{buildroot} PREFIX=%{_prefix} CFLAGS="%{optflags}" 
-
+install -d -m 0755 %{buildroot}%{_mandir}/man1
+install -D -m 0755 -p man/hcxtools.1 %{buildroot}%{_mandir}/man1/hcxtools.1
 # Remove static libraries
 # rm %{buildroot}%{_libdir}/lib%{name}.la
 # rm %{buildroot}%{_libdir}/lib%{name}.a
@@ -74,27 +76,16 @@ make install DESTDIR=%{buildroot} PREFIX=%{_prefix} CFLAGS="%{optflags}"
 %files
 %doc README.md
 %license license.txt
-%{_bindir}/hcxhashcattool
+%{_bindir}/hcx*
 %{_bindir}/whoismac
-%{_bindir}/wlancow2hcxpmk
-%{_bindir}/wlanhc2hcx
-%{_bindir}/wlanhcx2essid
-%{_bindir}/wlanhcx2psk
-%{_bindir}/wlanhcxcat
-%{_bindir}/wlanhcxmnc
-%{_bindir}/wlanpmk2hcx
-%{_bindir}/hcxpcaptool
 %{_bindir}/wlancap2wpasec
-%{_bindir}/wlanhashhcx
-%{_bindir}/wlanhcx2cap
-%{_bindir}/wlanhcx2john
-%{_bindir}/wlanhcx2ssid
-%{_bindir}/wlanhcxinfo
-%{_bindir}/wlanjohn2hcx
-%{_bindir}/wlanwkp2hcx
+%{_mandir}/man1/hcxtools.1*
 
 
 
 %changelog
+* Thu Jan 26 2023 Michal Ambroz <rebus at, seznam.cz> - 6.2.7-1
+- update to 6.2.7
+
 * Tue Aug 7 2018 Michal Ambroz <rebus at, seznam.cz> - 4.2.1-1
 - initial package
