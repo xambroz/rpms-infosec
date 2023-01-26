@@ -3,17 +3,17 @@
 %global pypi_version 1.0.5
 
 Name:           python-%{pypi_name}
-Version:        %{pypi_version}
+Version:        1.0.5
 Release:        1%{?dist}
 Summary:        DKIM (DomainKeys Identified Mail), ARC (Authenticated Receive Chain), and TLSRPT (TLS Report) email signing and verification
 
 License:        BSD-like
 URL:            https://launchpad.net/dkimpy
 # Source0:        %%{pypi_source}
-Source0:        https://launchpad.net/dkimpy/1.0/1.0.5/+download/dkimpy-1.0.5.tar.gz
+Source0:        https://launchpad.net/dkimpy/1.0/%{version}/+download/dkimpy-%{version}.tar.gz
 BuildArch:      noarch
 
-BuildRequires:  python3-devel
+BuildRequires:  python%{python3_pkgversion}-devel
 BuildRequires:  python3dist(aiodns)
 BuildRequires:  python3dist(authres)
 BuildRequires:  python3dist(authres)
@@ -30,9 +30,9 @@ dkimpy 1.0.5. REQUIREMENTSDependencies will be automatically included for
 normal DKIM usage. The extras_requires feature 'ed25519' will add the
 dependencies needed...
 
-%package -n     python3-%{pypi_name}
+%package -n     python%{python3_pkgversion}-%{pypi_name}
 Summary:        %{summary}
-%{?python_provide:%python_provide python3-%{pypi_name}}
+%{?python_provide:%python_provide python%{python3_pkgversion}-%{pypi_name}}
 
 Requires:       python3dist(aiodns)
 Requires:       python3dist(authres)
@@ -41,7 +41,7 @@ Requires:       python3dist(py3dns)
 Requires:       python3dist(pynacl)
 Requires:       python3dist(pynacl)
 Requires:       python3dist(setuptools)
-%description -n python3-%{pypi_name}
+%description -n python%{python3_pkgversion}-%{pypi_name}
 dkimpy - DKIM (DomainKeys Identified Mail) fork of: INTRODUCTIONdkimpy is a
 library that implements DKIM (DomainKeys Identified Mail) email signing and
 verification. Basic DKIM requirements are defined in RFC 6376: VERSIONThis is
@@ -51,7 +51,7 @@ dependencies needed...
 
 
 %prep
-%autosetup -n %{pypi_name}-%{pypi_version}
+%autosetup -n %{pypi_name}-%{version}
 # Remove bundled egg-info
 rm -rf %{pypi_name}.egg-info
 
@@ -64,7 +64,7 @@ rm -rf %{pypi_name}.egg-info
 %check
 %{__python3} setup.py test &&
 
-%files -n python3-%{pypi_name}
+%files -n python%{python3_pkgversion}-%{pypi_name}
 %license LICENSE
 %doc README.md
 %{_bindir}/arcsign
@@ -73,7 +73,7 @@ rm -rf %{pypi_name}.egg-info
 %{_bindir}/dkimverify
 %{_bindir}/dknewkey
 %{python3_sitelib}/dkim
-%{python3_sitelib}/%{pypi_name}-%{pypi_version}-py%{python3_version}.egg-info
+%{python3_sitelib}/%{pypi_name}-%{version}-py%{python3_version}.egg-info
 %{_mandir}/man1/arcsign.1.gz
 %{_mandir}/man1/arcverify.1.gz
 %{_mandir}/man1/dkimsign.1.gz
