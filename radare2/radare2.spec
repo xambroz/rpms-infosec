@@ -309,7 +309,7 @@ mkdir -p %{buildroot}%{_libdir}/%{name}/%{version}
 %files
 %license COPYING COPYING.LESSER
 %doc CONTRIBUTING.md DEVELOPERS.md README.md
-%doc doc/3D/ doc/node.js/ doc/pdb/ doc/sandbox/
+%doc doc/3D/ doc/pdb/ doc/sandbox/
 %doc doc/avr.md doc/brainfuck.md doc/calling-conventions.md doc/debug.md
 %doc doc/esil.md doc/gdb.md doc/gprobe.md doc/intro.md doc/io.md doc/rap.md
 %doc doc/siol.md doc/strings.md doc/windbg.md doc/yara.md
