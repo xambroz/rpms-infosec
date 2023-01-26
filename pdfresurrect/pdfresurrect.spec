@@ -39,7 +39,7 @@ sed -i 's|@CFLAGS@|%{optflags}|' Makefile.in
 
 %build
 %configure
-make %{?_smp_mflags} CFLAGS="%{optflags}"
+%make_build CFLAGS="%{optflags}"
 
 
 %install
