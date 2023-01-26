@@ -1,6 +1,6 @@
 Name:           python-volatility3
 Summary:        The volatile memory extraction framework
-Version:        2.0.1
+Version:        2.4.0
 %global         baserelease     1
 
 
@@ -17,8 +17,8 @@ License:        vslv1
 # this is hosted on github as...
 %global         gitname         volatility3
 %global         pyname          volatility3
-%global         commit          20386d723bff16c31e754bd592ecbd27b9f86b56
-%global         gitdate         20210317
+%global         commit          2b46e97e52fe4193d28165fa23889e7106e4aa02
+%global         gitdate         20221214
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
@@ -120,11 +120,15 @@ ln -s vol3 %{buildroot}%{_bindir}/vol
 ln -s volatility3 %{buildroot}%{_bindir}/volatility
 %endif
 
+[ -d %{buildroot}%{python3_sitelib}/doc ] &&
+    rm -rf %{buildroot}%{python3_sitelib}/doc
 
+[ -d %{buildroot}%{python3_sitelib}/test/ ] &&
+    rm -rf %{buildroot}%{python3_sitelib}/test
 
 %files -n python%{python3_pkgversion}-%{gitname}
 %license LICENSE.txt
-%doc README.md
+%doc README.md doc
 %{_bindir}/vol3
 %{_bindir}/volatility3
 %{_bindir}/volshell3
@@ -139,6 +143,9 @@ ln -s volatility3 %{buildroot}%{_bindir}/volatility
 
 
 %changelog
+* Thu Jan 26 2023 Michal Ambroz <rebus AT_ seznam.cz> - 2.4.0-1
+- bump to new upstream version 2.4.0
+
 * Wed Jun 01 2022 Michal Ambroz <rebus AT_ seznam.cz> - 2.0.1-1
 - bump to new upstream version 2.0.1
 
