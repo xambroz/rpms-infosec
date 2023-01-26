@@ -2,7 +2,7 @@ Name:           yara
 Version:        4.3.0
 %global         upversion         %{version}-rc1
 
-Release:        0.rc1.1%{?dist}
+Release:        0.rc1.3%{?dist}
 Summary:        Pattern matching Swiss knife for malware researchers
 
 # yara package itself is licensed with BSD 3 clause license
@@ -111,13 +111,6 @@ export CFLAGS="%{optflags} -D PROTOBUF_C_FIELD_FLAG_ONEOF=4 $(pkg-config --cflag
 export LDFLAGS="$LDFLAGS $(pkg-config --libs libcrypto11)"
 %endif
 
-%if 0%{?rhel} && 0%{?rhel} == 9
-%ifarch x86_64
-# test-pe of 4.3.0 fails on AMD EPYC processor, possibly due to compatibility issue of some extended instruction set
-export CFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection'
-%endif
-%endif
-
 # macro %%configure already does use CFLAGS="%%{optflags}" and yara build
 # scripts configure/make already honors that CFLAGS
 %configure --enable-magic --enable-cuckoo --enable-debug --enable-dotnet \
@@ -148,11 +141,13 @@ rm -f %{buildroot}%{_datadir}/doc/%{name}/html/.buildinfo
 %endif
 
 %check
+# reenable the validation of SHA1 certificates in OPENSSL (RHEL9 disabled that by default)
 export OPENSSL_ENABLE_SHA1_SIGNATURES=yes
 make check || (
     # print more verbose info in case the test(s) fail
     echo "===== ./test-suite.log"
     [ -f ./test-suite.log ] && cat ./test-suite.log
+    # Build in COPR lacking the hwinfo.log
     echo "===== /proc/cpu"
     head -n 35 /proc/cpuinfo
     echo "===== /etc/os-release"
@@ -164,7 +159,6 @@ make check || (
     # test-pe and test-dotnet fails for x390x at this point - ignored for rc1
     true
 %else
-    # test-pe fails for RHEL9 x86 at this point in copr
     false
 %endif
 )
@@ -192,6 +186,15 @@ make check || (
 
 
 %changelog
+* Tue Jan 24 2023 Michal Ambroz <rebus at, seznam.cz> - 4.3.0-0.rc1.3
+- fix EPEL9 build = reenable the SHA1 certificate validation in OpenSSL for make check
+
+* Sat Jan 21 2023 Michal Ambroz <rebus at, seznam.cz> - 4.3.0-0.rc1.2
+- fix EPEL7 build
+
+* Sat Jan 21 2023 Fedora Release Engineering <releng@fedoraproject.org> - 4.3.0-0.rc1.1.1
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_38_Mass_Rebuild
+
 * Tue Jan 03 2023 Michal Ambroz <rebus at, seznam.cz> - 4.3.0-0.rc1.1
 - bump to 4.3.0 rc1
 - remove the androguard module which is no longer available from github
