@@ -1,5 +1,5 @@
 Name:           pe-bear
-Version:        0.5.5
+Version:        0.5.5.7
 Release:        1%{?dist}
 Summary:        reversing tool for PE files
 %global         qtversion    qt5.15
@@ -120,6 +120,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 %{_datadir}/icons/hicolor/64x64/apps/%{name}.png
 
 %changelog
+* Thu Jan 26 2023 Michal Ambroz <rebus at, seznam.cz> - 0.5.5.7-1
+- update to 0.5.5.7
+
 * Thu Sep 19 2019 Michal Ambroz <rebus at, seznam.cz> - 0.3.9.5-1
 - update to 0.3.9.5
 
