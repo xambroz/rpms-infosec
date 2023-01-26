@@ -6,7 +6,7 @@ URL:            https://radare.org/
 VCS:            https://github.com/radareorg/radare2
 #               https://github.com/radareorg/radare2/releases
 
-# %%if 0%%{?rhel} && 0i%%{?rhel} == 8
+# %%if 0%%{?rhel} && 0%%{?rhel} == 8
 # Radare2 fails to build on EPEL8+s390x
 # https://bugzilla.redhat.com/show_bug.cgi?id=1960046
 # https://docs.fedoraproject.org/en-US/packaging-guidelines/#_architecture_build_failures
@@ -88,7 +88,12 @@ BuildRequires:  ninja-build
 BuildRequires:  pkgconfig
 # xxhash-devel
 BuildRequires:  pkgconfig(libxxhash)
+
+# version of libzip on rhel7 is too old
+%if 0%{?fedora} || 0%{?rhel} >= 8
 BuildRequires:  pkgconfig(libzip)
+%endif
+
 BuildRequires:  pkgconfig(zlib)
 BuildRequires:  pkgconfig(liblz4)
 BuildRequires:  pkgconfig(capstone) >= 3.0.4
@@ -132,7 +137,9 @@ Requires:       %{name}-common = %{version}-%{release}
 
 # ./libr/hash/{md4,md5,sha1,sha2}.{c,h}
 # ./libr/util/big.c
-# compiled with -D use_sys_openssl=true instead
+# could be compiled with -D use_sys_openssl=true instead,
+# but is currently not maintained so using embedded R2 implementations
+# for hashing
 
 # ./shlr/spp/README.md
 # SPP stands for Simple Pre-Processor, a templating language.
@@ -234,7 +241,11 @@ information
 sed -i -e "s|%{version}-git|%{version}|g;" configure configure.acr
 %endif
 # Removing zip/lzip files because we use system dependencies
+# version of libzip on rhel7 is too old, use the embedded one instead
+%if 0%{?fedora} || 0%{?rhel} >= 8
 rm -rf shlr/zip/{zip,zlib,include}
+%endif
+
 # Remove lx4 files because we use system dependencies
 rm -rf shlr/lz4/{deps.mk,LICENSE,lz4.*,Makefile,README.md}
 # Remove xxhash files because we use system dependencies
@@ -246,7 +257,7 @@ rm -rf libr/magic/*.c
 mv libr/magic/magic.c.stripped libr/magic/magic-libmagic.c
 mv libr/magic/ascmagic.c.stripped libr/magic/ascmagic-libmagic.c
 # Remove openssl files because we use system dependencies
-rm -f libr/hash/{md4,md5,sha1,sha2}.[ch]
+# rm -f libr/hash/{md4,md5,sha1,sha2}.[ch]
 
 # Webui contains pre-build and/or minimized versions of JS libraries without source code
 # Consider installing the web-interface from https://github.com/radare/radare2-webui
@@ -267,7 +278,11 @@ sed -i -e "s|meson_version : '>=......'|meson_version : '>=0.49.1'|;" meson.buil
 # Whereever possible use the system-wide libraries instead of bundles
 %meson \
     -Duse_sys_magic=true \
+%if 0%{?fedora} || 0%{?rhel} >= 8
     -Duse_sys_zip=true \
+%else
+    -Duse_sys_zip=false \
+%endif
     -Duse_sys_zlib=true \
     -Duse_sys_lz4=true \
     -Duse_sys_xxhash=true \
