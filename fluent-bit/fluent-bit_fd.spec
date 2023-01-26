@@ -29,7 +29,7 @@ Development files for %{name}
 %build
 cd build
 %cmake -DCMAKE_INSTALL_PREFIX=%{_prefix} ..
-make %{?_smp_mflags}
+%make_build
 #%%cmake_build
 
 %install
