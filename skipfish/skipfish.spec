@@ -14,31 +14,32 @@ Source0:        https://storage.googleapis.com/google-code-archive-downloads/v2/
 # was:          http://%%{name}.googlecode.com/files/%%{name}-%%{version}b.tgz
 
 # Use common paths and fedora build options and use fedora policy compiler flag
-Patch1:         skipfish-2.10b-makefile-format-security.patch
+Patch01:         skipfish-01-makefile-format-security.patch
 
 # Patch to build with GCC10 where -fno-common is the default
-Patch2:         skipfish-gcc10.patch
+Patch02:         skipfish-02-gcc10.patch
 
 # Patch from Kali linux
 # https://gitlab.com/kalilinux/packages/skipfish/-/tree/0f290396a860634cb16848f23bca36a9ba8209bb/debian/patches
-
-# From:    Igor Bezzubchenko <garikello@gmail.com>
-# Date:    Sun, 3 Jan 2021 22:49:21 +0300
-# Subject: Fix for openssl 1.1
-# Origin:  https://gitlab.com/kalilinux/packages/skipfish/-/merge_requests/1
-Patch3:    https://gitlab.com/kalilinux/packages/skipfish/-/raw/0f290396a860634cb16848f23bca36a9ba8209bb/debian/patches/Fix-for-openssl-1.1.patch#/skipfish-fix-for-openssl-1.1.patch
-
 
 # From 21a6780ce8b5a17ffe2b17eda2abf5ca60fd6f46 Mon Sep 17 00:00:00 2001
 # From: Igor Bezzubchenko <garikello@gmail.com>
 # Date: Thu, 7 Jan 2021 14:21:32 +0300
 # Subject: [PATCH] fixing broken ciphersuite evaluation for newer OpenSSLs
-Patch4:         https://gitlab.com/kalilinux/packages/skipfish/-/raw/0f290396a860634cb16848f23bca36a9ba8209bb/debian/patches/Fix-broken-ciphersuite-evaluation-for-newer-OpenSSLs.patch#/skipfist-fix-broken-ciphersuite-evaluation-for-newer-OpenSSLs.patch
+Patch3:         https://gitlab.com/kalilinux/packages/skipfish/-/raw/0f290396a860634cb16848f23bca36a9ba8209bb/debian/patches/Fix-broken-ciphersuite-evaluation-for-newer-OpenSSLs.patch#/skipfish-fix-broken-ciphersuite-evaluation-for-newer-OpenSSLs.patch
+
+# From:         Igor Bezzubchenko <garikello@gmail.com>
+# Date:         Sun, 3 Jan 2021 22:49:21 +0300
+# Subject:      Fix for openssl 1.1
+# Origin:       https://gitlab.com/kalilinux/packages/skipfish/-/merge_requests/1
+Patch4:         https://gitlab.com/kalilinux/packages/skipfish/-/raw/0f290396a860634cb16848f23bca36a9ba8209bb/debian/patches/Fix-for-openssl-1.1.patch#/skipfish-fix-for-openssl-1.1.patch
+
 
 # From: Sophie Brun <sophie@offensive-security.com>
 # Date: Wed, 6 Jan 2021 15:31:58 +0100
 # Subject: Fix small syntax issues in manpage
 Patch5:         https://gitlab.com/kalilinux/packages/skipfish/-/raw/0f290396a860634cb16848f23bca36a9ba8209bb/debian/patches/Fix-small-syntax-issues-in-manpage.patch#/skipfish-fix-small-sytax-issues-in-manpage.patch
+
 
 
 BuildRequires:  openssl-devel
@@ -62,7 +63,7 @@ cp -p assets/COPYING COPYING.icons
 
 %build
 sed -i 's|^// #define PROXY_SUPPORT|#define PROXY_SUPPORT|' src/config.h
-make %{?_smp_mflags} CFLAGS="%{optflags} -fno-common"
+%make_build CFLAGS="%{optflags} -fno-common"
 
 
 
