@@ -59,7 +59,7 @@ sed -i -e 's|install: build|install:|g' Makefile
 
 
 %build
-make %{?_smp_mflags} PREFIX=%{_prefix} CFLAGS="%{optflags}" 
+%make_build PREFIX=%{_prefix} CFLAGS="%{optflags}" 
 
 
 %install
