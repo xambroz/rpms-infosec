@@ -119,7 +119,7 @@ export CFLAGS
 
 # experimental=true needed for wesside-ng, easside-ng, buddy-ng and tkiptun-ng
 # (also needed in make install)
-make %{?_smp_mflags} sqlite=true experimental=true pcre=true ext_scripts=true
+%make_build sqlite=true experimental=true pcre=true ext_scripts=true
 
 for I in scripts/airgraph-ng scripts/airdrop-ng; do
 	pushd $I
