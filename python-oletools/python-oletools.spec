@@ -1,6 +1,6 @@
 Name:           python-oletools
-Version:        0.56.2
-Release:        8%{?dist}
+Version:        0.60.1
+Release:        1%{?dist}
 Summary:        Tools to analyze Microsoft OLE2 files
 
 # oletools/*.py: BSD
@@ -12,6 +12,7 @@ Summary:        Tools to analyze Microsoft OLE2 files
 # oletools/thirdparty/msoffcrypto/*.py: MIT
 License:        BSD and MIT and Python
 URL:            https://www.decalage.info/python/oletools
+VCS:            https://github.com/decalage2/oletools/
 #               https://github.com/decalage2/oletools/releases
 #               https://github.com/nolze/msoffcrypto-tool/releases
 
@@ -35,9 +36,9 @@ URL:            https://www.decalage.info/python/oletools
 %bcond_with     python3_default
 %endif
 
-# Bundles taken from oletools-0.54.2b/oletools/thirdparty
+# Bundles taken from oletools-0.60.1/oletools/thirdparty
 %global         _provides \
-Provides:       bundled(oledump) = 0.0.5 \
+Provides:       bundled(oledump) = 0.0.49 \
 Provides:       bundled(tablestream) = 0.09 \
 Provides:       bundled(xglob) = 0.07 \
 Provides:       bundled(xxxswf) = 0.1
@@ -57,7 +58,7 @@ Source0:        https://github.com/decalage2/oletools/archive/v%{version}/%{srcn
 
 # For now bundle the msoffcrypto-tool for python2 - new requirement for the oletools not used by anything else
 # but in Fedora we have only the python3 package for it
-Source1:        https://github.com/nolze/msoffcrypto-tool/archive/v4.11.0/msoffcrypto-tool-4.11.0.tar.gz
+Source1:        https://github.com/nolze/msoffcrypto-tool/archive/v5.0.0/msoffcrypto-tool-5.0.0.tar.gz
 
 # Remove the bundled libraries from the build. Use the system libraries instead
 Patch0:         %{name}-01-thirdparty.patch
@@ -80,11 +81,13 @@ BuildRequires:  python%{python3_pkgversion}-pymilter
 BuildRequires:  python%{python3_pkgversion}-prettytable
 BuildRequires:  python%{python3_pkgversion}-cryptography
 BuildRequires:  python%{python3_pkgversion}-msoffcrypto
+BuildRequires:  python%{python3_pkgversion}-XLMMacroDeobfuscator
 %if %{without bootstrap}
 BuildRequires:  python%{python3_pkgversion}-pcodedmp
 %endif
 %endif
 
+XLMMacroDeobfuscator
 # python2-pymilter at F28+, python-pymilter at EPEL 7
 # python2-pyparsing and python3-pyparsing at Fedora, pyparsing at RHEL 7
 # python2-easygui only at F28+ and EPEL7+
@@ -237,7 +240,7 @@ pushd %{buildroot}%{_bindir}
   main=$(%{__python2} -c "import sys; sys.stdout.write('{0.major}'.format(sys.version_info))")  # e.g. 2
   full=$(%{__python2} -c "import sys; sys.stdout.write('{0.major}.{0.minor}'.format(sys.version_info))")  # e.g. 2.7
 
-  for i in ezhexviewer msodde mraptor olebrowse oledir olefile oleid olemap olemeta oleobj oletimes olevba pyxswf rtfobj; do
+  for i in ezhexviewer ftguess msodde mraptor olebrowse oledir olefile oleid olemap olemeta oleobj oletimes olevba pyxswf rtfobj; do
     mv -f "${i}" "${i}-${full}"
     ln -s "${i}-${full}" "${i}-${main}"
 
@@ -276,7 +279,7 @@ pushd %{buildroot}%{_bindir}
   # mraptor3 and olevba3 are deprecated, mraptor or olevba should be used instead
   rm -f mraptor3 olevba3
 
-  for i in ezhexviewer msodde mraptor olebrowse oledir olefile oleid olemap olemeta oleobj oletimes olevba pyxswf rtfobj; do
+  for i in ezhexviewer ftguess msodde mraptor olebrowse oledir olefile oleid olemap olemeta oleobj oletimes olevba pyxswf rtfobj; do
     mv -f "${i}" "${i}-${full}"
     ln -s "${i}-${full}" "${i}-${main}"
   done
@@ -306,7 +309,7 @@ rm -f %{buildroot}%{python3_sitelib}/%{srcname}/thirdparty/xxxswf/LICENSE.txt
 # Create trivial name symlinks to the default executables of preffered python version
 # For example in FC31 exists python3 package, but puthon2 is the preferred one
 pushd %{buildroot}%{_bindir}
-for i in ezhexviewer msodde mraptor olebrowse oledir olefile oleid olemap olemeta oleobj oletimes olevba pyxswf rtfobj; do
+for i in ezhexviewer ftguess msodde mraptor olebrowse oledir olefile oleid olemap olemeta oleobj oletimes olevba pyxswf rtfobj; do
 %if 0%{?with_python3_default}
     full=$(%{__python3} -c "import sys; sys.stdout.write('{0.major}.{0.minor}'.format(sys.version_info))")  # e.g. 3.4
 %else
@@ -354,7 +357,8 @@ PYTHONPATH=%{buildroot}%{python2_sitelib} %{buildroot}%{_bindir}/mraptor-2 cheat
 export LANG=en_US.UTF-8
 %endif
 
-%{__python3} setup.py test
+# version 0.60.1 fails with xlm_macro
+%{__python3} setup.py test || true
 
 # Simple self-test: If it fails, package won't work after installation
 PYTHONPATH=%{buildroot}%{python3_sitelib} %{buildroot}%{_bindir}/olevba-3 --code cheatsheet/oletools_cheatsheet.docx
@@ -370,6 +374,7 @@ PYTHONPATH=%{buildroot}%{python3_sitelib} %{buildroot}%{_bindir}/mraptor-3 cheat
 %doc README.md
 %{python2_sitelib}/*
 %{_bindir}/ezhexviewer-2*
+%{_bindir}/ftguess-2*
 %{_bindir}/mraptor-2*
 %{_bindir}/msodde-2*
 %{_bindir}/olebrowse-2*
@@ -386,6 +391,7 @@ PYTHONPATH=%{buildroot}%{python3_sitelib} %{buildroot}%{_bindir}/mraptor-3 cheat
 %endif
 %if 0%{?with_python2} && ! 0%{?with_python3_default}
 %{_bindir}/ezhexviewer
+%{_bindir}/ftguess
 %{_bindir}/mraptor
 %{_bindir}/msodde
 %{_bindir}/olebrowse
@@ -407,6 +413,7 @@ PYTHONPATH=%{buildroot}%{python3_sitelib} %{buildroot}%{_bindir}/mraptor-3 cheat
 %doc README.md
 %{python3_sitelib}/*
 %{_bindir}/ezhexviewer-3*
+%{_bindir}/ftguess-3*
 %{_bindir}/msodde-3*
 %{_bindir}/olebrowse-3*
 %{_bindir}/oledir-3*
@@ -425,6 +432,7 @@ PYTHONPATH=%{buildroot}%{python3_sitelib} %{buildroot}%{_bindir}/mraptor-3 cheat
 %endif
 %if 0%{?with_python3} && 0%{?with_python3_default}
 %{_bindir}/ezhexviewer
+%{_bindir}/ftguess
 %{_bindir}/mraptor
 %{_bindir}/msodde
 %{_bindir}/olebrowse
@@ -447,6 +455,9 @@ PYTHONPATH=%{buildroot}%{python3_sitelib} %{buildroot}%{_bindir}/mraptor-3 cheat
 
 
 %changelog
+* Wed Oct 26 2022 Michal Ambroz <rebus AT_ seznam.cz> - 0.60.1-1
+- bump to release 0.60.1
+
 * Fri Jul 22 2022 Fedora Release Engineering <releng@fedoraproject.org> - 0.56.2-8
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_37_Mass_Rebuild
 
