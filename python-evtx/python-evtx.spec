@@ -18,6 +18,7 @@ URL:		https://github.com/williballenthin/python-evtx/
 
 #URL:		https://pypi.python.org/pypi/python-evtx
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
+Patch0:         python-evtx-deps-versions.patch
 
 
 BuildArch:	noarch
@@ -82,7 +83,7 @@ heavily inspired by the work of Andreas Schuster and his Perl implementation
 
 %prep
 #setup -q -n %{gitname}-%{commit}
-%setup -q -n %{name}-%{version}
+%autosetup -n %{name}-%{version}
 
 
 %build
