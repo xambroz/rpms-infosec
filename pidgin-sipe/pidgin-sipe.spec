@@ -82,7 +82,7 @@ autoreconf -f -i
     --with-krb5 \
     --enable-purple \
     --disable-telepathy
-make %{?_smp_mflags}
+%make_build
 
 
 %install
@@ -96,7 +96,7 @@ rm -f \
 
 
 %check
-make %{?_smp_mflags} check
+%make_build check
 
 
 
