@@ -49,9 +49,7 @@ capture files), and some tools to handle capture files (merge, convert, etc.).
 
 
 %prep
-%setup -q -n aircrack-ng-%{version}-%{alphatag}
-%patch1 -p1 -b .alt
-%patch2 -p1 -b .openssl11
+%autosetup -p 1 -q -n aircrack-ng-%{version}-%{alphatag}
 
 %build
 #grep '(hex') %{SOURCE4} > airodump-ng-oui.txt
@@ -59,16 +57,16 @@ capture files), and some tools to handle capture files (merge, convert, etc.).
 touch airodump-ng-oui.txt
 #touch --reference %{SOURCE4} airodump-ng-oui.txt
 
-export CFLAGS=$RPM_OPT_FLAGS
+%set_build_flags
 # experimental=true needed for wesside-ng, easside-ng, buddy-ng and tkiptun-ng
 # (also needed in make install)
-make %{?_smp_mflags} sqlite=true experimental=true pcre=true
+%make_build sqlite=true experimental=true pcre=true
 
 
 %install
 #FIXME: enable scripts, requires python
 #make install DESTDIR=$RPM_BUILD_ROOT prefix=%{_prefix} mandir=%{_mandir}/man1 sqlite=true unstable=true ext_scripts=true
-make install DESTDIR=$RPM_BUILD_ROOT prefix=%{_prefix} mandir=%{_mandir}/man1 sqlite=true experimental=true pcre=true
+%make_install DESTDIR=$RPM_BUILD_ROOT prefix=%{_prefix} mandir=%{_mandir}/man1 sqlite=true experimental=true pcre=true
 install -p -m 644 -D airodump-ng-oui.txt  $RPM_BUILD_ROOT%{_sysconfdir}/aircrack-ng/airodump-ng-oui.txt
 
 
