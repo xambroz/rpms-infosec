@@ -1,0 +1,11 @@
+diff -ru iaito-28a1099603b3fa671bfbb226025d1a8c45558471/src/CMakeLists.txt iaito-28a1099603b3fa671bfbb226025d1a8c45558471.new/src/CMakeLists.txt
+--- iaito-28a1099603b3fa671bfbb226025d1a8c45558471/src/CMakeLists.txt	2022-03-01 17:11:21.973408404 +0100
++++ iaito-28a1099603b3fa671bfbb226025d1a8c45558471.new/src/CMakeLists.txt	2022-03-03 00:58:01.088823994 +0100
+@@ -269,6 +269,7 @@
+ if(TARGET KF5::SyntaxHighlighting)
+     target_link_libraries(iaito PRIVATE KF5::SyntaxHighlighting)
+     target_compile_definitions(iaito PRIVATE IAITO_ENABLE_KSYNTAXHIGHLIGHTING)
++    include_directories(AFTER /usr/include/KF5)
+ endif()
+ 
+ if (IAITO_APPIMAGE_BUILD)

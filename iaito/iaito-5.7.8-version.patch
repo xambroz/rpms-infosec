@@ -1,0 +1,130 @@
+https://patch-diff.githubusercontent.com/raw/radareorg/iaito/pull/114.patch
+https://patch-diff.githubusercontent.com/raw/radareorg/iaito/pull/115.patch
+
+From fd4671639ea3a677c347cb3d4a3a46953d7dd3ed Mon Sep 17 00:00:00 2001
+From: Michal Ambroz <723625+xambroz@users.noreply.github.com>
+Date: Thu, 27 Oct 2022 15:25:23 +0200
+Subject: [PATCH 1/4] version was not changed to 5.7.8 with last release
+
+---
+ configure | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/configure b/configure
+index 698e8a28..092871cf 100755
+--- a/configure
++++ b/configure
+@@ -109,12 +109,12 @@ done
+ : ${INSTALL_PROGRAM_STRIP:=${INSTALL} -m 755 -s}
+ : ${INSTALL_MAN:=${INSTALL} -m 444}
+ : ${INSTALL_LIB:=${INSTALL} -m 755 -c}
+- PKGNAME='iaito' ; VERSION='5.7.6' ; VERSION_MAJOR=5; VERSION_MINOR=7; VERSION_PATCH=6; VERSION_NUMBER=50706; CONTACT_MAIL="pancake@nopcode.org" ; CONTACT_NAME="pancake" ; CONTACT="pancake <pancake@nopcode.org>" ;
++ PKGNAME='iaito' ; VERSION='5.7.8' ; VERSION_MAJOR=5; VERSION_MINOR=7; VERSION_PATCH=8; VERSION_NUMBER=50708; CONTACT_MAIL="pancake@nopcode.org" ; CONTACT_NAME="pancake" ; CONTACT="pancake <pancake@nopcode.org>" ;
+ }
+ 
+ show_usage() {
+ cat <<EOF2
+-'configure' configures iaito-5.7.6 to adapt to many kinds of systems.
++'configure' configures iaito-5.7.8 to adapt to many kinds of systems.
+ 
+ Usage: ./configure [OPTION]... [VAR=VALUE]...
+ 
+@@ -186,10 +186,10 @@ ocho() {
+ 
+ show_version() {
+ if [ "$QUIET" = 1 ]; then
+-	echo "5.7.6"
++	echo "5.7.8"
+ 	exit 0
+ fi
+-echo "iaito-5.7.6 configuration script done with acr v2.0.0.
++echo "iaito-5.7.8 configuration script done with acr v2.0.0.
+ The 'Free Software Foundation' message is only for autodetection.
+ Originally written by pancake <nopcode.org>."
+ exit 0
+@@ -218,7 +218,7 @@ case $flag in
+ 	show_version ; ;;
+ -r|--r|--report)
+ echo "PKGNAME:   iaito"
+-echo "VERSION:   5.7.6"
++echo "VERSION:   5.7.8"
+ echo "LANGS:     c++"
+ echo "PKG-CONFIG:  r_core"
+ 	exit 0
+
+From f82ba7b42b14d84a5ea8447b0955724028f5d429 Mon Sep 17 00:00:00 2001
+From: Michal Ambroz <723625+xambroz@users.noreply.github.com>
+Date: Thu, 27 Oct 2022 15:28:24 +0200
+Subject: [PATCH 2/4] version was not changed to 5.7.8 with last release
+
+---
+ configure.acr | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/configure.acr b/configure.acr
+index b3fa30fe..a6c5fba4 100644
+--- a/configure.acr
++++ b/configure.acr
+@@ -1,5 +1,5 @@
+ PKGNAME iaito
+-VERSION 5.7.6
++VERSION 5.7.8
+ CONTACT pancake ; pancake@nopcode.org
+ 
+ LANG_CXX!
+
+From 76ceb54276a3c04dc13229711ec1e9dd1b0e21f8 Mon Sep 17 00:00:00 2001
+From: Michal Ambroz <723625+xambroz@users.noreply.github.com>
+Date: Thu, 27 Oct 2022 23:10:35 +0200
+Subject: [PATCH 1/2] I forgot to change pro config to 5.7.8
+
+---
+ src/Iaito.pro | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/Iaito.pro b/src/Iaito.pro
+index 97dd4649..801116a2 100644
+--- a/src/Iaito.pro
++++ b/src/Iaito.pro
+@@ -4,7 +4,7 @@ TARGET = iaito
+ 
+ IAITO_VERSION_MAJOR = 5
+ IAITO_VERSION_MINOR = 7
+-IAITO_VERSION_PATCH = 6
++IAITO_VERSION_PATCH = 8
+ 
+ CONFIG += sdk_no_version_check
+ 
+
+From 9ca1f4927df8c0684917a1cd419df79de8ec6616 Mon Sep 17 00:00:00 2001
+From: Michal Ambroz <723625+xambroz@users.noreply.github.com>
+Date: Thu, 27 Oct 2022 23:17:28 +0200
+Subject: [PATCH 2/2] some more 5.7.8 versioning
+
+---
+ src/org.radare.iaito.appdata.xml | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/src/org.radare.iaito.appdata.xml b/src/org.radare.iaito.appdata.xml
+index 67db8e7c..d12fc599 100644
+--- a/src/org.radare.iaito.appdata.xml
++++ b/src/org.radare.iaito.appdata.xml
+@@ -24,6 +24,18 @@
+   <update_contact>pancake</update_contact>
+   <developer_name>radare2</developer_name>
+   <releases>
++    <release version="5.7.8" date="2022-10-26">
++      <description>
++        <p>Add flathub information in README</p>
++        <p>remove duplicate StartupNotify=true</p>
++        <p>Update translation install method</p>
++        <p>Install the manpage</p>
++        <p>Disable translations submodule</p>
++        <p>Upgrade the github runners</p>
++        <p>Fix all race conditions by making iaito monothread by default</p>
++        <p>Remove two unused shellscripts</p>
++      </description>
++    </release>
+     <release version="5.7.6" date="2022-09-30">
+       <description>
+           <p>Support flatpak</p>
