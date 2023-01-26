@@ -1,5 +1,5 @@
 Name:           hcxdumptool
-Version:        4.2.1
+Version:        6.2.7
 Release:        1%{?dist}
 Summary:        Small tool to capture packets from wlan devices.
 Group:          Development/Libraries
@@ -10,8 +10,9 @@ URL:            https://github.com/ZerBea/hcxdumptool
 %global         gituser         ZerBea
 %global         gitname         hcxdumptool
 
-# Commit of version 4.2.1
-%global         commit          ee3f2ed606602ead948865aed6aecc7bae993701
+# Commit of version 6.2.7
+%global         gitdate         20220807
+%global         commit          b9af8bdeacd1b4fd31e6ad8884e1b5b1ccb7e4fe
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
@@ -35,8 +36,7 @@ unencrypted.
 
 
 %prep
-# setup -qn %{gitname}-%{commit}
-%autosetup 
+%autosetup
 
 # Do not run build twice when invoking install
 sed -i -e 's|install: build|install:|g' Makefile
@@ -50,17 +50,21 @@ sed -i -e 's|install: build|install:|g' Makefile
 make install DESTDIR=%{buildroot} PREFIX=%{_prefix} CFLAGS="%{optflags}" 
 
 # Remove static libraries
-# rm %{buildroot}%{_libdir}/lib%{name}.la
-# rm %{buildroot}%{_libdir}/lib%{name}.a
+# rm %%{buildroot}%%{_libdir}/lib%%{name}.la
+# rm %%{buildroot}%%{_libdir}/lib%%{name}.a
 
 
 
 %files
-%doc README.md
+%doc README.md docs
 %license license.txt
 %{_bindir}/hcxdumptool
+%{_bindir}/hcxpioff
 
 
 %changelog
+* Thu Jan 26 2023 Michal Ambroz <rebus at, seznam.cz> - 6.2.7-1
+- update to 6.2.7
+
 * Tue Aug 7 2018 Michal Ambroz <rebus at, seznam.cz> - 4.2.1-1
 - initial package
