@@ -1,0 +1,34 @@
+From 6e7736869d998edb6384728c03a348cd9ab1f9ca Mon Sep 17 00:00:00 2001
+From: Scott Talbert <swt@techie.net>
+Date: Sun, 12 Sep 2021 13:34:38 -0400
+Subject: [PATCH] Fix SyntaxWarnings
+
+Fixes:
+/usr/lib/python3.10/site-packages/binwalk/modules/extractor.py:969: SyntaxWarning: "is" with a literal. Did you mean "=="?
+/usr/lib/python3.10/site-packages/binwalk/modules/extractor.py:984: SyntaxWarning: "is" with a literal. Did you mean "=="?
+---
+ src/binwalk/modules/extractor.py | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/binwalk/modules/extractor.py b/src/binwalk/modules/extractor.py
+index 4e4660af..3cc38ab1 100644
+--- a/src/binwalk/modules/extractor.py
++++ b/src/binwalk/modules/extractor.py
+@@ -966,7 +966,7 @@ def shell_call(self, command):
+             
+             # Fork a child process
+             child_pid = os.fork()
+-            if child_pid is 0:
++            if child_pid == 0:
+                 # Switch to the run-as user privileges, if one has been set
+                 if self.runas_uid is not None and self.runas_gid is not None:
+                     os.setgid(self.runas_uid)
+@@ -981,7 +981,7 @@ def shell_call(self, command):
+             rval = subprocess.call(shlex.split(command), stdout=tmp, stderr=tmp)
+ 
+         # A true child process should exit with the subprocess exit value
+-        if child_pid is 0:
++        if child_pid == 0:
+             sys.exit(rval)
+         # If no os.fork() happened, just return the subprocess exit value
+         elif child_pid is None:

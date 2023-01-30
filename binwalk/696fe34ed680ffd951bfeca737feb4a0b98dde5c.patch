@@ -1,0 +1,24 @@
+From 696fe34ed680ffd951bfeca737feb4a0b98dde5c Mon Sep 17 00:00:00 2001
+From: Quentin Kaiser <quentin.kaiser@onekey.com>
+Date: Wed, 26 Oct 2022 21:25:01 +0200
+Subject: [PATCH] fix path traversal in PFS extractor script.
+
+os.path.join does not fully resolve a path so the condition that follows
+will never be true. Fixed by resolving the path using os.path.abspath.
+---
+ src/binwalk/plugins/unpfs.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/binwalk/plugins/unpfs.py b/src/binwalk/plugins/unpfs.py
+index 9513c8b5..b93e0dab 100644
+--- a/src/binwalk/plugins/unpfs.py
++++ b/src/binwalk/plugins/unpfs.py
+@@ -104,7 +104,7 @@ def extractor(self, fname):
+                 data = binwalk.core.common.BlockFile(fname, 'rb')
+                 data.seek(fs.get_end_of_meta_data())
+                 for entry in fs.entries():
+-                    outfile_path = os.path.join(out_dir, entry.fname)
++                    outfile_path = os.path.abspath(os.path.join(out_dir, entry.fname))
+                     if not outfile_path.startswith(out_dir):
+                         binwalk.core.common.warning("Unpfs extractor detected directory traversal attempt for file: '%s'. Refusing to extract." % outfile_path)
+                     else:
