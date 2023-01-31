@@ -1,9 +1,10 @@
 Name:           python-impacket
 Version:        0.10.0
-%global         baserelease     1
+%global         baserelease     3
 
 License:        ASL 1.1 and zlib
-URL:            https://github.com/SecureAuthCorp/impacket
+URL:            https://github.com/fortra/impacket
+# was           https://github.com/SecureAuthCorp/impacket
 # was           https://github.com/CoreSecurity/impacket
 
 # During re-add of the python2-impacket we found about dependency to ldapdomaindump
@@ -22,7 +23,7 @@ can be constructed from scratch, as well as parsed from raw data. Furthermore,
 the object oriented API makes it simple to work with deep protocol hierarchies.}
 
 
-%global         gituser         SecureAuthCorp
+%global         gituser         fortra
 %global         gitname         impacket
 %global         commit          7a18ef5c8b06aac5e36334927789429777382928
 %global         gitdate         20220504
@@ -60,6 +61,8 @@ BuildRequires:  grep
 
 BuildRequires:  python%{python3_pkgversion}-devel
 BuildRequires:  python%{python3_pkgversion}-setuptools
+BuildRequires:  python%{python3_pkgversion}-wheel
+BuildRequires:  python%{python3_pkgversion}-tox-current-env
 
 
 %description
@@ -114,35 +117,44 @@ Python3 package of %{name}. %{common_desc}
 %autosetup -p 1 -n %{gitname}-%{commit}
 %endif
 
+#Missing requirements for tests
+[ ! -f requirements-test.txt ]  && cp requirements.txt requirements-test.txt
+
+
 # Clean-up
 
 # Use explicit python3 shabeng instead of generic env python
 # to get prepared for switch the default to python3
-sed -i -e 's|#!/usr/bin/env python|#!/usr/bin/python3|' \
+sed -i -e 's|#!/usr/bin/env python|#!/usr/bin/python'"%{python3_pkgversion}"'|' \
     impacket/mqtt.py \
     impacket/examples/ntlmrelayx/servers/socksserver.py
 
 # Moving uncrc32
-# https://github.com/SecureAuthCorp/impacket/issues/403
+# https://github.com/fortra/impacket/issues/403
 sed -i -e 's|^import uncrc32|from impacket.examples import uncrc32|;' examples/nmapAnswerMachine.py
 
+
+%generate_buildrequires
+%pyproject_buildrequires -t
 
 
 #===== Build
 %build
-%py3_build
+%pyproject_wheel
 
 
 #===== Check
 %check
-PYTHONPATH=$BUILD_ROOT/usr/lib/python%{python3_version}/site-packages/ python3 -c \
-    'import impacket.ImpactPacket ; impacket.ImpactPacket.IP().get_packet()'
+%tox
+# Default tox
+# PYTHONPATH=%%{buildroot}%%{python3_sitelib} python3 -c \
+#    'import impacket.ImpactPacket ; impacket.ImpactPacket.IP().get_packet()'
 
 
 
 #===== Install
 %install
-%py3_install
+%pyproject_install
 pushd %{buildroot}%{_bindir}
 for I in *.py ; do
     BASENAME=$(basename "$I" .py)
@@ -164,15 +176,14 @@ popd
 #now in license directory
 rm -f %{buildroot}%{_defaultdocdir}/%{name}/LICENSE
 
+%pyproject_save_files impacket
 
 
 #===== files for python3 package
 %if %{with python3}
-%files -n       python%{python3_pkgversion}-%{gitname}
+%files -n       python%{python3_pkgversion}-%{gitname} -f %{pyproject_files}
 %license        LICENSE
 %doc            ChangeLog.md README.md
-%{python3_sitelib}/%{gitname}/
-%{python3_sitelib}/%{gitname}*.egg-info
 %exclude %{_defaultdocdir}/%{gitname}
 # %%exclude %%{_defaultdocdir}/%%{gitname}/testcases/*
 %exclude %{_defaultdocdir}/%{gitname}/README.md
@@ -184,6 +195,15 @@ rm -f %{buildroot}%{_defaultdocdir}/%{name}/LICENSE
 
 
 %changelog
+* Mon Jan 30 2023 Michal Ambroz <rebus AT_ seznam.cz> - 0.10.0-3
+- update the git user / URL
+
+* Mon Jan 30 2023 Miro Hrončok <mhroncok@redhat.com> - 0.10.0-2
+- Rebuilt to change Python shebangs to /usr/bin/python3.6 on EPEL 8
+
+* Fri Jan 20 2023 Fedora Release Engineering <releng@fedoraproject.org> - 0.10.0-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_38_Mass_Rebuild
+
 * Wed Oct 26 2022 Michal Ambroz <rebus _AT seznam.cz> - 0.10.0-1
 - bump to 0.10.0
 - version 0.10.0 is dropping support for python2.7
@@ -269,7 +289,7 @@ rm -f %{buildroot}%{_defaultdocdir}/%{name}/LICENSE
 - patch setup.py to remove python_version to meet RHEL7 setuptools version
 
 * Mon Feb 04 2019 Michal Ambroz <rebus _AT seznam.cz> - 0.9.18-1
-- bump to version 0.9.18 
+- bump to version 0.9.18
 
 * Sat Feb 02 2019 Fedora Release Engineering <releng@fedoraproject.org> - 0.9.17-0.4.20180308gite0af5bb
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
