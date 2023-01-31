@@ -2,56 +2,61 @@
 %global pypi_name dsinternals
 %global pypi_version 1.2.4
 
-Name:           python-%{pypi_name}
-Version:        %{pypi_version}
+Name:           python-dsinternals
+Version:        1.2.4
 Release:        1%{?dist}
-Summary:	Directory Services Internals Library for python
+Summary:        Directory Services Internals Library for python
 
 License:        GPL2
 URL:            http://github.com/p0dalirius/pydsinternals
 Source0:        %{pypi_source}
+Patch0:         dsinternals-1.2.4-build.patch
 BuildArch:      noarch
 
-BuildRequires:  python3-devel
-BuildRequires:  python3dist(setuptools)
+BuildRequires:  python%{python3_pkgversion}-devel
+BuildRequires:  python%{python3_pkgversion}-setuptools
 
-%description
+%global _description %{expand:
 Directory Services Internals Library.
 Python native library containing necessary classes, functions and
 structures to interact with Windows Active Directory. Installation python3 -m
 pip install dsinternals ContributingPull requests are welcome. Feel free to
 open an issue if...
+}
 
-%package -n     python3-%{pypi_name}
+%description %_description
+
+
+%package -n     python%{python3_pkgversion}-dsinternals
 Summary:        %{summary}
-%{?python_provide:%python_provide python3-%{pypi_name}}
+%{?python_provide:%python_provide python%{python3_pkgversion}-dsinternals}
 
-%description -n python3-%{pypi_name}
-Directory Services Internals Library.
-Python native library containing necessary classes, functions and
-structures to interact with Windows Active Directory. Installation python3 -m
-pip install dsinternals ContributingPull requests are welcome. Feel free to
-open an issue if...
-
+%description -n python%{python3_pkgversion}-dsinternals
+%_description
 
 %prep
-%autosetup -n %{pypi_name}-%{pypi_version}
+%autosetup -p1 -n dsinternals-%{version}
 # Remove bundled egg-info
-rm -rf %{pypi_name}.egg-info
+rm -rf .egg-info
 
 %build
-%py3_build
+%pyproject_wheel
 
 %install
-%py3_install
+%pyproject_install
 
-%files -n python3-%{pypi_name}
+%pyproject_save_files dsinternals
+
+
+
+%check
+python3 -m unittest discover -v
+%tox
+
+%files -n python%{python3_pkgversion}-dsinternals -f %{pyproject_files}
 %license LICENSE
 %doc README.md
-%{python3_sitelib}/%{pypi_name}
-%{python3_sitelib}/tests
-%{python3_sitelib}/%{pypi_name}-%{pypi_version}-py%{python3_version}.egg-info
 
 %changelog
 * Mon Jan 30 2023 Michal Ambroz <rebus@seznam.cz> - 1.2.4-1
-- Initial package.
+- Initial package

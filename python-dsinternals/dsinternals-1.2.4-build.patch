@@ -1,0 +1,59 @@
+diff -ru dsinternals-1.2.4.old/setup.cfg dsinternals-1.2.4.new/setup.cfg
+--- dsinternals-1.2.4.old/setup.cfg	2021-08-01 20:21:26.476449000 +0200
++++ dsinternals-1.2.4.new/setup.cfg	2023-01-31 02:43:27.385511374 +0100
+@@ -1,4 +1,40 @@
+-[egg_info]
+-tag_build = 
+-tag_date = 0
++[metadata]
++name = dsinternals
++version = 1.2.4
++description = Directory Services Internals Library
++url = http://github.com/p0dalirius/pydsinternals
++author = Podalirius
++author_email = podalirius@protonmail.com
++long_description = file:README.md
++long_description_content_type = text/markdown
++license = GPLv2
++license_files = LICENSE
++classifiers =
++        Programming Language :: Python :: 3
++        License :: OSI Approved :: GNU General Public License v2 (GPLv2)
++        Operating System :: OS Independent
++    
++[options]
++python_requires = >=3.4
++install_requires = 
++    pyopenssl
++    pycryptodomex
+ 
++packages = find_namespace
++
++[options.packages.find]
++exclude =
++    tests
++
++[tox:tox]
++min_version = 1.4
++env_list =
++    py311
++    py310
++    py39
++    py36
++    type
++
++[testenv]
++deps = 
++commands = python3 -m unittest discover -v
+diff -ru dsinternals-1.2.4.old/setup.py dsinternals-1.2.4.new/setup.py
+--- dsinternals-1.2.4.old/setup.py	2021-08-01 20:16:59.000000000 +0200
++++ dsinternals-1.2.4.new/setup.py	2023-01-31 01:49:23.438136549 +0100
+@@ -18,7 +18,7 @@
+     long_description=long_description,
+     long_description_content_type="text/markdown",
+     author_email='podalirius@protonmail.com',
+-    packages=setuptools.find_packages(),
++    packages=setuptools.find_packages(exclude=['*tests*']),
+     license='GPL2',
+     classifiers=[
+         "Programming Language :: Python :: 3",
