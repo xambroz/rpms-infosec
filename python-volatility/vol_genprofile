@@ -55,7 +55,7 @@ if [ ! -d "$TEMPDIR" ] ; then
         exit 1
 fi
 
-cp "${TOOLSDIR}/Makefile ${TOOLSDIR}/module.c" "${TEMPDIR}/"
+cp "${TOOLSDIR}/Makefile" "${TOOLSDIR}/module.c" "${TEMPDIR}/"
 pushd "${TEMPDIR}" || exit 1
 
 make
