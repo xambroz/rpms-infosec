@@ -14,7 +14,7 @@ Summary:        Dump binary data to hex format and restore from there
 License:        Public Domain
 #               https://pypi.python.org/pypi/hexdump
 #               https://bitbucket.org/techtonik/hexdump
-URL:            https://bitbucket.com/%{hguser}/%{srcname}
+URL:            https://bitbucket.com/techtonik/hexdump
 Source0:        https://bitbucket.org/%{hguser}/%{srcname}/get/%{shortcommit}.zip#/%{name}-%{version}-%{shortcommit}.zip
 Source1:        hexdumpy.1
 
