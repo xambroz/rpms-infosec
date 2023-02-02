@@ -1,7 +1,7 @@
 Name:           python-volatility
 Summary:        Volatile memory extraction utility framework
 Version:        2.6.1
-%global         baserelease     5
+%global         baserelease     6
 
 License:        GPLv2+
 URL:            http://www.volatilityfoundation.org/
@@ -10,8 +10,8 @@ URL:            http://www.volatilityfoundation.org/
 
 %global         gituser         volatilityfoundation
 %global         gitname         volatility
-%global         gitdate         20200513
-%global         commit          2e48f2dc07988c84023022006ac39ba4a17a8aee
+%global         gitdate         20201211
+%global         commit          a438e768194a9e05eb4d9ee9338b881c0fa25937
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 # By default build from official release
@@ -137,6 +137,9 @@ ln -s volatility2 %{buildroot}%{_bindir}/volatility
 %{_mandir}/man1/vol_genprofile.*
 
 %changelog
+* Mon May 18 2020 Michal Ambroz <rebus at, seznam.cz> - 2.6.1-6
+- switch to git snapshot from 2020-12-11 for bugfixes
+
 * Mon May 18 2020 Michal Ambroz <rebus at, seznam.cz> - 2.6.1-5
 - switch to git snapshot for bugfixes
 
