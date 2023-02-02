@@ -10,14 +10,22 @@ License:        GPLv3
 %global         commit          0dcd35c9927efd69587a880fea2423dde0fb8a96
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
-%if 0%{?fedora} || ( 0%{?rhel} && 0%{?rhel} >= 7 )
-%global with_python3 1
+# By default build with python3 and without python2
+%bcond_with     python2
+%bcond_without  python3
+
+%if ( 0%{?rhel} && 0%{?rhel} < 7 )
+%bcond_with     python3
 %endif
 
 %if ( 0%{?fedora} && 0%{?fedora} <= 32 ) || ( 0%{?rhel} && 0%{?rhel} <= 8 )
 # distorm3 needed for python2-volatility
-%global with_python2 1
+%bcond_without  python2
 %endif
+
+# for copr-rebus-infosec - distorm3 needed for python2-volatility
+%bcond_without  python2
+
 
 URL:            https://github.com/gdabah/distorm
 #Source0:       https://github.com/%%{gituser}/%%{gitname}/archive/%%{commit}/%%{name}-%%{version}-%%{shortcommit}.tar.gz
