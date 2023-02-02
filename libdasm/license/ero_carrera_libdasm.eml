@@ -1,0 +1,174 @@
+Return-Path: ero.carrera@gmail.com
+Received: from zmta03.collab.prod.int.phx2.redhat.com (LHLO
+ zmta03.collab.prod.int.phx2.redhat.com) (10.5.5.33) by
+ mail02.corp.redhat.com with LMTP; Wed, 15 Jul 2009 01:13:52 -0400 (EDT)
+Received: from localhost (localhost.localdomain [127.0.0.1]) by
+ zmta03.collab.prod.int.phx2.redhat.com (Postfix) with ESMTP id F159B4DEED
+ for <dmalcolm@redhat.com>; Wed, 15 Jul 2009 01:13:51 -0400 (EDT)
+Received: from zmta03.collab.prod.int.phx2.redhat.com ([127.0.0.1]) by
+ localhost (zmta03.collab.prod.int.phx2.redhat.com [127.0.0.1])
+ (amavisd-new, port 10024) with ESMTP id j2chGiSc6OwU for
+ <dmalcolm@redhat.com>; Wed, 15 Jul 2009 01:13:51 -0400 (EDT)
+Received: from int-mx1.corp.redhat.com (int-mx1.corp.redhat.com
+ [172.16.52.254]) by zmta03.collab.prod.int.phx2.redhat.com (Postfix) with
+ ESMTP id B7C0B4D4CB for <dmalcolm@mail.corp.redhat.com>; Wed, 15 Jul 2009
+ 01:13:51 -0400 (EDT)
+Received: from mx1.redhat.com (mx1.redhat.com [172.16.48.31])
+	by int-mx1.corp.redhat.com (8.13.1/8.13.1) with ESMTP id n6F5Do8w022501
+	for <dmalcolm@redhat.com>; Wed, 15 Jul 2009 01:13:50 -0400
+Received: from mail-pz0-f172.google.com (mail-pz0-f172.google.com
+ [209.85.222.172]) by mx1.redhat.com (8.13.8/8.13.8) with ESMTP id
+ n6F5DY5N009926 for <dmalcolm@redhat.com>; Wed, 15 Jul 2009 01:13:34 -0400
+Received: by pzk2 with SMTP id 2so2640617pzk.23
+        for <dmalcolm@redhat.com>; Tue, 14 Jul 2009 22:13:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=gamma;
+ h=domainkey-signature:received:received:cc:message-id:from:to
+ :in-reply-to:content-type:content-transfer-encoding:mime-version
+ :subject:date:references:x-mailer;
+ bh=2Di8nl/wAHIz8r2n8UfZVLFGVig52QMdxU5P74e72xY=;
+ b=Ef8EtvQ6keMNivwG6Utjb2knIoP7K/gw1XJJozkTdkSdUacGn1HILVBE5jWXHjw/0P
+ 20T9JNXmJSP8nRrR9o6zBnIGisq5zid2VMk7u50zG6rwcxX4+2pdPCJHjEk3OrkioJtj
+ q/BxEHkAepmidDpBOHSW+TpQtUtkPcYz5JsEk=
+DomainKey-Signature: a=rsa-sha1; c=nofws; d=gmail.com; s=gamma;
+ h=cc:message-id:from:to:in-reply-to:content-type
+ :content-transfer-encoding:mime-version:subject:date:references :x-mailer;
+ b=tg/JbpbqoARmeBexMtnHuPunDb7dx9fY2kwbO99G3pfUsbNToSh9au+jMUlUFxvITH
+ fTfXTqDOqDxlFC6VTMx67wl/bQprCx2HMXFYoN8p15Ypn4VUWhWcO9d5pTyEyVDNpVqK
+ XKOKXRKOEvUGZrkK0q7OokhnEzeAxf8zbLshM=
+Received: by 10.114.208.12 with SMTP id f12mr11872433wag.226.1247634813559;
+        Tue, 14 Jul 2009 22:13:33 -0700 (PDT)
+Received: from ?192.168.1.103? (c-98-234-149-222.hsd1.ca.comcast.net
+ [98.234.149.222]) by mx.google.com with ESMTPS id
+ l27sm12331189waf.55.2009.07.14.22.13.31 (version=TLSv1/SSLv3
+ cipher=RC4-MD5); Tue, 14 Jul 2009 22:13:32 -0700 (PDT)
+Cc: Jarkko Turkulainen <jt@klake.org>
+Message-Id: <06AE8C8D-AF68-41F7-A773-3871B92F4DDF@gmail.com>
+From: Ero Carrera Ventura <ero.carrera@gmail.com>
+To: David Malcolm <dmalcolm@redhat.com>
+In-Reply-To: <6eb01b950907142130y225a1876q54e7b571aaafdebc@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII; format=flowed; delsp=yes
+Mime-Version: 1.0 (Apple Message framework v935.3)
+Subject: Re: libdasm/pydasm: licensing question
+Date: Tue, 14 Jul 2009 22:13:29 -0700
+References: <1247616404.23263.37.camel@radiator.bos.redhat.com>
+	 <6eb01b950907142129w53a832f6ic0a5eb1bb2404f6a@mail.gmail.com>
+	 <6eb01b950907142130y225a1876q54e7b571aaafdebc@mail.gmail.com>
+X-RedHat-Spam-Score: -2 
+X-Scanned-By: MIMEDefang 2.58 on 172.16.52.254
+X-Scanned-By: MIMEDefang 2.63 on 172.16.48.31
+Content-Transfer-Encoding: quoted-printable
+
+
+Hi,
+
+Some friends actually got the existing code and started a google =20
+project where they made enhancements and fixed some issues:
+
+http://code.google.com/p/libdasm/
+
+Maybe you want to include that version.
+
+--
+Ero
+
+
+On Jul 14, 2009, at 9:30 PM, Jarkko Turkulainen wrote:
+> ---------- Forwarded message ----------
+> From: Jarkko Turkulainen <jt@klake.org>
+> Date: Wed, Jul 15, 2009 at 7:29 AM
+> Subject: Re: libdasm/pydasm: licensing question
+> To: David Malcolm <dmalcolm@redhat.com>
+>
+>
+> Hi!
+>
+> From my point of view, I see no problem in releasing this with some
+> BSD-style license. And I'm sure the other guys are with me in this...
+> The only problem here is that I'm not developing libdasm actively
+> anymore and I know it's lacking some essential features, like amd64
+> support.
+>
+> But, the original "license" still holds, you can include it in Fedora
+> if you want to, but libdasm support is very limited (=3D non-existing)
+> from my side ;-).
+>
+>
+>
+>
+> On Wed, Jul 15, 2009 at 3:06 AM, David Malcolm<dmalcolm@redhat.com> =20
+> wrote:
+>> Hi.  I'm a fan of libdasm (and pydasm) and am hoping to package it =20
+>> for
+>> Fedora [1].
+>>
+>> I'm hoping that you'll consider clarifying the license of the =20
+>> software,
+>> perhaps licensing it under an open-source/Free Software license.
+>>
+>> In the libdasm-1.5.tar.gz tarball's README.txt is this text:
+>>
+>> <<<< begin quote >>>>
+>>
+>> 6. Licensing
+>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>>
+>> libdasm is public domain software. You can do whatever you like =20
+>> with it.
+>>
+>> <<<< end quote >>>>
+>>
+>> Unfortunately, many of the files (including the README.txt) contain
+>> copyright statements.  I'm not a lawyer, but my understanding is that
+>> copyright statements can trump public domain assignments, and that =20
+>> it's
+>> actually very hard to genuinely put something into the public domain.
+>>
+>> It may be simplest to explicitly grant a license to the code using an
+>> open-source/Free Software license, such as one of the ones on this =20
+>> list
+>> [2]
+>>
+>> As I understand it, the correct legal spell for putting something =20
+>> into
+>> the public domain is for all copyright holders to make a statement =20
+>> along
+>> the lines of:
+>>
+>> "I, NAME_OF_COPYRIGHT_HOLDER, abandon all copyright on the code =20
+>> contained within
+>> the libdasm software (in particular, libdasm-1.5.tar.gz with SHA256 =20
+>> checksum
+>> 34d6c17dbb318bf2e21c6a3ae7dcc53d918ce247f1bd422b123d5e41a730a676 ) =20
+>> and place it
+>> into the Public Domain."
+>>
+>> The copyright holders would all also need to indicate what country =20
+>> they
+>> are a citizen of, because many countries do not permit copyright =20
+>> holders
+>> to put works into the public domain (e.g. most, if not all EU =20
+>> citizens
+>> cannot do this).
+>>
+>> I've tried to include everyone listed as contributors in the =20
+>> tarball in
+>> this email; however, I'm missing a full address for:
+>>  - "skape" from rbdasm
+>>  - "Otto" (listed in HISTORY.txt)
+>>  - Arnaud Pilon (likewise)
+>>  - "thief" (likewise)
+>>
+>> Thoughts?  Thanks for reading (and for libdasm!).  More info can be =20
+>> seen
+>> at [3]
+>>
+>> Dave
+>>
+>> [1] http://fedoraproject.org/
+>> [2] http://fedoraproject.org/wiki/Licensing#SoftwareLicenses
+>> [3] https://bugzilla.redhat.com/show_bug.cgi?id=3D499875
+>>
+>>
+>>
+>>
+

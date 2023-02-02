@@ -1,0 +1,135 @@
+Return-Path: jarkko.turkulainen@gmail.com
+Received: from zmta02.collab.prod.int.phx2.redhat.com (LHLO
+ zmta02.collab.prod.int.phx2.redhat.com) (10.5.5.32) by
+ mail02.corp.redhat.com with LMTP; Wed, 15 Jul 2009 00:29:35 -0400 (EDT)
+Received: from localhost (localhost.localdomain [127.0.0.1]) by
+ zmta02.collab.prod.int.phx2.redhat.com (Postfix) with ESMTP id 870E79EDE6
+ for <dmalcolm@redhat.com>; Wed, 15 Jul 2009 00:29:35 -0400 (EDT)
+Received: from zmta02.collab.prod.int.phx2.redhat.com ([127.0.0.1]) by
+ localhost (zmta02.collab.prod.int.phx2.redhat.com [127.0.0.1])
+ (amavisd-new, port 10024) with ESMTP id pVNGVY3mRBvG for
+ <dmalcolm@redhat.com>; Wed, 15 Jul 2009 00:29:35 -0400 (EDT)
+Received: from int-mx1.corp.redhat.com (int-mx1.corp.redhat.com
+ [172.16.52.254]) by zmta02.collab.prod.int.phx2.redhat.com (Postfix) with
+ ESMTP id 4D5B09EDE4 for <dmalcolm@mail.corp.redhat.com>; Wed, 15 Jul 2009
+ 00:29:35 -0400 (EDT)
+Received: from mx3.redhat.com (mx3.redhat.com [172.16.48.32])
+	by int-mx1.corp.redhat.com (8.13.1/8.13.1) with ESMTP id n6F4TYQw004320
+	for <dmalcolm@redhat.com>; Wed, 15 Jul 2009 00:29:34 -0400
+Received: from mail-bw0-f216.google.com (mail-bw0-f216.google.com
+ [209.85.218.216]) by mx3.redhat.com (8.13.8/8.13.8) with ESMTP id
+ n6F4THHe023197 for <dmalcolm@redhat.com>; Wed, 15 Jul 2009 00:29:18 -0400
+Received: by bwz12 with SMTP id 12so672711bwz.3
+        for <dmalcolm@redhat.com>; Tue, 14 Jul 2009 21:29:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=gamma;
+ h=domainkey-signature:mime-version:sender:received:in-reply-to
+ :references:date:x-google-sender-auth:message-id:subject:from:to
+ :content-type:content-transfer-encoding;
+ bh=DyfHyRYAPgIDJQKo78KX5B+VwAy5kEEaouXYEgbwY9I=;
+ b=RoZQi3NU/lfXZAzCVPIs47egqCROO8nHX72j66OYjKvJV4CWdLbWJkLvC/NtZ0t0m4
+ lj1YIHWIdgfZBXCKLsmgXDE+yjshMLSBKnHI5iR8IsC4kseeY3yqQzXWwsb/etUwn006
+ fYA5bM7irlq17agVhfkrJMCvUYYbjb41TOMA8=
+DomainKey-Signature: a=rsa-sha1; c=nofws; d=gmail.com; s=gamma;
+ h=mime-version:sender:in-reply-to:references:date
+ :x-google-sender-auth:message-id:subject:from:to:content-type
+ :content-transfer-encoding;
+ b=ujuI5Jliw/CZc4tP8uicoi9gaAzoFuv6ICDqKza6i7zH35EvGYXYEdCyjQIIVVKi5G
+ DB3NSkKNAX1jXVPyfOVrPoozaPF0EBCi4xL94QcC0tzmljXrIIRMab3DAW+TA3vcMar+
+ Ce9HJX8OcXARG5lYkNipvpHFkzMpLxmxzCfls=
+MIME-Version: 1.0
+Sender: jarkko.turkulainen@gmail.com
+Received: by 10.223.122.15 with SMTP id j15mr3416564far.74.1247632157191;
+ Tue,  14 Jul 2009 21:29:17 -0700 (PDT)
+In-Reply-To: <1247616404.23263.37.camel@radiator.bos.redhat.com>
+References: <1247616404.23263.37.camel@radiator.bos.redhat.com>
+Date: Wed, 15 Jul 2009 07:29:17 +0300
+X-Google-Sender-Auth: 5225c45e111d38a4
+Message-ID: <6eb01b950907142129w53a832f6ic0a5eb1bb2404f6a@mail.gmail.com>
+Subject: Re: libdasm/pydasm: licensing question
+From: Jarkko Turkulainen <jt@klake.org>
+To: David Malcolm <dmalcolm@redhat.com>
+Content-Type: text/plain; charset=ISO-8859-1
+X-RedHat-Spam-Score: 0 
+X-Scanned-By: MIMEDefang 2.58 on 172.16.52.254
+X-Scanned-By: MIMEDefang 2.63 on 172.16.48.32
+Content-Transfer-Encoding: quoted-printable
+
+Hi!
+
+From my point of view, I see no problem in releasing this with some
+BSD-style license. And I'm sure the other guys are with me in this...
+The only problem here is that I'm not developing libdasm actively
+anymore and I know it's lacking some essential features, like amd64
+support.
+
+But, the original "license" still holds, you can include it in Fedora
+if you want to, but libdasm support is very limited (=3D non-existing)
+from my side ;-).
+
+
+
+
+On Wed, Jul 15, 2009 at 3:06 AM, David Malcolm<dmalcolm@redhat.com> wrote:
+> Hi. =A0I'm a fan of libdasm (and pydasm) and am hoping to package it for
+> Fedora [1].
+>
+> I'm hoping that you'll consider clarifying the license of the software,
+> perhaps licensing it under an open-source/Free Software license.
+>
+> In the libdasm-1.5.tar.gz tarball's README.txt is this text:
+>
+> <<<< begin quote >>>>
+>
+> 6. Licensing
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>
+> libdasm is public domain software. You can do whatever you like with it.
+>
+> <<<< end quote >>>>
+>
+> Unfortunately, many of the files (including the README.txt) contain
+> copyright statements. =A0I'm not a lawyer, but my understanding is that
+> copyright statements can trump public domain assignments, and that it's
+> actually very hard to genuinely put something into the public domain.
+>
+> It may be simplest to explicitly grant a license to the code using an
+> open-source/Free Software license, such as one of the ones on this list
+> [2]
+>
+> As I understand it, the correct legal spell for putting something into
+> the public domain is for all copyright holders to make a statement along
+> the lines of:
+>
+> "I, NAME_OF_COPYRIGHT_HOLDER, abandon all copyright on the code contained=
+ within
+> the libdasm software (in particular, libdasm-1.5.tar.gz with SHA256 check=
+sum
+> 34d6c17dbb318bf2e21c6a3ae7dcc53d918ce247f1bd422b123d5e41a730a676 ) and pl=
+ace it
+> into the Public Domain."
+>
+> The copyright holders would all also need to indicate what country they
+> are a citizen of, because many countries do not permit copyright holders
+> to put works into the public domain (e.g. most, if not all EU citizens
+> cannot do this).
+>
+> I've tried to include everyone listed as contributors in the tarball in
+> this email; however, I'm missing a full address for:
+> =A0- "skape" from rbdasm
+> =A0- "Otto" (listed in HISTORY.txt)
+> =A0- Arnaud Pilon (likewise)
+> =A0- "thief" (likewise)
+>
+> Thoughts? =A0Thanks for reading (and for libdasm!). =A0More info can be s=
+een
+> at [3]
+>
+> Dave
+>
+> [1] http://fedoraproject.org/
+> [2] http://fedoraproject.org/wiki/Licensing#SoftwareLicenses
+> [3] https://bugzilla.redhat.com/show_bug.cgi?id=3D499875
+>
+>
+>
+>

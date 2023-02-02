@@ -1,0 +1,213 @@
+Return-Path: ero.carrera@gmail.com
+Received: from zmta03.collab.prod.int.phx2.redhat.com (LHLO
+ zmta03.collab.prod.int.phx2.redhat.com) (10.5.5.33) by
+ mail02.corp.redhat.com with LMTP; Fri, 17 Jul 2009 03:15:24 -0400 (EDT)
+Received: from localhost (localhost.localdomain [127.0.0.1]) by
+ zmta03.collab.prod.int.phx2.redhat.com (Postfix) with ESMTP id 5B30F4E0D8
+ for <dmalcolm@redhat.com>; Fri, 17 Jul 2009 03:15:24 -0400 (EDT)
+Received: from zmta03.collab.prod.int.phx2.redhat.com ([127.0.0.1]) by
+ localhost (zmta03.collab.prod.int.phx2.redhat.com [127.0.0.1])
+ (amavisd-new, port 10024) with ESMTP id RZdyNn-y7M4o for
+ <dmalcolm@redhat.com>; Fri, 17 Jul 2009 03:15:24 -0400 (EDT)
+Received: from int-mx1.corp.redhat.com (int-mx1.corp.redhat.com
+ [172.16.52.254]) by zmta03.collab.prod.int.phx2.redhat.com (Postfix) with
+ ESMTP id 1978A4E0D6 for <dmalcolm@mail.corp.redhat.com>; Fri, 17 Jul 2009
+ 03:15:24 -0400 (EDT)
+Received: from mx1.redhat.com (mx1.redhat.com [172.16.48.31])
+	by int-mx1.corp.redhat.com (8.13.1/8.13.1) with ESMTP id n6H7FGai010473
+	for <dmalcolm@redhat.com>; Fri, 17 Jul 2009 03:15:16 -0400
+Received: from wf-out-1314.google.com (wf-out-1314.google.com
+ [209.85.200.169]) by mx1.redhat.com (8.13.8/8.13.8) with ESMTP id
+ n6H7ExuX028686 for <dmalcolm@redhat.com>; Fri, 17 Jul 2009 03:14:59 -0400
+Received: by wf-out-1314.google.com with SMTP id 28so183914wfa.6
+        for <dmalcolm@redhat.com>; Fri, 17 Jul 2009 00:14:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=gamma;
+ h=domainkey-signature:received:received:cc:message-id:from:to
+ :in-reply-to:content-type:content-transfer-encoding:mime-version
+ :subject:date:references:x-mailer;
+ bh=q3fgYsIB0C6cDDW2Fic1EcP5l155sQ+GOs6Nj0xx+y4=;
+ b=F9miSi460ioV5bL8nu2NEipcyFOWlkgZ41E3cPcSyfpUSiz3cpMBN2bbmGAb5Q2G78
+ WplMOc0Qj7JKlcgv2SZ//nqMjCAgljIP5f83FDgH2jDw8UgRTVP2bWzq9B8b8ZhBMrDR
+ alvHGKPruK3x3SmS5cvcyoZMDX5gXNwwrCQ9Y=
+DomainKey-Signature: a=rsa-sha1; c=nofws; d=gmail.com; s=gamma;
+ h=cc:message-id:from:to:in-reply-to:content-type
+ :content-transfer-encoding:mime-version:subject:date:references :x-mailer;
+ b=nxzP7u0koyDzGXD1tFaZmktqpnTrpha7vyfcjBLR9LG3YKpSZWS9jR6c40tK4yLrEy
+ n0eJ9OrBcdDqlVqQddKYDApSoLOawPLAA02bGEE3jAK4uPP4+Y3XPtoSmMiAlOmaDWgt
+ keiHrPWVx8H6uK4/U6ODdveK7mLUOAK2nKtzE=
+Received: by 10.142.207.6 with SMTP id e6mr189506wfg.247.1247814898996;
+        Fri, 17 Jul 2009 00:14:58 -0700 (PDT)
+Received: from ?192.168.1.103? (c-98-234-149-222.hsd1.ca.comcast.net
+ [98.234.149.222]) by mx.google.com with ESMTPS id
+ 22sm3119991wfg.27.2009.07.17.00.14.56 (version=TLSv1/SSLv3 cipher=RC4-MD5);
+ Fri, 17 Jul 2009 00:14:57 -0700 (PDT)
+Cc: Jarkko Turkulainen <jt@klake.org>
+Message-Id: <1AFC40E3-2356-40A7-B7BA-64E11AB51644@gmail.com>
+From: Ero Carrera Ventura <ero.carrera@gmail.com>
+To: David Malcolm <dmalcolm@redhat.com>
+In-Reply-To: <1247785001.6558.11.camel@radiator.bos.redhat.com>
+Content-Type: text/plain; charset=US-ASCII; format=flowed; delsp=yes
+Mime-Version: 1.0 (Apple Message framework v935.3)
+Subject: Re: libdasm/pydasm: licensing question
+Date: Fri, 17 Jul 2009 00:14:54 -0700
+References: <1247616404.23263.37.camel@radiator.bos.redhat.com>
+	 <6eb01b950907142129w53a832f6ic0a5eb1bb2404f6a@mail.gmail.com>
+	 <6eb01b950907142130y225a1876q54e7b571aaafdebc@mail.gmail.com>
+	 <06AE8C8D-AF68-41F7-A773-3871B92F4DDF@gmail.com>
+	 <1247785001.6558.11.camel@radiator.bos.redhat.com>
+X-RedHat-Spam-Score: -1 
+X-Scanned-By: MIMEDefang 2.58 on 172.16.52.254
+X-Scanned-By: MIMEDefang 2.63 on 172.16.48.31
+Content-Transfer-Encoding: quoted-printable
+
+
+ From my part (I was responsible for the Python wrappers) I'm ok with =20
+any "open" or "free" licensing, I'm not too religious about it and =20
+definitely want people to make use of it if they find it useful in any =20
+way.
+
+I'm quite sure that if you ask in the googlecode group the other =20
+(current) developers will agree.
+
+--
+Ero
+
+
+On Jul 16, 2009, at 3:56 PM, David Malcolm wrote:
+
+> Aha!  Thanks for the pointer.
+>
+> Yes, that version seems like a better bet as more actively maintained
+> (last commit was May 17th of this year).
+>
+> Unfortunately, the licensing there stills seems ambiguous: the "Code
+> license" field reads "New BSD License", which is fair enough, but the
+> "Labels" field has the label "publicdomain", and the description says
+> "public domain".
+>
+> I'll ask my legal guru for his advice on this; sorry for being a pain.
+>
+> Dave
+>
+>
+> On Tue, 2009-07-14 at 22:13 -0700, Ero Carrera Ventura wrote:
+>> Hi,
+>>
+>> Some friends actually got the existing code and started a google
+>> project where they made enhancements and fixed some issues:
+>>
+>> http://code.google.com/p/libdasm/
+>>
+>> Maybe you want to include that version.
+>>
+>> --
+>> Ero
+>>
+>>
+>> On Jul 14, 2009, at 9:30 PM, Jarkko Turkulainen wrote:
+>>> ---------- Forwarded message ----------
+>>> From: Jarkko Turkulainen <jt@klake.org>
+>>> Date: Wed, Jul 15, 2009 at 7:29 AM
+>>> Subject: Re: libdasm/pydasm: licensing question
+>>> To: David Malcolm <dmalcolm@redhat.com>
+>>>
+>>>
+>>> Hi!
+>>>
+>>> From my point of view, I see no problem in releasing this with some
+>>> BSD-style license. And I'm sure the other guys are with me in =20
+>>> this...
+>>> The only problem here is that I'm not developing libdasm actively
+>>> anymore and I know it's lacking some essential features, like amd64
+>>> support.
+>>>
+>>> But, the original "license" still holds, you can include it in =20
+>>> Fedora
+>>> if you want to, but libdasm support is very limited (=3D non-existing)
+>>> from my side ;-).
+>>>
+>>>
+>>>
+>>>
+>>> On Wed, Jul 15, 2009 at 3:06 AM, David Malcolm<dmalcolm@redhat.com>
+>>> wrote:
+>>>> Hi.  I'm a fan of libdasm (and pydasm) and am hoping to package it
+>>>> for
+>>>> Fedora [1].
+>>>>
+>>>> I'm hoping that you'll consider clarifying the license of the
+>>>> software,
+>>>> perhaps licensing it under an open-source/Free Software license.
+>>>>
+>>>> In the libdasm-1.5.tar.gz tarball's README.txt is this text:
+>>>>
+>>>> <<<< begin quote >>>>
+>>>>
+>>>> 6. Licensing
+>>>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>>>>
+>>>> libdasm is public domain software. You can do whatever you like
+>>>> with it.
+>>>>
+>>>> <<<< end quote >>>>
+>>>>
+>>>> Unfortunately, many of the files (including the README.txt) contain
+>>>> copyright statements.  I'm not a lawyer, but my understanding is =20
+>>>> that
+>>>> copyright statements can trump public domain assignments, and that
+>>>> it's
+>>>> actually very hard to genuinely put something into the public =20
+>>>> domain.
+>>>>
+>>>> It may be simplest to explicitly grant a license to the code =20
+>>>> using an
+>>>> open-source/Free Software license, such as one of the ones on this
+>>>> list
+>>>> [2]
+>>>>
+>>>> As I understand it, the correct legal spell for putting something
+>>>> into
+>>>> the public domain is for all copyright holders to make a statement
+>>>> along
+>>>> the lines of:
+>>>>
+>>>> "I, NAME_OF_COPYRIGHT_HOLDER, abandon all copyright on the code
+>>>> contained within
+>>>> the libdasm software (in particular, libdasm-1.5.tar.gz with SHA256
+>>>> checksum
+>>>> 34d6c17dbb318bf2e21c6a3ae7dcc53d918ce247f1bd422b123d5e41a730a676 )
+>>>> and place it
+>>>> into the Public Domain."
+>>>>
+>>>> The copyright holders would all also need to indicate what country
+>>>> they
+>>>> are a citizen of, because many countries do not permit copyright
+>>>> holders
+>>>> to put works into the public domain (e.g. most, if not all EU
+>>>> citizens
+>>>> cannot do this).
+>>>>
+>>>> I've tried to include everyone listed as contributors in the
+>>>> tarball in
+>>>> this email; however, I'm missing a full address for:
+>>>> - "skape" from rbdasm
+>>>> - "Otto" (listed in HISTORY.txt)
+>>>> - Arnaud Pilon (likewise)
+>>>> - "thief" (likewise)
+>>>>
+>>>> Thoughts?  Thanks for reading (and for libdasm!).  More info can be
+>>>> seen
+>>>> at [3]
+>>>>
+>>>> Dave
+>>>>
+>>>> [1] http://fedoraproject.org/
+>>>> [2] http://fedoraproject.org/wiki/Licensing#SoftwareLicenses
+>>>> [3] https://bugzilla.redhat.com/show_bug.cgi?id=3D499875
+>>>>
+>>>>
+>>>>
+>>>>
+>>
+>
+
