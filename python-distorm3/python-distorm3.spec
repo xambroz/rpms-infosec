@@ -1,3 +1,9 @@
+Name:           python-distorm3
+Version:        3.4.4
+Release:        1%{?dist}
+Summary:        Powerful Disassembler Library For x86/AMD64
+License:        GPLv3
+
 %global         srcname         distorm3
 %global         gituser         gdabah
 %global         gitname         distorm
@@ -13,13 +19,6 @@
 %global with_python2 1
 %endif
 
-
-Name:           python-%{srcname}
-Version:        3.4.4
-Release:        1%{?dist}
-Summary:        Powerful Disassembler Library For x86/AMD64
-
-License:        GPLv3
 URL:            https://github.com/gdabah/distorm
 #Source0:       https://github.com/%%{gituser}/%%{gitname}/archive/%%{commit}/%%{name}-%%{version}-%%{shortcommit}.tar.gz
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
