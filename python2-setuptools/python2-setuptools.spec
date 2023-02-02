@@ -1,5 +1,6 @@
 %global srcname setuptools
 
+%bcond_without python2
 %bcond_with tests
 
 Name:           python2-setuptools
@@ -18,6 +19,7 @@ Source0:        %{pypi_source %{srcname} %{version} zip}
 BuildArch:      noarch
 
 BuildRequires:  gcc
+%if %{with python2}
 BuildRequires:  python2-devel
 
 %if %{with tests}
@@ -35,6 +37,7 @@ Provides: bundled(python2dist(pyparsing)) = 2.2.1
 Provides: bundled(python2dist(six)) = 1.10.0
 
 %{?python_provide:%python_provide python2-setuptools}
+%endif
 
 %description
 Setuptools is a collection of enhancements to the Python distutils that allow
@@ -59,14 +62,16 @@ rm setuptools/tests/test_integration.py
 chmod -x README.rst
 
 %build
+%if %{with python2}
 # Warning, different bootstrap meaning here, has nothing to do with our bcond
 # This bootstraps .egg-info directory needed to build setuptools
 %{__python2} bootstrap.py
 
 %py2_build
-
+%endif
 
 %install
+%if %{with python2}
 %py2_install
 
 rm %{buildroot}%{_bindir}/easy_install
@@ -76,18 +81,21 @@ find %{buildroot}%{python2_sitelib} -name '*.exe' | xargs rm -f
 
 # Don't ship these
 rm -r docs/{Makefile,conf.py,_*}
+%endif
 
 
 %if %{with tests}
 %check
+%if %{with python2}
 # see https://github.com/pypa/setuptools/issues/1170 for PYTHONDONTWRITEBYTECODE
 # several tests are xfailed with POSIX locale, so we set C.utf-8 (not needed on py3)
 # test_virtualenv is ignored to break dependency on python2-pytest-virtualenv
 LANG=C.utf-8 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$(pwd) pytest-%{python2_version} \
     --ignore setuptools/tests/test_virtualenv.py
 %endif
+%endif
 
-
+%if %{with python2}
 %files -n python2-setuptools
 %license LICENSE
 %doc docs/* CHANGES.rst README.rst
@@ -96,7 +104,7 @@ LANG=C.utf-8 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$(pwd) pytest-%{python2_versio
 %{python2_sitelib}/easy_install*
 %{python2_sitelib}/pkg_resources/
 %{_bindir}/easy_install-2.*
-
+%endif
 
 %changelog
 * Wed Jan 27 2021 Fedora Release Engineering <releng@fedoraproject.org> - 41.2.0-4
