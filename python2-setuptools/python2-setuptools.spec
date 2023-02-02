@@ -5,15 +5,15 @@
 
 Name:           python2-setuptools
 # When updating, update the bundled libraries versions bellow!
-Version:        41.2.0
-Release:        4%{?dist}
+Version:        44.1.1
+Release:        1%{?dist}
 Summary:        Easily build and distribute Python packages
 # setuptools is MIT
 # packaging is BSD or ASL 2.0
 # pyparsing is MIT
 # six is MIT
 License:        MIT and (BSD or ASL 2.0)
-URL:            https://pypi.python.org/pypi/%{srcname}
+URL:            https://pypi.python.org/pypi/setuptools
 Source0:        %{pypi_source %{srcname} %{version} zip}
 
 BuildArch:      noarch
@@ -107,6 +107,9 @@ LANG=C.utf-8 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$(pwd) pytest-%{python2_versio
 %endif
 
 %changelog
+* Fri Feb 03 2023 Michal Ambroz <rebus _AT seznam.cz> - 44.1.1-1
+- bump to last supported python2 version
+
 * Wed Jan 27 2021 Fedora Release Engineering <releng@fedoraproject.org> - 41.2.0-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
 
