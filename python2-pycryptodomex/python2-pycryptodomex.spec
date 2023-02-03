@@ -23,6 +23,8 @@ Source0:        https://github.com/Legrandin/pycryptodome/archive/v%{version}/%{
 # Use external libtomcrypt library
 Patch0:         %{name}-3.15.0-use_external_libtomcrypt.patch
 # Fix deprecated unittest methods
+# Proposed to upstream as pull request 710
+# https://patch-diff.githubusercontent.com/raw/Legrandin/pycryptodome/pull/710.patch
 Patch1:         %{name}-3.16.0-unittest.patch
 # Build of documentation fails without the fix of the version
 Patch2:         https://github.com/Legrandin/pycryptodome/commit/12357e8760144a4535c593cafdbbeec1c52c66c9.patch#/%{name}-3.17.0-fix_version.patch
@@ -127,6 +129,7 @@ This package provides the PyCryptodome test suite module (Cryptodome.SelfTest).
 rm -r src/libtom/
 
 # Remove shebang
+# proposed pull request upstream https://github.com/Legrandin/pycryptodome/pull/709
 sed '1{\@^#! /usr/bin/env python@d}' lib/Crypto/SelfTest/__main__.py >lib/Crypto/SelfTest/__main__.py.new && \
 touch -r lib/Crypto/SelfTest/__main__.py lib/Crypto/SelfTest/__main__.py.new && \
 mv lib/Crypto/SelfTest/__main__.py.new lib/Crypto/SelfTest/__main__.py
