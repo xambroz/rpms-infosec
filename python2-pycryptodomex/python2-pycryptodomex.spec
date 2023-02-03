@@ -150,14 +150,16 @@ touch .separate_namespace
 %install
 %if %{with python2}
 %py2_install
+# Install man pages
+install -Dpm 0644 Doc/_build/man/pycryptodome.1 $RPM_BUILD_ROOT%{_mandir}/man1/pycryptodome2.1
 %endif
 %if %{with python3}
 %py3_install
+# Install man pages
+install -Dpm 0644 Doc/_build/man/pycryptodome.1 $RPM_BUILD_ROOT%{_mandir}/man1/pycryptodome.1
 %endif
 
 
-# Install man pages
-install -Dpm 0644 Doc/_build/man/pycryptodome.1 $RPM_BUILD_ROOT%{_mandir}/man1/pycryptodome.1
 
 
 %check
@@ -178,7 +180,7 @@ install -Dpm 0644 Doc/_build/man/pycryptodome.1 $RPM_BUILD_ROOT%{_mandir}/man1/p
 %{python2_sitearch}/Cryptodome/
 %{python2_sitearch}/%{srcname}-*.egg-info/
 %exclude %{python2_sitearch}/Cryptodome/SelfTest/
-%{_mandir}/man1/pycryptodome.1*
+%{_mandir}/man1/pycryptodome2.1*
 
 %files -n python2-%{srcname}-selftest
 %{python2_sitearch}/Cryptodome/SelfTest/
