@@ -24,6 +24,8 @@ Source0:        https://github.com/Legrandin/pycryptodome/archive/v%{version}/%{
 Patch0:         %{name}-3.15.0-use_external_libtomcrypt.patch
 # Fix deprecated unittest methods
 Patch1:         %{name}-3.16.0-unittest.patch
+# Build of documentation fails without the fix of the version
+Patch2:         https://github.com/Legrandin/pycryptodome/commit/12357e8760144a4535c593cafdbbeec1c52c66c9.patch#/%{name}-3.17.0-fix_version.patch
 
 
 %global _description %{expand:PyCryptodome is a self-contained Python package of low-level cryptographic
@@ -119,7 +121,7 @@ This package provides the PyCryptodome test suite module (Cryptodome.SelfTest).
 
 
 %prep
-%autosetup -n pycryptodome-%{version} -p0
+%autosetup -n pycryptodome-%{version} -p1
 
 # Drop bundled libraries
 rm -r src/libtom/
@@ -199,6 +201,9 @@ install -Dpm 0644 Doc/_build/man/pycryptodome.1 $RPM_BUILD_ROOT%{_mandir}/man1/p
 
 
 %changelog
+* Fri Feb 03 2023 Michal Ambroz <rebus _AT seznam.cz> - 3.17.0-1
+- bump to 3.17.0
+
 * Fri Feb 03 2023 Michal Ambroz <rebus _AT seznam.cz> - 3.16.0-1
 - sync with current version in Fedora 3.16.0
 

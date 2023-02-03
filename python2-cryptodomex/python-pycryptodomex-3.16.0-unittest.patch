@@ -1,6 +1,6 @@
-diff -up ./lib/Crypto/SelfTest/PublicKey/test_ECC_25519.py.bak ./lib/Crypto/SelfTest/PublicKey/test_ECC_25519.py
---- ./lib/Crypto/SelfTest/PublicKey/test_ECC_25519.py.bak	2022-11-26 17:22:56.000000000 +0100
-+++ ./lib/Crypto/SelfTest/PublicKey/test_ECC_25519.py	2023-01-08 13:45:26.875917918 +0100
+diff -up old/lib/Crypto/SelfTest/PublicKey/test_ECC_25519.py.bak new/lib/Crypto/SelfTest/PublicKey/test_ECC_25519.py
+--- old/lib/Crypto/SelfTest/PublicKey/test_ECC_25519.py	2022-11-26 17:22:56.000000000 +0100
++++ new/lib/Crypto/SelfTest/PublicKey/test_ECC_25519.py	2023-01-08 13:45:26.875917918 +0100
 @@ -105,13 +105,13 @@ class TestEccPoint_Ed25519(unittest.Test
  
      def test_pai(self):
@@ -17,9 +17,9 @@ diff -up ./lib/Crypto/SelfTest/PublicKey/test_ECC_25519.py.bak ./lib/Crypto/Self
  
      def test_addition(self):
          self.assertEqual(self.pointG + self.pointG2, self.pointG3)
-diff -up ./lib/Crypto/SelfTest/PublicKey/test_ECC_448.py.bak ./lib/Crypto/SelfTest/PublicKey/test_ECC_448.py
---- ./lib/Crypto/SelfTest/PublicKey/test_ECC_448.py.bak	2022-11-26 17:22:56.000000000 +0100
-+++ ./lib/Crypto/SelfTest/PublicKey/test_ECC_448.py	2023-01-08 13:45:26.875917918 +0100
+diff -up old/lib/Crypto/SelfTest/PublicKey/test_ECC_448.py new/lib/Crypto/SelfTest/PublicKey/test_ECC_448.py
+--- old/lib/Crypto/SelfTest/PublicKey/test_ECC_448.py	2022-11-26 17:22:56.000000000 +0100
++++ new/lib/Crypto/SelfTest/PublicKey/test_ECC_448.py	2023-01-08 13:45:26.875917918 +0100
 @@ -105,13 +105,13 @@ class TestEccPoint_Ed448(unittest.TestCa
  
      def test_pai(self):

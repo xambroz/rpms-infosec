@@ -1,6 +1,6 @@
-diff -up ./setup.py.bak ./setup.py
---- ./setup.py.bak	2021-02-08 22:14:54.000000000 +0100
-+++ ./setup.py	2021-02-09 15:55:53.785892041 +0100
+diff -up old/setup.py new/setup.py
+--- old/setup.py	2021-02-08 22:14:54.000000000 +0100
++++ new/setup.py	2021-02-09 15:55:53.785892041 +0100
 @@ -367,12 +367,14 @@ ext_modules = [
          sources=["src/CAST.c"],
          py_limited_api=True),
@@ -29,9 +29,9 @@ diff -up ./setup.py.bak ./setup.py
          py_limited_api=True),
      Extension("Crypto.Cipher._chacha20",
          include_dirs=['src/'],
-diff -up ./src/DES.c.bak ./src/DES.c
---- ./src/DES.c.bak	2021-02-08 22:14:54.000000000 +0100
-+++ ./src/DES.c	2021-02-09 15:55:53.785892041 +0100
+diff -up ./src/DES.c ./src/DES.c
+--- old/src/DES.c	2021-02-08 22:14:54.000000000 +0100
++++ new/src/DES.c	2021-02-09 15:55:53.785892041 +0100
 @@ -39,7 +39,7 @@ FAKE_INIT(raw_des3)
  
  /* Include the actial DES implementation */

@@ -1,0 +1,21 @@
+From 12357e8760144a4535c593cafdbbeec1c52c66c9 Mon Sep 17 00:00:00 2001
+From: Helder Eijs <helderijs@gmail.com>
+Date: Sat, 28 Jan 2023 00:39:28 +0100
+Subject: [PATCH] Fix build version
+
+---
+ lib/Crypto/__init__.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/lib/Crypto/__init__.py b/lib/Crypto/__init__.py
+index b8a96a8f..02e02520 100644
+--- a/lib/Crypto/__init__.py
++++ b/lib/Crypto/__init__.py
+@@ -1,6 +1,6 @@
+ __all__ = ['Cipher', 'Hash', 'Protocol', 'PublicKey', 'Util', 'Signature',
+            'IO', 'Math']
+ 
+-version_info = (3, 17)
++version_info = (3, 17, 0)
+ 
+ __version__ = ".".join([str(x) for x in version_info])

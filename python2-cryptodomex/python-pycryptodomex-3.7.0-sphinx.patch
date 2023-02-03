@@ -1,6 +1,6 @@
-diff -up ./Doc/conf.py.bak ./Doc/conf.py
---- ./Doc/conf.py.bak	2018-10-27 23:08:03.000000000 +0200
-+++ ./Doc/conf.py	2018-11-17 15:34:58.392588884 +0100
+diff -up old/Doc/conf.py.bak new/Doc/conf.py
+--- old/Doc/conf.py.bak	2018-10-27 23:08:03.000000000 +0200
++++ new/Doc/conf.py	2018-11-17 15:34:58.392588884 +0100
 @@ -20,6 +20,10 @@ print sys.path
  # Mock existence of native modules
  from Crypto.Util import _raw_api
