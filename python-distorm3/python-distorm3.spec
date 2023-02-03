@@ -23,9 +23,6 @@ License:        GPLv3
 %bcond_without  python2
 %endif
 
-# for copr-rebus-infosec - distorm3 needed for python2-volatility
-%bcond_without  python2
-
 
 URL:            https://github.com/gdabah/distorm
 #Source0:       https://github.com/%%{gituser}/%%{gitname}/archive/%%{commit}/%%{name}-%%{version}-%%{shortcommit}.tar.gz
