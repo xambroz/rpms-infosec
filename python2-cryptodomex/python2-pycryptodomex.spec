@@ -1,5 +1,5 @@
 Name:           python-pycryptodomex
-Version:        3.16.0
+Version:        3.17.0
 Release:        1%{?dist}
 Summary:        A self-contained cryptographic library for Python
 # PyCrypto-based code is public domain, further PyCryptodome contributions are
@@ -199,6 +199,9 @@ install -Dpm 0644 Doc/_build/man/pycryptodome.1 $RPM_BUILD_ROOT%{_mandir}/man1/p
 
 
 %changelog
+* Fri Feb 03 2023 Michal Ambroz <rebus _AT seznam.cz> - 3.16.0-1
+- sync with current version in Fedora 3.16.0
+
 * Tue Aug 03 2021 Mohamed El Morabity <melmorabity@fedoraproject.org> - 3.10.1-1
 - Update to 3.10.1
 
