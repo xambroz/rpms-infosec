@@ -6,8 +6,8 @@ Summary:        A self-contained cryptographic library for Python
 # BSD
 License:        BSD and Public Domain
 URL:            http://www.pycryptodome.org/
-#               https://github.com/Legrandin/pycryptodome/
-#               https://github.com/Legrandin/pycryptodome/tags
+VCS:            https://github.com/Legrandin/pycryptodome/
+# Releases      https://github.com/Legrandin/pycryptodome/tags
 
 # Build python2 by default
 %bcond_without python2
