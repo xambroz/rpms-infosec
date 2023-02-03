@@ -72,8 +72,8 @@ BuildRequires:  python2-setuptools
 %endif
 
 %if %{with python2}
-BuildRequires:  python3-devel
-BuildRequires:  python3-setuptools
+BuildRequires:  python%{python3_pkgversion}-devel
+BuildRequires:  python%{python3_pkgversion}-setuptools
 # Needed for documentation
 %endif
 
@@ -104,20 +104,20 @@ This package provides the PyCryptodome test suite module (Cryptodome.SelfTest).
 %endif
 
 %if %{with python3}
-%package -n python3-%{srcname}
+%package -n python%{python3_pkgversion}-%{srcname}
 Summary:        %{summary}
 # GMP library is dl-opened
 Requires:       gmp%{?_isa}
-%{?python_provide:%python_provide python3-%{srcname}}
+%{?python_provide:%python_provide python%{python3_pkgversion}-%{srcname}}
 
-%description -n python3-%{srcname}
+%description -n python%{python3_pkgversion}-%{srcname}
 %{_description}
 
-%package -n python3-%{srcname}-selftest
+%package -n python%{python3_pkgversion}-%{srcname}-selftest
 Summary:        PyCryptodome test suite module
-Requires:       python3-%{srcname}%{?_isa}
+Requires:       python%{python3_pkgversion}-%{srcname}%{?_isa}
 
-%description -n python3-%{srcname}-selftest
+%description -n python%{python3_pkgversion}-%{srcname}-selftest
 %{_description}
 
 This package provides the PyCryptodome test suite module (Cryptodome.SelfTest).
@@ -188,7 +188,7 @@ install -Dpm 0644 Doc/_build/man/pycryptodome.1 $RPM_BUILD_ROOT%{_mandir}/man1/p
 %endif
 
 %if %{with python3}
-%files -n python3-%{srcname}
+%files -n python%{python3_pkgversion}-%{srcname}
 %doc AUTHORS.rst Changelog.rst README.rst
 %license LICENSE.rst
 %{python3_sitearch}/Cryptodome/
@@ -196,7 +196,7 @@ install -Dpm 0644 Doc/_build/man/pycryptodome.1 $RPM_BUILD_ROOT%{_mandir}/man1/p
 %exclude %{python3_sitearch}/Cryptodome/SelfTest/
 %{_mandir}/man1/pycryptodome.1*
 
-%files -n python3-%{srcname}-selftest
+%files -n python%{python3_pkgversion}-%{srcname}-selftest
 %{python3_sitearch}/Cryptodome/SelfTest/
 
 %endif
@@ -205,6 +205,7 @@ install -Dpm 0644 Doc/_build/man/pycryptodome.1 $RPM_BUILD_ROOT%{_mandir}/man1/p
 %changelog
 * Fri Feb 03 2023 Michal Ambroz <rebus _AT seznam.cz> - 3.17.0-1
 - bump to 3.17.0
+- make ready for EPEL
 
 * Fri Feb 03 2023 Michal Ambroz <rebus _AT seznam.cz> - 3.16.0-1
 - sync with current version in Fedora 3.16.0
