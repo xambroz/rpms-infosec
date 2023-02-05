@@ -1,20 +1,5 @@
 Revert adding of RPATH
 https://github.com/radareorg/iaito/commit/4e33b64256bb77f3fa6eab316abedb8543bfab46
-diff -ru iaito-28a1099603b3fa671bfbb226025d1a8c45558471/src/CMakeLists.txt iaito-28a1099603b3fa671bfbb226025d1a8c45558471.new/src/CMakeLists.txt
---- iaito-28a1099603b3fa671bfbb226025d1a8c45558471/src/CMakeLists.txt	2022-02-06 20:42:53.000000000 +0100
-+++ iaito-28a1099603b3fa671bfbb226025d1a8c45558471.new/src/CMakeLists.txt	2022-02-14 01:56:17.038391545 +0100
-@@ -10,8 +10,9 @@
- 
- set(IAITO_PYTHON_MIN 3.5)
- 
--set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
--set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
-+# Disable adding RPATH for Fedora
-+# set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
-+# set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
- 
- option(IAITO_USE_BUNDLED_RADARE2 "Use radare2 from src/radare2 submodule instead of searching for it on the system" OFF)
- option(IAITO_USE_ADDITIONAL_RADARE2_PATHS "Search radare2 in additional paths which are not part of default system library paths.\
 diff -ru iaito-28a1099603b3fa671bfbb226025d1a8c45558471/src/Iaito.pro iaito-28a1099603b3fa671bfbb226025d1a8c45558471.new/src/Iaito.pro
 --- iaito-28a1099603b3fa671bfbb226025d1a8c45558471/src/Iaito.pro	2022-02-06 20:42:53.000000000 +0100
 +++ iaito-28a1099603b3fa671bfbb226025d1a8c45558471.new/src/Iaito.pro	2022-02-14 01:57:30.309876686 +0100
