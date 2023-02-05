@@ -1,6 +1,6 @@
 Name:           iaito
 Summary:        GUI for radare2 reverse engineering framework
-Version:        5.8.0
+Version:        5.8.2
 %global         rel             1
 %global         upversion       %{version}-beta
 URL:            https://radare.org/n/iaito.html
@@ -16,8 +16,8 @@ VCS:            https://github.com/radareorg/iaito/
 %global         gituser         radareorg
 %global         gitname         iaito
 
-%global         gitdate         20221223
-%global         commit          cbf1992d78224f7e2a8ae7bd5701b759908a723f
+%global         gitdate         20230201
+%global         commit          e821ddc1c8ef20a391791fdb1f81ad6f67e8c869
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 %global         iaito_translations_gitdate      20221114
@@ -39,12 +39,6 @@ License:        GPLv3 and CC-BY-SA and CC0
 
 Source1:        https://github.com/radareorg/iaito-translations/archive/%{iaito_translations_commit}.tar.gz#/iaito-translations-git%{iaito_translations_gitdate}.tar.gz
 Patch0:         iaito-5.6.0-norpath.patch
-
-# Upstream release of 5.7.8 by accident didn't bump the version from 5.7.6
-# https://patch-diff.githubusercontent.com/raw/radareorg/iaito/pull/114.patch
-# https://patch-diff.githubusercontent.com/raw/radareorg/iaito/pull/115.patch
-Patch1:         iaito-5.7.8-version.patch
-
 
 BuildRequires:  radare2-devel >= 5.6.8
 # BuildRequires:  git
@@ -190,6 +184,9 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
 
 
 %changelog
+* Fri Feb 03 2023 Michal Ambroz <rebus _AT seznam.cz> - 5.8.2-1
+- bump to 5.8.2
+
 * Thu Jan 26 2023 Michal Ambroz <rebus _AT seznam.cz> - 5.8.0-1
 - bump to 5.8.0
 
