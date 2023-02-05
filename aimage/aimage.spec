@@ -12,8 +12,8 @@ License:        BSD with advertising
 URL:            http://web.archive.org/web/20090831104249/http://www.afflib.org:80/
 
 
-Source0:        http://www.afflib.org/downloads/aimage-%{version}.tar.gz
-Source0:        https://distfiles.macports.org/aimage/aimage-%{version}.tar.gz 
+# was           http://www.afflib.org/downloads/aimage-%%{version}.tar.gz
+Source0:        https://distfiles.macports.org/aimage/aimage-%{version}.tar.gz
 
 BuildRequires:  autoconf
 BuildRequires:  automake
@@ -26,7 +26,7 @@ BuildRequires:  openssl-devel
 %description
 Advanced Disk Imager.
 Disk imager supporting the AFF format as provided by the afflib.
-As the AFF format was adopted by the guymager and FTK imager, 
+As the AFF format was adopted by the guymager and FTK imager,
 this package is not maintained since 2010-12-25 and is kept only for
 reference.
 As it was once favourite imaging tool for MacOS, source can be still
