@@ -34,8 +34,8 @@ BuildRequires:  make
 %if 0%{?with_python2}
 BuildRequires:  python2
 BuildRequires:  python2-devel
-BuildRequires:  python-libs
-BuildRequires:  python-setuptools
+BuildRequires:  python2-libs
+BuildRequires:  python2-setuptools
 %endif
 
 %if 0%{?with_python3}
