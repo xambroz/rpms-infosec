@@ -1,0 +1,31 @@
+Only in pycryptodome-3.17.0.new: build
+Only in pycryptodome-3.17.0.new: compiler_opt.pyc
+Only in pycryptodome-3.17.0.new/Doc: _build
+diff -ru pycryptodome-3.17.0/Doc/conf.py pycryptodome-3.17.0.new/Doc/conf.py
+--- pycryptodome-3.17.0/Doc/conf.py	2023-01-27 23:30:55.000000000 +0000
++++ pycryptodome-3.17.0.new/Doc/conf.py	2023-02-07 21:24:49.056860252 +0000
+@@ -162,7 +162,11 @@
+ # Ensure that text wrapping works in a table, by overring some CSS.
+ # See https://github.com/rtfd/sphinx_rtd_theme/issues/117
+ def setup(app):
+-    app.add_css_file('theme_overrides.css')
++    try:
++        app.add_css_file('theme_overrides.css')
++    except Exception:
++        print("Failed to add 'theme_overrides.css' probably due to old sphinx version")
++
+ 
+ # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
+ # using the given strftime format.
+Only in pycryptodome-3.17.0.new/lib/Crypto/Cipher: __pycache__
+Only in pycryptodome-3.17.0.new/lib/Crypto/Hash: __pycache__
+Only in pycryptodome-3.17.0.new/lib/Crypto/IO: __pycache__
+Only in pycryptodome-3.17.0.new/lib/Crypto/Math: __pycache__
+Only in pycryptodome-3.17.0.new/lib/Crypto/Protocol: __pycache__
+Only in pycryptodome-3.17.0.new/lib/Crypto/PublicKey: __pycache__
+Only in pycryptodome-3.17.0.new/lib/Crypto: __pycache__
+Only in pycryptodome-3.17.0.new/lib/Crypto/Random: __pycache__
+Only in pycryptodome-3.17.0.new/lib/Crypto/Signature: __pycache__
+Only in pycryptodome-3.17.0.new/lib/Crypto/Util: __pycache__
+Only in pycryptodome-3.17.0.new/lib: Cryptodome
+Only in pycryptodome-3.17.0.new: .separate_namespace

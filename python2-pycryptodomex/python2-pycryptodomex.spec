@@ -31,6 +31,8 @@ Patch2:         https://github.com/Legrandin/pycryptodome/commit/12357e8760144a4
 # Remove shebang
 # proposed pull request upstream https://github.com/Legrandin/pycryptodome/pull/709
 Patch3:         https://github.com/Legrandin/pycryptodome/pull/709.patch#/%{name}-3.17.0-remove_shebang.patch
+# Old version of sphinx has different api for including custom css and fails on EPEL8
+PAtch4:         python-pycryptodomex-3.17.0-oldsphinx.patch
 
 
 %global _description %{expand:PyCryptodome is a self-contained Python package of low-level cryptographic
