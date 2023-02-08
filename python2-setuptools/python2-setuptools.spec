@@ -3,7 +3,7 @@
 %bcond_without python2
 %bcond_with tests
 
-Name:           python2-setuptools
+Name:           python%{python2_pkgversion}-setuptools
 # When updating, update the bundled libraries versions bellow!
 Version:        44.1.1
 Release:        1%{?dist}
@@ -20,14 +20,14 @@ BuildArch:      noarch
 
 BuildRequires:  gcc
 %if %{with python2}
-BuildRequires:  python2-devel
+BuildRequires:  python%{python2_pkgversion}-devel
 
 %if %{with tests}
-BuildRequires:  python2-futures
-BuildRequires:  python2-pip
-BuildRequires:  python2-pytest
-BuildRequires:  python2-mock
-BuildRequires:  python2-wheel
+BuildRequires:  python%{python2_pkgversion}-futures
+BuildRequires:  python%{python2_pkgversion}-pip
+BuildRequires:  python%{python2_pkgversion}-pytest
+BuildRequires:  python%{python2_pkgversion}-mock
+BuildRequires:  python%{python2_pkgversion}-wheel
 %endif
 
 # Virtual provides for the packages bundled by setuptools.
@@ -36,7 +36,7 @@ Provides: bundled(python2dist(packaging)) = 16.8
 Provides: bundled(python2dist(pyparsing)) = 2.2.1
 Provides: bundled(python2dist(six)) = 1.10.0
 
-%{?python_provide:%python_provide python2-setuptools}
+%{?python_provide:%python_provide python%{python2_pkgversion}-setuptools}
 %endif
 
 %description
@@ -96,7 +96,7 @@ LANG=C.utf-8 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=$(pwd) pytest-%{python2_versio
 %endif
 
 %if %{with python2}
-%files -n python2-setuptools
+%files -n python%{python2_pkgversion}-setuptools
 %license LICENSE
 %doc docs/* CHANGES.rst README.rst
 %{python2_sitelib}/setuptools-%{version}-py%{python2_version}.egg-info/
