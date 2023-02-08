@@ -2,7 +2,7 @@
 
 %if 0%{?fedora} >= 28
 %global python2_pkgversion 2
-%endif
+%else
 %global python2_pkgversion %{nil}
 %endif
 
