@@ -1,51 +1,51 @@
-commit b6d5da6796801862eb751a93d507c343af0604d6
-Author: Victor Stinner <vstinner@redhat.com>
-Date:   Tue Sep 18 17:13:51 2018 +0200
+From 854fd7296bb9306d46ba3cc8bb7c6f18a7960ed6 Mon Sep 17 00:00:00 2001
+From: Tomas Hrnciar <thrnciar@redhat.com>
+Date: Sun, 26 Apr 2020 21:19:03 +0200
+Subject: [PATCH] Prevent removing of the system packages installed under
+ /usr/lib
 
-    Subject: Prevent removing of the system packages installed under /usr/lib
-    
-    when pip install -U is executed.
-    
-    Resolves: rhbz#1550368
-    
-    Co-Authored-By: Michal Cyprian <m.cyprian@gmail.com>
+when pip install -U is executed.
 
+Resolves: rhbz#1550368
+
+Co-Authored-By: Michal Cyprian <m.cyprian@gmail.com>
+Co-Authored-By: Victor Stinner <vstinner@redhat.com>
+Co-Authored-By: Petr Viktorin <pviktori@redhat.com>
+---
 diff --git a/src/pip/_internal/req/req_install.py b/src/pip/_internal/req/req_install.py
-index d21530a..0023a35 100644
+index 4759f4a..2e76e35 100644
 --- a/src/pip/_internal/req/req_install.py
 +++ b/src/pip/_internal/req/req_install.py
-@@ -29,7 +29,7 @@ from pip._internal.utils.hashes import Hashes
- from pip._internal.utils.logging import indent_log
- from pip._internal.utils.misc import (
-     _make_build_dir, ask_path_exists, backup_dir, call_subprocess,
--    display_path, dist_in_site_packages, dist_in_usersite, ensure_dir,
-+    display_path, dist_in_install_path, dist_in_site_packages, dist_in_usersite, ensure_dir,
-     get_installed_version, redact_password_from_url, rmtree,
- )
- from pip._internal.utils.packaging import get_metadata
-@@ -411,7 +411,7 @@ class InstallRequirement(object):
-                         "lack sys.path precedence to %s in %s" %
-                         (existing_dist.project_name, existing_dist.location)
+@@ -41,6 +41,7 @@ from pip._internal.utils.misc import (
+     ask_path_exists,
+     backup_dir,
+     display_path,
++    dist_in_install_path,
+     dist_in_site_packages,
+     dist_in_usersite,
+     get_distribution,
+@@ -447,7 +448,7 @@ class InstallRequirement(object):
+                         "lack sys.path precedence to {} in {}".format(
+                             existing_dist.project_name, existing_dist.location)
                      )
 -            else:
 +            elif dist_in_install_path(existing_dist):
-                 self.conflicts_with = existing_dist
-         return True
- 
-diff --git a/src/pip/_internal/resolve.py b/src/pip/_internal/resolve.py
-index 33f572f..88b68e1 100644
---- a/src/pip/_internal/resolve.py
-+++ b/src/pip/_internal/resolve.py
-@@ -20,7 +20,7 @@ from pip._internal.exceptions import (
- )
- from pip._internal.req.constructors import install_req_from_req_string
+                 self.should_reinstall = True
+         else:
+             if self.editable:
+diff --git a/src/pip/_internal/resolution/legacy/resolver.py b/src/pip/_internal/resolution/legacy/resolver.py
+index c9b4c66..ff361d8 100644
+--- a/src/pip/_internal/resolution/legacy/resolver.py
++++ b/src/pip/_internal/resolution/legacy/resolver.py
+@@ -34,6 +34,7 @@ from pip._internal.resolution.base import BaseResolver
+ from pip._internal.utils.compatibility_tags import get_supported
  from pip._internal.utils.logging import indent_log
--from pip._internal.utils.misc import dist_in_usersite, ensure_dir
-+from pip._internal.utils.misc import dist_in_install_path, dist_in_usersite, ensure_dir
- from pip._internal.utils.packaging import check_dist_requires_python
+ from pip._internal.utils.misc import dist_in_usersite, normalize_version_info
++from pip._internal.utils.misc import dist_in_install_path
+ from pip._internal.utils.packaging import check_requires_python, get_requires_python
  from pip._internal.utils.typing import MYPY_CHECK_RUNNING
  
-@@ -154,7 +154,9 @@ class Resolver(object):
+@@ -204,7 +205,9 @@ class Resolver(BaseResolver):
          """
          # Don't uninstall the conflict if doing a user install and the
          # conflict is not a user install.
@@ -53,24 +53,24 @@ index 33f572f..88b68e1 100644
 +        if ((not self.use_user_site
 +                or dist_in_usersite(req.satisfied_by))
 +                and dist_in_install_path(req.satisfied_by)):
-             req.conflicts_with = req.satisfied_by
+             req.should_reinstall = True
          req.satisfied_by = None
  
 diff --git a/src/pip/_internal/utils/misc.py b/src/pip/_internal/utils/misc.py
-index 84605ee..0e4ba93 100644
+index 24a7455..5fd48d3 100644
 --- a/src/pip/_internal/utils/misc.py
 +++ b/src/pip/_internal/utils/misc.py
-@@ -30,7 +30,7 @@ from pip._vendor.six.moves.urllib.parse import unquote as urllib_unquote
- from pip._internal.exceptions import CommandError, InstallationError
- from pip._internal.locations import (
-     running_under_virtualenv, site_packages, user_site, virtualenv_no_global,
--    write_delete_marker_file,
-+    write_delete_marker_file, distutils_scheme,
- )
- from pip._internal.utils.compat import (
-     WINDOWS, console_to_str, expanduser, stdlib_pkgs,
-@@ -355,6 +355,16 @@ def dist_in_site_packages(dist):
-     ).startswith(normalize_path(site_packages))
+@@ -31,7 +31,7 @@ from pip._vendor.six.moves.urllib.parse import unquote as urllib_unquote
+ 
+ from pip import __version__
+ from pip._internal.exceptions import CommandError
+-from pip._internal.locations import get_major_minor_version, site_packages, user_site
++from pip._internal.locations import distutils_scheme, get_major_minor_version, site_packages, user_site
+ from pip._internal.utils.compat import WINDOWS, expanduser, stdlib_pkgs, str_to_display
+ from pip._internal.utils.typing import MYPY_CHECK_RUNNING, cast
+ from pip._internal.utils.virtualenv import (
+@@ -406,6 +406,16 @@ def dist_in_site_packages(dist):
+     return dist_location(dist).startswith(normalize_path(site_packages))
  
  
 +def dist_in_install_path(dist):
@@ -86,3 +86,33 @@ index 84605ee..0e4ba93 100644
  def dist_is_editable(dist):
      # type: (Distribution) -> bool
      """
+--- a/src/pip/_internal/resolution/resolvelib/factory.py
++++ b/src/pip/_internal/resolution/resolvelib/factory.py
+@@ -1,3 +1,4 @@
+ import logging
++import sys
+ 
+ from pip._vendor.packaging.utils import canonicalize_name
+@@ -17,5 +18,7 @@
+     dist_in_usersite,
+     get_installed_distributions,
++    dist_location,
+ )
++from pip._internal.locations import distutils_scheme
+ from pip._internal.utils.typing import MYPY_CHECK_RUNNING
+ from pip._internal.utils.virtualenv import running_under_virtualenv
+@@ -313,4 +316,11 @@
+             return None
+ 
++        # Prevent uninstalling packages from /usr
++        if dist_location(dist) in (
++                distutils_scheme('', prefix=sys.base_prefix)['purelib'],
++                distutils_scheme('', prefix=sys.base_prefix)['platlib'],
++            ):
++            return None
++
+         # We're installing into global site. The current installation must
+         # be uninstalled, no matter it's in global or user site, because the
+-- 
+2.25.4
+

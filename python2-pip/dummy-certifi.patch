@@ -1,12 +1,35 @@
+From cf96ff346639d1b9f5efa3fd0976694e04df3f5f Mon Sep 17 00:00:00 2001
+From: Tomas Hrnciar <thrnciar@redhat.com>
+Date: Sun, 26 Apr 2020 21:38:44 +0200
+Subject: [PATCH] Dummy certifi patch
+
+---
+ src/pip/_vendor/certifi/core.py | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
 diff --git a/src/pip/_vendor/certifi/core.py b/src/pip/_vendor/certifi/core.py
-index 7271acf..9f0dc20 100644
+index 8987449..d174ced 100644
 --- a/src/pip/_vendor/certifi/core.py
 +++ b/src/pip/_vendor/certifi/core.py
-@@ -10,6 +10,4 @@ import os
+@@ -9,6 +9,7 @@ This module returns the installation location of cacert.pem or its contents.
+ import os
  
+ try:
++    raise ImportError  # force fallback
+     from importlib.resources import path as get_path, read_text
  
- def where():
--    f = os.path.dirname(__file__)
+     _CACERT_CTX = None
+@@ -51,9 +52,7 @@ except ImportError:
+     # If we don't have importlib.resources, then we will just do the old logic
+     # of assuming we're on the filesystem and munge the path directly.
+     def where():
+-        f = os.path.dirname(__file__)
 -
--    return os.path.join(f, 'cacert.pem')
-+    return '/etc/pki/tls/certs/ca-bundle.crt'
+-        return os.path.join(f, "cacert.pem")
++        return '/etc/pki/tls/certs/ca-bundle.crt'
+ 
+ 
+ def contents():
+-- 
+2.25.4
+

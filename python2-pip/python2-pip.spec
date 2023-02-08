@@ -9,8 +9,8 @@
 Name:           python2-%{srcname}
 # When updating, update the bundled libraries versions bellow!
 # You can use vendor_meta.sh in the dist git repo
-Version:        19.1.1
-Release:        9%{?dist}
+Version:        20.3.4
+Release:        1%{?dist}
 Summary:        A tool for installing and managing Python 2 packages
 
 # We bundle a lot of libraries with pip, which itself is under MIT license.
@@ -75,10 +75,19 @@ Patch3:         remove-existing-dist-only-if-path-conflicts.patch
 # https://bugzilla.redhat.com/show_bug.cgi?id=1655253
 Patch4:         dummy-certifi.patch
 
+# Don't warn the user about pip._internal.main() entrypoint
+# In Fedora, we use that in ensurepip and users cannot do anything about it,
+# this warning is juts moot. Also, the warning breaks CPython test suite.
+Patch5:         nowarn-pip._internal.main.patch
+
+# Don't warn the user about packaging's LegacyVersion being deprecated.
+# (This also breaks Python's test suite when warnings are treated as errors.)
+# Upstream issue: https://github.com/pypa/packaging/issues/368
+Patch6:         no-version-warning.patch
+
 # When virtualenv is not available, skip the tests instead of failing
 # Once we no longer ship or test python2-pip, remove this patch
-Patch5:         skip-virtualenv-tests.patch
-
+Patch7:         skip-virtualenv-tests.patch
 
 
 # Virtual provides for the packages bundled by pip.
@@ -251,6 +260,10 @@ ln -s %{buildroot}%{_bindir}/pip2 _bin/pip
 
 
 %changelog
+* Wed Feb 08 2023 Michal Ambroz <rebus _AT seznam.cz> - 20.3.4-1
+- Bump to 20.3.4 - version recommended by https://bootstrap.pypa.io/pip/2.7/get-pip.py
+- sync the patches for version 20.3.3 from Fedora python-pip
+
 * Fri Aug 30 2019 Miro Hrončok <mhroncok@redhat.com> - 19.1.1-9
 - Stop running tests at build time, reduce the build dependencies
 

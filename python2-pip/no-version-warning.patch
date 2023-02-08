@@ -1,0 +1,15 @@
+diff -rU3 pip-20.3-orig/src/pip/_vendor/packaging/version.py pip-20.3/src/pip/_vendor/packaging/version.py
+--- pip-20.3-orig/src/pip/_vendor/packaging/version.py	2020-11-30 12:58:32.000000000 +0100
++++ pip-20.3/src/pip/_vendor/packaging/version.py	2020-12-16 21:25:15.818221608 +0100
+@@ -124,11 +124,6 @@
+         self._version = str(version)
+         self._key = _legacy_cmpkey(self._version)
+ 
+-        warnings.warn(
+-            "Creating a LegacyVersion has been deprecated and will be "
+-            "removed in the next major release",
+-            DeprecationWarning,
+-        )
+ 
+     def __str__(self):
+         # type: () -> str
