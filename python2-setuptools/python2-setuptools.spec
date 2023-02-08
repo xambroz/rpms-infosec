@@ -1,6 +1,6 @@
 %global srcname setuptools
 
-%if 0%{?fedora} >= 28
+%if ( 0%{?fedora} >= 28 || 0%{?rhel} >= 7 )
 %global python2_pkgversion 2
 %else
 %global python2_pkgversion %{nil}
