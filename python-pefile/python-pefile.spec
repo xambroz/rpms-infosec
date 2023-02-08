@@ -1,6 +1,6 @@
 Name:           python-pefile
-Version:        2019.4.18
-Release:        2%{?dist}
+Version:        2023.2.7
+Release:        1%{?dist}
 Summary:        Python module for working with Portable Executable files
 License:        MIT
 URL:            https://github.com/erocarrera/pefile
@@ -23,93 +23,37 @@ Some of the tasks that pefile makes possible are:\
 * PEiD signature generation\
 
 
-
-#Source0:       https://github.com/erocarrera/%{srcname}/archive/v%{version}/%{srcname}-%{version}.tar.gz 
+#Source0:       https://github.com/erocarrera/%%{srcname}/archive/v%%{version}/%%{srcname}-%%{version}.tar.gz
 Source0:        https://github.com/erocarrera/%{srcname}/releases/download/v%{version}/%{srcname}-%{version}.tar.gz
 BuildArch:      noarch
 
-%bcond_with python2
-%bcond_with python3
-
-# Build also the python3 package
-%if 0%{?fedora} || ( 0%{?rhel} && 0%{?rhel} >= 7 ) || %{with python3}
-%global         with_python3    1
-%endif
-
-# Build also the python2 package
-%if %{with python2} || (0%{?fedora} && 0%{?fedora} <= 29 ) || ( 0%{?rhel} && 0%{?rhel} <= 7 )
-%global         with_python2    1
-%endif
-
-%if 0%{?with_python3}
 BuildRequires:  python%{python3_pkgversion}-devel
 BuildRequires:  python%{python3_pkgversion}-setuptools
-%endif # if with_python3
-
-%if 0%{?with_python2}
-BuildRequires:  python2-devel
-BuildRequires:  python2-setuptools
-%endif # if with_python2
 
 # For the patch
-# BuildRequires: git-core
+# BuildRequires: git-core 
 
 %description
 %{common_desc}
 
-
-
-%if 0%{?with_python3}
 %package -n python%{python3_pkgversion}-%{srcname}
-Summary:    %{summary}
+Summary:        %{summary}
 %{?python_provide:%python_provide python%{python3_pkgversion}-%{srcname}}
-Requires:   python3-future
+Requires:   python%{python3_pkgversion}-future
 
 %description -n python%{python3_pkgversion}-%{srcname}
 %{common_desc}
-%endif # if with_python3
-
-
-
-%if 0%{?with_python2}
-%package -n python2-%{srcname}
-Summary:    %{summary}
-%{?python_provide:%python_provide python2-%{srcname}}
-Requires:   python2-future
-
-%description -n python2-%{srcname}
-%{common_desc}
-%endif # if with_python2
-
 
 
 %prep
 %autosetup -n %{srcname}-%{version}
 sed -i -e '/^#!\//, 1d' pefile.py
 
-
-
 %build
-%if 0%{?with_python3}
 %py3_build
-%endif # with_python3
-
-%if 0%{?with_python2}
-%py2_build
-%endif # if with_python2
-
-
 
 %install
-%if 0%{?with_python3}
 %py3_install
-%endif # with_python3
-
-%if 0%{?with_python2}
-%py2_install
-%endif # if with_python2
-
-
 
 # check
 # regression tests in this package are based on binary blob of exe files - commercial and malware
@@ -117,28 +61,55 @@ sed -i -e '/^#!\//, 1d' pefile.py
 # More info on:
 # https://github.com/erocarrera/pefile/issues/171
 # https://github.com/erocarrera/pefile/issues/82#issuecomment-192018385
-# %{__python3} setup.py test
+# %%{__python3} setup.py test
 
-%if 0%{?with_python3}
 %files -n python%{python3_pkgversion}-%{srcname}
 %license LICENSE
 %doc README*
 %{python3_sitelib}/*
-%endif # with_python3
-
-%if 0%{?with_python2}
-%files -n python2-%{srcname}
-%license LICENSE
-%doc README*
-%{python2_sitelib}/*
-%endif # with_python2
-
-
 
 %changelog
-* Fri Sep 20 2019 Michal Ambroz <rebus _AT seznam.cz> - 2019.4.18-2
-- conditional for building python2 package
-- prepare for the EPEL build
+* Wed Feb 08 2023 Michal Ambroz <rebus _AT seznam.cz> - 2023.2.7-1
+- bump to version 2023.2.7
+
+* Fri Jan 20 2023 Fedora Release Engineering <releng@fedoraproject.org> - 2022.5.30-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_38_Mass_Rebuild
+
+* Fri Jul 22 2022 Fedora Release Engineering <releng@fedoraproject.org> - 2022.5.30-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_37_Mass_Rebuild
+
+* Thu Jun 23 2022 Michal Ambroz <rebus _AT seznam.cz> - 2022.5.30-1
+- bump to version 2022.5.30
+
+* Mon Jun 13 2022 Python Maint <python-maint@redhat.com> - 2021.9.3-2
+- Rebuilt for Python 3.11
+
+* Thu Feb 17 2022 Michal Ambroz <rebus _AT seznam.cz> - 2021.9.3-1
+- bump to version 2021.9.3
+
+* Fri Jan 21 2022 Fedora Release Engineering <releng@fedoraproject.org> - 2021.5.13-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
+
+* Fri Jul 23 2021 Fedora Release Engineering <releng@fedoraproject.org> - 2021.5.13-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
+
+* Fri Jun 04 2021 Python Maint <python-maint@redhat.com> - 2021.5.13-2
+- Rebuilt for Python 3.10
+
+* Thu May 13 2021 Michal Ambroz <rebus _AT seznam.cz> - 2021.5.13-1
+- bump to version 2021.5.13
+
+* Wed Jan 27 2021 Fedora Release Engineering <releng@fedoraproject.org> - 2019.4.18-5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
+
+* Wed Jul 29 2020 Fedora Release Engineering <releng@fedoraproject.org> - 2019.4.18-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
+
+* Tue May 26 2020 Miro Hrončok <mhroncok@redhat.com> - 2019.4.18-3
+- Rebuilt for Python 3.9
+
+* Thu Jan 30 2020 Fedora Release Engineering <releng@fedoraproject.org> - 2019.4.18-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
 
 * Fri Sep 20 2019 Michal Ambroz <rebus _AT seznam.cz> - 2019.4.18-1
 - bump to version 2019.4.18
