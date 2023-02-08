@@ -40,6 +40,9 @@ Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{nam
 #Build_release
 %endif
 
+# Include the shared directories for symbols and plugins in the search path
+Patch0:         %{name}-%{version}-paths.patch
+
 
 BuildArch:      noarch
 
@@ -95,7 +98,7 @@ Requires:     python%{python3_pkgversion}dist(capstone)
 
 
 %prep
-%autosetup -n %{gitname}-%{upstream_version}
+%autosetup -n %{gitname}-%{upstream_version} -p 1
 
 
 
@@ -107,14 +110,14 @@ Requires:     python%{python3_pkgversion}dist(capstone)
 %install
 %py3_install
 # highlevel importable module only used to develop volatility itself
-# rm -r %{buildroot}%{python3_sitelib}/development
+# rm -r %%{buildroot}%%{python3_sitelib}/development
 
 mv %{buildroot}%{_bindir}/vol{,3}
 mv %{buildroot}%{_bindir}/volshell{,3}
 ln -s vol3 %{buildroot}%{_bindir}/volatility3
 ln -s volshell3 %{buildroot}%{_bindir}/volshell
 
-# Replace pytho2-volatility on fc32+
+# serve default commands vol/volatility on fc32+ formerly provided by pytho2-volatility 
 %if 0%{?fedora} >= 32
 ln -s vol3 %{buildroot}%{_bindir}/vol
 ln -s volatility3 %{buildroot}%{_bindir}/volatility
@@ -126,9 +129,17 @@ ln -s volatility3 %{buildroot}%{_bindir}/volatility
 [ -d %{buildroot}%{python3_sitelib}/test/ ] &&
     rm -rf %{buildroot}%{python3_sitelib}/test
 
+mkdir -p %{buildroot}%{_datadir}/volatility3
+mkdir -p %{buildroot}%{_datadir}/volatility3/plugins
+mkdir -p %{buildroot}%{_datadir}/volatility3/symbols
+
+
 %files -n python%{python3_pkgversion}-%{gitname}
 %license LICENSE.txt
 %doc README.md doc
+%dir %{_datadir}/volatility3
+%dir %{_datadir}/volatility3/plugins
+%dir %{_datadir}/volatility3/symbols
 %{_bindir}/vol3
 %{_bindir}/volatility3
 %{_bindir}/volshell3
@@ -163,7 +174,7 @@ ln -s volatility3 %{buildroot}%{_bindir}/volatility
 - expected final release 2020-08
 - always rename to ~3 to allow users to run side by side volatility2
   as migration of other plugins and utilities might take longer
-- use %{python3_pkgversion} to make package compatible with EPEL
+- use python3_pkgversion to make package compatible with EPEL
 
 * Fri Oct 25 2019 Miro Hrončok <mhroncok@redhat.com> - 1.0.0~beta.1-1
 - Initial package
