@@ -1,0 +1,27 @@
+diff --git a/tests/lib/venv.py b/tests/lib/venv.py
+index 6b63391..126db5b 100644
+--- a/tests/lib/venv.py
++++ b/tests/lib/venv.py
+@@ -4,8 +4,12 @@ import compileall
+ import sys
+ import textwrap
+ 
++import pytest
+ import six
+-import virtualenv as _virtualenv
++try:
++    import virtualenv as _virtualenv
++except ImportError:
++    _virtualenv = None
+ 
+ from .path import Path
+ 
+@@ -20,6 +24,8 @@ class VirtualEnvironment(object):
+     """
+ 
+     def __init__(self, location, template=None, venv_type=None):
++        if _virtualenv is None:
++            pytest.skip('virtualenv not available')
+         assert template is None or venv_type is None
+         assert venv_type in (None, 'virtualenv', 'venv')
+         self.location = Path(location)
