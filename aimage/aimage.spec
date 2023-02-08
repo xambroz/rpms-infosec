@@ -20,6 +20,9 @@ BuildRequires:  automake
 BuildRequires:  make
 BuildRequires:  gcc-c++
 BuildRequires:  afflib-devel >= 3.3.7
+BuildRequires:  ncurses-devel
+BuildRequires:  zlib-devel
+BuildRequires:  readline-devel
 BuildRequires:  expat-devel
 BuildRequires:  openssl-devel
 
@@ -33,8 +36,12 @@ As it was once favourite imaging tool for MacOS, source can be still
 downloaded from the macports repositories.
 
 %prep
-%setup -q
+%autosetup
+sed -i -e 's/ssl3_new/OPENSSL_init_ssl/g;' configure.ac
+aclocal
 automake --add-missing
+autoreconf
+autoupdate
 autoreconf
 
 %build
