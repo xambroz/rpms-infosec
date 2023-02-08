@@ -1,0 +1,72 @@
+From 9a3e6e46fee2c85e2e1b1489d5885f895d19f3e3 Mon Sep 17 00:00:00 2001
+From: Michal Ambroz <723625+xambroz@users.noreply.github.com>
+Date: Wed, 8 Feb 2023 00:37:14 +0100
+Subject: [PATCH 1/2] Allow building from custom sources
+
+Change the default definition of the KDIR from being just a prefix to full path to the kernel headers allows to override this value and compile the module using arbitrary location of the kernel headers or full source code.
+
+Added also some common usage examples in the comment.
+
+Adding the PREFIX variable might serve the original prefix purpose of the KDIR if somebody needs such functionality in some mass module rebuilding scripts
+---
+ tools/linux/Makefile | 19 +++++++++++++++++--
+ 1 file changed, 17 insertions(+), 2 deletions(-)
+
+diff --git a/tools/linux/Makefile b/tools/linux/Makefile
+index c0d9e52e2..bf657c864 100644
+--- a/tools/linux/Makefile
++++ b/tools/linux/Makefile
+@@ -1,13 +1,28 @@
+ obj-m += module.o
+-KDIR ?= /
+ KVER ?= $(shell uname -r)
++KDIR ?= /lib/modules/$(KVER)/build
++PREFIX ?= /
++
++# Example                                                                                                                                                                                                          
++# Make module for currently running kernel:                                                                                                                                                                        
++#     make                                                                                                                                                                                                         
++#                                                                                                                                                                                                                  
++# Make module for other kernel installed locally.                                                                                                                                                                  
++#     make KVER=3.10.0-862.14.4.el7.x86_64                                                                                                                                                                         
++#                                                                                                                                                                                                                  
++# Make module for kernel which is not installed, but are installed kernel headers from kernel-devel                                                                                                                 
++#     make KVER=3.10.0-862.14.4.el7.x86_64 KDIR=/usr/src/kernels/3.10.0-862.14.4.el7.x86_64                                                                                                                        
++#                                                                                                                                                                                                                  
++# Make module for custom kernel source                                                                                                                                                                             
++#     make KVER=6.1.0-orion  KDIR=/home/example/src/kernel-6.1.0                                                                                                                                                   
++#                                                       
+ 
+ -include version.mk
+ 
+ all: dwarf 
+ 
+ dwarf: module.c
+-	$(MAKE) -C $(KDIR)/lib/modules/$(KVER)/build CONFIG_DEBUG_INFO=y M="$(PWD)" modules
++	$(MAKE) V=1 -C $(KDIR) CONFIG_DEBUG_INFO=y M="$(PWD)" modules
+ 	dwarfdump -di module.ko > module.dwarf
+ 	$(MAKE) -C $(KDIR)/lib/modules/$(KVER)/build M="$(PWD)" clean
+ 
+
+From b00b6e66edfe2b80d94fabba82613e38f327bc88 Mon Sep 17 00:00:00 2001
+From: Michal Ambroz <723625+xambroz@users.noreply.github.com>
+Date: Wed, 8 Feb 2023 03:01:47 +0100
+Subject: [PATCH 2/2] Do not clean the module.ko straight away
+
+Leaving the module.ko allows for manual inspection for example using modinfo and possibly even copying to the remote system and trying to load the module in order to confirm it is compiled with the right kernel release string and symbols
+---
+ tools/linux/Makefile | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/tools/linux/Makefile b/tools/linux/Makefile
+index bf657c864..9a487e06e 100644
+--- a/tools/linux/Makefile
++++ b/tools/linux/Makefile
+@@ -24,7 +24,6 @@ all: dwarf
+ dwarf: module.c
+ 	$(MAKE) V=1 -C $(KDIR) CONFIG_DEBUG_INFO=y M="$(PWD)" modules
+ 	dwarfdump -di module.ko > module.dwarf
+-	$(MAKE) -C $(KDIR)/lib/modules/$(KVER)/build M="$(PWD)" clean
+ 
+ clean:
+ 	$(MAKE) -C $(KDIR)/lib/modules/$(KVER)/build M="$(PWD)" clean

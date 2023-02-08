@@ -1,5 +1,5 @@
 #!/usr/bin/bash
-# Copyright (c) 2019 Michal Ambroz <rebus _AT seznam.cz>
+# Copyright (c) 2023 Michal Ambroz <rebus _AT seznam.cz>
 #
 # This file is distributed with same license as Volatility.
 #
@@ -15,17 +15,53 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with Volatility.  If not, see <http://www.gnu.org/licenses/>.
-#
+# =======
+# Info:
+# https://github.com/volatilityfoundation/volatility/wiki/Linux#Linux-Profiles
+# https://github.com/volatilityfoundation/profiles
 
-TOOLSDIR=/usr/share/python-volatility/tools/linux
-PROFILEDIR=/usr/lib/python2.7/site-packages/volatility/plugins/overlays/linux
+# Exit on errors
+set -e
+
+# Define the default values if not already in environment variables
+DEFTOOLSDIR=/usr/share/python-volatility/tools/linux
+TOOLSDIR=${TOOLSDIR:-${DEFTOOLSDIR}}
+DEFPROFILE=/usr/lib/python2.7/site-packages/volatility/plugins/overlays/linux
+PROFILEDIR=${PROFILEDIR:-${DEFPROFILE}}
 
 
-OSNAME=$(grep "^NAME=" /etc/os-release | cut -d "=" -f 2 | sed -e 's/"//g;')
-OSVER=$(grep "^VERSION_ID=" /etc/os-release  | cut -d "=" -f 2 | sed -e 's/"//g;')
-KERNEL=$(uname -r)
+OSNAME=${OSNAME:-$(grep "^ID=" /etc/os-release | cut -d "=" -f 2 | sed -e 's/"//g;')}
+OSVER=${OSVER:-$(grep "^VERSION_ID=" /etc/os-release  | cut -d "=" -f 2 | sed -e 's/"//g;')}
+KVER=${KVER:-$(uname -r)}
+KDIR=${KDIR:-/lib/modules/${KVER}/build}
+ZIPNAME=${IPNAME:-"${OSNAME}_${OSVER}-${KVER}.zip"}
 
-ZIPNAME="${OSNAME}_${OSVER}-${KERNEL}.zip"
+
+if [ "x$SYSMAP" = "x" ] ; then
+	if [ -r "/boot/System.map-${KVER}" ] ; then
+		# by default try taking the Sysmap from /boot if readable (normally readable only to root)
+		SYSMAP="/boot/System.map-${KVER}"
+	else
+		# or take the one from kernel-devel, it should be readable to anyone
+		echo "==== WARNING: prefered System.map from /boot not readable"
+		echo "	file /boot/System.map-${KVER} not readable"
+                echo "	taking the System.map from kernel-devel package insted (same for unmodified kernels)"
+                echo "	make sure it is the right file for the specified kernel"
+		SYSMAP="${KDIR}/System.map"
+	fi
+fi			
+
+
+echo -e "\n==== Building volatility kernel profile:"
+echo "export OSNAME=$OSNAME"
+echo "export OSVER=$OSVER"
+echo "export KVER=$KVER"
+echo "export KDIR=$KDIR"
+echo "export SYSMAP=$SYSMAP"
+echo "export PROFILEDIR=$PROFILEDIR"
+echo "export ZIPNAME=$ZIPNAME"
+
+
 
 if [ "x$1" = "x--help" ] ; then
 	echo "Syntax:      $0"
@@ -33,35 +69,115 @@ if [ "x$1" = "x--help" ] ; then
 	echo "             Profile will be stored to directory $PROFILEDIR"
 	echo ""
 	echo "Dependencies: dwarfdump(libdwarf-tools), libdwarf, elfutils-libelf, kernel-headers, make, gcc"
+	echo "Examples:"
+	echo "	# generate profile for the current running kernel on current machine (as root), requires kernel-devel-$KVER"
+	echo -e "	$0\n"
+	echo "	# generate profile for different kernel installed in /boot of current machine (as root), requires kernel-devel-3.10.0-1160.59.1"
+	echo "	KVER=3.10.0-1160.59.1 $0\n"
+	echo "	# Build for custom kernel version as normal user in current directory, relevant kernel headers required in KDIR"
+	echo "	# in case of changing .config, full kernel source is needed in that directory"
+        echo "  PROFILEDIR=./ KVER=6.0.1 KDIR=./src/kernel-6.0.1 SYSMAP=./System.map-6.0.1 $0"
+	
 	exit 0
 fi
 
 
 DWARFDUMP=$(command -v dwarfdump 2>/dev/null)
 if [ "$DWARFDUMP" = "" ] ; then
-	echo "==== ERROR: tool dwarfdump is not installed. Please install the libdwarf-tools package."
+	echo -e "\n==== ERROR: tool dwarfdump is not installed. Please install the libdwarf-tools package."
 	exit 1
 fi
 
 MYID=$(id -u)
 if [ "$MYID" -ne 0 ] ; then
-	echo -e "==== ERROR: Needs to run as root to be able to read the '/boot/System.map-${KERNEL}' of the current kernel and write the profile to: \n '${PROFILEDIR}/${ZIPNAME}'"
-	exit 1
+	echo -e "\n==== WARNING: Not running as root. "
+        echo "	Root identity needed to read the System.map from /boot "
+	echo "	and write the default profile path"
+fi
+
+if [ ! -f "$SYSMAP" -o ! -r "$SYSMAP" ] ; then
+	echo -e "\n==== ERROR: The SYSMAP file is not readable or doesn't exist"
+        echo "	SYSMAP=$SYSMAP"
+        echo "	possibly make local copy and override the SYSMAP variable"
+        echo "	example:"
+	echo "	SYSMAP=./somefile.map $0"
+	exit 2
+fi
+
+if [ ! -d "$PROFILEDIR" -o ! -w "$PROFILEDIR" ] ; then
+	echo -e "\n==== ERROR: the PROFILEDIR directory desn't exist or is not writable"
+	echo "	PROFILEDIR=$PROFILEDIR"
+        echo "	possibly override the variable with some available directory"
+        echo "	example:"
+	echo "	PROFILEDIR=/tmp $0"
+	exit 3
+fi
+
+if [ ! -d "$KDIR" -o ! -r "$KDIR" ] ; then
+	echo -e "\n==== ERROR: the KDIR directory doesn't exist or is not readable"
+        echo "	KDIR=$KDIR"
+        echo "	probably the kernel-devel-$KVER is not installed"
+        echo "	possibly override the variable KDIR with directory of relevant kernel headers"
+        echo "	example:"
+        echo "	KDIR=./mykernelsource $0"
+	exit 4
 fi
 
 TEMPDIR=$(mktemp -d)
 if [ ! -d "$TEMPDIR" ] ; then
-        echo "==== ERROR: failed to create temporary directory"
-        exit 1
+        echo -e "\n==== ERROR: failed to create temporary directory"
+        exit 5
 fi
 
+
+# Use absolute path
+# PROFILEDIR=$(realpath "$PROFILEDIR")
+PROFILEDIR="$(cd "$PROFILEDIR"; pwd)"
+
+echo -e "\n==== Copy the module and System.map to temporary directory"
 cp "${TOOLSDIR}/Makefile" "${TOOLSDIR}/module.c" "${TEMPDIR}/"
-pushd "${TEMPDIR}" || exit 1
+mkdir -p "${TEMPDIR}/boot"
+cp -p "$SYSMAP" "${TEMPDIR}/boot/System.map-${KVER}"
+pushd "${TEMPDIR}" > /dev/null || exit 1
 
-make
+echo -e "\n==== make the kernel module ===================================="
+# do not rely on patched/unpatched Makefile from volatility
+# make KVER=$KVER KDIR=$KDIR
+# Use the kernel makefile directly
+make V=1 -C "$KDIR" CONFIG_DEBUG_INFO=y M="$PWD" modules
+dwarfdump -di ./module.o > module.dwarf
 
-echo zip "${PROFILEDIR}/${ZIPNAME}" module.dwarf "/boot/System.map-${KERNEL}"
-zip "${PROFILEDIR}/${ZIPNAME}" module.dwarf "/boot/System.map-${KERNEL}"
+echo -e "\n==== check the module properties with modinfo"
+MODINFO=$(modinfo module.ko)
+VERMAGIC=$(echo "$MODINFO" | grep vermagic: | awk '{print $2}')
 
-popd || exit 1
-rm -rf "$TEMPDIR"
+echo "$MODINFO"
+
+if [ "$KVER" != "$VERMAGIC" ] ; then
+	echo "==== ERROR: Versions do not match"
+	echo "	provided kernel version and version compiled to module do not match"
+	echo "	KVER=$KVER"
+	echo "	VERMAGIG=$VERMAGIC"
+	echo "	KDIR=$KDIR"
+	echo -e "\n\tplease make sure that used KDIR is:"
+	echo "		- relevant to the desired KVER"
+	echo "		- loaded with relevant .config"
+	echo "		- having System.map and Module.symvers from desired KVER kernel"
+	echo "		- .config having CONFIG_LOCALVERSION=$KVER"
+	
+	exit 6
+fi
+
+echo -e "\n==== packing the profile to ZIP"
+echo zip "${PROFILEDIR}/${ZIPNAME}" module.dwarf "boot/System.map-${KVER}"
+zip "${PROFILEDIR}/${ZIPNAME}" module.dwarf "boot/System.map-${KVER}"
+
+popd > /dev/null || exit 1
+/usr/bin/rm -rf "$TEMPDIR"
+
+if [ -f "${PROFILEDIR}/${ZIPNAME}" ] ; then
+	echo -e "\n==== Volatility profile generated to:"
+	echo "${PROFILEDIR}/${ZIPNAME}"
+fi
+
+

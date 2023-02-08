@@ -34,6 +34,11 @@ Source2:        volatility.1
 # Migrate from pyCrypto to Cryptodome as request of https://pagure.io/fesco/issue/2247
 Patch1:         volatility-cryptodome.patch
 
+# Allow building of the volatility profile from custom path of the kernel headers
+# Reported upstream as https://github.com/volatilityfoundation/volatility/pull/839
+Patch2:         https://github.com/volatilityfoundation/volatility/pull/839.patch#/volatility-profile-kernel-path.patch
+
+
 
 BuildArch:      noarch
 BuildRequires:  python2-devel
