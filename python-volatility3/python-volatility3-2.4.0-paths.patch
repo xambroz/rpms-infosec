@@ -1,0 +1,18 @@
+diff -ru volatility3-2.4.0/volatility3/framework/constants/__init__.py volatility3-2.4.0.new/volatility3/framework/constants/__init__.py
+--- volatility3-2.4.0/volatility3/framework/constants/__init__.py	2022-12-14 20:39:11.000000000 +0100
++++ volatility3-2.4.0.new/volatility3/framework/constants/__init__.py	2023-02-08 12:44:48.443723766 +0100
+@@ -15,12 +15,14 @@
+ import volatility3.framework.constants.windows
+ 
+ PLUGINS_PATH = [
++    "/usr/share/volatility3/plugins",
+     os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "plugins")),
+     os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "plugins"))
+ ]
+ """Default list of paths to load plugins from (volatility3/plugins and volatility3/framework/plugins)"""
+ 
+ SYMBOL_BASEPATHS = [
++    "/usr/share/volatility3/symbols",
+     os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "symbols")),
+     os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "symbols"))
+ ]
