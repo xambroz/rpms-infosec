@@ -1693,7 +1693,7 @@ CheckPython \
 %endif
 
 
-#files devel
+%files devel
 %{_libdir}/pkgconfig/python-%{pybasever}.pc
 %{_libdir}/pkgconfig/python2.pc
 %{pylibdir}/config/
