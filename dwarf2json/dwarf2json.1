@@ -1,0 +1,96 @@
+.TH DWARF2JSON: "1" "February 2023" "dwarf2json version 20230208gitc306d11" "User Commands"
+.SH NAME
+dwarf2json - generate Volatility3 Intermediate Symbol File (ISF) JSON output
+.SH SYNOPSIS
+.B dwarf2json
+\fI\,linux|mac \/\fR[\fI\,OPTIONS\/\fR]
+.SH DESCRIPTION
+The dwarf2json is a Go utility that processes files containing symbol and type
+information to generate Volatility3 Intermediate Symbol File (ISF) JSON output
+suitable for Linux and macOS analysis.
+.TP
+The user is able to select whether to include symbol, type, or both for each input file.
+.SH COMMANDS
+.TP
+.B linux
+generate ISF for Linux analysis
+.TP
+.B mac
+generate ISF for macOS analysis
+
+.SH OPTIONS
+.B dwarf2json
+\fI\,linux \/\fR[\fI\,OPTIONS\/\fR]
+.TP
+\fB\-\-elf\fR PATH
+ELF file PATH to extract symbol and type information
+.TP
+\fB\-\-elf\-symbols\fR PATH
+ELF file PATH to extract only symbol information
+.TP
+\fB\-\-elf\-types\fR PATH
+ELF file PATH to extract only type information
+.TP
+\fB\-\-system\-map\fR PATH
+System.Map file PATH to extract symbol information
+.PP
+
+.B dwarf2json
+\fI\,mac \/\fR[\fI\,OPTIONS\/\fR]
+.TP
+\fB\-\-arch\fR NAME
+architecture for universal FAT files. NAME is one of {i386|x86_64}
+.TP
+\fB\-\-macho\fR PATH
+Mach\-O file PATH to extract symbol and type information
+.TP
+\fB\-\-macho\-symbols\fR PATH
+Mach\-O file PATH to extract only symbol information
+.TP
+\fB\-\-macho\-types\fR PATH
+Mach\-O file PATH to extract only type information
+.PP
+.PP
+
+.SH EXAMPLES
+Linux - include symbols and types for a given Linux kernel DWARF file can be done with:
+.TP
+  $ ./dwarf2json linux --elf /usr/lib/debug/boot/vmlinux-4.4.0-137-generic > output.json
+Symbol offsets for symbols extracted from symbol table information take precedence over those extracted from DWARF information. Thus, symbols extracted from files specified with --elf-symbols flag take precedence over symbols extracted from files specified with --elf. Symbol offsets for symbols from System.Map, specified with --system-map flag, are the highest precedence. If there is a conflict between the different symbol information sources, the offset from System.Map will be used.
+
+Providing multiple input files for a given flag is allowed. For example, ./dwarf2json --elf file1 --elf file2 ... would process both file1 and file2. When conflicting symbol or type information is encountered, the data from the last file specified in the command invocation would take precedence.
+
+
+
+MacOS - include symbols and types for a given macOS kernel DWARF file and symbols
+from a macOS kernel can be done with:
+.TP
+$ ./dwarf2json mac --macho /path/kernel.dSYM/Contents/Resources/DWARF/kernel
+--macho-symbols /path/kernel > output.json
+.TP
+Symbol offsets for symbols extracted from symbol table information take precedence
+over those extracted from DWARF information. Thus, symbols extracted from files
+specified with
+\fB\-\-macho\-symbols\fR
+flag take precedence over symbols extracted from files specified with
+\fB\-\-macho\fR
+.
+.TP
+Providing multiple input files for a given flag is allowed. For example:
+.TP
+$ ./dwarf2json --macho file1 --macho file2
+.TP
+... would process both file1 and file2. When conflicting symbol or type information
+is encountered, the data from the last file specified in the command invocation
+would take precedence.
+
+.TP
+When processing Mach-O universal FAT binaries, the
+\fB\-\-arch\fR flag needs to be used to select the architecture for one of the embedded Mach-O files.
+
+.TP
+For example, generating ISF JSON file for i386 architecture of a OS X 10.7 kernel debug kit can be done with:
+.TP
+$ ./dwarf2json mac --arch i386
+--macho mach_kernel.dSYM/Contents/Resources/DWARF/mach_kernel
+--macho-symbols mach_kernel > mach_kernel.json
