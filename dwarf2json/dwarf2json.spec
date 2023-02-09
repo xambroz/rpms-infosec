@@ -6,7 +6,9 @@
 %global commit          c306d1132f014dc882ffc0ad22e97764bae49451
 
 # ExclusiveArch to %%golang_arches_future and thus excludes the package from %%ix86. 
+%if ! 0%{?rhel}
 %gometa -f
+%endif
 
 %global common_description %{expand:
 The dwarf2json is a Go utility that processes files containing symbol and
