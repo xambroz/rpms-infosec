@@ -1,5 +1,5 @@
 Name:           dcfldd
-Version:        1.8
+Version:        1.9
 Release:        1%{?dist}
 Summary:        Improved dd, useful for forensics and security
 
@@ -60,6 +60,12 @@ autoreconf -i
 %{_bindir}/dcfldd
 
 %changelog
+* Thu Feb 09 2023 Michal Ambroz <rebus at, seznam.cz> - 1.9-1
+- bump to 1.9
+
+* Thu Jan 19 2023 Fedora Release Engineering <releng@fedoraproject.org> - 1.8-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_38_Mass_Rebuild
+
 * Sat Oct 22 2022 Michal Ambroz <rebus at, seznam.cz> - 1.8-1
 - bump to 1.8
 
