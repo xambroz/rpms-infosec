@@ -21,7 +21,7 @@ JSON output suitable for Linux and macOS analysis.
 
 Name:           dwarf2json
 Version:        0
-Release:        %autorelease -p
+Release:        0.1%{?dist}
 Summary:        Convert ELF/DWARF symbol and type information into vol3's intermediate JSON
 
 # https://lists.fedoraproject.org/archives/list/legal@lists.fedoraproject.org/thread/OHECHDPLDJ7LLFUZXQMBBAXEXYTQMXOR/
