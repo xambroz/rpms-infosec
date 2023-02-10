@@ -16,28 +16,22 @@ URL:            https://VirusTotal.github.io/yara/
 
 %global         gituser         VirusTotal
 %global         gitname         yara
-# Commit of version 4.3.0rc1
-%global         commit          8b8384d15fc5358cee449d88070cc9c8be9ec4ce
+%global         gitdate         20230208
+# Commit of version 4.3.0rc1 + fixes
+%global         commit          32ae80d5368bcf214f278965b047112e4565ea83
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
-# Build from git commit baseline
-#Source0:       https://github.com/%%{gituser}/%%{gitname}/archive/%%{commit}/%%{name}-%%{version}-%%{shortcommit}.tar.gz
 # Build from git release version
 # Source0:        https://github.com/%%{gituser}/%%{gitname}/archive/v%%{version}.tar.gz#/%%{name}-%%{version}.tar.gz
-Source0:        https://github.com/%{gituser}/%{gitname}/archive/v%{upversion}.tar.gz#/%{name}-%{upversion}.tar.gz
+# Source0:        https://github.com/%%{gituser}/%%{gitname}/archive/v%%{upversion}.tar.gz#/%%{name}-%%{upversion}.tar.gz
+# Build from git commit baseline
+Source0:       https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 
 
 # Use default sphix theme to generate documentation rather than sphinx_rtd_theme
 # to avoid static installation of font files on fedora >= 24
 Patch1:         yara-docs-theme.patch
-
-# https://github.com/VirusTotal/yara/commit/90c43e24f0dedd130bea199e6c23094271c3f491
-# test-pe fails on s390x
-Patch2:         https://github.com/VirusTotal/yara/commit/90c43e24f0dedd130bea199e6c23094271c3f491.patch#/yara-4.3.0-test-pe-s390x.patch
-Patch3:         https://github.com/VirusTotal/yara/commit/d1a6ef20c049d86a136111dce53b4eb65c4df1bd.patch#/yara-4.3.0-test-pe2-s390x.patch
-Patch4:         https://github.com/VirusTotal/yara/commit/32ae80d5368bcf214f278965b047112e4565ea83.patch#/yara-4.3.0-test-elf-s390x.patch
-Patch5:         https://github.com/VirusTotal/yara/commit/32ae80d5368bcf214f278965b047112e4565ea83.patch#/yara-4.3.0-test-dotnet-s390x.patch
 
 
 BuildRequires:  git
@@ -98,8 +92,8 @@ developing applications that use %{name}.
 
 
 %prep
-# autosetup -n %%{gitname}-%%{commit} -p 1 -S git
-%autosetup -n %{gitname}-%{upversion} -p 1 -S git
+%autosetup -n %%{gitname}-%%{commit} -p 1 -S git
+# autosetup -n %{gitname}-%{upversion} -p 1 -S git
 autoreconf --force --install
 
 
