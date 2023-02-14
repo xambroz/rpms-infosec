@@ -35,13 +35,21 @@ Requires:       bc
 
 
 %description
-ddrescue is a utility similar to the system utility "dd" which copies
-data from a file or block device to another. ddrescue does however
+The dd_rescue is a utility similar to the system utility "dd" which copies
+data from a file or block device to another. The dd_rescue does however
 not abort on errors in the input file. This makes it suitable for
 rescuing data from media with errors, e.g. a disk with bad sectors.
 
-This package includes dd_rhelp, a wrapper script facilitating data
-recovery.
+This package includes dd_rhelp wrapper script facilitating data
+recovery. It is trying to make it so simple to recover as:
+dd_rhelp source target
+
+Please note Fedora ships also GNU ddrescue, which probably gives
+faster and more reliable results rescuing whole disks.
+But still there might be some niche pattern of bad sectors,
+which might get better covered by dd_rescue and both tools
+might be used with sub-sequent runs cooperatively on the same disk image.
+
 
 %prep
 gpgv2 --keyring %{SOURCE3} %{SOURCE2} %{SOURCE0}
