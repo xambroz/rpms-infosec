@@ -34,6 +34,7 @@ Source2:        gpgkey-297AD21CF86C948081520C1805C027FD4BDC136E.gpg
 
 BuildRequires:  gcc
 BuildRequires:  make
+BuildRequires:  gnupg2
 
 %description
 John the Ripper is a fast password cracker (password security auditing
