@@ -10,10 +10,27 @@ License:        GPLv2
 Source0:        https://www.openwall.com/john/k/john-%{version}.tar.xz
 Source1:        https://www.openwall.com/john/k/john-%{version}.tar.xz.sign
 
-# Extra charsets - not needed anymore, part of 1.9.0 core release
-# %%global       extra_date 20130529
-# Source2:      https://www.openwall.com/john/j/john-extra-%%{extra_date}.tar.xz
-# Source3:      https://www.openwall.com/john/j/john-extra-%%{extra_date}.tar.xz.sign
+# The authenticator public key obtained from https://www.openwall.com/signatures/
+# https://www.openwall.com/signatures/openwall-offline-signatures.asc
+# gpg --keyid-format long --list-options show-keyring  openwall-offline-signatures.asc
+# it's ID 05C027FD4BDC136E resp. 297AD21CF86C948081520C1805C027FD4BDC136E
+# uid "Openwall offline signing key"
+#
+# Compared to public records of pgp.mit.edu
+# gpg2 --keyserver pgp.mit.edu --search-key 05C027FD4BDC136E
+# gpg2 --keyserver pgp.mit.edu --search-key 297AD21CF86C948081520C1805C027FD4BDC136E
+# gpg2 --list-public-keys 297AD21CF86C948081520C1805C027FD4BDC136E
+#
+# Verified manually signature on tarball
+# gpg --verify john-1.9.0.tar.xz.sign john-1.9.0.tar.xz
+# OK
+#
+# gpg2 -vv john-1.9.0.tar.xz.sign
+# Signed by 05C027FD4BDC136E which belongs to "Openwall offline signing key"
+# gpg2 --export --export-options export-minimal 297AD21CF86C948081520C1805C027FD4BDC136E > gpgkey-297AD21CF86C948081520C1805C027FD4BDC136E.gpg
+Source2:        gpgkey-297AD21CF86C948081520C1805C027FD4BDC136E.gpg
+
+
 
 BuildRequires:  gcc
 BuildRequires:  make
@@ -25,6 +42,8 @@ of other hash types are supported as well.
 
 
 %prep
+#check signature
+%{gpgverify} --keyring='%{SOURCE2}' --signature='%{SOURCE1}' --data='%{SOURCE0}'
 %setup -q
 
 chmod 0644 doc/*
@@ -151,11 +170,17 @@ rm doc/INSTALL
 %endif
 
 %changelog
-* Fri Dec 16 2022 Michal Ambroz <rebus _AT seznam.cz> - 1.9.0-2
+* Tue Feb 14 2023 Michal Ambroz <rebus _AT seznam.cz> - 1.9.0-3
+- add signature verification
+
+* Tue Feb 14 2023 Michal Ambroz <rebus _AT seznam.cz> - 1.9.0-2
 - use cpu/omp fallback chaining for binaries
 
-* Fri Dec 16 2022 Michal Ambroz <rebus _AT seznam.cz> - 1.9.0-1
+* Tue Feb 14 2023 Michal Ambroz <rebus _AT seznam.cz> - 1.9.0-1
 - bump to version 1.9.0
+
+* Thu Jan 19 2023 Fedora Release Engineering <releng@fedoraproject.org> - 1.8.0-22
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_38_Mass_Rebuild
 
 * Thu Jul 21 2022 Fedora Release Engineering <releng@fedoraproject.org> - 1.8.0-21
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_37_Mass_Rebuild
