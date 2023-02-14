@@ -13,6 +13,9 @@ Source2:        http://www.garloff.de/kurt/linux/ddrescue/dd_rescue-%{version}.t
 #               Public key obtained from http://www.garloff.de/kurt/garloff.pub.asc
 Source3:        gpgkey-6669F7340D31E95EC5565490DE4F1B3A2BFFC5BF.gpg
 
+# Fix the dd_rescue version detection in dd_help
+Patch0:         dd_rescue-rhelp_version.patch
+
 BuildRequires:  autoconf
 # We require aclocal which is shipped with automake
 BuildRequires:  automake
@@ -22,7 +25,6 @@ BuildRequires:  lzo-devel
 BuildRequires:  make
 
 # Shell script dd_rhelp requires several other things to run
-Requires:       cat
 Requires:       grep
 Requires:       sed
 Requires:       coreutils
@@ -45,6 +47,7 @@ recovery.
 gpgv2 --keyring %{SOURCE3} %{SOURCE2} %{SOURCE0}
 %setup -q -n %{name}-%{version}
 %setup -q -n %{name}-%{version} -a 1 -D -T
+%patch0 -p 0
 
 %build
 autoreconf -vif
@@ -62,6 +65,12 @@ cp -p dd_rhelp-%{rhelp_version}/FAQ FAQ.dd_rhelp
 rm -rf %{buildroot}
 make install DESTDIR=%{buildroot} INSTALLDIR=%{buildroot}/%{_bindir} INSTASROOT="" INSTALLFLAGS="" LIB=%{_lib}
 install -D -m 755 dd_rhelp-%{rhelp_version}/dd_rhelp %{buildroot}%{_bindir}/dd_rhelp
+
+%check
+pushd dd_rhelp-%{rhelp_version}
+bash ./dd_rhelp.test &&
+popd 
+
 
 %files
 %doc COPYING README README.dd_rhelp FAQ.dd_rhelp

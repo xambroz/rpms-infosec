@@ -1,0 +1,37 @@
+diff -ru dd_rhelp-0.3.0/dd_rhelp dd_rhelp-0.3.0.new/dd_rhelp
+--- dd_rhelp-0.3.0/dd_rhelp	2023-02-15 00:37:55.505879683 +0100
++++ dd_rhelp-0.3.0.new/dd_rhelp	2023-02-15 00:35:07.698695499 +0100
+@@ -1039,24 +1039,27 @@
+ #     fi
+ 
+ 
+-    version=$("$path" -V 2>&1 | "${grep}" "dd_rescue Version" | "$cut" -f 3 -d " " | "$cut" -f 1 -d ",")
++    rversion=$("$path" -V 2>&1 | "${grep}" "dd_rescue Version" | "$cut" -f 3 -d " " | "$cut" -f 1 -d ",")
++
++    # Use only major part of dd_rescue version for the numeric comparison
++    mrversion=$(echo "$rversion" | cut -d . -f 1-2)
+ 
+     ## Could get something as version info ?
+ 
+-    if test -z "$version" || ! is_num "$version" ; then
++    if test -z "$rversion" || ! is_num "$mrversion" ; then
+ 	echo "Could not extract version info from '$path' executable ! Weird ! exiting...">&2
+ 	exit 1
+     fi
+ 
+-    [ "$DEBUG" == "on" ] && echo -n "Trying '$path' : gives this version : '$version'..." >&2
++    [ "$DEBUG" == "on" ] && echo -n "Trying '$path' : gives this version : '$rversion'..." >&2
+ 
+-    if [ "$(bc_calc 2 "$version < 1.03")" == "0" ]; then
++    if [ "$(bc_calc 2 "$mrversion < 1.03")" == "0" ]; then
+         [ "$DEBUG" == "on" ] && echo -e "OK\n- dd_rescue location : '$path'" >&2
+ 	echo "$path"
+ 	return 0
+     else
+ 	[ "$DEBUG" == "on" ] && echo "BAD !" >&2
+-	echo "Bad version of dd_rescue ! you must have >= 1.03, and your '$path' version was detected to be '$version'.">&2
++	echo "Bad version of dd_rescue ! you must have >= 1.03, and your '$path' version was detected to be '$rversion'.">&2
+ 	exit 1
+     fi
+ 
+Only in dd_rhelp-0.3.0: dd_rhelp_test.12734.a.tmp.log
