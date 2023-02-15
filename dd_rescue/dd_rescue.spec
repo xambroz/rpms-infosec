@@ -24,6 +24,11 @@ BuildRequires:  gnupg2
 BuildRequires:  lzo-devel
 BuildRequires:  make
 
+# Shell script dd_rhelp.test requires several other things to run
+BuildRequires:  bc
+BuildRequires:  grep
+BuildRequires:  coreutils
+
 # Shell script dd_rhelp requires several other things to run
 Requires:       grep
 Requires:       sed
