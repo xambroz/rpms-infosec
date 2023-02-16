@@ -1,0 +1,10 @@
+--- Makefile.orig	2007-05-22 20:57:00.000000000 -0500
++++ Makefile	2007-05-22 21:09:56.000000000 -0500
+@@ -1,5 +1,5 @@
+-onesixtyone: onesixtyone.c
+-	gcc -o onesixtyone onesixtyone.c
++onesixtyone: onesixtyone.o
++	gcc -o onesixtyone onesixtyone.o
+ 
+ solaris: onesixtyone.c
+ 	cc -o onesixtyone onesixtyone.c -lsocket -lnsl
