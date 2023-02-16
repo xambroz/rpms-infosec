@@ -1,16 +1,25 @@
 Name:           onesixtyone
-Version:        0.3.2
-Release:        29%{?dist}
-Summary:        An efficient SNMP scanner
+Version:        0.3.4
+Release:        1%{?dist}
+Summary:        Fast SNMP scanner
+
+%global         gituser trailofbits
+%global         gitname onesixtyone 
+
 
 License:        GPLv2+
-URL:            http://www.phreedom.org/software/onesixtyone/
-Source0:        http://www.phreedom.org/software/onesixtyone/releases/%{name}-%{version}.tar.gz
-#GPG Signature  by "Solar Eclipse <solareclipse@phreedom.org>"
-Source1:        http://www.phreedom.org/software/onesixtyone/releases/%{name}-%{version}.tar.gz.sig
-#Manpage
-Source2:        %{name}.1
-Patch0:         onesixtyone-makefile.patch
+# Was URL:      http://www.phreedom.org/software/onesixtyone/
+URL:            https://github.com/trailofbits/onesixtyone/
+VCS:            https://github.com/trailofbits/onesixtyone/
+#               https://github.com/trailofbits/onesixtyone/releases
+
+# Was Source0:  http://www.phreedom.org/software/onesixtyone/releases/%%{name}-%%{version}.tar.gz
+Source0:        https://github.com/%{gituser}/%{gitname}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
+
+# fix version, add manpage, add make install
+# https://github.com/trailofbits/onesixtyone/pull/28
+Patch0:         https://github.com/trailofbits/onesixtyone/pull/28.patch#/onesixtyone-makeinstall.patch
+
 
 BuildRequires: make
 BuildRequires:  gcc
@@ -22,27 +31,28 @@ as fast as it can. Then the scanner waits for responses to come back and logs
 them, in a fashion similar to Nmap ping sweeps.
 
 %prep
-%setup -q
-%patch0 -p0
+%autosetup -p 1
+
 
 %build
-make CFLAGS="%{optflags}" %{?_smp_mflags}
+%make_build
+
 
 %install
-# Not needed for Fedora, but package exists for EPEL as well
-rm -rf %{buildroot}
-install -D onesixtyone %{buildroot}%{_bindir}/onesixtyone
-install -D -m 0644 dict.txt %{buildroot}%{_datadir}/onesixtyone/dict.txt
-install -m 0644 -pD %{SOURCE2} %{buildroot}%{_mandir}/man1/%{name}.1
+%make_install
 
 %files
-# No copy of GPL in tarball, licencing info in .c file.
-%doc ChangeLog README
+%license LICENSE
+%doc ChangeLog README.md 
 %{_bindir}/*
 %{_datadir}/%{name}
-%{_mandir}/man1/%{name}.1.*
+%{_mandir}/man1/%{name}.1*
 
 %changelog
+* Thu Feb 16 2023 Michal Ambroz <rebus _AT seznam.cz> - 0.3.4-1
+- Bump to current release
+- URL of upstream changed to github.
+
 * Thu Jan 19 2023 Fedora Release Engineering <releng@fedoraproject.org> - 0.3.2-29
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_38_Mass_Rebuild
 
