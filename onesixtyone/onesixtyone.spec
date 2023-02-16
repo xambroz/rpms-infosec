@@ -35,13 +35,12 @@ them, in a fashion similar to Nmap ping sweeps.
 
 
 %build
-export CC="%{build_cc}"
-export CFLAGS="%{optflags}"
-export LDFLAGS="%{build_ldflags}"
+%set_build_flags
 %make_build
 
 
 %install
+%set_build_flags
 %make_install
 
 %files
