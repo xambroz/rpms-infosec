@@ -116,7 +116,7 @@ them, in a fashion similar to Nmap ping sweeps.
 * Thu Feb 14 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.3.2-9
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
 
-* Fri Jan 20 2011 Michal Ambroz <rebus at, seznam.cz> - 0.3.2-8
+* Thu Jan 20 2011 Michal Ambroz <rebus at, seznam.cz> - 0.3.2-8
 - Ressurect the package for F16/17
 
 * Sat Jul 25 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.3.2-7
