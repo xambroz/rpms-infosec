@@ -54,6 +54,7 @@ sed -i 's#\$JOHN/john.conf#%{_sysconfdir}/john.conf#' src/params.h
 # tar --strip-components 1 --directory run -xf "%%{SOURCE2}"
 
 %build
+%set_build_flags
 
 # Prevent stripping
 export LDFLAGS="-g"
