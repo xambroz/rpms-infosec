@@ -31,6 +31,10 @@ Patch2:           https://patch-diff.githubusercontent.com/raw/openwall/john/pul
 BuildRoot:        %{_tmppath}/%{name}-%{version}-%{release}-root
 Requires:         john = %{version}
 
+%filter_requires_in %{_datarootdir}/%{name}/extra
+%filter_setup
+
+
 Buildrequires:    gcc
 Buildrequires:    make
 Buildrequires:    autoconf
@@ -60,6 +64,11 @@ add many more types of the passwords.
 %prep
 %autosetup -p 1 -n john-%{version}-jumbo-%{jumbo_version}
 
+# Unbundle
+rm run/lib/ExifTool.pm
+
+
+
 
 #rm doc/INSTALL
 
@@ -87,16 +96,18 @@ popd
 
 
 %build
+%set_build_flags
+
 cd src
 
 # -DJOHN_SYSTEMWIDE=1 ... use system-wid installation of john
 # -fcommon ... don't complain about redefined global definitions
 # -g ... debug
-export CFLAGS="-DJOHN_SYSTEMWIDE=1 -fcommon -g"
+export CFLAGS="$CFLAGS -DJOHN_SYSTEMWIDE=1 -fcommon -g"
 
 #%%configure
 #./configure --build=x86_64-redhat-linux-gnu --host=x86_64-redhat-linux-gnu --program-prefix= --disable-dependency-tracking --prefix=/usr --exec-prefix=/usr --bindir=/usr/bin --sbindir=/usr/sbin --sysconfdir=/etc --datadir=/usr/share --includedir=/usr/include --libdir=/usr/lib64 --libexecdir=/usr/libexec --localstatedir=/var --sharedstatedir=/var/lib --mandir=/usr/share/man --infodir=/usr/share/info
-./configure
+./configure --enable-pkg-config
 make
 
 
@@ -128,10 +139,19 @@ rm -f %{buildroot}%{_bindir}/unshadow
 # perl-SHA is not in Fedora at the moment
 # rm %%{buildroot}%%{_libexecdir}/john/sha-test.pl
 
+# Files in non-productive quality due to missing dependencies in Fedora
+mv %{buildroot}%{_bindir}/itunes_backup2john.pl %{buildroot}%{_datarootdir}/%{name}/extra/
+mv %{buildroot}%{_bindir}/usr/bin/lion2john-alt.pl %{buildroot}%{_datarootdir}/%{name}/extra/
+mv %{buildroot}%{_bindir}/usr/bin/pdf2john.pl %{buildroot}%{_datarootdir}/%{name}/extra/
+mv %{buildroot}%{_bindir}/usr/bin/radius2john.pl %{buildroot}%{_datarootdir}/%{name}/extra/
+mv %{buildroot}%{_bindir}/usr/bin/sha-test.pl %{buildroot}%{_datarootdir}/%{name}/extra/
+chmod -x %{buildroot}%{_datarootdir}/%{name}/extra/*
+
 
 
 %files
 %doc doc/*
+%doc %{_datarootdir}/%{name}/extra
 %license
 %{_bindir}/*
 %{_libexecdir}/john/stats
