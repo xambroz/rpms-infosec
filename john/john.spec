@@ -1,7 +1,7 @@
 Name:           john
 Summary:        John the Ripper password cracker
 Version:        1.9.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 
 %bcond_without  check
 
@@ -45,7 +45,7 @@ of other hash types are supported as well.
 %prep
 #check signature
 %{gpgverify} --keyring='%{SOURCE2}' --signature='%{SOURCE1}' --data='%{SOURCE0}'
-%setup -q
+%autosetup -p 1
 
 chmod 0644 doc/*
 sed -i 's#\$JOHN/john.conf#%{_sysconfdir}/john.conf#' src/params.h
@@ -56,16 +56,36 @@ sed -i 's#\$JOHN/john.conf#%{_sysconfdir}/john.conf#' src/params.h
 %build
 %set_build_flags
 
-# Prevent stripping
-export LDFLAGS="-g"
-export ASFLAGS="-g"
+# WARNING - john makefile is defining -c on the level of CFLAGS and not the compile lines
+# when overriding the Makefile we need to keep this logic
+ORIGCPU=$(echo "$CFLAGS" | grep -o -E -e '-m(sse2|avx|avx2|avx512|avx512f|xop)( |$)' | tr -d '\n' )
+CFLAGS=$(echo "$CFLAGS" | sed -E 's/-m(sse2|avx|avx2|avx512|avx512f|xop)( |$)//;' )
+export CFLAGS="$CFLAGS -c -DJOHN_SYSTEMWIDE=1"
+
+# ASFLAGS needs info about libraries same as LDFLAGS, but needs -c for compilation only
+export ASFLAGS="-c $LDFLAGS"
 
 # By default build with "make generic"
 ARCH_CHAIN="generic"
 %global with_fallback 0
 
+# By default quote fallback binary name with just "
+Q='"'
+%ifarch %{ix86} || x86_64
+# on intel quote with '\"' ... do not ask me why
+Q='\"'
+%endif
+
+
+
+
+
+
+# i686 settings
 %ifarch %{ix86}
-ARCH_CHAIN="linux-x86-any linux-x86-mmx linux-x86-sse2 linux-x86-avx linux-x86-xop linux-x86-avx2"
+# Fedora current settings starts on sse2 so it is not necessary going bellow that
+# ARCH_CHAIN="linux-x86-any linux-x86-mmx linux-x86-sse2 linux-x86-avx linux-x86-xop linux-x86-avx2"
+ARCH_CHAIN="linux-x86-any linux-x86-sse2 linux-x86-avx linux-x86-xop linux-x86-avx2"
 %if (0%{?fedora}) || ( 0%{?rhel} >= 8 )
 ARCH_CHAIN="$ARCH_CHAIN linux-x86-avx512"
 %endif
@@ -80,6 +100,8 @@ ARCH_CHAIN="$ARCH_CHAIN linux-x86-64-avx512"
 %global with_fallback 1
 %endif
 
+
+
 %ifarch ppc
 ARCH_CHAIN="linux-ppc32 linux-ppc32-altivec"
 %endif
@@ -88,11 +110,13 @@ ARCH_CHAIN="linux-ppc32 linux-ppc32-altivec"
 ARCH_CHAIN="linux-ppc64 linux-ppc64-altivec"
 %endif
 
-export CFLAGS="-c %optflags -DJOHN_SYSTEMWIDE=1"
-
 # Compile the fallback binary
 ARCH_FIRST=$( echo "${ARCH_CHAIN}" | cut -d ' ' -f 1 )
-make -C src "${ARCH_FIRST}" CFLAGS="${CFLAGS}" LDFLAGS="-g"
+
+# WARNING: original LDFLAGS in Makefile contain -s to strip the binaries
+# We need to override that
+make -C src "${ARCH_FIRST}" CFLAGS="${CFLAGS}" LDFLAGS="${LDFLAGS}" ASFLAGS="${ASFLAGS}"
+mv run/john "run/john-${ARCH_FIRST}"
 
 # Compile whole chain of binaries, if configured
 set $ARCH_CHAIN
@@ -102,21 +126,23 @@ while true ; do
     fi
     PREV="$1"
     TARGET="$2"
-    CPU_FALLBACK="john-${PREV}"
-    mv run/john "run/${CPU_FALLBACK}"
+    # Fallback binary definition is used in #define as a string, pre-procesor seamlessly joins the strings together without using string functions like:
+    # gcc -DCPU_FALLBACK_BINARY='"john-linux-x86-64-xop"' ...
+    # #define OMP_FALLBACK_PATHNAME JOHN_SYSTEMWIDE_EXEC "/" OMP_FALLBACK_BINARY
+    # needs to be double quoted here as one layer is stripped by shell and one by make
+    CPU_FALLBACK="${Q}john-${PREV}${Q}"
     make -C src clean
-    make -C src "${TARGET}" CFLAGS="${CFLAGS} -DCPU_FALLBACK=1 -DCPU_FALLBACK_BINARY='\\\"${CPU_FALLBACK}\\\"'" LDFLAGS="-g"
+    make -C src "${TARGET}" CFLAGS="${CFLAGS} -DCPU_FALLBACK=1 -DCPU_FALLBACK_BINARY='${CPU_FALLBACK}'" LDFLAGS="${LDFLAGS}" ASFLAGS="${ASFLAGS}"
+    mv run/john "run/john-${TARGET}"
     shift
 done
-
-ARCH_LAST=$( echo "${ARCH_CHAIN}" | sed -e 's/.*[ ]//' )
-mv run/john "run/john-${ARCH_LAST}"
 
 # Compile the OMP binary with fallback to CPU binary
 make -C src clean
 ARCH_FIRST=$( echo "${ARCH_CHAIN}" | cut -d ' ' -f 1 )
-OMP_FALLBACK="john-${ARCH_FIRST}"
-make -C src "${ARCH_FIRST}" CFLAGS="${CFLAGS} -fopenmp -DOMP_FALLBACK=1 -DOMP_FALLBACK_BINARY='\\\"$OMP_FALLBACK\\\"'" OMPFLAGS=-fopenmp LDFLAGS="-g -s -fopenmp"
+OMP_FALLBACK="${Q}john-${ARCH_FIRST}${Q}"
+make -C src "${ARCH_FIRST}" CFLAGS="${CFLAGS} -fopenmp -DOMP_FALLBACK=1 -DOMP_FALLBACK_BINARY='${OMP_FALLBACK}'" OMPFLAGS=-fopenmp LDFLAGS="${LDFLAGS} -fopenmp" ASFLAGS="${ASFLAGS} -fopenmp"
+mv run/john "run/${ARCH_FIRST}"
 
 # Compile whole chain of OMP binaries
 set $ARCH_CHAIN
@@ -126,35 +152,37 @@ while true ; do
     fi
     PREV="$1"
     TARGET="$2"
-    CPU_FALLBACK="john-omp-${PREV}"
-    OMP_FALLBACK="john-${TARGET}"
-    mv run/john "run/${CPU_FALLBACK}"
+    # fallback to previous CPU optimization, if OMP is present
+    CPU_FALLBACK="${Q}john-omp-${PREV}${Q}"
+    # fallback to same CPU optimization, if OMP is broken
+    OMP_FALLBACK="${Q}john-${TARGET}${Q}"
     make -C src clean
-    make -C src "${TARGET}" CFLAGS="${CFLAGS} -fopenmp -DCPU_FALLBACK=1 -DCPU_FALLBACK_BINARY='\\\"$CPU_FALLBACK\\\"' -DOMP_FALLBACK=1 -DOMP_FALLBACK_BINARY='\\\"$OMP_FALLBACK\\\"'" OMPFLAGS=-fopenmp LDFLAGS="-g -s -fopenmp"
+    make -C src "${TARGET}" CFLAGS="${CFLAGS} -fopenmp -DCPU_FALLBACK=1 -DCPU_FALLBACK_BINARY='${CPU_FALLBACK}' -DOMP_FALLBACK=1 -DOMP_FALLBACK_BINARY='${OMP_FALLBACK}'" OMPFLAGS=-fopenmp LDFLAGS="${LDFLAGS} -fopenmp" ASFLAGS="${ASFLAGS} -fopenmp"
+    mv run/john "run/john-omp-${TARGET}"
     shift
 done
 
 
 
-
 %install
-rm -rf %{buildroot}
 install -d -m 755 %{buildroot}%{_sysconfdir}
 install -d -m 755 %{buildroot}%{_bindir}
 install -d -m 755 %{buildroot}%{_datadir}/john
-install -m 755 run/{john,mailer} %{buildroot}%{_bindir}
-install -m 644 run/{*.chr,password.lst} %{buildroot}%{_datadir}/john
-install -m 644 run/john.conf %{buildroot}%{_sysconfdir}
+install -p -m 755 run/mailer %{buildroot}%{_bindir}
+install -p -m 644 run/{*.chr,password.lst} %{buildroot}%{_datadir}/john
+install -p -m 644 run/john.conf %{buildroot}%{_sysconfdir}
 
-%if 0%{?with_fallback:1}
-    install -d -m 755 %{buildroot}%{_libexecdir}/john
-    install -m 755 run/john-* %{buildroot}%{_libexecdir}/john/
-%endif
+LASTJOHN=$(ls -t run/john-* | head -n 1)
+LASTJOHN=$(basename "$LASTJOHN")
+install -d -m 755 %{buildroot}%{_libexecdir}/john
+install -p -m 755 run/john-* %{buildroot}%{_libexecdir}/john/
 
 pushd %{buildroot}%{_bindir}
+ln -s %{_libexecdir}/john/${LASTJOHN} john
 ln -s john unafs
 ln -s john unique
 ln -s john unshadow
+
 popd
 rm doc/INSTALL
 
@@ -167,9 +195,7 @@ rm doc/INSTALL
 %{_bindir}/unique
 %{_bindir}/unshadow
 %{_datadir}/john/
-%if 0%{?with_fallback:1}
 %{_libexecdir}/john/
-%endif
 
 %changelog
 * Tue Feb 14 2023 Michal Ambroz <rebus _AT seznam.cz> - 1.9.0-3
