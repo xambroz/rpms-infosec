@@ -81,8 +81,8 @@ install -D -m 755 dd_rhelp-%{rhelp_version}/dd_rhelp %{buildroot}%{_bindir}/dd_r
 
 %check
 pushd dd_rhelp-%{rhelp_version}
-bash ./dd_rhelp.test &&
-popd 
+PATH="../:$PATH" bash ./dd_rhelp.test &&
+popd
 
 
 %files
