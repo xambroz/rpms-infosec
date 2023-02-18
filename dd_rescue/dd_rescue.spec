@@ -1,12 +1,13 @@
-%define rhelp_version 0.3.0
-
 Name:           dd_rescue
 Version:        1.99.12
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Fault tolerant "dd" utility for rescuing data from bad media
 # No version specified
 License:        GPL+
 URL:            http://www.garloff.de/kurt/linux/ddrescue/
+
+%global         rhelp_version 0.3.0
+
 Source0:        http://www.garloff.de/kurt/linux/ddrescue/dd_rescue-%{version}.tar.bz2
 Source1:        http://www.kalysto.org/pkg/dd_rhelp-%{rhelp_version}.tar.gz
 Source2:        http://www.garloff.de/kurt/linux/ddrescue/dd_rescue-%{version}.tar.bz2.asc
@@ -100,6 +101,9 @@ popd
 
 
 %changelog
+* Sat Feb 18 2023 Michal Ambroz <rebus AT seznam dot cz> - 1.99.12-3
+- dd_rhelp - fix dependencies and dd_rescue detection
+
 * Thu Jan 19 2023 Fedora Release Engineering <releng@fedoraproject.org> - 1.99.12-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_38_Mass_Rebuild
 
