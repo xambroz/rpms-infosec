@@ -78,8 +78,11 @@ Buildrequires:  nss-devel
 Buildrequires:  krb5-devel
 Buildrequires:  gmp-devel
 Buildrequires:  opencl-headers
-
 Buildrequires:  openssl-devel
+Buildrequires:  zlib-devel
+Buildrequires:  libpcap-devel
+Buildrequires:  bzip2-devel
+
 
 
 %description
