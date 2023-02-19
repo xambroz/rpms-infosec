@@ -1,68 +1,99 @@
-%global           jumbo_version 1
-Summary:          John the Ripper password cracker
-Name:             john-jumbo
-Version:          1.9.0
-Release:          jumbo.%{jumbo_version}.3%{?dist}
+Summary:        John the Ripper password cracker
+Name:           john-jumbo
+Version:        1.9.0
+%global         baserelease     4
+%global         jumbo_version 1
 
-URL:              http://www.openwall.com/john
-VCS:              https://github.com/openwall/john
-License:          GPLv2
-Group:            Applications/System
-Source0:          http://www.openwall.com/john/k/john-%{version}-jumbo-%{jumbo_version}.tar.xz
-Source1:          http://www.openwall.com/john/k/john-%{version}-jumbo-%{jumbo_version}.tar.xz.sign
+License:        GPLv2
+URL:            http://www.openwall.com/john
+VCS:            https://github.com/openwall/john
+Group:          Applications/System
+
+%global         common_desc     %{expand:
+John the Ripper is a fast password cracker. Its primary purpose is to
+detect weak Unix passwords, but a number of other hash types are
+supported as well.
+This package includes the john added with the jumbo %{jumbo_version} patch to
+add many more types of the passwords.
+}
+
+%global         gituser         openwall
+%global         gitname         john
+%global         commit          902ba3ffe62a48519adb644b6e906253d108993b
+%global         gitdate         20230217
+%global         shortcommit     %(c=%{commit}; echo ${c:0:7})
+
+# By default build from the release tarball
+# to build from git snapshot use rpmbuild --rebuild python-impacket.*.src.rpm --without release
+%bcond_with  release
+
+%if %{with release}
+Release:        %{baserelease}.jumbo.%{jumbo_version}%{?dist}
+
+Source0:        http://www.openwall.com/john/k/john-%{version}-jumbo-%{jumbo_version}.tar.xz
+Source1:        http://www.openwall.com/john/k/john-%{version}-jumbo-%{jumbo_version}.tar.xz.sign
 
 
 # This patch fixes build issue, which results in following error message:
 # dynamic_fmt.o: In function `DynamicFunc__crypt_md5_to_input_raw_Overwrite_NoLen':
 # .../BUILD/john-1.8.0-jumbo-1/src/dynamic_fmt.c:4989: undefined reference to `MD5_body_for_thread'
 # https://github.com/magnumripper/JohnTheRipper/issues/1093
-Patch0:           john-jumbo-inlines.patch
+Patch0:         john-jumbo-inlines.patch
 
 # Patch needed to be able to compule with the support of opencl
 # already fixed in the upstream development version
-Patch1:           https://github.com/openwall/john/commit/4f5f6fc8dca0102da7e307e44d5600af04c00ca9.patch#/john-jumbo-opencl.patch
+Patch1:         https://github.com/openwall/john/commit/4f5f6fc8dca0102da7e307e44d5600af04c00ca9.patch#/john-jumbo-opencl.patch
 
 # Fix gcc11 compile error about alignment of struct.
 # https://github.com/openwall/john/issues/4604
 # https://bugzilla.redhat.com/show_bug.cgi?id=1937076
-Patch2:           https://patch-diff.githubusercontent.com/raw/openwall/john/pull/4611.patch#/john-jumbo-gcc11.patch
+Patch2:         https://patch-diff.githubusercontent.com/raw/openwall/john/pull/4611.patch#/john-jumbo-gcc11.patch
+
+%else
+Release:        %{baserelease}.jumbo.%{jumbo_version}.git%{gitdate}%{?dist}
+Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz#/%{name}-%{version}-%{gitdate}-%{shortcommit}.tar.gz
+%endif
 
 
-BuildRoot:        %{_tmppath}/%{name}-%{version}-%{release}-root
-Requires:         john = %{version}
+BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
+Requires:       john = %{version}
 
+# Ignore perl dependencies in the /extra directory
 %filter_requires_in %{_datarootdir}/%{name}/extra
 %filter_setup
 
 
-Buildrequires:    gcc
-Buildrequires:    make
-Buildrequires:    autoconf
+Buildrequires:  gcc
+Buildrequires:  make
+Buildrequires:  autoconf
 # For optional AES-NI support
-Buildrequires:    yasm
+Buildrequires:  yasm
 # Fix python scripts
-Buildrequires:    python%{python3_pkgversion}-future
-Buildrequires:    python%{python3_pkgversion}-future
-BuildRequires:    python%{python3_pkgversion}-devel
-BuildRequires:    python%{python3_pkgversion}-setuptools
+Buildrequires:  python%{python3_pkgversion}-future
+Buildrequires:  python%{python3_pkgversion}-future
+BuildRequires:  python%{python3_pkgversion}-devel
+BuildRequires:  python%{python3_pkgversion}-setuptools
 
-Buildrequires:    nss-devel
-Buildrequires:    krb5-devel
-Buildrequires:    gmp-devel
-Buildrequires:    opencl-headers
+Buildrequires:  nss-devel
+Buildrequires:  krb5-devel
+Buildrequires:  gmp-devel
+Buildrequires:  opencl-headers
 
-Buildrequires:    openssl-devel
+Buildrequires:  openssl-devel
 
 
 %description
-John the Ripper is a fast password cracker. Its primary purpose is to
-detect weak Unix passwords, but a number of other hash types are
-supported as well.
-This package includes the john added with the jumbo %{jumbo_version} patch to
-add many more types of the passwords.
+%{common_desc}
+
 
 %prep
+%if %{with release}
+# Build from git release version
 %autosetup -p 1 -n john-%{version}-jumbo-%{jumbo_version}
+%else
+# Build from git commit
+%autosetup -p 1 -n %{gitname}-%{commit}
+%endif
 
 # Unbundle
 rm run/lib/ExifTool.pm
@@ -91,6 +122,9 @@ pushd run
 futurize-%{python3_version} -w aix2john.py
 popd
 
+# Disable rexgen in the build script
+sed -i -e 's/--enable-rexgen//;' src/packaging/build.sh
+
 
 
 
@@ -106,9 +140,10 @@ cd src
 export CFLAGS="$CFLAGS -DJOHN_SYSTEMWIDE=1 -fcommon -g"
 
 #%%configure
-#./configure --build=x86_64-redhat-linux-gnu --host=x86_64-redhat-linux-gnu --program-prefix= --disable-dependency-tracking --prefix=/usr --exec-prefix=/usr --bindir=/usr/bin --sbindir=/usr/sbin --sysconfdir=/etc --datadir=/usr/share --includedir=/usr/include --libdir=/usr/lib64 --libexecdir=/usr/libexec --localstatedir=/var --sharedstatedir=/var/lib --mandir=/usr/share/man --infodir=/usr/share/info
-./configure --enable-pkg-config
-make
+# ./configure --build=x86_64-redhat-linux-gnu --host=x86_64-redhat-linux-gnu --program-prefix= --disable-dependency-tracking --prefix=/usr --exec-prefix=/usr --bindir=/usr/bin --sbindir=/usr/sbin --sysconfdir=/etc --datadir=/usr/share --includedir=/usr/include --libdir=/usr/lib64 --libexecdir=/usr/libexec --localstatedir=/var --sharedstatedir=/var/lib --mandir=/usr/share/man --infodir=/usr/share/info
+# ./configure --enable-pkg-config
+# make
+./packaging/build.sh
 
 
 
@@ -122,6 +157,7 @@ install -m 755 run/*.py %{buildroot}%{_bindir}/
 install -m 755 run/*.rb %{buildroot}%{_bindir}/
 install -m 755 run/stats %{buildroot}%{_libexecdir}/john/
 install -m 755 run/*.conf %{buildroot}%{_libexecdir}/john/
+install -d -m 755 %{buildroot}%{_datarootdir}/%{name}/extra/
 
 for LINK in `find run/ -type l` ; do
     LINKNAME=$(basename "$LINK" )
@@ -139,13 +175,14 @@ rm -f %{buildroot}%{_bindir}/unshadow
 # perl-SHA is not in Fedora at the moment
 # rm %%{buildroot}%%{_libexecdir}/john/sha-test.pl
 
+
 # Files in non-productive quality due to missing dependencies in Fedora
-mv %{buildroot}%{_bindir}/itunes_backup2john.pl %{buildroot}%{_datarootdir}/%{name}/extra/
-mv %{buildroot}%{_bindir}/usr/bin/lion2john-alt.pl %{buildroot}%{_datarootdir}/%{name}/extra/
-mv %{buildroot}%{_bindir}/usr/bin/pdf2john.pl %{buildroot}%{_datarootdir}/%{name}/extra/
-mv %{buildroot}%{_bindir}/usr/bin/radius2john.pl %{buildroot}%{_datarootdir}/%{name}/extra/
-mv %{buildroot}%{_bindir}/usr/bin/sha-test.pl %{buildroot}%{_datarootdir}/%{name}/extra/
-chmod -x %{buildroot}%{_datarootdir}/%{name}/extra/*
+for I in itunes_backup2john.pl lion2john-alt.pl pdf2john.pl radius2john.pl sha-test.pl ; do
+    [ -f "%{buildroot}%{_bindir}/usr/bin/$I" ] && \
+        mv -f %{buildroot}%{_bindir}/usr/bin/${I} %{buildroot}%{_datarootdir}/%{name}/extra/
+done
+
+chmod a-x %{buildroot}%{_datarootdir}/%{name}/extra/*.pl &&
 
 
 
