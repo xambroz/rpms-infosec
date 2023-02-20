@@ -7,12 +7,7 @@ URL:            https://github.com/fortra/impacket
 # was           https://github.com/SecureAuthCorp/impacket
 # was           https://github.com/CoreSecurity/impacket
 
-# During re-add of the python2-impacket we found about dependency to ldapdomaindump
-# feature can be avoided by option --no-dump to ntlmrelay.py
-# https://bugzilla.redhat.com/show_bug.cgi?id=1672052#c8
-# Also exclude stuff from examples, recommended manually
-%global __requires_exclude ldapdomaindump|flask|httplib2
-
+%global         sum             Collection of Python classes providing access to network packets
 
 %global         common_desc     %{expand:
 Impacket is a collection of Python classes focused on providing access to
@@ -22,14 +17,17 @@ conjunction with a packet capture utility or package such as Pcapy. Packets
 can be constructed from scratch, as well as parsed from raw data. Furthermore,
 the object oriented API makes it simple to work with deep protocol hierarchies.}
 
+# During re-add of the python2-impacket we found about dependency to ldapdomaindump
+# feature can be avoided by option --no-dump to ntlmrelay.py
+# https://bugzilla.redhat.com/show_bug.cgi?id=1672052#c8
+# Also exclude stuff from examples, recommended manually
+%global __requires_exclude ldapdomaindump|flask|httplib2
 
 %global         gituser         fortra
 %global         gitname         impacket
 %global         commit          7a18ef5c8b06aac5e36334927789429777382928
 %global         gitdate         20220504
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
-
-%global         sum             Collection of Python classes providing access to network packets
 
 
 # By defualt build with python3
