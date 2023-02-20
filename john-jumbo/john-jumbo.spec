@@ -64,8 +64,15 @@ Requires:       john = %{version}
 
 
 Buildrequires:  gcc
+Buildrequires:  yasm
 Buildrequires:  make
+Buildrequires:  binutils
 Buildrequires:  autoconf
+Buildrequires:  grep
+Buildrequires:  findutils
+Buildrequires:  coreutils
+Buildrequires:  pkgconf-pkg-config
+Buildrequires:  perl-interpreter
 # For optional AES-NI support
 Buildrequires:  yasm
 # Fix python scripts
