@@ -1,0 +1,8 @@
+- suppress the silent build in packaging/build.sh
+
+Check options:
+	- libFuzzer
+	- OpenCL support
+	- librexgen
+	
+
