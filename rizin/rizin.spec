@@ -20,7 +20,12 @@ BuildRequires:  ninja-build
 BuildRequires:  pkgconfig
 BuildRequires:  python3-pyyaml
 
+%if 0%{?rhel} && 0%{?rhel} <= 8
+# Older version of file-devel is not providing the pkgconfig file
+%else
 BuildRequires:  pkgconfig(libmagic)
+%endif
+
 BuildRequires:  pkgconfig(libxxhash)
 BuildRequires:  pkgconfig(bzip2)
 BuildRequires:  pkgconfig(libzip)
