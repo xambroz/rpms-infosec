@@ -81,13 +81,12 @@ BuildRequires:  python%{python3_pkgversion}-pymilter
 BuildRequires:  python%{python3_pkgversion}-prettytable
 BuildRequires:  python%{python3_pkgversion}-cryptography
 BuildRequires:  python%{python3_pkgversion}-msoffcrypto
-BuildRequires:  python%{python3_pkgversion}-XLMMacroDeobfuscator
+BuildRequires:  python%{python3_pkgversion}-xlmmacrodeobfuscator
 %if %{without bootstrap}
 BuildRequires:  python%{python3_pkgversion}-pcodedmp
 %endif
 %endif
 
-XLMMacroDeobfuscator
 # python2-pymilter at F28+, python-pymilter at EPEL 7
 # python2-pyparsing and python3-pyparsing at Fedora, pyparsing at RHEL 7
 # python2-easygui only at F28+ and EPEL7+
