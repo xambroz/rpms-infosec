@@ -92,7 +92,7 @@ developing applications that use %{name}.
 
 
 %prep
-%autosetup -n %%{gitname}-%%{commit} -p 1 -S git
+%autosetup -n %{gitname}-%{commit} -p 1 -S git
 # autosetup -n %{gitname}-%{upversion} -p 1 -S git
 autoreconf --force --install
 
