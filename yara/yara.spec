@@ -21,13 +21,17 @@ URL:            https://VirusTotal.github.io/yara/
 %global         commit          313ab8080ad26efdf626d84c3b7b62c151ff295f
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
+%bcond_without  release
+
 
 # Build from git release version
+%if %{with release}
 # Source0:        https://github.com/%%{gituser}/%%{gitname}/archive/v%%{version}.tar.gz#/%%{name}-%%{version}.tar.gz
-# Source0:        https://github.com/%%{gituser}/%%{gitname}/archive/v%%{upversion}.tar.gz#/%%{name}-%%{upversion}.tar.gz
+Source0:        https://github.com/%{gituser}/%{gitname}/archive/v%{upversion}.tar.gz#/%{name}-%{upversion}.tar.gz
+%else
 # Build from git commit baseline
 Source0:       https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
-
+%endif
 
 # Use default sphix theme to generate documentation rather than sphinx_rtd_theme
 # to avoid static installation of font files on fedora >= 24
@@ -92,13 +96,12 @@ developing applications that use %{name}.
 
 
 %prep
-%autosetup -n %{gitname}-%{commit} -p 1 -S git
-# autosetup -n %{gitname}-%{upversion} -p 1 -S git
+%if %{with release}
+    %{gitname}-%{upversion} -p 1 -S git
+%else
+    %autosetup -n %{gitname}-%{commit} -p 1 -S git
+%endif
 autoreconf --force --install
-
-
-
-
 
 %build
 
