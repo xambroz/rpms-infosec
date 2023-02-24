@@ -18,7 +18,7 @@ URL:            https://VirusTotal.github.io/yara/
 %global         gitname         yara
 %global         gitdate         20230208
 # Commit of version 4.3.0rc1 + fixes
-%global         commit          32ae80d5368bcf214f278965b047112e4565ea83
+%global         commit          313ab8080ad26efdf626d84c3b7b62c151ff295f
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
