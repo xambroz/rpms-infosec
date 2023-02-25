@@ -42,7 +42,7 @@ Patch4:         radare2-5.6.6-use_lz4.patch
 # Fix issues wit the generation of SDB from the meson build
 # https://github.com/radareorg/radare2/issues/21375
 # https://bugzilla.redhat.com/show_bug.cgi?id=2170036
-Patch5:         https://github.com/radareorg/radare2/commit/81d7a23df788ecd68aeae2921297cc0ca31902ed.patch#/%{name}-%{version}-meson-sdb.patch
+# Patch5:         https://github.com/radareorg/radare2/commit/81d7a23df788ecd68aeae2921297cc0ca31902ed.patch#/%{name}-%{version}-meson-sdb.patch
 
 
 
@@ -365,6 +365,9 @@ mkdir -p %{buildroot}%{_libdir}/%{name}/%{version}
 
 
 %changelog
+* Sat Feb 26 2023 Michal Ambroz <rebus at, seznam.cz> 5.8.2-2
+- cherrypick upstream patch for fixing the sdb generation from mesosn
+
 * Wed Jan 25 2023 Michal Ambroz <rebus at, seznam.cz> 5.8.2-1
 - bump to 5.8.2
 
