@@ -75,7 +75,7 @@ sed -i -e 's|^\.ni||; s|^\./plugins-disabled|+\./plugins-disabled|' whatweb.1
 # Disable bundle install in the Makefile
 sed -i -e 's|bundle install|#bundle install|' Makefile
 
-# Add the whatweb shared directory + PR282
+# Add the whatweb shared directory
 sed -i -e "s|expand_path(__dir__)), '.')|expand_path(__dir__)), '%{_datadir}/%{name}')|" whatweb
 
 %build
@@ -83,8 +83,13 @@ echo "Nothing to build."
 
 
 %install
-make install DESTDIR=%{buildroot}
+%make_install
 rm -rf %{buildroot}%{_datadir}/doc/%{name}
+
+# Move the executable from share to bin
+rm -f %{buildroot}%{_bindir}/%{name}
+mv %{buildroot}%{_datadir}/%{name}/%{name} %{buildroot}%{_bindir}/%{name}
+
 
 # addons and plugin-development not crucial for runtime, move them to documentation
 rm -rf %{buildroot}%{_datadir}/%{name}/addons
