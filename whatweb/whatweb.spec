@@ -84,18 +84,25 @@ echo "Nothing to build."
 
 %install
 %make_install
+
 rm -rf %{buildroot}%{_datadir}/doc/%{name}
 
 # Move the executable from share to bin
 rm -f %{buildroot}%{_bindir}/%{name}
 mv %{buildroot}%{_datadir}/%{name}/%{name} %{buildroot}%{_bindir}/%{name}
 
-
 # addons and plugin-development not crucial for runtime, move them to documentation
 rm -rf %{buildroot}%{_datadir}/%{name}/addons
-rm -rf %{buildroot}%{_datadir}/%{name}/plugin-deveplopment
+rm -rf %{buildroot}%{_datadir}/%{name}/plugin-development
+
 chmod -x addons/*
 chmod -x plugin-development/*
+
+%check
+%if %{with tests}
+ruby test/integration.rb
+%endif
+
 
 %files
 %license LICENSE
@@ -105,14 +112,6 @@ chmod -x plugin-development/*
 %{_bindir}/%{name}
 %{_datadir}/%{name}
 %{_mandir}/man1/%{name}.1*
-
-
-%check
-%if %{with tests}
-# make test
-ruby test/integration.rb
-%endif
-
 
 
 %changelog
