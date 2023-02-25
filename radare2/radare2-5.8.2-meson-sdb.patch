@@ -1,0 +1,101 @@
+From 81d7a23df788ecd68aeae2921297cc0ca31902ed Mon Sep 17 00:00:00 2001
+From: pancake <pancake@nowsecure.com>
+Date: Sat, 25 Feb 2023 11:26:13 +0100
+Subject: [PATCH] Fix #21375 - Generate .sdb files properly for syscalls with
+ meson ##build
+
+---
+ libr/syscall/d/gen.py      | 29 +++++++++++++++++++++++++++++
+ libr/syscall/d/meson.build |  2 +-
+ meson.build                | 10 ++++++++++
+ sys/counters.sh            |  3 +++
+ 4 files changed, 43 insertions(+), 1 deletion(-)
+ create mode 100644 libr/syscall/d/gen.py
+
+diff --git a/libr/syscall/d/gen.py b/libr/syscall/d/gen.py
+new file mode 100644
+index 000000000000..154653933b43
+--- /dev/null
++++ b/libr/syscall/d/gen.py
+@@ -0,0 +1,29 @@
++#!/usr/bin/env python
++# args [sdbpath] [input] [output]
++import os
++import sys
++import subprocess
++
++
++try:
++	sdb_exe = sys.argv[1]
++	_input = sys.argv[2]
++	_output = sys.argv[3]
++	_tmpfile = _input + ".tmp"
++	with open(_input) as lines:
++		res = ""
++		for line in lines:
++			kv = line.rstrip().split("=", 1)
++			if kv[0] == "_":
++				res += line
++			else:
++				vv = kv[1].split(",")
++				res += vv[0] + "." + vv[1] + "=" + kv[0] + "\n"
++				res += line
++		with open(_tmpfile, "w") as file:
++			file.write(res)
++	subprocess.call([sdb_exe, _output, "==", _tmpfile])
++except Exception as e:
++	print(e)
++	print("Usage: gen.py [sdb_exe] [input] [output]")
++
+diff --git a/libr/syscall/d/meson.build b/libr/syscall/d/meson.build
+index cbe8c159607e..b4c349c3fb4e 100644
+--- a/libr/syscall/d/meson.build
++++ b/libr/syscall/d/meson.build
+@@ -35,7 +35,7 @@ foreach file : sdb_files
+     gen_cmd = sdb_gen_cmd_cgen
+   else
+     outfile = '@0@.sdb'.format(file)
+-    gen_cmd = sdb_gen_cmd
++    gen_cmd = syscall_sdb_gen_cmd
+   endif
+ 
+   r_syscall_d_sources += custom_target(outfile,
+diff --git a/meson.build b/meson.build
+index d60f582110e4..39b74b85619c 100644
+--- a/meson.build
++++ b/meson.build
+@@ -1,6 +1,7 @@
+ project('radare2', 'c', license : 'LGPL3', meson_version : '>=0.50', version : '5.8.3')
+ 
+ py3_exe = import('python').find_installation('python3')
++gen_py = '@0@/libr/syscall/d/gen.py'.format(meson.current_source_dir())
+ git_exe = find_program('git', required: false)
+ pkgconfig_mod = import('pkgconfig')
+ 
+@@ -551,6 +552,15 @@ sdb_gen_cmd = [
+   '@INPUT@'
+ ]
+ 
++py_cmd = '__import__("os").readlink(r"@0@"))'.format(repo)
++syscall_sdb_gen_cmd = [
++  py3_exe,
++  gen_py,
++  sdb_exe,
++  '@INPUT@',
++  '@OUTPUT@',
++]
++
+ # handle spp dependency
+ spp_files = [
+   'shlr/spp/spp.c'
+diff --git a/sys/counters.sh b/sys/counters.sh
+index 8ef49e0a6a19..be5e6f4d2648 100755
+--- a/sys/counters.sh
++++ b/sys/counters.sh
+@@ -21,3 +21,6 @@ git grep 'free ((char' libr | wc -l
+ 
+ printf -- "f(void)\t"
+ git grep 'free ((void' libr | wc -l
++
++printf -- "aPlugs\t"
++ls libr/anal/p/*.c |wc -l
