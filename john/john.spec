@@ -1,7 +1,7 @@
 Name:           john
 Summary:        John the Ripper password cracker
 Version:        1.9.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 
 %bcond_without  check
 
@@ -17,7 +17,6 @@ Source1:        https://www.openwall.com/john/k/john-%{version}.tar.xz.sign
 # uid "Openwall offline signing key"
 #
 # Compared to public records of pgp.mit.edu
-# gpg2 --keyserver pgp.mit.edu --search-key 05C027FD4BDC136E
 # gpg2 --keyserver pgp.mit.edu --search-key 297AD21CF86C948081520C1805C027FD4BDC136E
 # gpg2 --list-public-keys 297AD21CF86C948081520C1805C027FD4BDC136E
 #
@@ -30,6 +29,8 @@ Source1:        https://www.openwall.com/john/k/john-%{version}.tar.xz.sign
 # gpg2 --export --export-options export-minimal 297AD21CF86C948081520C1805C027FD4BDC136E > gpgkey-297AD21CF86C948081520C1805C027FD4BDC136E.gpg
 Source2:        gpgkey-297AD21CF86C948081520C1805C027FD4BDC136E.gpg
 
+# Align the naming of the fallback binaries with jumbo patch + kali
+# https://github.com/openwall/john/issues/5233
 
 
 BuildRequires:  gcc
@@ -100,8 +101,6 @@ ARCH_CHAIN="$ARCH_CHAIN linux-x86-64-avx512"
 %global with_fallback 1
 %endif
 
-
-
 %ifarch ppc
 ARCH_CHAIN="linux-ppc32 linux-ppc32-altivec"
 %endif
@@ -116,7 +115,7 @@ ARCH_FIRST=$( echo "${ARCH_CHAIN}" | cut -d ' ' -f 1 )
 # WARNING: original LDFLAGS in Makefile contain -s to strip the binaries
 # We need to override that
 make -C src "${ARCH_FIRST}" CFLAGS="${CFLAGS}" LDFLAGS="${LDFLAGS}" ASFLAGS="${ASFLAGS}"
-mv run/john "run/john-${ARCH_FIRST}"
+mv run/john "run/john-${ARCH_FIRST}-non-omp"
 
 # Compile whole chain of binaries, if configured
 set $ARCH_CHAIN
@@ -130,10 +129,10 @@ while true ; do
     # gcc -DCPU_FALLBACK_BINARY='"john-linux-x86-64-xop"' ...
     # #define OMP_FALLBACK_PATHNAME JOHN_SYSTEMWIDE_EXEC "/" OMP_FALLBACK_BINARY
     # needs to be double quoted here as one layer is stripped by shell and one by make
-    CPU_FALLBACK="${Q}john-${PREV}${Q}"
+    CPU_FALLBACK="${Q}john-${PREV}-non-omp${Q}"
     make -C src clean
     make -C src "${TARGET}" CFLAGS="${CFLAGS} -DCPU_FALLBACK=1 -DCPU_FALLBACK_BINARY='${CPU_FALLBACK}'" LDFLAGS="${LDFLAGS}" ASFLAGS="${ASFLAGS}"
-    mv run/john "run/john-${TARGET}"
+    mv run/john "run/john-${TARGET}-non-omp"
     shift
 done
 
@@ -142,7 +141,7 @@ make -C src clean
 ARCH_FIRST=$( echo "${ARCH_CHAIN}" | cut -d ' ' -f 1 )
 OMP_FALLBACK="${Q}john-${ARCH_FIRST}${Q}"
 make -C src "${ARCH_FIRST}" CFLAGS="${CFLAGS} -fopenmp -DOMP_FALLBACK=1 -DOMP_FALLBACK_BINARY='${OMP_FALLBACK}'" OMPFLAGS=-fopenmp LDFLAGS="${LDFLAGS} -fopenmp" ASFLAGS="${ASFLAGS} -fopenmp"
-mv run/john "run/${ARCH_FIRST}"
+mv run/john "run/john-${ARCH_FIRST}-omp"
 
 # Compile whole chain of OMP binaries
 set $ARCH_CHAIN
@@ -155,10 +154,10 @@ while true ; do
     # fallback to previous CPU optimization, if OMP is present
     CPU_FALLBACK="${Q}john-omp-${PREV}${Q}"
     # fallback to same CPU optimization, if OMP is broken
-    OMP_FALLBACK="${Q}john-${TARGET}${Q}"
+    OMP_FALLBACK="${Q}john-${TARGET}${Q}-omp"
     make -C src clean
     make -C src "${TARGET}" CFLAGS="${CFLAGS} -fopenmp -DCPU_FALLBACK=1 -DCPU_FALLBACK_BINARY='${CPU_FALLBACK}' -DOMP_FALLBACK=1 -DOMP_FALLBACK_BINARY='${OMP_FALLBACK}'" OMPFLAGS=-fopenmp LDFLAGS="${LDFLAGS} -fopenmp" ASFLAGS="${ASFLAGS} -fopenmp"
-    mv run/john "run/john-omp-${TARGET}"
+    mv run/john "run/john-${TARGET}-omp"
     shift
 done
 
@@ -198,6 +197,9 @@ rm doc/INSTALL
 %{_libexecdir}/john/
 
 %changelog
+* Tue Mar 07 2023 Michal Ambroz <rebus _AT seznam.cz> - 1.9.0-4
+- align the fallback binary naming with upstream/kali
+
 * Tue Feb 14 2023 Michal Ambroz <rebus _AT seznam.cz> - 1.9.0-3
 - add signature verification
 
