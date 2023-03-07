@@ -152,9 +152,9 @@ while true ; do
     PREV="$1"
     TARGET="$2"
     # fallback to previous CPU optimization, if OMP is present
-    CPU_FALLBACK="${Q}john-omp-${PREV}${Q}"
+    CPU_FALLBACK="${Q}john-${PREV}-omp${Q}"
     # fallback to same CPU optimization, if OMP is broken
-    OMP_FALLBACK="${Q}john-${TARGET}${Q}-omp"
+    OMP_FALLBACK="${Q}john-${TARGET}-non-omp${Q}"
     make -C src clean
     make -C src "${TARGET}" CFLAGS="${CFLAGS} -fopenmp -DCPU_FALLBACK=1 -DCPU_FALLBACK_BINARY='${CPU_FALLBACK}' -DOMP_FALLBACK=1 -DOMP_FALLBACK_BINARY='${OMP_FALLBACK}'" OMPFLAGS=-fopenmp LDFLAGS="${LDFLAGS} -fopenmp" ASFLAGS="${ASFLAGS} -fopenmp"
     mv run/john "run/john-${TARGET}-omp"
