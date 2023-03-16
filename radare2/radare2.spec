@@ -39,12 +39,6 @@ Patch1:         radare2-5.6.6-use_openssl.patch
 Patch3:         radare2-5.7.6-use_magic.patch
 Patch4:         radare2-5.6.6-use_lz4.patch
 
-# Fix issues wit the generation of SDB from the meson build
-# https://github.com/radareorg/radare2/issues/21375
-# https://bugzilla.redhat.com/show_bug.cgi?id=2170036
-# Patch5:         https://github.com/radareorg/radare2/commit/81d7a23df788ecd68aeae2921297cc0ca31902ed.patch#/%%{name}-%%{version}-meson-sdb.patch
-Patch5:         %{name}-%{version}-meson-sdb.patch
-
 
 
 License:        LGPLv3+ and GPLv2+ and BSD and MIT and ASL 2.0 and MPLv2.0 and zlib
