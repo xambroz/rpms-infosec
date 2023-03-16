@@ -1,6 +1,6 @@
 Name:           radare2
 Summary:        The reverse engineering framework
-Version:        5.8.2
+Version:        5.8.4
 %global         rel             1
 URL:            https://radare.org/
 VCS:            https://github.com/radareorg/radare2
@@ -21,8 +21,8 @@ VCS:            https://github.com/radareorg/radare2
 %global         gituser         radareorg
 %global         gitname         radare2
 
-%global         gitdate         20230123
-%global         commit          0b6793f37d9dae5b43fa96beae93008e197dc87a
+%global         gitdate         20230314
+%global         commit          ab809417aa6b676922f95cf77861924eb90e7ef2
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
@@ -42,7 +42,8 @@ Patch4:         radare2-5.6.6-use_lz4.patch
 # Fix issues wit the generation of SDB from the meson build
 # https://github.com/radareorg/radare2/issues/21375
 # https://bugzilla.redhat.com/show_bug.cgi?id=2170036
-# Patch5:         https://github.com/radareorg/radare2/commit/81d7a23df788ecd68aeae2921297cc0ca31902ed.patch#/%{name}-%{version}-meson-sdb.patch
+# Patch5:         https://github.com/radareorg/radare2/commit/81d7a23df788ecd68aeae2921297cc0ca31902ed.patch#/%%{name}-%%{version}-meson-sdb.patch
+Patch5:         %{name}-%{version}-meson-sdb.patch
 
 
 
@@ -365,11 +366,15 @@ mkdir -p %{buildroot}%{_libdir}/%{name}/%{version}
 
 
 %changelog
-* Sat Feb 26 2023 Michal Ambroz <rebus at, seznam.cz> 5.8.2-2
+* Thu Mar 16 2023 Michal Ambroz <rebus at, seznam.cz> 5.8.4-1
+- bump to 5.8.4
+
+* Sun Feb 26 2023 Michal Ambroz <rebus at, seznam.cz> 5.8.2-2
 - cherrypick upstream patch for fixing the sdb generation from mesosn
 
 * Wed Jan 25 2023 Michal Ambroz <rebus at, seznam.cz> 5.8.2-1
 - bump to 5.8.2
+- fix CVE-2023-0302 , CVE-2023-0302
 
 * Fri Jan 20 2023 Fedora Release Engineering <releng@fedoraproject.org> - 5.7.8-1.1
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_38_Mass_Rebuild
@@ -380,6 +385,7 @@ mkdir -p %{buildroot}%{_libdir}/%{name}/%{version}
 * Tue Aug 02 2022 Michal Ambroz <rebus at, seznam.cz> 5.7.6-1
 - bump to 5.7.6
 - cherrypicked patch for new libmagic from upstream
+- fix CVE-2022-34502
 
 * Sat Jul 23 2022 Fedora Release Engineering <releng@fedoraproject.org> - 5.6.8-1.1
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_37_Mass_Rebuild
