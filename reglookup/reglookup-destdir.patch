@@ -1,0 +1,51 @@
+diff -ru reglookup-src-1.0.1.orig/SConstruct reglookup-src-1.0.1.destdir/SConstruct
+--- reglookup-src-1.0.1.orig/SConstruct	2023-03-18 12:45:44.896388946 +0100
++++ reglookup-src-1.0.1.destdir/SConstruct	2023-03-18 12:44:47.178235835 +0100
+@@ -45,21 +45,24 @@
+ man_reglookup_timeline = env.ManPage('doc/reglookup-timeline.1.docbook')
+ 
+ # Installation
+-prefix='/usr/local/'
+-if 'PREFIX' in os.environ:
+-   prefix = os.environ['PREFIX']+'/'
+-
+-install_items = [prefix+'bin',
+-                 prefix+'lib', 
+-                 prefix+'include/regfi',
+-                 prefix+'man']
+-
+-env.Install(prefix+'bin', [reglookup, reglookup_recover, 'bin/reglookup-timeline'])
+-libinstall = env.Install(prefix+'lib', [libregfi, libregfi_static])
+-env.Install(prefix+'include/regfi', Glob('include/*.h'))
+-env.Install(prefix+'man/man1', [man_reglookup, man_reglookup_recover,
++destdir = os.environ.get('DESTDIR','')
++prefix = os.environ.get('PREFIX','/usr/local')
++bindir = os.environ.get('BINDIR',prefix+'/bin')
++libdir = os.environ.get('LIBDIR',prefix+'/lib')
++mandir = os.environ.get('MANDIR',prefix+'/man')
++
++
++install_items = [destdir+bindir,
++                 destdir+libdir,
++                 destdir+prefix+'/include/regfi',
++                 destdir+mandir]
++
++env.Install(destdir+bindir, [reglookup, reglookup_recover, 'bin/reglookup-timeline'])
++libinstall = env.Install(destdir+libdir, [libregfi, libregfi_static])
++env.Install(destdir+prefix+'/include/regfi', Glob('include/*.h'))
++env.Install(destdir+mandir+'/man1', [man_reglookup, man_reglookup_recover,
+                                 man_reglookup_timeline])
+-env.AddPostAction(libinstall, 'ldconfig')
++# env.AddPostAction(libinstall, 'ldconfig')
+ 
+ if sys.version_info[0] == 2:
+    install_items.append('pyregfi2-install.log')
+@@ -74,7 +76,7 @@
+    env.Command('pyregfi3-install.log', ['python/pyregfi/__init__.py', 
+                                         'python/pyregfi/structures.py', 
+                                         'python/pyregfi/winsec.py'], 
+-               "python3 pyregfi-distutils.py install | tee pyregfi3-install.log")
++               "python3 pyregfi-distutils.py install --root '" + destdir + "' | tee pyregfi3-install.log")
+ 
+ # API documentation
+ regfi_doc = env.Command('doc/devel/regfi/index.html', 

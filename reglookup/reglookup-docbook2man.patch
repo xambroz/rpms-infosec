@@ -1,0 +1,12 @@
+diff -ru reglookup-src-1.0.1/SConstruct reglookup-src-1.0.1.new/SConstruct
+--- reglookup-src-1.0.1/SConstruct	2023-03-18 11:17:38.989204300 +0100
++++ reglookup-src-1.0.1.new/SConstruct	2023-03-18 11:35:37.107422265 +0100
+@@ -34,7 +34,7 @@
+ # Documentation
+ #  This only needs to be run during the release/packaging process
+ man_fixup = "|sed 's/.SH DESCRIPTION/\\n.SH DESCRIPTION/'"
+-man_builder = Builder(action='docbook2x-man --to-stdout $SOURCE'
++man_builder = Builder(action='db2x_docbook2man --to-stdout $SOURCE'
+                       + man_fixup + '| gzip -9 > $TARGET',
+                       suffix = '.gz',
+                       src_suffix = '.docbook')
