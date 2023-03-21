@@ -1,0 +1,41 @@
+diff -ru radare2-5.8.4/libr/bin/format/elf/elf.c radare2-5.8.4.new/libr/bin/format/elf/elf.c
+--- radare2-5.8.4/libr/bin/format/elf/elf.c	2023-03-14 22:27:55.000000000 +0100
++++ radare2-5.8.4.new/libr/bin/format/elf/elf.c	2023-03-21 22:40:18.607924573 +0100
+@@ -3615,13 +3615,15 @@
+ 
+ static ut32 hashRBinElfSymbol(const void *obj) {
+ 	const RBinElfSymbol *symbol = (const RBinElfSymbol *)obj;
+-	if (!symbol || !*symbol->name) {
++	if (!symbol || R_STR_ISEMPTY (symbol->name)) {
+ 		return 0;
+ 	}
+ 	int hash = sdb_hash (symbol->name);
+-	hash ^= sdb_hash (symbol->type);
++	if (R_STR_ISNOTEMPTY (symbol->type)) {
++		hash ^= sdb_hash (symbol->type);
++	}
+ 	hash ^= (symbol->offset >> 32);
+-	hash ^= (symbol->offset & 0xffffffff);
++	hash ^= (symbol->offset & UT32_MAX);
+ 	return hash;
+ }
+ 
+@@ -3629,10 +3631,18 @@
+ 	if (a->offset != b->offset) {
+ 		return 1;
+ 	}
++	if (!a->name || !b->name) {
++		return 1;
++	}
++
+ 	int result = strcmp (a->name, b->name);
+ 	if (result != 0) {
+ 		return result;
+ 	}
++	if (!a->type || !b->type) {
++		return 1;
++	}
++
+ 	return strcmp (a->type, b->type);
+ }
+ 

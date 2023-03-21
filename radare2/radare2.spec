@@ -38,6 +38,7 @@ Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{nam
 Patch1:         radare2-5.6.6-use_openssl.patch
 Patch3:         radare2-5.7.6-use_magic.patch
 Patch4:         radare2-5.6.6-use_lz4.patch
+Patch5:         radare2-5.8.4-binfalse.patch
 
 
 
@@ -273,6 +274,8 @@ sed -i -e "s|meson_version : '>=......'|meson_version : '>=0.49.1'|;" meson.buil
 
 %build
 # Whereever possible use the system-wide libraries instead of bundles
+#     --sanitize=address,undefined,signed-integer-overflow \
+
 %meson \
     -Duse_sys_magic=true \
 %if 0%{?fedora} || 0%{?rhel} >= 8
