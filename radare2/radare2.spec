@@ -1,7 +1,7 @@
 Name:           radare2
 Summary:        The reverse engineering framework
 Version:        5.8.4
-%global         rel             1
+%global         rel             2
 URL:            https://radare.org/
 VCS:            https://github.com/radareorg/radare2
 #               https://github.com/radareorg/radare2/releases
@@ -363,6 +363,9 @@ mkdir -p %{buildroot}%{_libdir}/%{name}/%{version}
 
 
 %changelog
+* Wed Mar 22 2023 Michal Ambroz <rebus at, seznam.cz> 5.8.4-2
+- patch for segfault in sdb_hash
+
 * Thu Mar 16 2023 Michal Ambroz <rebus at, seznam.cz> 5.8.4-1
 - bump to 5.8.4
 
