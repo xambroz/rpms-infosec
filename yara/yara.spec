@@ -1,17 +1,23 @@
 Name:           yara
 Version:        4.3.0
 %global         upversion         %{version}-rc1
-
-Release:        0.rc1.3%{?dist}
 Summary:        Pattern matching Swiss knife for malware researchers
+VCS:            https://github.com/VirusTotal/yara/
+#               https://github.com/VirusTotal/yara/releases
+URL:            https://VirusTotal.github.io/yara/
 
 # yara package itself is licensed with BSD 3 clause license
 # bison grammar parsers in libyara/* are licensed with  GPLv3+ license with exception from FSF alloving usage in larger work
 # resulting binary package licensed as BSD
 License:        BSD
-VCS:            https://github.com/VirusTotal/yara/
-#               https://github.com/VirusTotal/yara/releases
-URL:            https://VirusTotal.github.io/yara/
+
+%global         common_description %{expand:
+YARA is a tool aimed at (but not limited to) helping malware researchers to
+identify and classify malware samples. With YARA you can create descriptions
+of malware families (or whatever you want to describe) based on textual or
+binary patterns. Each description, a.k.a rule, consists of a set of strings
+and a Boolean expression which determine its logic.
+}
 
 
 %global         gituser         VirusTotal
@@ -27,9 +33,11 @@ URL:            https://VirusTotal.github.io/yara/
 # Build from git release version
 %if %{with release}
 # Source0:        https://github.com/%%{gituser}/%%{gitname}/archive/v%%{version}.tar.gz#/%%{name}-%%{version}.tar.gz
-Source0:        https://github.com/%{gituser}/%{gitname}/archive/v%{upversion}.tar.gz#/%{name}-%{upversion}.tar.gz
+Release:       0.rc1.%{baserelease}%{?dist}
+Source0:       https://github.com/%{gituser}/%{gitname}/archive/v%{upversion}.tar.gz#/%{name}-%{upversion}.tar.gz
 %else
 # Build from git commit baseline
+Release:       0.rc1.%{baserelease}.%{gitdate}git%{shortcommit}%{?dist}
 Source0:       https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-git%{gitdate}-%{shortcommit}.tar.gz
 %endif
 
@@ -70,12 +78,7 @@ BuildRequires:  openssl-devel
 BuildRequires:  /usr/bin/sphinx-build
 
 %description
-YARA is a tool aimed at (but not limited to) helping malware researchers to
-identify and classify malware samples. With YARA you can create descriptions
-of malware families (or whatever you want to describe) based on textual or
-binary patterns. Each description, a.k.a rule, consists of a set of strings
-and a Boolean expression which determine its logic.
-
+%{common_description}
 
 %package doc
 Summary:        Documentation for %{name}
@@ -83,6 +86,7 @@ BuildArch:      noarch
 
 %description doc
 This package contains documentation for %{name}.
+%{common_description}
 
 
 %package        devel
@@ -93,7 +97,7 @@ Requires:       %{name}%{?_isa} = %{version}-%{release}
 %description    devel
 The %{name}-devel package contains libraries and header files for
 developing applications that use %{name}.
-
+%{common_description}
 
 %prep
 %if %{with release}
