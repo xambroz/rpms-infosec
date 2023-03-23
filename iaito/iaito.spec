@@ -1,7 +1,7 @@
 Name:           iaito
 Summary:        GUI for radare2 reverse engineering framework
 Version:        5.8.2
-%global         rel             1
+%global         baserelease     1
 %global         upversion       %{version}-beta
 URL:            https://radare.org/n/iaito.html
 VCS:            https://github.com/radareorg/iaito/
@@ -25,10 +25,10 @@ VCS:            https://github.com/radareorg/iaito/
 %global         iaito_translations__shortcommit %(c=%{iaito_translations_commit}; echo ${c:0:7})
 
 %if %{with releasetag}
-Release:        %{rel}%{?dist}
+Release:        %{baserelease}%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
 %else
-Release:        0.%{rel}.%{gitdate}git%{shortcommit}%{?dist}.1
+Release:        0.%{baserelease}.%{gitdate}git%{shortcommit}%{?dist}.1
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 %endif
 
