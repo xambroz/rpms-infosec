@@ -1,7 +1,7 @@
 Name:           whatweb
 Version:        0.5.5
-Release:        3%{?dist}
-Summary:        Web scanner to identify what websites are running
+Release:        4%{?dist}
+Summary:        Web scanner to identify what are the websites running
 
 
 # The tests are normally disabled in the build phase as whatweb is networking
@@ -19,7 +19,7 @@ Summary:        Web scanner to identify what websites are running
 Group:          Applications/Internet
 %endif
 
-License:        GPLv2+
+License:        GPL-2.0-or-later
 URL:            http://www.morningstarsecurity.com/research/whatweb
 VCS:            https://github.com/urbanadventurer/WhatWeb
 #               https://github.com/urbanadventurer/WhatWeb/releases/
@@ -31,8 +31,8 @@ BuildArch:      noarch
 Buildrequires:  make
 Buildrequires:  sed
 
-# Requires:      ruby(abi) >= 2.0
-Requires:       %{_bindir}/ruby
+# Requires:     ruby(abi) >= 2.0
+Requires:       /usr/bin/ruby
 Requires:       rubygem-addressable
 
 # On RHEL7 the Recommends statement is not available
@@ -115,6 +115,9 @@ ruby test/integration.rb
 
 
 %changelog
+* Wed Mar 01 2023 Michal Ambroz <rebus at, seznam.cz> - 0.5.5-4
+- fix license tag and reference to ruby for runtime requirements
+
 * Wed May 19 2021 Michal Ambroz <rebus at, seznam.cz> - 0.5.5-3
 - fix sed
 
