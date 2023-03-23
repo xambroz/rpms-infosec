@@ -161,9 +161,9 @@ mv %{buildroot}%{_bindir}/patator %{buildroot}%{_bindir}/patator2
 %py3_install
 sed -i -e 's|#!/usr/bin/python.*|#!/usr/bin/python3|' patator.py
 mv %{buildroot}%{_bindir}/patator %{buildroot}%{_bindir}/patator3
-ln -s %{_bindir}/patator3 %{buildroot}%{_bindir}/patator
+ln -s patator3 %{buildroot}%{_bindir}/patator
 %else
-ln -s %{_bindir}/patator2 %{buildroot}%{_bindir}/patator
+ln -s patator2 %{buildroot}%{_bindir}/patator
 %endif
 
 
