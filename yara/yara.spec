@@ -16,12 +16,12 @@ URL:            https://VirusTotal.github.io/yara/
 
 %global         gituser         VirusTotal
 %global         gitname         yara
-%global         gitdate         20230208
+%global         gitdate         20230322
 # Commit of version 4.3.0rc1 + fixes
-%global         commit          313ab8080ad26efdf626d84c3b7b62c151ff295f
+%global         commit          96790e56fc0fc0ce8598d215f969d8b7d8ca1015
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
-%bcond_without  release
+%bcond_with     release
 
 
 # Build from git release version
@@ -30,7 +30,7 @@ URL:            https://VirusTotal.github.io/yara/
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/v%{upversion}.tar.gz#/%{name}-%{upversion}.tar.gz
 %else
 # Build from git commit baseline
-Source0:       https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
+Source0:       https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-git%{gitdate}-%{shortcommit}.tar.gz
 %endif
 
 # Use default sphix theme to generate documentation rather than sphinx_rtd_theme
