@@ -1,10 +1,16 @@
 Name:           vncpwd
 License:        GPLv2+
-Version:        0.0
+Version:        0.1
 Summary:        VNC Password Decrypter
 URL:            https://github.com/jeroennijhof/vncpwd
 VCS:            https://github.com/jeroennijhof/vncpwd
-%global         rel             3
+Group:          Applications/System
+%global         baserelease             1
+
+
+# by default it builds from the git snapshot version of faup
+# to build from release use rpmbuild --with=releasetag
+%bcond_without  release
 
 
 %global         gituser         jeroennijhof
@@ -13,11 +19,15 @@ VCS:            https://github.com/jeroennijhof/vncpwd
 %global         commit          58d585cbbc861bd6dbd9f6709ce8cb7f2afb75ba
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
-Release:        %{rel}.%{gitdate}git%{shortcommit}%{?dist}
 
-Group:          Applications/System
+%if %{with release}
+Release:        %{baserelease}%{?dist}
+Source0:        https://github.com/%{gituser}/%{gitname}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
+%else
+Release:        0.%{baserelease}.%{gitdate}git%{shortcommit}%{?dist}
+Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-git%{gitdate}-%{shortcommit}.zip
+%endif
 
-Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 
 BuildRequires:  gcc
 BuildRequires:  make
@@ -26,7 +36,11 @@ BuildRequires:  make
 The vncpwd decrypts the VNC password.
 
 %prep
-%autosetup -n %{name}-%{commit}
+%if %{with release}
+    %autosetup -n %{gitname}-%{version} -p 1
+%else
+    %autosetup -n %{gitname}-%{commit} -p 1
+%endif
 
 
 %build
@@ -42,6 +56,9 @@ install -m 755 -D %{name} "%{buildroot}/%{_bindir}/%{name}"
 %{_bindir}/%{name}
 
 %changelog
+* Thu Mar 23 2023 Michal Ambroz <rebus at, seznam.cz> 0.1-1
+- bump to release tag
+
 * Sun Apr 18 2021 Michal Ambroz <rebus at, seznam.cz> 0.0-3.20180223git58d585c
 - rebuild for f34
 
