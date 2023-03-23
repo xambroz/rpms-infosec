@@ -5,14 +5,14 @@ URL:            https://github.com/stricaud/faup
 License:        WTFPL
 Group:          System Environment/Libraries
 Version:        1.6
-%global         rel             1
+%global         baserelease     1
 
 
 
 %global         gituser         stricaud
 %global         gitname         faup
-%global         gitdate         20210621
-%global         commit          8e81b170d205485de587c2f4bca54e5dcdf678a4
+%global         gitdate         20221115
+%global         commit          fecf768603e713bc903c56c8df0870fae14e3f93
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 # by default it builds from the git snapshot version of faup
@@ -20,11 +20,11 @@ Version:        1.6
 %bcond_with     releasetag
 
 %if %{with releasetag}
-Release:        %{rel}%{?dist}
+Release:        %{baserelease}%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 %else
-Release:        0.%{rel}.%{gitdate}git%{shortcommit}%{?dist}
-Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.zip
+Release:        0.%{baserelease}.%{gitdate}git%{shortcommit}%{?dist}
+Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-git%{gitdate}-%{shortcommit}.zip
 %endif
 
 
