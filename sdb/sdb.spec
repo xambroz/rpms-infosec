@@ -1,40 +1,49 @@
 Name:           sdb
-Version:        1.7.0
+Version:        1.9.6
 Summary:        The string database from radare reverse engineering framework
 #Group needed for EPEL packages
 Group:          Applications/Engineering
 License:        MIT
 URL:            https://github.com/radareorg/sdb/
-%global         rel              3
+%global         baserelease     3
 
 # by default it builds from the released version of sdb
-%bcond_without  release
+%bcond_with     release
+
+# as python binding is not built anymore, vala is not needed
+%bcond_with     vala
+
 
 %global         gituser         radareorg
 %global         gitname         sdb
 
-%global         gitdate         20210208
-%global         commit          ecc90f0c6c631f2c0ecc079ef54fbc6632b8eb05
+%global         gitdate         20230217
+%global         commit          aca75fc9e610db4cf31b1b3d2dcff9edcb03b5f2
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 %if %{with release}
-Release:        %{rel}%{?dist}
+Release:        %{baserelease}%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
 %else
-Release:        %{rel}.%{gitdate}git%{shortcommit}%{?dist}
+Release:        %{baserelease}.%{gitdate}git%{shortcommit}%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 %endif
 
 BuildRequires:  gcc
 BuildRequires:  glib2-devel
+%if %{with vala}
 BuildRequires:  vala
+%endif
 
 #Needed for check
 BuildRequires:  leveldb-devel
 BuildRequires:  time
 
+%if %{with vala}
 #binding python
 #BuildRequires:  valabind
+%endif
+
 #binding nodejs
 #BuildRequires:  v8-devel
 #BuildRequires:  nodejs-devel
@@ -63,25 +72,37 @@ information.
 %autosetup -n %{gitname}-%{version}
 %else
 # Build from git commit
-%autosetup -q -n %{gitname}-%{commit}
+%autosetup -n %{gitname}-%{commit}
 # Rename internal "version-git" to "version"
-sed -i -e "s|%{version}-git|%{version}|g;" configure configure.acr
+# sed -i -e "s|%{version}-git|%{version}|g;" configure.acr
 %endif
 
 
 %build
 %set_build_flags
-%make_build LIBDIR=%{_libdir} PREFIX=%{_prefix} DATADIR=%{_datadir} LDFLAGS="%{__global_ldflags}"
+%if %{with vala}
+%make_build LIBDIR=%{_libdir} PREFIX=%{_prefix} DATADIR=%{_datadir} LDFLAGS="%{__global_ldflags}" HAVE_VALA=1
+%else
+%make_build LIBDIR=%{_libdir} PREFIX=%{_prefix} DATADIR=%{_datadir} LDFLAGS="%{__global_ldflags}" HAVE_VALA=
+%endif
 
 
 %install
+%if %{with vala}
 # make install DESTDIR=%%{buildroot} LIBDIR=%%{_libdir} PREFIX=%%{_prefix}
-%make_install
+%make_install DESTDIR=%{buildroot} LIBDIR=%{_libdir} PREFIX=%{_prefix} HAVE_VALA=1
+%else
+%make_install DESTDIR=%{buildroot} LIBDIR=%{_libdir} PREFIX=%{_prefix} HAVE_VALA=
+%endif
 find %{buildroot} -name '*.a' -delete
 
 
 %check
-make test
+%if %{with vala}
+make test HAVE_VALA=1
+%else
+make test HAVE_VALA=
+%endif
 
 
 %ldconfig_scriptlets
@@ -98,14 +119,17 @@ make test
 %files devel
 %dir %{_includedir}/sdb
 %{_includedir}/sdb/*
-%{_includedir}/sdbtypes.h*
 %{_libdir}/libsdb.so
 %{_libdir}/pkgconfig/*.pc
+%if %{with vala}
 %{_datadir}/vala/vapi/%{name}.vapi
 %{_datadir}/vala/vapi/%{name}types.vapi
-
+%endif
 
 %changelog
+* Sun Feb 19 2023 Michal Ambroz <rebus at, seznam.cz> 1.9.6-1
+- bump to 1.9.6
+
 * Wed Apr 14 2021 Michal Ambroz <rebus at, seznam.cz> 1.7.0-1
 - bump to 1.7.0
 
