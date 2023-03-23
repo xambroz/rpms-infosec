@@ -1,7 +1,7 @@
 Name:           radare2
 Summary:        The reverse engineering framework
 Version:        5.6.3
-%global         rel             1
+%global         baserelease     1
 URL:            https://radare.org/
 VCS:            https://github.com/radareorg/radare2
 #               https://github.com/radareorg/radare2/releases
@@ -27,10 +27,10 @@ VCS:            https://github.com/radareorg/radare2
 
 
 %if %{with releasetag}
-Release:        %{rel}%{?dist}
+Release:        %{baserelease}%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
 %else
-Release:        0.%{rel}.%{gitdate}git%{shortcommit}%{?dist}
+Release:        0.%{baserelease}.%{gitdate}git%{shortcommit}%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.zip
 %endif
 
