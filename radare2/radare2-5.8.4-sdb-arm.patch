@@ -1,0 +1,41 @@
+From a162e0f63cab2afe349deb4ca6391c7bb0bd9765 Mon Sep 17 00:00:00 2001
+From: Yedidyah Bar David <didi@redhat.com>
+Date: Wed, 22 Mar 2023 12:20:12 +0200
+Subject: [PATCH] Fix #21375 also for linux-arm-64.sdb syscalls with meson
+ #build
+
+Signed-off-by: Yedidyah Bar David <didi@redhat.com>
+---
+ libr/syscall/d/gen.py | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
+
+diff --git a/libr/syscall/d/gen.py b/libr/syscall/d/gen.py
+index 154653933b43..901e364c8de9 100644
+--- a/libr/syscall/d/gen.py
++++ b/libr/syscall/d/gen.py
+@@ -13,13 +13,24 @@
+ 	with open(_input) as lines:
+ 		res = ""
+ 		for line in lines:
++			# E.g. in linux-x86-64.sdb.txt:
++			# accept=0x80,43,3,
++			# And in linux-arm-64.sdb.txt:
++			# accept=0,202
+ 			kv = line.rstrip().split("=", 1)
+ 			if kv[0] == "_":
+ 				res += line
+ 			else:
+ 				vv = kv[1].split(",")
+ 				res += vv[0] + "." + vv[1] + "=" + kv[0] + "\n"
+-				res += line
++				# Can't just append the original line, because
++				# r_syscall_item_new_from_string splits it by commas
++				# and wants at least 3 items in the result, whereas
++				# original lines, at least in some archs, have only
++				# two items. For compatibitity with gen.sh, always
++				# have at least 4 items.
++				vv.extend([ '' for i in range(4 - len(vv)) ])
++				res += kv[0] + "=" + ",".join(vv) + "\n"
+ 		with open(_tmpfile, "w") as file:
+ 			file.write(res)
+ 	subprocess.call([sdb_exe, _output, "==", _tmpfile])
