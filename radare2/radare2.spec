@@ -1,7 +1,7 @@
 Name:           radare2
 Summary:        The reverse engineering framework
-Version:        5.8.4
-%global         baserelease     2
+Version:        5.8.5
+%global         baserelease     3
 URL:            https://radare.org/
 VCS:            https://github.com/radareorg/radare2
 #               https://github.com/radareorg/radare2/releases
@@ -16,13 +16,13 @@ VCS:            https://github.com/radareorg/radare2
 
 # by default it builds from the released version of radare2
 # to build from git use rpmbuild --without=releasetag
-%bcond_without  releasetag
+%bcond_with     releasetag
 
 %global         gituser         radareorg
 %global         gitname         radare2
 
-%global         gitdate         20230314
-%global         commit          ab809417aa6b676922f95cf77861924eb90e7ef2
+%global         gitdate         20230324
+%global         commit          73795bd161682bdd0af5d419e42530e41bbcb8ff
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
@@ -31,7 +31,7 @@ Release:        %{baserelease}%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
 %else
 Release:        0.%{baserelease}.%{gitdate}git%{shortcommit}%{?dist}
-Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{commit}.zip#/%{name}-%{version}-%{shortcommit}.zip
+Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{commit}.zip#/%{name}-%{version}-git%{gitdate}-%{shortcommit}.zip
 %endif
 
 # Specific to Fedora - build with system libraries
@@ -41,10 +41,10 @@ Patch4:         radare2-5.6.6-use_lz4.patch
 
 # Attempt to fix issue with running the radare2 /bin/false in fedora
 # https://github.com/radareorg/radare2/issues/21491
-Patch5:         radare2-5.8.4-binfalse.patch
+# Patch5:         radare2-5.8.4-binfalse.patch
 
 # Fix issue with messon build not generating same sdb files for arm as the sys/build.sh
-Patch6:         https://patch-diff.githubusercontent.com/raw/radareorg/radare2/pull/21508.patch#/radare2-5.8.4-sdb-arm.patch
+# Patch6:         https://patch-diff.githubusercontent.com/raw/radareorg/radare2/pull/21508.patch#/radare2-5.8.4-sdb-arm.patch
 
 
 License:        LGPLv3+ and GPLv2+ and BSD and MIT and ASL 2.0 and MPLv2.0 and zlib
@@ -368,6 +368,9 @@ mkdir -p %{buildroot}%{_libdir}/%{name}/%{version}
 
 
 %changelog
+* Sat Mar 25 2023 Michal Ambroz <rebus at, seznam.cz> 5.8.5-0.3
+- 5.8.5 rebuild from git, patched for segfault
+
 * Wed Mar 22 2023 Michal Ambroz <rebus at, seznam.cz> 5.8.4-2
 - patch for segfault in sdb_hash
 
