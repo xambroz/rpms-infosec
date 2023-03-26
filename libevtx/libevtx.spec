@@ -1,37 +1,69 @@
-%global         gituser         libyal
-%global         gitname         libevtx
-%global         commit          58e44893ceeaca57dff7380d0f7110caf660b92d
-%global         shortcommit     %(c=%{commit}; echo ${c:0:7})
-
-%global         pythonopts      -enable-python2
-
-%if 0%{?fedora}
-%global         with_python3    1
-%global         pythonopts      -enable-python2 --enable-python3
-%endif
-
-
 Name:           libevtx
-Version:        20160421
-Release:        1.alpha%{?dist}
+Version:        20221101
 Summary:        Library to access the Windows XML Event Log (EVTX) format
 Group:          System Environment/Libraries
 License:        LGPLv3+
 URL:            https://github.com/libyal/libevtx/
-Source:         https://github.com/%{gituser}/%{gitname}/releases/download/%{version}/%{name}-alpha-%{version}.tar.gz
+%global         baserelease     1
 
-BuildRequires:  python-devel
-BuildRequires:  python-setuptools
+%global         common_description %{expand:
+libevtx is a library to access the Windows XML Event Log (EVTX) format
+Part of Joachim Metz's libyal set of forensics tools and libraries.
+}
 
-%if 0%{?with_python3}
-BuildRequires:  python3-devel
-BuildRequires:  python3-setuptools
-%endif # if with_python3
+%global         gituser         libyal
+%global         gitname         libevtx
+%global         gitdate         20221101
+%global         commit          58e44893ceeaca57dff7380d0f7110caf660b92d
+%global         shortcommit     %(c=%{commit}; echo ${c:0:7})
+
+# Build with python2 support for RHEL7
+%if ( 0%{?rhel} && 0%{?rhel} <= 7 )
+%bcond_without  python2
+%global         pythonopts      -enable-python2
+%endif
+
+
+%if 0%{?fedora}
+%bcond_without  python3
+%global         pythonopts      -enable-python3
+%endif
+
+%if %{with python2} && %{with python3}
+%global         pythonopts      -enable-python2 -enable-python3
+%endif
+
+
+# By default build from a release tarball.
+# If you want to rebuild from a unversioned commit from git do that with.
+# rpmbuild --rebuild libevtx.src.rpm --without release
+%bcond_without  release
+
+
+# Build from git release version
+%if %{with release}
+Release:       %{baserelease}.alpha%{?dist}
+Source0:       https://github.com/%{gituser}/%{gitname}/releases/download/%{version}/%{name}-alpha-%{version}.tar.gz
+%else
+# Build from git commit baseline
+Release:       0.%{baserelease}.%{gitdate}git%{shortcommit}%.alpha.%{?dist}
+Source0:       https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-git%{gitdate}-%{shortcommit}.tar.gz
+%endif
+
+
+%if %{with python2}
+BuildRequires:  python2-devel
+BuildRequires:  python2-setuptools
+%endif
+
+%if %{with python3}
+BuildRequires:  python%{python3_pkgversion}-devel
+BuildRequires:  python%{python3_pkgversion}-setuptools
+%endif
 
 
 %description
-libevtx is a library to access the Windows XML Event Log (EVTX) format
-Part of Joachim Metz's libyal set of forensics tools and libraries.
+%{common_description}
 
 %package devel
 Summary: Header files and libraries for developing applications for libevtx
@@ -40,6 +72,7 @@ Requires: libevtx = %{version}-%{release}
 
 %description devel
 Header files and libraries for developing applications for libevtx.
+%{common_description}
 
 %package tools
 Summary: Several tools for reading Windows XML Event Log (EVTX) files
@@ -48,15 +81,30 @@ Requires: libevtx = %{version}-%{release}
 
 %description tools
 Several tools for reading Windows XML Event Log (EVTX) files
+%{common_description}
 
-%package python
+%if %{with python2}
+%package python2
+Summary: Python2 bindings for libevtx
+Group: System Environment/Libraries
+Requires: libevtx = %{version}-%{release} python2
+
+%description python2
+The python2 bindings for libevtx
+%{common_description}
+%endif
+
+
+%if %{with python3}
+%package python%{python3_pkgversion}
 Summary: Python bindings for libevtx
 Group: System Environment/Libraries
-Requires: libevtx = %{version}-%{release} python
-BuildRequires:  %(basename %{__python})-devel
+Requires: libevtx = %{version}-%{release} python%{python3_pkgversion}
 
-%description python
-Python bindings for libevtx
+%description python%{python3_pkgversion}
+The python3 bindings for libevtx
+%{common_description}
+%endif
 
 %prep
 %setup -q
@@ -66,41 +114,47 @@ Python bindings for libevtx
 %make_build
 
 %install
-rm -rf ${RPM_BUILD_ROOT}
-make DESTDIR=${RPM_BUILD_ROOT} install
+rm -rf %{buildroot}
+make DESTDIR=%{buildroot} install
 
 #Fedora not shipping static libraries
 find %{buildroot} -name '*.la' -delete
 find %{buildroot} -name '*.a' -delete
 
 
-%clean
-rm -rf ${RPM_BUILD_ROOT}
-
 %post -p /sbin/ldconfig
 
 %postun -p /sbin/ldconfig
 
 %files
-%doc AUTHORS COPYING NEWS README
+%license COPYING
+%doc AUTHORS NEWS README
 %{_libdir}/*.so.*
 
 %files devel
-%doc AUTHORS COPYING NEWS README ChangeLog
+%license COPYING
 %{_libdir}/*.so
 %{_libdir}/pkgconfig/libevtx.pc
 %{_includedir}/*
 %{_mandir}/man3/*
 
 %files tools
-%doc AUTHORS COPYING NEWS README
+%license COPYING
 %{_bindir}/evtxexport
 %{_bindir}/evtxinfo
 %{_mandir}/man1/*
 
-%files python
-%doc AUTHORS COPYING NEWS README
-%{_libdir}/python*/site-packages/*.so
+%if %{with python2}
+%files python2
+%license COPYING
+%{python2_sitearch}/pyevtx.so
+%endif
+
+%if %{with python3}
+%files python3
+%license COPYING
+%{python3_sitearch}/pyevtx.so
+%endif
 
 %changelog
 * Tue Jun 27 2017 Michal Ambroz <rebus _AT seznam.cz> 20160421-2.alpha
