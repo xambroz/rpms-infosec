@@ -1,10 +1,11 @@
-Name:		python-evtx
-Version:	0.7.4
-License:	APLv2
-Release:	1%{?dist}
-Summary:	Pure Python parser for new Windows Event Log XML files (.evtx)
-URL:		https://github.com/williballenthin/python-evtx/
-#		https://github.com/williballenthin/python-evtx/releases
+Name:           python-evtx
+Version:        0.7.4
+License:        APLv2
+Release:        2%{?dist}
+Summary:        Pure Python parser for new Windows Event Log XML files (.evtx)
+URL:            https://github.com/williballenthin/python-evtx/
+# URL:          https://pypi.python.org/pypi/python-evtx
+#               https://github.com/williballenthin/python-evtx/releases
 
 
 %global         gituser         williballenthin
@@ -13,31 +14,29 @@ URL:		https://github.com/williballenthin/python-evtx/
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 %bcond_without  python3
-%bcond_without  python2
+%bcond_with     python2
 
 
-#URL:		https://pypi.python.org/pypi/python-evtx
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 Patch0:         python-evtx-deps-versions.patch
 
+BuildArch:        noarch
 
-BuildArch:	noarch
-
-%if 0%{?with_python2}
+%if %{with python2}
 BuildRequires:  python2-devel
 BuildRequires:  python-setuptools
 Requires:       python-hexdump
 %endif
 
-%if 0%{?with_python3}
-BuildRequires:	python3-devel
-BuildRequires:	python3-setuptools
-BuildRequires:	python3-pytest
-BuildRequires:	python3-pytest-cov
-Requires:       python3-hexdump
+%if %{with python3}
+BuildRequires:  python%{python3_pkgversion}-devel
+BuildRequires:  python%{python3_pkgversion}-setuptools
+BuildRequires:  python%{python3_pkgversion}-pytest
+BuildRequires:  python%{python3_pkgversion}-pytest-cov
+Requires:       python%{python3_pkgversion}-hexdump
 %endif
 
-%description
+%global common_description %{expand:
 Pure Python parser for recent Windows Event Log files (those with the file
 extension ".evtx"). The module provides programmatic access to the File
 and Chunk headers, record templates, and event entries. For example, you
@@ -45,39 +44,34 @@ can use python-evtx to review the event logs of Windows 7 systems from a Mac
 or Linux workstation. The structure definitions and parsing strategies were
 heavily inspired by the work of Andreas Schuster and his Perl implementation
 "Parse-Evtx".
+}
+
+%description
+%common_description
 
 
-%if 0%{?with_python2}
+
+%if %{with python2}
 %package -n python2-evtx
 Summary:        Dump binary data to hex format and restore from there
 Group:          Development/Libraries
 %{?python_provide:%python_provide python2-evtx}
 
 %description -n python2-evtx
-Pure Python parser for recent Windows Event Log files (those with the file
-extension ".evtx"). The module provides programmatic access to the File
-and Chunk headers, record templates, and event entries. For example, you
-can use python-evtx to review the event logs of Windows 7 systems from a Mac
-or Linux workstation. The structure definitions and parsing strategies were
-heavily inspired by the work of Andreas Schuster and his Perl implementation
-"Parse-Evtx".
+%common_description
+
 %endif
 
 
-%if 0%{?with_python3}
+%if %{with python3}
 %package -n python%{python3_pkgversion}-evtx
 Summary:        Dump binary data to hex format and restore from there
 Group:          Development/Libraries
 %{?python_provide:%python_provide python%{python3_pkgversion}-evtx}
 
 %description -n python%{python3_pkgversion}-evtx
-Pure Python parser for recent Windows Event Log files (those with the file
-extension ".evtx"). The module provides programmatic access to the File
-and Chunk headers, record templates, and event entries. For example, you
-can use python-evtx to review the event logs of Windows 7 systems from a Mac
-or Linux workstation. The structure definitions and parsing strategies were
-heavily inspired by the work of Andreas Schuster and his Perl implementation
-"Parse-Evtx".
+%common_description
+
 %endif
 
 
@@ -87,15 +81,15 @@ heavily inspired by the work of Andreas Schuster and his Perl implementation
 
 
 %build
-%if 0%{?with_python2}
+%if %{with python2}
 %py2_build
 %endif
-%if 0%{?with_python3}
-%py3_build
+%if %{with python3}
+%pyproject_wheel
 %endif
 
 %install
-%if 0%{?with_python2}
+%if %{with python2}
 %py2_install
 pushd %{buildroot}%{_bindir}
 for I in *.py ; do
@@ -107,8 +101,12 @@ done
 popd
 %endif
 
-%if 0%{?with_python3}
-%py3_install
+%if %{with python3}
+%pyproject_install
+
+# Doesn't work
+# pyproject_save_files Evtx python_evtx
+
 pushd %{buildroot}%{_bindir}
 for I in *.py ; do
     BASENAME=$(basename "$I" .py)
@@ -139,7 +137,7 @@ popd
 
 
 
-%if 0%{?with_python2}
+%if %{with python2}
 %files -n python2-evtx
 %license LICENSE.TXT
 %{python2_sitelib}/Evtx
@@ -151,12 +149,12 @@ popd
 %endif
 %endif
 
-%if 0%{?with_python3}
+%if %{with python3}
 %files -n python%{python3_pkgversion}-evtx
 %license LICENSE.TXT
 %doc README.md
 %{python3_sitelib}/Evtx
-%{python3_sitelib}/python_evtx*egg-info
+%{python3_sitelib}/python_evtx-*.dist-info
 %{_bindir}/evtx_*-3
 %{_bindir}/evtx_*-%{python3_version}
 %if (0%{?fedora} && 0%{?fedora} >= 31 ) || ( 0%{?rhel} && 0%{?rhel} >= 8 )
@@ -166,6 +164,9 @@ popd
 
 
 %changelog
+* Sun Mar 26 2023 Michal Ambroz <rebus _AT seznam.cz> - 0.7.4-2
+- modernize spec
+
 * Wed Apr 14 2021 Michal Ambroz <rebus _AT seznam.cz> - 0.7.4-1
 - bump to 0.7.4
 
