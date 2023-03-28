@@ -378,7 +378,7 @@ mkdir -p %{buildroot}%{_libdir}/%{name}/%{version}
 - bump to 5.8.4
 
 * Sun Feb 26 2023 Michal Ambroz <rebus at, seznam.cz> 5.8.2-2
-- cherrypick upstream patch for fixing the sdb generation from mesosn
+- cherrypick upstream patch for fixing the sdb generation from meson
 
 * Wed Jan 25 2023 Michal Ambroz <rebus at, seznam.cz> 5.8.2-1
 - bump to 5.8.2
