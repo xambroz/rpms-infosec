@@ -21,8 +21,8 @@ VCS:            https://github.com/radareorg/radare2
 %global         gituser         radareorg
 %global         gitname         radare2
 
-%global         gitdate         20230324
-%global         commit          73795bd161682bdd0af5d419e42530e41bbcb8ff
+%global         gitdate         20230328
+%global         commit          70a78f0943e33b8885ee63cb8cca889b732404da
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
