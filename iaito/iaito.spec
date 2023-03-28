@@ -1,6 +1,6 @@
 Name:           iaito
 Summary:        GUI for radare2 reverse engineering framework
-Version:        5.8.2
+Version:        5.8.4
 %global         baserelease     1
 %global         upversion       %{version}-beta
 URL:            https://radare.org/n/iaito.html
@@ -184,6 +184,9 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
 
 
 %changelog
+* Wed Mar 29 2023 Michal Ambroz <rebus _AT seznam.cz> - 5.8.4-1
+- bump to 5.8.4
+
 * Fri Feb 03 2023 Michal Ambroz <rebus _AT seznam.cz> - 5.8.2-1
 - bump to 5.8.2
 
