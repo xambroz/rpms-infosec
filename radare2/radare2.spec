@@ -39,14 +39,6 @@ Patch1:         radare2-5.6.6-use_openssl.patch
 Patch3:         radare2-5.7.6-use_magic.patch
 Patch4:         radare2-5.6.6-use_lz4.patch
 
-# Attempt to fix issue with running the radare2 /bin/false in fedora
-# https://github.com/radareorg/radare2/issues/21491
-# Patch5:         radare2-5.8.4-binfalse.patch
-
-# Fix issue with messon build not generating same sdb files for arm as the sys/build.sh
-# Patch6:         https://patch-diff.githubusercontent.com/raw/radareorg/radare2/pull/21508.patch#/radare2-5.8.4-sdb-arm.patch
-
-
 License:        LGPLv3+ and GPLv2+ and BSD and MIT and ASL 2.0 and MPLv2.0 and zlib
 # Radare2 as a package is targeting to be licensed/compiled as LGPLv3+
 # during build for Fedora the GPL code is not omitted so effectively it is GPLv2+
