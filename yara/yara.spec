@@ -32,12 +32,12 @@ and a Boolean expression which determine its logic.
 
 # Build from git release version
 %if %{with release}
-Release:       0.rc1.%{baserelease}%{?dist}
+Release:       %{baserelease}%{?dist}
 # Source0:     https://github.com/%%{gituser}/%%{gitname}/archive/v%%{upversion}.tar.gz#/%%{name}-%%{upversion}.tar.gz
 Source0:       https://github.com/%{gituser}/%{gitname}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 %else
 # Build from git commit baseline
-Release:       0.rc1.%{baserelease}.%{gitdate}git%{shortcommit}%{?dist}
+Release:       %{baserelease}.%{gitdate}git%{shortcommit}%{?dist}
 Source0:       https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-git%{gitdate}-%{shortcommit}.tar.gz
 %endif
 
@@ -101,7 +101,7 @@ developing applications that use %{name}.
 
 %prep
 %if %{with release}
-    %{gitname}-%{version} -p 1 -S git
+    %autosetup -n %{gitname}-%{version} -p 1 -S git
 %else
     %autosetup -n %{gitname}-%{commit} -p 1 -S git
 %endif
