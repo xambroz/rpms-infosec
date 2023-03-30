@@ -1,15 +1,15 @@
 Name:           yara
 Version:        4.3.0
-%global         upversion         %{version}-rc1
+%global         baserelease 1
 Summary:        Pattern matching Swiss knife for malware researchers
+URL:            https://VirusTotal.github.io/yara/
 VCS:            https://github.com/VirusTotal/yara/
 #               https://github.com/VirusTotal/yara/releases
-URL:            https://VirusTotal.github.io/yara/
 
 # yara package itself is licensed with BSD 3 clause license
 # bison grammar parsers in libyara/* are licensed with  GPLv3+ license with exception from FSF alloving usage in larger work
 # resulting binary package licensed as BSD
-License:        BSD
+License:        BSD-3-Clause
 
 %global         common_description %{expand:
 YARA is a tool aimed at (but not limited to) helping malware researchers to
@@ -27,14 +27,14 @@ and a Boolean expression which determine its logic.
 %global         commit          96790e56fc0fc0ce8598d215f969d8b7d8ca1015
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
-%bcond_with     release
+%bcond_without  release
 
 
 # Build from git release version
 %if %{with release}
-# Source0:        https://github.com/%%{gituser}/%%{gitname}/archive/v%%{version}.tar.gz#/%%{name}-%%{version}.tar.gz
 Release:       0.rc1.%{baserelease}%{?dist}
-Source0:       https://github.com/%{gituser}/%{gitname}/archive/v%{upversion}.tar.gz#/%{name}-%{upversion}.tar.gz
+# Source0:     https://github.com/%%{gituser}/%%{gitname}/archive/v%%{upversion}.tar.gz#/%%{name}-%%{upversion}.tar.gz
+Source0:       https://github.com/%{gituser}/%{gitname}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 %else
 # Build from git commit baseline
 Release:       0.rc1.%{baserelease}.%{gitdate}git%{shortcommit}%{?dist}
@@ -190,6 +190,9 @@ make check || (
 
 
 %changelog
+* Thu Mar 30 2023 Michal Ambroz <rebus at, seznam.cz> - 4.3.0-1
+- bump to 4.3.0
+
 * Tue Jan 24 2023 Michal Ambroz <rebus at, seznam.cz> - 4.3.0-0.rc1.3
 - fix EPEL9 build = reenable the SHA1 certificate validation in OpenSSL for make check
 
