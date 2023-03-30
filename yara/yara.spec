@@ -101,7 +101,7 @@ developing applications that use %{name}.
 
 %prep
 %if %{with release}
-    %{gitname}-%{upversion} -p 1 -S git
+    %{gitname}-%{version} -p 1 -S git
 %else
     %autosetup -n %{gitname}-%{commit} -p 1 -S git
 %endif
