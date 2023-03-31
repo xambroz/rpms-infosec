@@ -1,15 +1,19 @@
 Name:           python-yara
-Version:        4.2.3
-%global         baserelease     2
+Version:        4.3.0
+%global         baserelease     1
 Summary:        Python binding for the YARA pattern matching tool
-License:        ASL 2.0
+License:        Apache-2.0
 URL:            https://github.com/VirusTotal/yara-python/
+VCS:            https://github.com/VirusTotal/yara-python/
+#               https://github.com/VirusTotal/yara-python/releases/
 
 # By default build from a release tarball.
 # If you want to rebuild from a unversioned commit from git do that with 
 # rpmbuild --rebuild python-yara.src.dpm --without release
 %bcond_without  release
 
+%global         gituser         VirusTotal
+%global         gitname         yara-python
 %global         commit          8106b84fa967bcd2fff4f5a40e558c36bb8d54e8
 %global         gitdate         20220809
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
@@ -30,10 +34,10 @@ and a Boolean expression which determine its logic.}
 
 %if 0%{?with_release}
 Release:        %{baserelease}%{?dist}
-Source0:        https://github.com/VirusTotal/yara-python/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
+Source0:        https://github.com/%{gituser}/%{gitname}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 %else
 Release:        %{baserelease}.%{gitdate}git%{shortcommit}%{?dist}
-Source0:        https://github.com/VirusTotal/yara-python/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
+Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz#/%{name}-%{version}-git%{gitdate}-%{shortcommit}.tar.gz
 %endif
 
 BuildRequires:  gcc
@@ -146,6 +150,9 @@ pytest-3 -k "$EXCLUDE" tests.py -v
 
 #====================================================================
 %changelog
+* Thu Mar 30 2023 Michal Ambroz <rebus at, seznam.cz> - 4.3.0-1
+- bump to 4.3.0
+
 * Fri Jan 20 2023 Fedora Release Engineering <releng@fedoraproject.org> - 4.2.3-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_38_Mass_Rebuild
 
