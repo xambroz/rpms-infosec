@@ -32,7 +32,7 @@ and a Boolean expression which determine its logic.}
 %bcond_without     python2
 %endif
 
-%if 0%{?with_release}
+%if %{with release}
 Release:        %{baserelease}%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 %else
@@ -52,7 +52,7 @@ BuildRequires:  python%{python3_pkgversion}-pytest
 BuildRequires:  python%{python3_pkgversion}-setuptools
 
 
-%if 0%{?with_python2}  > 0
+%if %{with python2}
 BuildRequires:  python2
 BuildRequires:  python2-devel
 BuildRequires:  python2-setuptools
@@ -73,7 +73,7 @@ Summary:        Python3 binding for the YARA pattern matching tool
 %description -n python%{python3_pkgversion}-yara
 %{common_description}
 
-%if 0%{?with_python2}  > 0
+%if %{with python2}
 %package -n python2-yara
 Summary:        Python2 binding for the YARA pattern matching tool
 %{?python_provide:%python_provide python2-yara}
@@ -85,7 +85,7 @@ Summary:        Python2 binding for the YARA pattern matching tool
 
 #====================================================================
 %prep
-%if 0%{?with_release}
+%if %{with release}
 # Build from git release version
 %autosetup -n yara-python-%{version}
 
@@ -98,7 +98,7 @@ Summary:        Python2 binding for the YARA pattern matching tool
 
 #====================================================================
 %build
-%if 0%{?with_python2}  > 0
+%if %{with python2}
 %py2_build "--dynamic-linking"
 %endif
 
@@ -108,7 +108,7 @@ Summary:        Python2 binding for the YARA pattern matching tool
 
 #====================================================================
 %install
-%if 0%{?with_python2}  > 0
+%if %{with python2}
 %py2_install
 %endif
 
@@ -141,7 +141,7 @@ pytest-3 -k "$EXCLUDE" tests.py -v
 %doc README.rst
 %{python3_sitearch}/yara*
 
-%if 0%{?with_python2}  > 0
+%if %{with python2}
 %files -n python2-yara
 %license LICENSE
 %doc README.rst
