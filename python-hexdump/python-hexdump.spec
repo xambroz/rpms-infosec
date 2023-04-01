@@ -1,3 +1,13 @@
+Name:           python-hexdump
+Version:        3.4
+Release:        0.19.%{commitdate}hg%{shortcommit}%{?dist}
+Summary:        Dump binary data to hex format and restore from there
+License:        Public Domain
+#               https://pypi.python.org/pypi/hexdump
+#               https://bitbucket.org/techtonik/hexdump
+URL:            https://bitbucket.com/techtonik/hexdump
+
+
 %global         hguser         techtonik
 %global         srcname        hexdump
 # 2016-08-18
@@ -5,16 +15,13 @@
 %global         commitdate     20160818
 %global         shortcommit    %(c=%{commit}; echo ${c:0:12})
 
+# Build with python2 support for RHEL7
+%bcond_with     python2
+%if ( 0%{?rhel} && 0%{?rhel} <= 7 )
+%bcond_without     python2
+%endif
 
-Name:           python-hexdump
-Version:        3.4
-Release:        0.19.%{commitdate}hg%{shortcommit}%{?dist}
-Summary:        Dump binary data to hex format and restore from there
 
-License:        Public Domain
-#               https://pypi.python.org/pypi/hexdump
-#               https://bitbucket.org/techtonik/hexdump
-URL:            https://bitbucket.com/techtonik/hexdump
 Source0:        https://bitbucket.org/%{hguser}/%{srcname}/get/%{shortcommit}.zip#/%{name}-%{version}-%{shortcommit}.zip
 Source1:        hexdumpy.1
 
@@ -24,13 +31,26 @@ Patch0:         %{name}-setup.patch
 
 BuildArch:      noarch
 
+%if %{with python2}
+BuildRequires:  python2-devel
+BuildRequires:  python2-setuptools
+%endif
+
 BuildRequires:  python%{python3_pkgversion}-devel
 BuildRequires:  python%{python3_pkgversion}-setuptools
 
 %description
 Python library to dump binary data to hex format and restore from there
 
+%if %{with python2}
+%package -n python2-%{srcname}
+Summary:        Dump binary data to hex format and restore from there
+Group:          Development/Libraries
+%{?python_provide:%python_provide python2-%{srcname}}
 
+%description -n python2-%{srcname}
+Python library to dump binary data to hex format and restore from there
+%endif
 
 %package -n python%{python3_pkgversion}-%{srcname}
 Summary:        Dump binary data to hex format and restore from there
@@ -48,13 +68,26 @@ sed -i -e 's|#!/usr/bin/env python|#|' hexdump.py
 
 
 %build
+%if %{with python2}
+%py2_build
+%endif
 %py3_build
 
 %install
+%if %{with python2}
+%py2_install
+%endif
 %py3_install
 
 mkdir -p %{buildroot}%{_mandir}/man1
 install -m 644 %{SOURCE1} %{buildroot}%{_mandir}/man1/hexdumpy.1
+
+%if %{with python2}
+%files -n python2-%{srcname}
+%license UNLICENSE
+%doc README.txt
+%{python2_sitelib}/*
+%endif
 
 %files -n python%{python3_pkgversion}-%{srcname}
 %license UNLICENSE
