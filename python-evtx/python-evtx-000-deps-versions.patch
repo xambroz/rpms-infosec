@@ -1,14 +1,15 @@
-diff -ru python-evtx-0.7.4.old/setup.py python-evtx-0.7.4.new/setup.py
---- python-evtx-0.7.4.old/setup.py	2021-03-22 16:59:17.000000000 +0100
-+++ python-evtx-0.7.4.new/setup.py	2022-04-22 17:30:48.908119621 +0200
-@@ -23,20 +23,20 @@
+diff -ru python-evtx-e0c2921a2af45b2b87e615b0cfd0c7aafb5c3b33/setup.py python-evtx-e0c2921a2af45b2b87e615b0cfd0c7aafb5c3b33.new/setup.py
+--- python-evtx-e0c2921a2af45b2b87e615b0cfd0c7aafb5c3b33/setup.py	2023-03-06 10:20:44.000000000 +0100
++++ python-evtx-e0c2921a2af45b2b87e615b0cfd0c7aafb5c3b33.new/setup.py	2023-04-02 00:16:36.627160249 +0200
+@@ -23,21 +23,20 @@
          packages=setuptools.find_packages(),
          install_requires=[
              'six',
 -            'hexdump==3.3',
--               
+-            'xmltodict==0.13.0', #added deps for evtx_dump_json.py script
 +            'hexdump>=3.3',
-+
++            'xmltodict>=0.12.0', #added deps for evtx_dump_json.py script
+                
              # pin deps for python 2, see #67
 -            'more_itertools==5.0.0',
 -            'zipp==1.0.0',
@@ -16,7 +17,6 @@ diff -ru python-evtx-0.7.4.old/setup.py python-evtx-0.7.4.new/setup.py
 -            'pyparsing==2.4.7',
 +            'more_itertools>=5.0.0',
 +            'zipp>=1.0.0',
-+            'configparser>=4.0.2',
 +            'pyparsing>=2.4.7',
              ],
          extras_require={

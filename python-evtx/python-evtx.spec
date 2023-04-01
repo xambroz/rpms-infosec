@@ -1,26 +1,36 @@
 Name:           python-evtx
 Version:        0.7.4
 License:        APLv2
-Release:        2%{?dist}
+%global         baserelease     2
 Summary:        Pure Python parser for new Windows Event Log XML files (.evtx)
 URL:            https://github.com/williballenthin/python-evtx/
 # URL:          https://pypi.python.org/pypi/python-evtx
 #               https://github.com/williballenthin/python-evtx/releases
 
 
-%global         gituser         williballenthin
-%global         gitname         python-evtx
-%global         commit          86905344699452088e155589ec5900ce74ae3d1c
-%global         shortcommit     %(c=%{commit}; echo ${c:0:7})
-
+%bcond_with     release
 %bcond_without  python3
 %bcond_with     python2
 
 
-Source0:        https://github.com/%{gituser}/%{gitname}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
-Patch0:         python-evtx-deps-versions.patch
+%global         gituser         williballenthin
+%global         gitname         python-evtx
+%global         gitdate         20230306
+%global         commit          e0c2921a2af45b2b87e615b0cfd0c7aafb5c3b33
+%global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
-BuildArch:        noarch
+
+%if %{with release}
+Release:        %{baserelease}%{?dist}
+Source0:        https://github.com/%{gituser}/%{gitname}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
+%else
+Release:        %{baserelease}.git%{gitdate}.%{shortcommit}%{?dist}
+Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-git%{gitdate}-%{shortcommit}.tar.gz
+%endif
+
+Patch0:         python-evtx-000-deps-versions.patch
+
+BuildArch:      noarch
 
 %if %{with python2}
 BuildRequires:  python2-devel
@@ -76,9 +86,11 @@ Group:          Development/Libraries
 
 
 %prep
-#setup -q -n %{gitname}-%{commit}
+%if %{with release}
 %autosetup -n %{name}-%{version}
-
+%else
+%autosetup -n %{name}-%{commit}
+%endif
 
 %build
 %if %{with python2}
