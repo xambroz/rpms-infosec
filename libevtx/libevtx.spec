@@ -51,6 +51,9 @@ Source0:       https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name
 %endif
 
 
+BuildRequires:  gcc
+BuildRequires:  make
+
 %if %{with python2}
 BuildRequires:  python2-devel
 BuildRequires:  python2-setuptools
