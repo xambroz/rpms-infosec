@@ -1,5 +1,5 @@
 Name:           yara
-Version:        4.3.0
+Version:        4.3.1
 %global         baserelease 1
 Summary:        Pattern matching Swiss knife for malware researchers
 URL:            https://VirusTotal.github.io/yara/
@@ -16,15 +16,14 @@ YARA is a tool aimed at (but not limited to) helping malware researchers to
 identify and classify malware samples. With YARA you can create descriptions
 of malware families (or whatever you want to describe) based on textual or
 binary patterns. Each description, a.k.a rule, consists of a set of strings
-and a Boolean expression which determine its logic.
-}
+and a Boolean expression which determine its logic.}
 
 
 %global         gituser         VirusTotal
 %global         gitname         yara
-%global         gitdate         20230322
-# Commit of version 4.3.0rc1 + fixes
-%global         commit          96790e56fc0fc0ce8598d215f969d8b7d8ca1015
+%global         gitdate         20230420
+# Commit of version 4.3.1
+%global         commit          a6f6ce1d6d74a03c396660db25765f2a794d9e30
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 %bcond_without  release
@@ -190,6 +189,9 @@ make check || (
 
 
 %changelog
+* Wed Apr 26 2023 Michal Ambroz <rebus at, seznam.cz> - 4.3.1-1
+- bump to 4.3.1
+
 * Thu Mar 30 2023 Michal Ambroz <rebus at, seznam.cz> - 4.3.0-1
 - bump to 4.3.0
 
