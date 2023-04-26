@@ -1,5 +1,5 @@
 Name:           python-yara
-Version:        4.3.0
+Version:        4.3.1
 %global         baserelease     1
 Summary:        Python binding for the YARA pattern matching tool
 License:        Apache-2.0
@@ -14,8 +14,8 @@ VCS:            https://github.com/VirusTotal/yara-python/
 
 %global         gituser         VirusTotal
 %global         gitname         yara-python
-%global         commit          8106b84fa967bcd2fff4f5a40e558c36bb8d54e8
-%global         gitdate         20220809
+%global         commit          37dcb76cd5a07c62e6ed2646968c496e22e70729
+%global         gitdate         20230421
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
@@ -32,7 +32,7 @@ and a Boolean expression which determine its logic.}
 %bcond_without     python2
 %endif
 
-%if %{with release}
+%if 0%{?with_release}
 Release:        %{baserelease}%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 %else
@@ -52,7 +52,7 @@ BuildRequires:  python%{python3_pkgversion}-pytest
 BuildRequires:  python%{python3_pkgversion}-setuptools
 
 
-%if %{with python2}
+%if 0%{?with_python2}  > 0
 BuildRequires:  python2
 BuildRequires:  python2-devel
 BuildRequires:  python2-setuptools
@@ -73,7 +73,7 @@ Summary:        Python3 binding for the YARA pattern matching tool
 %description -n python%{python3_pkgversion}-yara
 %{common_description}
 
-%if %{with python2}
+%if 0%{?with_python2}  > 0
 %package -n python2-yara
 Summary:        Python2 binding for the YARA pattern matching tool
 %{?python_provide:%python_provide python2-yara}
@@ -85,7 +85,7 @@ Summary:        Python2 binding for the YARA pattern matching tool
 
 #====================================================================
 %prep
-%if %{with release}
+%if 0%{?with_release}
 # Build from git release version
 %autosetup -n yara-python-%{version}
 
@@ -98,7 +98,7 @@ Summary:        Python2 binding for the YARA pattern matching tool
 
 #====================================================================
 %build
-%if %{with python2}
+%if 0%{?with_python2}  > 0
 %py2_build "--dynamic-linking"
 %endif
 
@@ -108,7 +108,7 @@ Summary:        Python2 binding for the YARA pattern matching tool
 
 #====================================================================
 %install
-%if %{with python2}
+%if 0%{?with_python2}  > 0
 %py2_install
 %endif
 
@@ -141,7 +141,7 @@ pytest-3 -k "$EXCLUDE" tests.py -v
 %doc README.rst
 %{python3_sitearch}/yara*
 
-%if %{with python2}
+%if 0%{?with_python2}  > 0
 %files -n python2-yara
 %license LICENSE
 %doc README.rst
@@ -150,6 +150,9 @@ pytest-3 -k "$EXCLUDE" tests.py -v
 
 #====================================================================
 %changelog
+* Wed Apr 26 2023 Michal Ambroz <rebus at, seznam.cz> - 4.3.1-1
+- bump to 4.3.1
+
 * Thu Mar 30 2023 Michal Ambroz <rebus at, seznam.cz> - 4.3.0-1
 - bump to 4.3.0
 
