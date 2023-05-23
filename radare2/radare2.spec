@@ -1,7 +1,7 @@
 Name:           radare2
 Summary:        The reverse engineering framework
-Version:        5.8.5
-%global         baserelease     3
+Version:        5.8.6
+%global         baserelease     1
 URL:            https://radare.org/
 VCS:            https://github.com/radareorg/radare2
 #               https://github.com/radareorg/radare2/releases
@@ -16,13 +16,13 @@ VCS:            https://github.com/radareorg/radare2
 
 # by default it builds from the released version of radare2
 # to build from git use rpmbuild --without=releasetag
-%bcond_with     releasetag
+%bcond_without     releasetag
 
 %global         gituser         radareorg
 %global         gitname         radare2
 
-%global         gitdate         20230328
-%global         commit          70a78f0943e33b8885ee63cb8cca889b732404da
+%global         gitdate         20230505
+%global         commit          3c9ad151adf52658d814f56b9bb80bc9231da36b
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
@@ -360,6 +360,9 @@ mkdir -p %{buildroot}%{_libdir}/%{name}/%{version}
 
 
 %changelog
+* Tue May 23 2023 Michal Ambroz <rebus at, seznam.cz> 5.8.6-1
+- bump to 5.8.5
+
 * Sat Mar 25 2023 Michal Ambroz <rebus at, seznam.cz> 5.8.5-0.3
 - 5.8.5 rebuild from git, patched for segfault
 
