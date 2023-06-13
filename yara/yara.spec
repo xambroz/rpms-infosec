@@ -1,5 +1,5 @@
 Name:           yara
-Version:        4.3.1
+Version:        4.3.2
 %global         baserelease 1
 Summary:        Pattern matching Swiss knife for malware researchers
 URL:            https://VirusTotal.github.io/yara/
@@ -189,6 +189,9 @@ make check || (
 
 
 %changelog
+* Wed Jun 14 2023 Michal Ambroz <rebus at, seznam.cz> - 4.3.2-1
+- bump to 4.3.2
+
 * Wed Apr 26 2023 Michal Ambroz <rebus at, seznam.cz> - 4.3.1-1
 - bump to 4.3.1
 
