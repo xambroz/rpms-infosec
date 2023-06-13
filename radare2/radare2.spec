@@ -361,7 +361,7 @@ mkdir -p %{buildroot}%{_libdir}/%{name}/%{version}
 
 %changelog
 * Tue May 23 2023 Michal Ambroz <rebus at, seznam.cz> 5.8.6-1
-- bump to 5.8.5
+- bump to 5.8.6
 
 * Sat Mar 25 2023 Michal Ambroz <rebus at, seznam.cz> 5.8.5-0.3
 - 5.8.5 rebuild from git, patched for segfault
