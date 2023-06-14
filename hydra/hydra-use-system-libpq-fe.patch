@@ -1,0 +1,12 @@
+--- orig/hydra-postgres.c.orig	2021-03-24 03:29:23.732191974 +0100
++++ new/hydra-postgres.c	2021-03-24 03:29:58.167409496 +0100
+@@ -11,7 +11,8 @@
+ void dummy_postgres() { printf("\n"); }
+ #else
+ 
+-#include "libpq-fe.h" // Postgres connection functions
++/* Postgres connection functions */
++#include <libpq-fe.h>
+ #include <stdio.h>
+ 
+ #define DEFAULT_DB "template1"

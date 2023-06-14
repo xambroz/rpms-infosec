@@ -1,0 +1,75 @@
+Improve C99 compatibility by declaring called functions explicitly:
+
+strrchr is declared in <strings.h>, not <string.h>.
+
+_GNU_SOURCE needs to be defined before any glibc headers are included,
+otherwise it is not effective.
+
+Also patch some old autoconf-internal issues in the hydra-gtk
+configure script.
+
+Submitted upstream: <https://github.com/vanhauser-thc/thc-hydra/pull/817>
+
+diff --git a/configure b/configure
+index d9c8b020798c6b1c..425f80a8abdfbd00 100755
+--- a/configure
++++ b/configure
+@@ -1356,7 +1356,7 @@ echo "Checking for Android specialities ..."
+ TMPC=comptest$$
+ STRRCHR=" not"
+ echo '#include <stdio.h>' > $TMPC.c
+-echo '#include <strings.h>' >> $TMPC.c
++echo '#include <string.h>' >> $TMPC.c
+ echo "int main() { char *x = strrchr(\"test\", 'e'); if (x == NULL) return 0; else return 1; }" >> $TMPC.c
+ $CC -o $TMPC $TMPC.c > /dev/null 2>&1
+ test -x $TMPC && STRRCHR=""
+diff --git a/hydra-gtk/configure b/hydra-gtk/configure
+index 653ba7df294ebb82..6cd3de715ba40056 100755
+--- a/hydra-gtk/configure
++++ b/hydra-gtk/configure
+@@ -2391,7 +2391,7 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
+   echo "$as_me:$LINENO: \$? = $ac_status" >&5
+   (exit $ac_status); }; }; then
+   for ac_declaration in \
+-   '' \
++   '#include <stdlib.h>' \
+    'extern "C" void std::exit (int) throw (); using std::exit;' \
+    'extern "C" void std::exit (int); using std::exit;' \
+    'extern "C" void exit (int) throw ();' \
+@@ -3192,7 +3192,7 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
+   echo "$as_me:$LINENO: \$? = $ac_status" >&5
+   (exit $ac_status); }; }; then
+   for ac_declaration in \
+-   '' \
++   '#include <stdlib.h>' \
+    'extern "C" void std::exit (int) throw (); using std::exit;' \
+    'extern "C" void std::exit (int); using std::exit;' \
+    'extern "C" void exit (int) throw ();' \
+@@ -3797,8 +3797,8 @@ main ()
+   for (i = 0; i < 256; i++)
+     if (XOR (islower (i), ISLOWER (i))
+ 	|| toupper (i) != TOUPPER (i))
+-      exit(2);
+-  exit (0);
++      return 2;
++  return 0;
+ }
+ _ACEOF
+ rm -f conftest$ac_exeext
+diff --git a/hydra-rtsp.c b/hydra-rtsp.c
+index 3b6e84b292761d23..3b4bdca021111f47 100644
+--- a/hydra-rtsp.c
++++ b/hydra-rtsp.c
+@@ -6,10 +6,11 @@
+ //
+ //
+ 
++#define _GNU_SOURCE
++
+ #include "hydra-mod.h"
+ #include "sasl.h"
+ #include <stdio.h>
+-#define _GNU_SOURCE
+ #include <string.h>
+ 
+ extern char *HYDRA_EXIT;

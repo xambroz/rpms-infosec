@@ -1,0 +1,13 @@
+--- orig/dpl4hydra.sh	2012-05-23 00:52:11.312000504 +0100
++++ new/dpl4hydra.sh	2012-05-23 00:53:05.605999925 +0100
+@@ -8,8 +8,8 @@
+ # Credits:  Thanks to van Hauser for support and fixing portability issues.
+ #           "The universe is an intelligence test." -Timothy Leary (R.I.P.)
+ 
+-INSTALLDIR=/usr/local
+-LOCATION=etc
++INSTALLDIR=/usr/
++LOCATION=share/hydra
+ 
+ usage ()
+ {
