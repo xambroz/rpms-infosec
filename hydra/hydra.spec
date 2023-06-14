@@ -12,7 +12,6 @@ Source2:        xhydra.png
 # Sent upstream via email 20120518
 Patch0:         hydra-use-system-libpq-fe.patch
 Patch1:         hydra-fix-dpl4hydra-dir.patch
-Patch2:         hydra-c99.patch
 
 BuildRequires:  apr-devel
 BuildRequires:  desktop-file-utils
