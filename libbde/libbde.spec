@@ -1,18 +1,18 @@
+Name:           libbde
+Summary:        Library to access the BitLocker Drive Encryption (BDE) format
+Group:          System Environment/Libraries
+License:        LGPL-3.0-or-later
+URL:            https://github.com/libyal/libbde
+
 %global         gituser         libyal
 %global         gitname         libbde
-%global         gitdate         20220121
-%global         commit          ac7bb8586041b69e56e3dbbcbeb0ccb19917c88e
+%global         gitdate         20221031
+%global         commit          4f69d1a9e3c18967ce59a810fe8a3f742d59fe24
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
-
-Name:           libbde
 Version:        %{gitdate}
 Release:        1%{?dist}
-Summary:        Library to support cross-platform AES encryption 
 
-Group:          System Environment/Libraries
-License:        LGPLv3+
-URL:            https://github.com/libyal/libbde
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 #Patch build to use the shared system libraries rather than using embedded ones
 Patch0:         %{name}-libs.patch
@@ -23,6 +23,7 @@ BuildRequires:  pkgconfig
 BuildRequires:  automake
 BuildRequires:  libtool
 BuildRequires:  gettext-devel
+BuildRequires:  openssl-devel
 BuildRequires:  libcstring-devel
 BuildRequires:  libcerror-devel
 BuildRequires:  libcthreads-devel
@@ -42,11 +43,13 @@ BuildRequires:  libfvalue-devel
 BuildRequires:  libhmac-devel
 BuildRequires:  libcaes-devel
 
+
 %description
-Library to support cross-platform AES encryption.
+Library to access the BitLocker Drive Encryption (BDE) format
+
 
 %package        devel
-Summary:        Development files for %{name}
+Summary:        Header files and libraries for developing applications for libbde
 Group:          Development/Libraries
 Requires:       %{name}%{?_isa} = %{version}-%{release}
 Requires:       zlib-devel
@@ -56,14 +59,23 @@ Requires:       pkgconfig
 The %{name}-devel package contains libraries and header files for
 developing applications that use %{name}.
 
+%package -n     python3-libbde
+Summary:        Python 3 bindings for libbde
+Group:          System Environment/Libraries
+Requires:       %{name}%{?_isa} = %{version}-%{release} python3
+BuildRequires:  python3-devel
+
+%description -n python3-libbde
+Python 3 bindings for libbde
+
+
 %prep
-%setup -qn %{gitname}-%{commit}
-%patch0 -p 1 -b .libs
+%autosetup -n %{gitname}-%{commit}
 ./autogen.sh
 
 
 %build
-%configure --disable-static --enable-wide-character-type
+%configure --prefix=/usr --libdir=%{_libdir} --mandir=%{_mandir} --disable-static --enable-wide-character-type --enable-python3
 %make_build
 
 
@@ -71,13 +83,10 @@ developing applications that use %{name}.
 make install DESTDIR=%{buildroot} INSTALL="install -p"
 find %{buildroot} -name '*.la' -exec rm -f {} ';'
 
-%post -p /sbin/ldconfig
-
-%postun -p /sbin/ldconfig
-
 
 %files
-%doc AUTHORS COPYING NEWS README
+%license COPYING COPYING.LESSER
+%doc AUTHORS README
 %{_libdir}/*.so.*
 
 %files devel
@@ -87,7 +96,17 @@ find %{buildroot} -name '*.la' -exec rm -f {} ';'
 %{_libdir}/pkgconfig/%{name}.pc
 %{_mandir}/man3/%{name}.3*
 
+%files -n python3-libbde
+%{_libdir}/python3*/site-packages/*.a
+%{_libdir}/python3*/site-packages/*.so
+
+
+
+
 %changelog
+* Tue Jun 27 2023 Michal Ambroz <rebus AT seznam.cz> - 20221031-1
+- bump to 20221031
+
 * Fri Feb 18 2022 Michal Ambroz <rebus AT seznam.cz> - 20220121-1
 - bump to 20220121
 
