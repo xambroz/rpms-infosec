@@ -1,23 +1,18 @@
+Name:           libcstring
+Summary:        Libyal library for cross-platform C string functions
+
+Group:          System Environment/Libraries
+License:        LGPL-3.0-or-later
+
 %global         gituser         libyal
 %global         gitname         libcstring
 %global         gitdate         20180218
 %global         commit          9a6461ffcdaaa0cda5dd4736b0298de7b1e99aaa
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
-# Previous versions
-# %%global      commit          284f0aced7694cb79870757de5082a65947b65af
-# %%global      commit          e4d51d13148780502371622f778b2e639f7cbf11
-
-
-Name:           libcstring
 Version:        %{gitdate}
 Release:        1%{?dist}
-Summary:        Libyal library for cross-platform C string functions
-
-Group:          System Environment/Libraries
-License:        Not a valid license string. Pass '--verbose' to get full parser error.
-#URL:           https://github.com/libyal/libcstring
-URL:            https://github.com/%{gituser}/%{gitname}
+URL:            https://github.com/libyal/libcstring
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 
 
@@ -62,7 +57,8 @@ find %{buildroot} -name '*.la' -exec rm -f {} ';'
 
 
 %files
-%doc AUTHORS COPYING NEWS README
+%license COPYING
+%doc AUTHORS NEWS README
 %{_libdir}/*.so.*
 
 %files devel
