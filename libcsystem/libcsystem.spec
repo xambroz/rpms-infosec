@@ -48,7 +48,7 @@ developing applications that use %{name}.
 
 %prep
 %autosetup -n %{gitname}-%{commit}
-%patch0 -p 1 -b .libs
+#%%patch0 -p 1 -b .libs
 ./autogen.sh
 
 

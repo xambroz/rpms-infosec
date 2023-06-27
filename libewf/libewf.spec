@@ -151,7 +151,7 @@ from Python scripts.
 %prep
 %autosetup -n %{gitname}-%{commit}
 #exit 1
-%patch0 -p 1 -b .libs
+#%%patch0 -p 1 -b .libs
 #%patch1 -p 1 -b .libcstrings
 ./autogen.sh
 
