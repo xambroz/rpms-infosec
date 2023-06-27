@@ -24,7 +24,6 @@ BuildRequires:  pkgconfig
 BuildRequires:  automake
 BuildRequires:  libtool
 BuildRequires:  gettext-devel
-BuildRequires:  libcstring-devel
 BuildRequires:  libcerror-devel
 BuildRequires:  libcthreads-devel
 
@@ -35,7 +34,6 @@ Library for cross-platform C generic data functions.
 Summary:        Development files for %{name}
 Group:          Development/Libraries
 Requires:       %{name}%{?_isa} = %{version}-%{release}
-Requires:       zlib-devel
 Requires:       pkgconfig
 
 %description    devel
@@ -58,7 +56,7 @@ find %{buildroot} -name '*.la' -exec rm -f {} ';'
 
 
 %files
-%license COPYING
+%license COPYING COPYING.LESSER
 %doc AUTHORS NEWS README
 %{_libdir}/*.so.*
 
