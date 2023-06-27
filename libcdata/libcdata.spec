@@ -1,23 +1,19 @@
-%global         gituser         libyal
-%global         gitname         libcdata
-#release 20150104
-#%global         commit          1a9343ba70ffcbf24da7ef5693b10740cfaef654
-#release 20160108
-#%global         commit          e7f9107bd4f947004afcc6c12f13b7afc8788f16
-#20160425
-%global         commit          c4a17c07f28fc5b1af0f8ce9a94baf60f9cda431
-%global         shortcommit     %(c=%{commit}; echo ${c:0:7})
-
-
 Name:           libcdata
-Version:        20160425
-Release:        2%{?dist}
-Summary:        Libyal library for cross-platform C generic data functions
-
 Group:          System Environment/Libraries
 License:        LGPL-3.0-or-later
-#URL:           https://github.com/libyal/libcdata
-URL:            https://github.com/%{gituser}/%{gitname}
+URL:            https://github.com/libyal/libcdata
+
+%global         gituser         libyal
+%global         gitname         libcdata
+%global         gitdate         20230108
+%global         commit          1b7d771b83ae58c6c9e84ed704a74bc0ab94e8f9
+%global         shortcommit     %(c=%{commit}; echo ${c:0:7})
+
+Version:        %{gitdate}
+Release:        1%{?dist}
+
+Summary:        Libyal library for cross-platform C generic data functions
+
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 #Patch build to use the shared system libraries rather than using embedded ones
 Patch0:         %{name}-libs.patch
@@ -47,8 +43,7 @@ The %{name}-devel package contains libraries and header files for
 developing applications that use %{name}.
 
 %prep
-%setup -qn %{gitname}-%{commit}
-%patch0 -p 1 -b .libs
+%autosetup -n %{gitname}-%{commit}
 ./autogen.sh
 
 
@@ -61,13 +56,10 @@ developing applications that use %{name}.
 make install DESTDIR=%{buildroot} INSTALL="install -p"
 find %{buildroot} -name '*.la' -exec rm -f {} ';'
 
-%post -p /sbin/ldconfig
-
-%postun -p /sbin/ldconfig
-
 
 %files
-%doc AUTHORS COPYING NEWS README
+%license COPYING
+%doc AUTHORS NEWS README
 %{_libdir}/*.so.*
 
 %files devel
@@ -78,6 +70,9 @@ find %{buildroot} -name '*.la' -exec rm -f {} ';'
 %{_mandir}/man3/%{name}.3*
 
 %changelog
+* Tue Jun 27 2023 Michal Ambroz <rebus AT seznam.cz> - 20230108-1
+- bump to 20230108
+
 * Mon Jun 20 2016 Michal Ambroz <rebus AT seznam.cz> - 20160425-2
 - add build dependencies
 
