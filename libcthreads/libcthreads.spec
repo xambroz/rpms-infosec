@@ -14,8 +14,8 @@ Version:        %{gitdate}
 Release:        1%{?dist}
 
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
-#Patch build to use the shared system libraries rather than using embedded ones
-# Patch0:         %{name}-libs.patch
+# Patch build to use the shared system libraries rather than using embedded ones
+Patch0:         %{name}-libs.patch
 
 BuildRequires:  gcc
 BuildRequires:  make
