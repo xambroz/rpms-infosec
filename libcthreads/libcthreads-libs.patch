@@ -1,41 +1,37 @@
-diff -ru libcthreads-c4d4609623b5782eff48cecd53bd484e5f4f6f76.orig/configure.ac libcthreads-c4d4609623b5782eff48cecd53bd484e5f4f6f76.new/configure.ac
---- libcthreads-c4d4609623b5782eff48cecd53bd484e5f4f6f76.orig/configure.ac	2015-01-01 09:49:57.000000000 +0100
-+++ libcthreads-c4d4609623b5782eff48cecd53bd484e5f4f6f76.new/configure.ac	2015-06-07 12:24:05.277256391 +0200
-@@ -118,8 +118,6 @@
+diff -ru libcthreads-c63c5109fd456e687239878eead58116d9b29d1e/configure.ac libcthreads-c63c5109fd456e687239878eead58116d9b29d1e.new/configure.ac
+--- libcthreads-c63c5109fd456e687239878eead58116d9b29d1e/configure.ac	2022-01-02 04:14:35.000000000 +0100
++++ libcthreads-c63c5109fd456e687239878eead58116d9b29d1e.new/configure.ac	2023-06-28 00:02:39.494291408 +0200
+@@ -91,7 +91,6 @@
  AC_CONFIG_FILES([Makefile])
  AC_CONFIG_FILES([include/Makefile])
  AC_CONFIG_FILES([common/Makefile])
--AC_CONFIG_FILES([libcstring/Makefile])
 -AC_CONFIG_FILES([libcerror/Makefile])
  AC_CONFIG_FILES([libcthreads/Makefile])
  AC_CONFIG_FILES([po/Makefile.in])
  AC_CONFIG_FILES([po/Makevars])
-diff -ru libcthreads-c4d4609623b5782eff48cecd53bd484e5f4f6f76.orig/Makefile.am libcthreads-c4d4609623b5782eff48cecd53bd484e5f4f6f76.new/Makefile.am
---- libcthreads-c4d4609623b5782eff48cecd53bd484e5f4f6f76.orig/Makefile.am	2015-01-01 09:49:57.000000000 +0100
-+++ libcthreads-c4d4609623b5782eff48cecd53bd484e5f4f6f76.new/Makefile.am	2015-06-07 12:23:35.255738925 +0200
-@@ -3,8 +3,6 @@
+diff -ru libcthreads-c63c5109fd456e687239878eead58116d9b29d1e/Makefile.am libcthreads-c63c5109fd456e687239878eead58116d9b29d1e.new/Makefile.am
+--- libcthreads-c63c5109fd456e687239878eead58116d9b29d1e/Makefile.am	2022-01-02 04:14:35.000000000 +0100
++++ libcthreads-c63c5109fd456e687239878eead58116d9b29d1e.new/Makefile.am	2023-06-28 00:02:39.494291408 +0200
+@@ -3,7 +3,6 @@
  SUBDIRS = \
  	include \
  	common \
--	libcstring \
 -	libcerror \
  	libcthreads \
  	po \
  	manuals \
-@@ -55,8 +53,6 @@
+@@ -53,7 +52,6 @@
  
  library:
  	cd $(srcdir)/common && $(MAKE) $(AM_MAKEFLAGS)
--	cd $(srcdir)/libcstring && $(MAKE) $(AM_MAKEFLAGS)
 -	cd $(srcdir)/libcerror && $(MAKE) $(AM_MAKEFLAGS)
  	cd $(srcdir)/libcthreads && $(MAKE) $(AM_MAKEFLAGS)
  	cd $(srcdir)/po && $(MAKE) $(AM_MAKEFLAGS)
  
-@@ -73,8 +69,6 @@
+@@ -70,7 +68,6 @@
  	done && test -z "$$fail"
  
  splint:
--	(cd $(srcdir)/libcstring && $(MAKE) splint $(AM_MAKEFLAGS))
 -	(cd $(srcdir)/libcerror && $(MAKE) splint $(AM_MAKEFLAGS))
  	(cd $(srcdir)/libcthreads && $(MAKE) splint $(AM_MAKEFLAGS))
  	(cd $(srcdir)/po && $(MAKE) splint $(AM_MAKEFLAGS))

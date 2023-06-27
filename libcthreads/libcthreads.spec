@@ -1,25 +1,21 @@
-%global         gituser         libyal
-%global         gitname         libcthreads
-#%global        commit          f73a55f845007fa43c9c608c617e74c2082578a
-#release 20160402
-#%global        commit          b0cb6461776168f76ad35104d551d51adf152514
-#20160602
-%global         commit          f73a55f845007fa43c9c608c617e74c2082578a9
-%global         shortcommit     %(c=%{commit}; echo ${c:0:7})
-
-
 Name:           libcthreads
-Version:        20160426
-Release:        1%{?dist}
 Summary:        Libyal library for cross-platform C threads functions
-
 Group:          System Environment/Libraries
 License:        LGPL-3.0-or-later
-#URL:           https://github.com/libyal/libcthreads
-URL:            https://github.com/%{gituser}/%{gitname}
+URL:            https://github.com/libyal/libcthreads
+
+%global         gituser         libyal
+%global         gitname         libcthreads
+%global         gitdate         20220102
+%global         commit          c63c5109fd456e687239878eead58116d9b29d1e
+%global         shortcommit     %(c=%{commit}; echo ${c:0:7})
+
+Version:        %{gitdate}
+Release:        1%{?dist}
+
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 #Patch build to use the shared system libraries rather than using embedded ones
-Patch0:         %{name}-libs.patch
+# Patch0:         %{name}-libs.patch
 
 BuildRequires:  gcc
 BuildRequires:  make
@@ -27,7 +23,6 @@ BuildRequires:  pkgconfig
 BuildRequires:  automake
 BuildRequires:  libtool
 BuildRequires:  gettext-devel
-BuildRequires:  libcstring-devel
 BuildRequires:  libcerror-devel
 
 %description
@@ -37,7 +32,6 @@ Library for cross-platform C threads functions.
 Summary:        Development files for %{name}
 Group:          Development/Libraries
 Requires:       %{name}%{?_isa} = %{version}-%{release}
-Requires:       zlib-devel
 Requires:       pkgconfig
 
 %description    devel
@@ -45,8 +39,7 @@ The %{name}-devel package contains libraries and header files for
 developing applications that use %{name}.
 
 %prep
-%setup -qn %{gitname}-%{commit}
-%patch0 -p 1 -b .libs
+%autosetup -n %{gitname}-%{commit}
 ./autogen.sh
 
 
@@ -59,13 +52,10 @@ developing applications that use %{name}.
 make install DESTDIR=%{buildroot} INSTALL="install -p"
 find %{buildroot} -name '*.la' -exec rm -f {} ';'
 
-%post -p /sbin/ldconfig
-
-%postun -p /sbin/ldconfig
-
 
 %files
-%doc AUTHORS COPYING NEWS README
+%license COPYING
+%doc AUTHORS NEWS README
 %{_libdir}/*.so.*
 
 %files devel
@@ -76,6 +66,9 @@ find %{buildroot} -name '*.la' -exec rm -f {} ';'
 %{_mandir}/man3/%{name}.3*
 
 %changelog
+* Tue Jun 27 2023 Michal Ambroz <rebus AT seznam.cz> - 20220102-1
+- bump to 20220102
+
 * Mon Jun 20 2016 Michal Ambroz <rebus AT seznam.cz> - 20160402-1
 - bump to 20160402
 
