@@ -1,22 +1,18 @@
+Name:           libclocale
+Group:          System Environment/Libraries
+License:        LGPL-3.0-or-later
+URL:            https://github.com/libyal/libclocale
+
 %global         gituser         libyal
 %global         gitname         libclocale
-#20150101
-%global         commit          4b9d689df91619703ee745687b7d12c4b7dd0185
-#20160422
-%global         commit          bad134b16a9322c3563d567438d6a01d871cb047
-
+%global         gitdate         20221218
+%global         commit          58d320eefe77acfff82552b53616b50a6f4c3ea4
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
-
-Name:           libclocale
-Version:        20160422
+Version:        %{gitdate}
 Release:        1%{?dist}
 Summary:        Libyal library for cross-platform C locale functions
 
-Group:          System Environment/Libraries
-License:        LGPL-3.0-or-later
-#URL:           https://github.com/libyal/libclocale
-URL:            https://github.com/%{gituser}/%{gitname}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 #Patch build to use the shared system libraries rather than using embedded ones
 Patch0:         %{name}-libs.patch
@@ -47,7 +43,6 @@ developing applications that use %{name}.
 
 %prep
 %autosetup -n %{gitname}-%{commit}
-#%%patch0 -p 1 -b .libs
 ./autogen.sh
 
 
@@ -60,13 +55,10 @@ developing applications that use %{name}.
 make install DESTDIR=%{buildroot} INSTALL="install -p"
 find %{buildroot} -name '*.la' -exec rm -f {} ';'
 
-%post -p /sbin/ldconfig
-
-%postun -p /sbin/ldconfig
-
 
 %files
-%doc AUTHORS COPYING NEWS README
+%license COPYING COPYING.LESSER
+%doc AUTHORS NEWS README
 %{_libdir}/*.so.*
 
 %files devel
@@ -77,6 +69,9 @@ find %{buildroot} -name '*.la' -exec rm -f {} ';'
 %{_mandir}/man3/%{name}.3*
 
 %changelog
+* Tue Jun 28 2023 Michal Ambroz <rebus AT seznam.cz> - 20221218-1
+- bump to 20221218
+
 * Mon Jun 20 2016 Michal Ambroz <rebus AT seznam.cz> - 20160425-1
 - bump to 20160422 - related to libewf release 20160224
 
