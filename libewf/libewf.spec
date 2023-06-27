@@ -149,7 +149,7 @@ from Python scripts.
 
 
 %prep
-%setup -qn %{gitname}-%{commit}
+%autosetup -n %{gitname}-%{commit}
 #exit 1
 %patch0 -p 1 -b .libs
 #%patch1 -p 1 -b .libcstrings

@@ -52,7 +52,7 @@ The %{name}-devel package contains libraries and header files for
 developing applications that use %{name}.
 
 %prep
-%setup -qn %{gitname}-%{commit}
+%autosetup -n %{gitname}-%{commit}
 %patch0 -p 1 -b .libs
 ./autogen.sh
 

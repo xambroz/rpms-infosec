@@ -26,7 +26,7 @@ Volatility plugins from fireeye - currently only the shimcachemem.
 
 
 %prep
-%setup -qn %{gitname}-%{commit}
+%autosetup -n %{gitname}-%{commit}
 
 
 %build

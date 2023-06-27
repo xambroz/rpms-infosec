@@ -55,7 +55,7 @@ out-of-band connections.
 
 %prep
 #setup -qn %{gitname}-%{commit}
-%setup -qn %{name}-%{version}
+%autosetup -n %{name}-%{version}
 
 #Modify all unnecessary shebangs to comments
 find extra lib plugins -name '*.py' |xargs sed -i -e 's|^#!|#|;'

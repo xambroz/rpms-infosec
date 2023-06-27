@@ -50,7 +50,7 @@ a few changes:
 
 %prep
 #setup -qn %%{gitname}-%%{commit}
-%setup -qn %{gitname}-%{version}
+%autosetup -n %{gitname}-%{version}
 %patch1 -p 1 -b .epel6
 
 

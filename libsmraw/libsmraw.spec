@@ -104,7 +104,7 @@ from Python scripts.
 
 
 %prep
-%setup -qn %{gitname}-%{commit}
+%autosetup -n %{gitname}-%{commit}
 %patch0 -p 1 -b .libs
 ./autogen.sh
 
