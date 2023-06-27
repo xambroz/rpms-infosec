@@ -5,7 +5,7 @@ Summary:        Retrieves syskey and extracts hashes from Windows 2k/NT/XP/Vista
 
 #MD5 RC4 DES functions are linked from openssl library
 #Code of samdump2 is GPLv2+
-License:        GPLv2+
+License:        GPL-2.0-or-later
 URL:            http://sourceforge.net/projects/ophcrack/files/samdump2
 Source0:        http://downloads.sourceforge.net/ophcrack/%{name}-%{version}.tar.bz2
 

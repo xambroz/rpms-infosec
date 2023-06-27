@@ -28,7 +28,7 @@ Release:        2%{?dist}
 Summary:        Libyal library for the Expert Witness Compression Format (EWF)
 
 Group:          System Environment/Libraries
-License:        LGPLv3+
+License:        LGPL-3.0-or-later
 #URL:           https://github.com/libyal/libewf
 #URL:           http://sourceforge.net/projects/libewf/
 URL:            https://github.com/%{gituser}/%{gitname}

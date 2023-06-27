@@ -5,7 +5,7 @@ Version:        0.42
 Release:        1%{?dist}
 Summary:        A process heap analysis framework
 
-License:        GPLv3+
+License:        GPL-3.0-or-later
 URL:            https://github.com/trolldbois/python-haystack
 Source0:        https://github.com/trolldbois/python-haystack/archive/v%{version}.tar.gz#/%{pypi_name}-%{version}.tar.gz
 BuildArch:      noarch

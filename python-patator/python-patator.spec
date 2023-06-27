@@ -3,7 +3,7 @@ Version:        0.9
 Summary:        Patator is a multi-purpose brute-force tool
 # Group needed for EPEL
 Group:          Applications/System
-License:        GPLv2
+License:        GPL-2.0-only
 URL:            https://github.com/lanjelot/patator
 
 

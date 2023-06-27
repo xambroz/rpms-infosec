@@ -2,7 +2,7 @@ Name:           perl-Email-Outlook-Message
 Version:        0.921
 Release:        1%{?dist}
 Summary:        Read Outlook .msg files
-License:        GPL+ or Artistic
+License:        GPL-1.0-or-later OR Artistic-1.0-Perl
 URL:            https://metacpan.org/release/Email-Outlook-Message
 Source0:        https://cpan.metacpan.org/modules/by-module/Email/Email-Outlook-Message-%{version}.tar.gz
 BuildArch:      noarch

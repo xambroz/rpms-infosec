@@ -6,7 +6,7 @@ Release:        4%{?dist}
 %bcond_without  check
 
 URL:            https://www.openwall.com/john
-License:        GPLv2
+License:        GPL-2.0-only
 Source0:        https://www.openwall.com/john/k/john-%{version}.tar.xz
 Source1:        https://www.openwall.com/john/k/john-%{version}.tar.xz.sign
 

@@ -14,7 +14,7 @@ Release:        1%{?dist}
 Summary:        Libyal library for cross-platform C threads functions
 
 Group:          System Environment/Libraries
-License:        LGPLv3+
+License:        LGPL-3.0-or-later
 #URL:           https://github.com/libyal/libcthreads
 URL:            https://github.com/%{gituser}/%{gitname}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz

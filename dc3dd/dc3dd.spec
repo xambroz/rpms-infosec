@@ -3,7 +3,7 @@ Version:        7.2.646
 Release:        16%{?dist}
 Summary:        Patched version of GNU dd for use in computer forensics
 
-License:        GPLv3+
+License:        GPL-3.0-or-later
 URL:            http://sourceforge.net/projects/dc3dd/
 Source0:        http://downloads.sourceforge.net/dc3dd/%{name}-%{version}.7z
 

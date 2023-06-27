@@ -18,7 +18,7 @@ Windows Mail, Exchange, Active Directory, etc.}
 %bcond_without  python3
 
 
-License:        LGPLv3+
+License:        LGPL-3.0-or-later
 URL:            https://github.com/libyal/libesedb
 #               https://github.com/libyal/libesedb/releases
 # Source0:      https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz

@@ -9,7 +9,7 @@ Version:        2.5.0
 Release:        1%{?dist}
 Summary:        Plugins for Volatility framework from FireEye
 
-License:        GPLv2+
+License:        GPL-2.0-or-later
 URL:            http://github.com/fireeye/Volatility-Plugins
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{gitname}-%{version}-%{shortcommit}.tar.gz
 Source1:        vol_genprofile

@@ -8,7 +8,7 @@ Summary:        Interactive packet manipulation tool and network scanner
 %global         commit          95ba5b8504152a1f820bbe679ccf03668cb5118f
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
-License:        GPLv2
+License:        GPL-2.0-only
 URL:            http://www.secdev.org/projects/scapy/
 #               https://github.com/secdev/scapy/releases
 #               https://bitbucket.org/secdev/scapy/pull-request/80

@@ -2,7 +2,7 @@ Name:           libevtx
 Version:        20221101
 Summary:        Library to access the Windows XML Event Log (EVTX) format
 Group:          System Environment/Libraries
-License:        LGPLv3+
+License:        LGPL-3.0-or-later
 URL:            https://github.com/libyal/libevtx/
 %global         baserelease     1
 

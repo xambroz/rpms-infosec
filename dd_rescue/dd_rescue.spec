@@ -3,7 +3,7 @@ Version:        1.99.12
 Release:        3%{?dist}
 Summary:        Fault tolerant "dd" utility for rescuing data from bad media
 # No version specified
-License:        GPL+
+License:        GPL-1.0-or-later
 URL:            http://www.garloff.de/kurt/linux/ddrescue/
 
 %global         rhelp_version 0.3.0

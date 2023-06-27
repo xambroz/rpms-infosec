@@ -1,12 +1,11 @@
 Name:           python-hexdump
 Version:        3.4
-Release:        0.19.%{commitdate}hg%{shortcommit}%{?dist}
+%global         baserelease 19
 Summary:        Dump binary data to hex format and restore from there
-License:        Public Domain
+License:        LicenseRef-Fedora-Public-Domain
 #               https://pypi.python.org/pypi/hexdump
 #               https://bitbucket.org/techtonik/hexdump
 URL:            https://bitbucket.com/techtonik/hexdump
-
 
 %global         hguser         techtonik
 %global         srcname        hexdump
@@ -21,7 +20,7 @@ URL:            https://bitbucket.com/techtonik/hexdump
 %bcond_without     python2
 %endif
 
-
+Release:        0.%{baserelease}.%{commitdate}hg%{shortcommit}%{?dist}
 Source0:        https://bitbucket.org/%{hguser}/%{srcname}/get/%{shortcommit}.zip#/%{name}-%{version}-%{shortcommit}.zip
 Source1:        hexdumpy.1
 

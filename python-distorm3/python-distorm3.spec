@@ -2,7 +2,7 @@ Name:           python-distorm3
 Version:        3.4.4
 Release:        1%{?dist}
 Summary:        Powerful Disassembler Library For x86/AMD64
-License:        GPLv3
+License:        GPL-3.0-only
 
 %global         srcname         distorm3
 %global         gituser         gdabah

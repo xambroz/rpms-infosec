@@ -2,7 +2,7 @@ Name:           ddrescue
 Version:        1.26
 Release:        2%{?dist}
 Summary:        Data recovery tool trying hard to rescue data in case of read errors
-License:        GPLv3+
+License:        GPL-3.0-or-later
 URL:            http://www.gnu.org/software/ddrescue/ddrescue.html
 Source0:        http://ftpmirror.gnu.org/ddrescue/ddrescue-%{version}.tar.lz
 Source1:        http://ftpmirror.gnu.org/ddrescue/ddrescue-%{version}.tar.lz.sig

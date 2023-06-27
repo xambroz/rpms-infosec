@@ -9,7 +9,7 @@ Summary:        Apple Filing Protocol client
 %bcond_without     fuse
 
 
-License:        GPL+
+License:        GPL-1.0-or-later
 URL:            http://alexthepuffin.googlepages.com/home
 Source0:        http://downloads.sourceforge.net/afpfs-ng/%{name}-%{version}.tar.bz2
 Patch0:         afpfs-ng-0.8.1-overflows.patch

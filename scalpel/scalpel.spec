@@ -9,7 +9,7 @@ Version:        2.1
 Release:        0.rc2.%{shortcommit}%{?dist}.1
 Summary:        Fast file carver working on disk images
 
-License:        GPLv2+
+License:        GPL-2.0-or-later
 URL:            https://github.com/sleuthkit/scalpel
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-git%{gitdate}-%{shortcommit}.tar.gz
 

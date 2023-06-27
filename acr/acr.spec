@@ -11,7 +11,7 @@ Summary:        ACR is an autoconf like tool that allows you to create configure
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
-License:        GPLv2+
+License:        GPL-2.0-or-later
 URL:            https://github.com/radare/acr
 #               https://github.com/radare/acr/releases
 #Source0:       https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz

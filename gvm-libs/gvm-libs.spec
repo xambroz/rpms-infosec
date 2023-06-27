@@ -3,7 +3,7 @@ Version:        20.8.1
 Release:        1%{?dist}
 Summary:        Support libraries for Greenbone Vulnerability Management Solution and OpenVAS
 
-License:        GPLv2+
+License:        GPL-2.0-or-later
 URL:            http://www.openvas.org
 #               https://github.com/greenbone/gvm-libs/releases
 

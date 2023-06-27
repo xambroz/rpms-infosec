@@ -11,7 +11,7 @@ Summary:        Securely erase disks using a variety of recognized methods
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
-License:        GPLv2
+License:        GPL-2.0-only
 # used to be    http://nwipe.sourceforge.net
 URL:            https://github.com/martijnvanbrummelen/nwipe
 #Source0:       https://github.com/%%{gituser}/%%{gitname}/archive/%%{commit}/%%{name}-%%{version}-%%{shortcommit}.tar.gz

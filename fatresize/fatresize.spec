@@ -10,7 +10,7 @@ Version:        1.1.0
 # Release:       0.1.git%%{shortcommit}%%{?dist}
 # Build from git release version
 Release:        6%{?dist}
-License:        GPLv3+
+License:        GPL-3.0-or-later
 Summary:        FAT16/FAT32 resizer
 URL:            https://github.com/ya-mouse/fatresize
 #               http://sourceforge.net/projects/fatresize/

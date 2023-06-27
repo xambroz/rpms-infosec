@@ -2,7 +2,7 @@ Name:		pdfresurrect
 Version:	0.14
 Summary:	PDF Analysis and Scrubbing Utility
 Group:		Applications/Productivity
-License:	GPLv3+
+License:GPL-3.0-or-later
 URL:		http://www.757labs.org/projects/pdfresurrect/
 
 %global         gituser         enferex

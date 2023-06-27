@@ -3,7 +3,7 @@ Version:        20080128
 Release:        1%{?dist}
 Summary:        A pseudo-random number sequence test program
 
-License:        GPLv2+
+License:        GPL-2.0-or-later
 URL:            https://www.fourmilab.ch/random/
 Source0:        https://www.fourmilab.ch/random/random.zip
 

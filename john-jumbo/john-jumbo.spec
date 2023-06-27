@@ -4,7 +4,7 @@ Version:        1.9.0
 %global         baserelease     4
 %global         jumbo_version 1
 
-License:        GPLv2
+License:        GPL-2.0-only
 URL:            http://www.openwall.com/john
 VCS:            https://github.com/openwall/john
 Group:          Applications/System

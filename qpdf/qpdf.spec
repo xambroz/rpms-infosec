@@ -3,7 +3,7 @@ Name:    qpdf
 Version: 8.0.0
 Release: 2%{?dist}
 # MIT: e.g. libqpdf/sha2.c
-License: Artistic 2.0
+License: Artistic-2.0
 URL:     http://qpdf.sourceforge.net/
 Source0: http://downloads.sourceforge.net/sourceforge/qpdf/qpdf-%{version}.tar.gz
 

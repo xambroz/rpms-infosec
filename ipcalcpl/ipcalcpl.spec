@@ -4,7 +4,7 @@ Release:        1%{?dist}
 Group:          Applications/Internet
 Summary:        Perl implementation of ipcalc.
 
-License:        GPLv2+
+License:        GPL-2.0-or-later
 URL:            http://jodies.de/ipcalc
 Source0:        http://jodies.de/ipcalc-archive/ipcalc-%{version}.tar.gz
 

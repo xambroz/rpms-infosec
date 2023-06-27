@@ -1,15 +1,16 @@
+Name:           sqlmap
+Version:        1.7
+Release:        1%{?dist}
+Summary:        Penetration testing tool detecting and exploiting SQL injection flaws
+
+
 %global         _binaries_in_noarch_packages_terminate_build 0
 %global         gituser         sqlmapproject
 %global         gitname         sqlmap
-%global         commit          165b275fd7fc09b4b248651f95914fbeaba0ca88
+%global         commit          05293e01a4012d9ba09ec66343aa0c14f7a492f7
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
-
-Name:           sqlmap
-Version:        1.2
-Release:        1%{?dist}
-Summary:        Penetration testing tool detecting and exploiting SQL injection flaws
 
 Group:          Development/Languages
 
@@ -56,17 +57,6 @@ out-of-band connections.
 #setup -qn %{gitname}-%{commit}
 %setup -qn %{name}-%{version}
 
-#Patch the makefiles for compilation of the udf libraries for Fedora
-#%patch0 -p1 -b .udfmakefile
-#Patch the release number to avoid reading it from .svn files
-#%patch1 -p1 -b .revision
-#Set revision number
-sed -i -e 's/@@REVISION@@/%{release}/' lib/core/settings.py
-
-#Convert from windows end of line to Unix
-sed -i -e 's/\r//g' doc/AUTHORS
-
-
 #Modify all unnecessary shebangs to comments
 find extra lib plugins -name '*.py' |xargs sed -i -e 's|^#!|#|;'
 
@@ -80,7 +70,7 @@ find extra lib plugins tamper waf thirdparty -name '*.py' |xargs sed -i -e 's|/u
 #rm -f  shell/runcmd.exe_
 
 #Uncloack files
-find shell -name '*.*_' -type f -exec python ../extra/cloak/cloak.py -d -i '{}' \;
+find ./ -name '*.*_' -type f -exec python ./extra/cloak/cloak.py -d -i '{}' \;
 
 #Remove source files for other OS
 #rm -rf extra/runcmd

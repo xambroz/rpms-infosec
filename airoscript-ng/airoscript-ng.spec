@@ -4,7 +4,7 @@ Release:        1%{?dist}
 Summary:        Text user interface for aircrack-ng
 
 Group:          Applications/Internet
-License:        GPLv2
+License:        GPL-2.0-only
 URL:            http://airoscript.aircrack-ng.org/
 Source0:        http://airoscript.googlecode.com/files/Airoscript-ng%{version}.tgz
 Patch0:         %{name}-makefile.patch

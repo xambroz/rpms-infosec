@@ -27,7 +27,7 @@ Group:          Applications/System
 # libemu package licensed with GPLv2+
 # libdasm.c libdasm.h licensed as public domain do whatever - being bundled with libemu since at least 2006 effectively GPLv2+
 # the code is removed during build and unbundled libdasm library is used instead.
-License:        GPLv2+
+License:        GPL-2.0-or-later
 URL:            https://github.com/DinoTools/libemu/
 #               https://github.com/buffer/libemu
 # Other information sources:

@@ -1,7 +1,7 @@
 Name:           reglookup
 Version:        1.0.1
 Release:        2%{?dist}
-License:        GPLv3
+License:        GPL-3.0-only
 Summary:        Direct analysis of Windows NT-based registry files
 
 %global         common_description %{expand:

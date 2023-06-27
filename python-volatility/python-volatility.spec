@@ -3,7 +3,7 @@ Summary:        Volatile memory extraction utility framework
 Version:        2.6.1
 %global         baserelease     6
 
-License:        GPLv2+
+License:        GPL-2.0-or-later
 URL:            http://www.volatilityfoundation.org/
 #               https://github.com/volatilityfoundation/volatility
 

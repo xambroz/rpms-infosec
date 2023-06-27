@@ -15,7 +15,7 @@ Release:        1%{?dist}
 Summary:        Libyal library for cross-platform C string functions
 
 Group:          System Environment/Libraries
-License:        LGPLv3+
+License:        Not a valid license string. Pass '--verbose' to get full parser error.
 #URL:           https://github.com/libyal/libcstring
 URL:            https://github.com/%{gituser}/%{gitname}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz

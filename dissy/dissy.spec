@@ -2,7 +2,7 @@ Name:           dissy
 Version:        10
 Release:        7%{?dist}
 Summary:        Graphical frontend to the objdump disassembler
-License:        GPLv2
+License:        GPL-2.0-only
 URL:            http://code.google.com/p/dissy
 Source0:        http://dissy.googlecode.com/files/%{name}-%{version}.tar.gz
 Source1:        dissy.desktop

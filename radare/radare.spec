@@ -3,7 +3,7 @@ Version:        1.5.2
 Release:        1%{?dist}
 Summary:        The reverse engineering framework
 
-License:        LGPLv3
+License:        LGPL-3.0-only
 URL:            http://radare.org/y/
 Source0:        http://radare.org/get/%{name}-%{version}.tar.gz
 Patch0:         radare-fedora17.patch

@@ -1,7 +1,7 @@
 Name:           python-pyev
 Version:        0.9.0
 %global         baserelease    14
-License:        GPLv3+
+License:        GPL-3.0-or-later
 Summary:        Python binding for the libev library
 URL:            https://github.com/gabrielfalcao/pyev
 #               https://code.google.com/archive/p/pyev/

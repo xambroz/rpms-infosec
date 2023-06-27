@@ -2,7 +2,7 @@ Name:           fluent-bit
 Summary:        Fast and Lightweight Log processor and forwarder for Linux, BSD and OSX
 Version:        1.7.4
 Release:        2%{?dist}
-License:        ASL 2.0
+License:        Apache-2.0
 URL:            https://fluentbit.io
 Source0:        https://github.com/fluent/%{name}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 

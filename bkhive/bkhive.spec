@@ -3,7 +3,7 @@ Version:        1.1.1
 Release:        25%{?dist}
 Summary:        Dump the syskey bootkey from a Windows system hive
 
-License:        GPLv2+
+License:        GPL-2.0-or-later
 URL:            http://ophcrack.sourceforge.net/
 Source0:        http://downloads.sourceforge.net/ophcrack/%{name}-%{version}.tar.gz
 

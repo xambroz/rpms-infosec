@@ -5,7 +5,7 @@ Version:        2.9
 Release:        1%{?dist}
 Summary:        fuzzer
 
-License:        GPLv2
+License:        GPL-2.0-only
 #Was URL:       http://www.immunitysec.com/resources-freesoftware.shtml
 URL:            https://web.archive.org/web/20141103111846/http://www.immunitysec.com:80/resources-freesoftware.shtml
 

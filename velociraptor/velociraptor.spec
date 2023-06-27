@@ -4,7 +4,7 @@ Release:        1%{?dist}
 Summary:        Velociraptor endpoint visibility tool for security incident response
 
 # https://github.com/Velocidex/velociraptor/blob/master/LICENSE
-License:        AGPLv3+
+License:        AGPL-3.0-or-later
 URL:            https://github.com/Velocidex/velociraptor
 Source0:        https://github.com/Velocidex/velociraptor/releases/download/v%{version}/velociraptor-v0.6.2-linux-amd64
 Source1:        https://github.com/Velocidex/velociraptor/releases/download/v%{version}/velociraptor-v0.6.2-linux-amd64.sig

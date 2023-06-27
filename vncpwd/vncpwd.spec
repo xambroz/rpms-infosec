@@ -1,5 +1,5 @@
 Name:           vncpwd
-License:        GPLv2+
+License:        GPL-2.0-or-later
 Version:        0.1
 Summary:        VNC Password Decrypter
 URL:            https://github.com/jeroennijhof/vncpwd

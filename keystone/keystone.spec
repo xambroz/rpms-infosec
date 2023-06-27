@@ -9,7 +9,7 @@ Summary:        A lightweight multi-platform, multi-architecture assembler frame
 %global         commit          dc7932ef2b2c4a793836caec6ecab485005139d6
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
-License:        GPLv2
+License:        GPL-2.0-only
 URL:            http://www.keystone-engine.org/
 VCS:            https://github.com/keystone-engine/keystone/
 #               https://github.com/keystone-engine/keystone/releases

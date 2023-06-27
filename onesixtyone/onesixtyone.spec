@@ -7,7 +7,7 @@ Summary:        Fast SNMP scanner
 %global         gitname onesixtyone 
 
 
-License:        GPLv2+
+License:        GPL-2.0-or-later
 # Was URL:      http://www.phreedom.org/software/onesixtyone/
 URL:            https://github.com/trailofbits/onesixtyone/
 VCS:            https://github.com/trailofbits/onesixtyone/

@@ -2,7 +2,7 @@ Name:           python-impacket
 Version:        0.10.0
 %global         baserelease     3
 
-License:        ASL 1.1 and zlib
+License:        Apache-1.1 AND Zlib
 URL:            https://github.com/fortra/impacket
 # was           https://github.com/SecureAuthCorp/impacket
 # was           https://github.com/CoreSecurity/impacket

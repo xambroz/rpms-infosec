@@ -2,7 +2,7 @@ Name:           python-floss
 Version:        2.0.0
 %global         baserelease     1
 Summary:        FLARE Obfuscated String Solver
-License:        ASL 2.0
+License:        Apache-2.0
 URL:            https://github.com/mandiant/flare-floss
 
 # By default build from a release tarball.

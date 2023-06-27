@@ -10,7 +10,7 @@ Version:    5.1.0
 Release:    1%{?dist}
 Summary:    Integration of the Ghidra decompiler for radare2
 
-License:    LGPLv3+
+License:    LGPL-3.0-or-later
 URL:        https://github.com/radareorg/r2ghidra
 Source0:    https://github.com/radareorg/r2ghidra/archive/v%{version}/r2ghidra-%{version}.tar.gz
 Source1:    https://github.com/radareorg/ghidra/archive/%{ghidra_commit}/ghidra-%{ghidra_snapshot}.tar.gz

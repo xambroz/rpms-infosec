@@ -9,7 +9,7 @@ Summary:        802.11 (wireless) sniffer and WEP/WPA-PSK key cracker
 
 Group:          Applications/System
 
-License:        GPLv2+
+License:        GPL-2.0-or-later
 URL:            http://www.aircrack-ng.org/
 Source0:        http://download.aircrack-ng.org/aircrack-ng-%{version}-%{alphatag}.tar.gz
 #Source0:        http://download.aircrack-ng.org/aircrack-ng-%{version}%{alphatag}.tar.gz
