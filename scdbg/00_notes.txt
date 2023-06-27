@@ -1,0 +1,3 @@
+https://github.com/REMnux/salt-states/blob/master/remnux/packages/scdbg.sls
+http://sandsprite.com/blogs/index.php?uid=7&pid=152&year=2011
+https://github.com/dzzie/scdbg_unicorn
