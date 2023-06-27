@@ -1,11 +1,10 @@
 diff -ru libcdata-1a9343ba70ffcbf24da7ef5693b10740cfaef654.orig/configure.ac libcdata-1a9343ba70ffcbf24da7ef5693b10740cfaef654.new/configure.ac
 --- libcdata-1a9343ba70ffcbf24da7ef5693b10740cfaef654.orig/configure.ac	2015-02-18 07:25:28.000000000 +0100
 +++ libcdata-1a9343ba70ffcbf24da7ef5693b10740cfaef654.new/configure.ac	2015-06-07 12:53:10.128233758 +0200
-@@ -128,9 +128,6 @@
+@@ -128,8 +128,6 @@
  AC_CONFIG_FILES([Makefile])
  AC_CONFIG_FILES([include/Makefile])
  AC_CONFIG_FILES([common/Makefile])
--AC_CONFIG_FILES([libcstring/Makefile])
 -AC_CONFIG_FILES([libcerror/Makefile])
 -AC_CONFIG_FILES([libcthreads/Makefile])
  AC_CONFIG_FILES([libcdata/Makefile])
@@ -14,31 +13,28 @@ diff -ru libcdata-1a9343ba70ffcbf24da7ef5693b10740cfaef654.orig/configure.ac lib
 diff -ru libcdata-1a9343ba70ffcbf24da7ef5693b10740cfaef654.orig/Makefile.am libcdata-1a9343ba70ffcbf24da7ef5693b10740cfaef654.new/Makefile.am
 --- libcdata-1a9343ba70ffcbf24da7ef5693b10740cfaef654.orig/Makefile.am	2015-02-18 07:25:28.000000000 +0100
 +++ libcdata-1a9343ba70ffcbf24da7ef5693b10740cfaef654.new/Makefile.am	2015-06-07 12:47:18.285041330 +0200
-@@ -3,9 +3,6 @@
+@@ -3,8 +3,6 @@
  SUBDIRS = \
  	include \
  	common \
--	libcstring \
 -	libcerror \
 -	libcthreads \
  	libcdata \
  	po \
  	manuals \
-@@ -56,9 +53,6 @@
+@@ -56,8 +53,6 @@
  
  library:
  	cd $(srcdir)/common && $(MAKE) $(AM_MAKEFLAGS)
--	cd $(srcdir)/libcstring && $(MAKE) $(AM_MAKEFLAGS)
 -	cd $(srcdir)/libcerror && $(MAKE) $(AM_MAKEFLAGS)
 -	cd $(srcdir)/libcthreads && $(MAKE) $(AM_MAKEFLAGS)
  	cd $(srcdir)/libcdata && $(MAKE) $(AM_MAKEFLAGS)
  	cd $(srcdir)/po && $(MAKE) $(AM_MAKEFLAGS)
  
-@@ -75,9 +69,6 @@
+@@ -75,8 +69,6 @@
  	done && test -z "$$fail"
  
  splint:
--	(cd $(srcdir)/libcstring && $(MAKE) splint $(AM_MAKEFLAGS))
 -	(cd $(srcdir)/libcerror && $(MAKE) splint $(AM_MAKEFLAGS))
 -	(cd $(srcdir)/libcthreads && $(MAKE) splint $(AM_MAKEFLAGS))
  	(cd $(srcdir)/libcdata && $(MAKE) splint $(AM_MAKEFLAGS))
