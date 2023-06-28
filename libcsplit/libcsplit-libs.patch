@@ -1,41 +1,37 @@
-diff -ru libcsplit-442dabe7fc6821928954a8f7f5f51d06ff475aaa.orig/configure.ac libcsplit-442dabe7fc6821928954a8f7f5f51d06ff475aaa.new/configure.ac
---- libcsplit-442dabe7fc6821928954a8f7f5f51d06ff475aaa.orig/configure.ac	2015-01-01 13:40:21.000000000 +0100
-+++ libcsplit-442dabe7fc6821928954a8f7f5f51d06ff475aaa.new/configure.ac	2015-06-08 00:47:40.150179913 +0200
-@@ -125,8 +125,6 @@
+diff -ru libcsplit-a23f3a673fe9a8b0b4737d1f661e59f63b024305/configure.ac libcsplit-a23f3a673fe9a8b0b4737d1f661e59f63b024305.new/configure.ac
+--- libcsplit-a23f3a673fe9a8b0b4737d1f661e59f63b024305/configure.ac	2022-01-09 05:51:33.000000000 +0100
++++ libcsplit-a23f3a673fe9a8b0b4737d1f661e59f63b024305.new/configure.ac	2023-06-28 12:43:26.540123347 +0200
+@@ -94,7 +94,6 @@
  AC_CONFIG_FILES([Makefile])
  AC_CONFIG_FILES([include/Makefile])
  AC_CONFIG_FILES([common/Makefile])
--AC_CONFIG_FILES([libcstring/Makefile])
 -AC_CONFIG_FILES([libcerror/Makefile])
  AC_CONFIG_FILES([libcsplit/Makefile])
  AC_CONFIG_FILES([po/Makefile.in])
  AC_CONFIG_FILES([po/Makevars])
-diff -ru libcsplit-442dabe7fc6821928954a8f7f5f51d06ff475aaa.orig/Makefile.am libcsplit-442dabe7fc6821928954a8f7f5f51d06ff475aaa.new/Makefile.am
---- libcsplit-442dabe7fc6821928954a8f7f5f51d06ff475aaa.orig/Makefile.am	2015-01-01 13:40:21.000000000 +0100
-+++ libcsplit-442dabe7fc6821928954a8f7f5f51d06ff475aaa.new/Makefile.am	2015-06-08 00:47:18.839504841 +0200
-@@ -3,8 +3,6 @@
+diff -ru libcsplit-a23f3a673fe9a8b0b4737d1f661e59f63b024305/Makefile.am libcsplit-a23f3a673fe9a8b0b4737d1f661e59f63b024305.new/Makefile.am
+--- libcsplit-a23f3a673fe9a8b0b4737d1f661e59f63b024305/Makefile.am	2022-01-09 05:51:33.000000000 +0100
++++ libcsplit-a23f3a673fe9a8b0b4737d1f661e59f63b024305.new/Makefile.am	2023-06-28 12:43:06.095354034 +0200
+@@ -3,7 +3,6 @@
  SUBDIRS = \
  	include \
  	common \
--	libcstring \
 -	libcerror \
  	libcsplit \
  	po \
  	manuals \
-@@ -55,8 +53,6 @@
+@@ -53,7 +52,6 @@
  
  library:
  	cd $(srcdir)/common && $(MAKE) $(AM_MAKEFLAGS)
--	cd $(srcdir)/libcstring && $(MAKE) $(AM_MAKEFLAGS)
 -	cd $(srcdir)/libcerror && $(MAKE) $(AM_MAKEFLAGS)
  	cd $(srcdir)/libcsplit && $(MAKE) $(AM_MAKEFLAGS)
  	cd $(srcdir)/po && $(MAKE) $(AM_MAKEFLAGS)
  
-@@ -73,8 +69,6 @@
+@@ -70,7 +68,6 @@
  	done && test -z "$$fail"
  
  splint:
--	(cd $(srcdir)/libcstring && $(MAKE) splint $(AM_MAKEFLAGS))
 -	(cd $(srcdir)/libcerror && $(MAKE) splint $(AM_MAKEFLAGS))
  	(cd $(srcdir)/libcsplit && $(MAKE) splint $(AM_MAKEFLAGS))
  	(cd $(srcdir)/po && $(MAKE) splint $(AM_MAKEFLAGS))
