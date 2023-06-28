@@ -69,7 +69,7 @@ find %{buildroot} -name '*.la' -exec rm -f {} ';'
 %{_mandir}/man3/%{name}.3*
 
 %changelog
-* Tue Jun 28 2023 Michal Ambroz <rebus AT seznam.cz> - 20221218-1
+* Wed Jun 28 2023 Michal Ambroz <rebus AT seznam.cz> - 20221218-1
 - bump to 20221218
 
 * Mon Jun 20 2016 Michal Ambroz <rebus AT seznam.cz> - 20160425-1
