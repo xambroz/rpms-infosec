@@ -1,27 +1,25 @@
-%global         gituser         libyal
-%global         gitname         libuna
-#20150101
-#%global        commit          b9129d8786bf86d67c945df5ebc370a3455e07ca
-#20150927
-#%global        commit          3efc9ac2d4c73ffbb0da1d66308b8a41c328bc9a
-#20160501 - from 20160502
-#%global        commit          b818506074ed974dc09ac3101bb75d20dfa0a06a
-#20160705
-%global         commit          2db49f6cd8a225c038e7a51dc4c686f9dbf1fca6
-%global         shortcommit     %(c=%{commit}; echo ${c:0:7})
-
-
 Name:           libuna
-Version:        20160705
-Release:        1%{?dist}
 Summary:        Libyal library to support Unicode and ASCII (byte string) conversions
-
 Group:          System Environment/Libraries
 License:        LGPL-3.0-or-later
-#URL:           https://github.com/libyal/libuna
-URL:            https://github.com/%{gituser}/%{gitname}
+URL:            https://github.com/libyal/libuna
+
+# Bootstrap round dependency to libcfile
+%bcond_with     bootstrap
+
+%global         gituser         libyal
+%global         gitname         libuna
+%global         gitdate         20220611
+%global         commit          0bec9356d6c9fd2684defa2807752e39c5d34014
+%global         shortcommit     %(c=%{commit}; echo ${c:0:7})
+
+Version:        %{gitdate}
+Release:        1%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 Patch0:         %{name}-libs.patch
+%if %{with bootstrap}
+Patch1:         %{name}-bootstrap.patch
+%endif
 
 BuildRequires:  gcc
 BuildRequires:  make
@@ -29,8 +27,13 @@ BuildRequires:  pkgconfig
 BuildRequires:  automake
 BuildRequires:  libtool
 BuildRequires:  gettext-devel
-BuildRequires:  libcstring-devel
 BuildRequires:  libcerror-devel
+BuildRequires:  libcdatetime-devel
+BuildRequires:  libclocale-devel
+BuildRequires:  libcnotify-devel
+%if %{without bootstrap}
+BuildRequires:  libcfile-devel
+%endif
 
 %description
 Library to support Unicode and ASCII (byte string) conversions.
@@ -48,7 +51,6 @@ developing applications that use %{name}.
 
 %prep
 %autosetup -n %{gitname}-%{commit}
-#%%patch0 -p 1 -b .libs
 ./autogen.sh
 
 
@@ -68,7 +70,8 @@ rm %{buildroot}%{_mandir}/man1/unaexport.1*
 
 
 %files
-%doc AUTHORS COPYING NEWS README
+%license COPYING COPYING.LESSER
+%doc AUTHORS NEWS README
 %{_libdir}/*.so.*
 
 %files devel
@@ -79,6 +82,9 @@ rm %{buildroot}%{_mandir}/man1/unaexport.1*
 %{_mandir}/man3/%{name}.3*
 
 %changelog
+* Wed Jun 28 2023 Michal Ambroz <rebus AT seznam.cz> - 20220611-1
+- bump to 20220611
+
 * Mon Aug 01 2016 Michal Ambroz <rebus AT seznam.cz> - 20160705-1
 - bump to 20160705
 
