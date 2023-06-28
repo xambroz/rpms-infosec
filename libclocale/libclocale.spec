@@ -23,7 +23,6 @@ BuildRequires:  pkgconfig
 BuildRequires:  automake
 BuildRequires:  libtool
 BuildRequires:  gettext-devel
-BuildRequires:  libcstring-devel
 BuildRequires:  libcerror-devel
 BuildRequires:  libcthreads-devel
 
@@ -34,7 +33,6 @@ Library for cross-platform C locale functions.
 Summary:        Development files for %{name}
 Group:          Development/Libraries
 Requires:       %{name}%{?_isa} = %{version}-%{release}
-Requires:       zlib-devel
 Requires:       pkgconfig
 
 %description    devel
