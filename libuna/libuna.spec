@@ -49,6 +49,17 @@ Requires:       pkgconfig
 The %{name}-devel package contains libraries and header files for
 developing applications that use %{name}.
 
+%if %{without bootstrap}
+%package        tools
+Summary:        Unatools from the libuna package
+Group:          Development/Libraries
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
+%description    tools
+Unatools from the libuna package.
+%endif
+
+
 %prep
 %autosetup -n %{gitname}-%{commit}
 ./autogen.sh
@@ -64,10 +75,6 @@ make install DESTDIR=%{buildroot} INSTALL="install -p"
 find %{buildroot} -name '*.la' -exec rm -f {} ';'
 rm %{buildroot}%{_mandir}/man1/unaexport.1*
 
-%post -p /sbin/ldconfig
-
-%postun -p /sbin/ldconfig
-
 
 %files
 %license COPYING COPYING.LESSER
@@ -80,6 +87,12 @@ rm %{buildroot}%{_mandir}/man1/unaexport.1*
 %{_libdir}/*.so
 %{_libdir}/pkgconfig/%{name}.pc
 %{_mandir}/man3/%{name}.3*
+
+%files tools
+%{_bindir}/unabase
+%{_bindir}/unaexport
+
+
 
 %changelog
 * Wed Jun 28 2023 Michal Ambroz <rebus AT seznam.cz> - 20220611-1
