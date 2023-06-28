@@ -1,21 +1,19 @@
+Name:           libcnotify
+Group:          System Environment/Libraries
+License:        LGPL-3.0-or-later
+URL:            https://github.com/libyal/libcnotify
+Summary:        Libyal library for cross-platform C generic data functions
+
 %global         gituser         libyal
 %global         gitname         libcnotify
-#20150101
-#%global         commit          7c42bfff331d2762146a1741cf628d2ce8106719
-#20160422 - from 20160606
-%global         commit          2279b5b3305d2e5c8a58fc54a91ff6a75d526ac5
+%global         gitdate         20220108
+%global         commit          e4275c83baf9c2fe53a034b6a73bf34238428fc1
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
-Name:           libcnotify
-Version:        20160422
+Version:        %{gitdate}
 Release:        1%{?dist}
-Summary:        Libyal library for cross-platform C generic data functions
 
-Group:          System Environment/Libraries
-License:        LGPL-3.0-or-later
-#URL:           https://github.com/libyal/libcnotify
-URL:            https://github.com/%{gituser}/%{gitname}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 #Patch build to use the shared system libraries rather than using embedded ones
 Patch0:         %{name}-libs.patch
@@ -46,7 +44,6 @@ developing applications that use %{name}.
 
 %prep
 %autosetup -n %{gitname}-%{commit}
-#%%patch0 -p 1 -b .libs
 ./autogen.sh
 
 
@@ -59,12 +56,9 @@ developing applications that use %{name}.
 make install DESTDIR=%{buildroot} INSTALL="install -p"
 find %{buildroot} -name '*.la' -exec rm -f {} ';'
 
-%post -p /sbin/ldconfig
-
-%postun -p /sbin/ldconfig
-
 
 %files
+%license COPYING COPYING.LESSER
 %doc AUTHORS COPYING NEWS README
 %{_libdir}/*.so.*
 
@@ -76,6 +70,9 @@ find %{buildroot} -name '*.la' -exec rm -f {} ';'
 %{_mandir}/man3/%{name}.3*
 
 %changelog
+* Wed Jun 28 2023 Michal Ambroz <rebus AT seznam.cz> - 20220108-1
+- bump to 20220108
+
 * Mon Jun 20 2016 Michal Ambroz <rebus AT seznam.cz> - 20160422-1
 - bump to 20160422 - related to libewf release 20160424
 
