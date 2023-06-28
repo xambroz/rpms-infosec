@@ -24,9 +24,7 @@ BuildRequires:  pkgconfig
 BuildRequires:  automake
 BuildRequires:  libtool
 BuildRequires:  gettext-devel
-BuildRequires:  libcstring-devel
 BuildRequires:  libcerror-devel
-BuildRequires:  libcthreads-devel
 
 %description
 Library for cross-platform C generic data functions.
