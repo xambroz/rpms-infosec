@@ -24,7 +24,6 @@ BuildRequires:  automake
 BuildRequires:  libtool
 BuildRequires:  gettext-devel
 BuildRequires:  libcerror-devel
-BuildRequires:  libcthreads-devel
 
 %description
 Library for cross-platform C locale functions.
