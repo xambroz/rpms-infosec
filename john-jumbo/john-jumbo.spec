@@ -1,7 +1,7 @@
 Summary:        John the Ripper password cracker
 Name:           john-jumbo
 Version:        1.9.0
-%global         baserelease     4
+%global         baserelease     5
 %global         jumbo_version 1
 
 License:        GPL-2.0-only
@@ -19,8 +19,8 @@ add many more types of the passwords.
 
 %global         gituser         openwall
 %global         gitname         john
-%global         commit          902ba3ffe62a48519adb644b6e906253d108993b
-%global         gitdate         20230217
+%global         commit          a12ffc56fb95065068b5da6ed4ff3c356ef65e1b
+%global         gitdate         20230630
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 # By default build from the release tarball
