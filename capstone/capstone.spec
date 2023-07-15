@@ -120,8 +120,8 @@ The %{name}-java package contains java bindings for %{name}.
 
 
 %prep
-# autosetup -n %%{gitname}-%%{commit} -S git
-autosetup -n %{gitname}-%{version} -S git
+# %%autosetup -n %%{gitname}-%%{commit} -S git
+%autosetup -n %{gitname}-%{version} -S git
 
 
 
