@@ -1,0 +1,18 @@
+diff -ru iaito-5.8.8/src/Iaito.pro iaito-5.8.8.new/src/Iaito.pro
+--- iaito-5.8.8/src/Iaito.pro	2023-06-20 11:00:26.000000000 +0200
++++ iaito-5.8.8.new/src/Iaito.pro	2023-07-05 01:40:23.923470764 +0200
+@@ -11,9 +11,10 @@
+ 
+ CONFIG += sdk_no_version_check
+ 
+-unix:QMAKE_RPATHDIR += /usr/local/lib
+-unix:QMAKE_LFLAGS_RPATH=
+-unix:QMAKE_LFLAGS += "-Wl,-rpath,/usr/local/lib"
++# Disable adding RPATH for Fedora
++# unix:QMAKE_RPATHDIR += /usr/local/lib
++# unix:QMAKE_LFLAGS_RPATH=
++# unix:QMAKE_LFLAGS += "-Wl,-rpath,/usr/local/lib"
+ 
+ QMAKE_CXXFLAGS += $$(CXXFLAGS)
+ QMAKE_CFLAGS += $$(CFLAGS)
+Only in iaito-5.8.8/src: Iaito.pro.rej
