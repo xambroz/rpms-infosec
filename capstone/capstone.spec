@@ -1,12 +1,13 @@
 Name:           capstone
-Version:        4.0.2
-Release:        11%{?dist}
+Version:        5.0
+Release:        1%{?dist}
 Summary:        A lightweight multi-platform, multi-architecture disassembly framework
 
-%global         gituser         aquynh
+%global         gituser         capstone-engine
 %global         gitname         capstone
-# 4.0.2 release
-%global         commit          1d230532840a37ac032c6ab80128238fc930c6c1
+# 5.0.0
+%global         gitdate         20230705
+%global         commit          650e85dcf23b3a3bff69144511533b7339436238
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 License:        BSD
@@ -15,17 +16,6 @@ VCS:            https://github.com/aquynh/capstone/
 #               https://github.com/aquynh/capstone/releases
 # Source0:      https://github.com/%%{gituser}/%%{gitname}/archive/%%{commit}/%%{name}-%%{version}-%%{shortcommit}.tar.gz
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
-
-# Test suite binary samples to be used for disassembly
-# Source1:
-
-# Fedora 29 makes python executable separate from python2 and python3. This patch makes
-# it possible to specify PYTHON2 and PYTHON3 binary to be explicit that by "python" we mean "python2"
-# Patch0:         capstone-python.patch
-
-# Upstream patch which fixes libcapstone.pc.
-# See: https://github.com/aquynh/capstone/issues/1339
-# Patch1:         0001-Fix-include-path-in-pkg-config-for-Makefile-too-1339.patch
 
 %global         common_desc %{expand:
 Capstone is a disassembly framework with the target of becoming the ultimate
@@ -63,9 +53,9 @@ BuildRequires:  python2-setuptools
 BuildRequires:  python%{python3_pkgversion}
 BuildRequires:  python%{python3_pkgversion}-devel
 BuildRequires:  python%{python3_pkgversion}-setuptools
+BuildRequires:  python%{python3_pkgversion}-pip
+BuildRequires:  python%{python3_pkgversion}-wheel
 %endif
-
-%global _hardened_build 1
 
 
 %description
@@ -131,7 +121,7 @@ The %{name}-java package contains java bindings for %{name}.
 
 %prep
 # autosetup -n %%{gitname}-%%{commit} -S git
-%autosetup -n %{gitname}-%{version} -S git
+autosetup -n %{gitname}-%{version} -S git
 
 
 
@@ -154,7 +144,8 @@ pushd bindings/python
 %endif
 
 %if %{with python3}
-%py3_build
+#%%py3_build
+%pyproject_wheel
 %endif
 popd
 
@@ -184,7 +175,10 @@ pushd bindings/python
 %endif
 
 %if %{with python3}
-%py3_install
+#%%py3_install
+%pyproject_install
+%pyproject_save_files capstone
+
 %endif
 popd
 
@@ -195,8 +189,8 @@ install -D -p -m 0644 bindings/java/%{name}.jar  %{buildroot}/%{_javadir}/%{name
 
 
 %check
-ln -s libcapstone.so.4 libcapstone.so
-make check LD_LIBRARY_PATH="`pwd`"
+# ln -s libcapstone.so.5 libcapstone.so
+make check LD_LIBRARY_PATH="$(pwd)"
 
 
 %ldconfig_scriptlets
@@ -227,9 +221,7 @@ make check LD_LIBRARY_PATH="`pwd`"
 
 
 %if %{with python3}
-%files -n python%{python3_pkgversion}-capstone
-%{python3_sitelib}/*egg-info
-%{python3_sitelib}/%{name}
+%files -n python%{python3_pkgversion}-capstone -f %{pyproject_files}
 %endif
 
 
@@ -239,6 +231,20 @@ make check LD_LIBRARY_PATH="`pwd`"
 %endif
 
 %changelog
+* Sat Jul 15 2023 Jonathan Wright <jonathan@almalinux.org> - 5.0-1
+- Update to 5.0
+- Remove legacy code from spec
+- Modernize spec file
+
+* Tue Jun 13 2023 Python Maint <python-maint@redhat.com> - 4.0.2-14
+- Rebuilt for Python 3.12
+
+* Fri Jan 27 2023 Michal Ambroz <rebus AT_ seznam.cz> - 4.0.2-13
+- update the new github page
+
+* Wed Jan 18 2023 Fedora Release Engineering <releng@fedoraproject.org> - 4.0.2-12
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_38_Mass_Rebuild
+
 * Wed Jul 20 2022 Fedora Release Engineering <releng@fedoraproject.org> - 4.0.2-11
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_37_Mass_Rebuild
 - drop java binding for platforms not in %%{java_arches}
