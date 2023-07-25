@@ -1,8 +1,8 @@
 Name:           aesfix
 Version:        1.0.1
-Release:        2%{?dist}
+Release:        3%{?dist}
 # 3-clause BSD license
-License:        BSD
+License:        BSD-3-Clause
 Summary:        Correct bit errors in AES-128 key schedule
 
 URL:            https://citp.princeton.edu/our-work/memory/
@@ -76,6 +76,9 @@ install -p -m644 %{SOURCE3} %{buildroot}%{_mandir}/man1
 
 
 %changelog
+* Tue Jul 25 2023 Michal Ambroz <rebus at, seznam.cz> - 1.0.1-3
+- switch to SPDX license reference - BSD-3-Clause
+
 * Fri Feb 28 2020 Michal Ambroz <rebus at, seznam.cz> - 1.0.1-2
 - uppercase the summary
 
