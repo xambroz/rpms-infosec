@@ -1,7 +1,7 @@
 Summary:        Very fast network log-on cracker
 Name:           hydra
 Version:        9.5
-Release:        1%{?dist}
+Release:        3%{?dist}
 License:        AGPLv3 with exceptions
 # Old URL       https://www.thc.org/thc-hydra/
 URL:            https://github.com/vanhauser-thc/thc-hydra
@@ -43,6 +43,7 @@ BuildRequires:  libwinpr-devel
 BuildRequires:  afpfs-ng-devel
 BuildRequires:  libgcrypt-devel
 BuildRequires:  ncurses-devel
+BuildRequires:  libsmbclient-devel
 
 
 %description
@@ -100,6 +101,12 @@ sed -i 's|^INSTALLDIR=.*|INSTALLDIR=/usr|' %{buildroot}/%{_bindir}/dpl4hydra.sh
 %{_datadir}/applications/*
 
 %changelog
+* Wed Jun 14 2023 Michal Ambroz <rebus _at seznam.cz>  9.5-3
+- merge #PR1 - add missing libsmbclient dependency
+
+* Thu Jul 20 2023 Fedora Release Engineering <releng@fedoraproject.org> - 9.5-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_39_Mass_Rebuild
+
 * Wed Jun 14 2023 Michal Ambroz <rebus _at seznam.cz>  9.5-1
 - bump to new release 9.5
 
