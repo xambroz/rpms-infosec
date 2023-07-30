@@ -33,9 +33,6 @@ BuildRequires:  pcre2-devel
 BuildRequires:  pkgconfig
 BuildRequires:  libpq-devel
 BuildRequires:  subversion-devel
-BuildRequires:  memcached-devel
-BuildRequires:  libmemcached-devel
-BuildRequires:  mongodb-devel
 BuildRequires:  mongo-c-driver-devel
 BuildRequires:  libbson-devel
 BuildRequires:  freerdp-devel
@@ -44,6 +41,13 @@ BuildRequires:  afpfs-ng-devel
 BuildRequires:  libgcrypt-devel
 BuildRequires:  ncurses-devel
 BuildRequires:  libsmbclient-devel
+BuildRequires:  libmemcached-devel
+%if (0%{?fedora})
+BuildRequires:  memcached-devel
+BuildRequires:  mongodb-devel
+%endif
+
+
 
 
 %description
