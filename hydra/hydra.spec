@@ -101,7 +101,7 @@ sed -i 's|^INSTALLDIR=.*|INSTALLDIR=/usr|' %{buildroot}/%{_bindir}/dpl4hydra.sh
 %{_datadir}/applications/*
 
 %changelog
-* Wed Jun 14 2023 Michal Ambroz <rebus _at seznam.cz>  9.5-3
+* Sat Jul 29 2023 Michal Ambroz <rebus _at seznam.cz>  9.5-3
 - merge #PR1 - add missing libsmbclient dependency
 
 * Thu Jul 20 2023 Fedora Release Engineering <releng@fedoraproject.org> - 9.5-2
