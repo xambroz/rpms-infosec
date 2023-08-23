@@ -1,13 +1,13 @@
 Name:           capstone
-Version:        5.0
+Version:        5.0.1
 Release:        1%{?dist}
 Summary:        A lightweight multi-platform, multi-architecture disassembly framework
 
 %global         gituser         capstone-engine
 %global         gitname         capstone
 # 5.0.0
-%global         gitdate         20230705
-%global         commit          650e85dcf23b3a3bff69144511533b7339436238
+%global         gitdate         20230823
+%global         commit          097c04d9413c59a58b00d4d1c8d5dc0ac158ffaa
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 License:        BSD
@@ -16,6 +16,10 @@ VCS:            https://github.com/aquynh/capstone/
 #               https://github.com/aquynh/capstone/releases
 # Source0:      https://github.com/%%{gituser}/%%{gitname}/archive/%%{commit}/%%{name}-%%{version}-%%{shortcommit}.tar.gz
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
+
+# modified to remove the GH CI modifications from this patch
+# Patch0:         https://patch-diff.githubusercontent.com/raw/capstone-engine/capstone/pull/2099.patch#/capstone-2099-fix-s390x-build.patch
+
 
 %global         common_desc %{expand:
 Capstone is a disassembly framework with the target of becoming the ultimate
@@ -121,7 +125,12 @@ The %{name}-java package contains java bindings for %{name}.
 
 %prep
 # %%autosetup -n %%{gitname}-%%{commit} -S git
-%autosetup -n %{gitname}-%{version} -S git
+%autosetup -n %{gitname}-%{version} -p 1 -S git
+%if %{with python3}
+pushd bindings/python
+%pyproject_buildrequires
+popd
+%endif
 
 
 
@@ -164,7 +173,7 @@ popd
 
 %install
 DESTDIR=%{buildroot} PREFIX="%{_prefix}" LIBDIRARCH=%{_lib} \
-INCDIR="%{_includedir}" make install
+INCDIR="%{_includedir}" %make_install
 find %{buildroot} -name '*.la' -exec rm -f {} ';'
 find %{buildroot} -name '*.a' -exec rm -f {} ';'
 
@@ -231,6 +240,9 @@ make check LD_LIBRARY_PATH="$(pwd)"
 %endif
 
 %changelog
+* Wed Aug 23 2023 Michal Ambroz <rebus AT_ seznam.cz> - 5.0.1-1
+- bump to 5.0.1
+
 * Sat Jul 15 2023 Jonathan Wright <jonathan@almalinux.org> - 5.0-1
 - Update to 5.0
 - Remove legacy code from spec
