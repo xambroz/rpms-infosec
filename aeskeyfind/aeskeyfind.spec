@@ -1,6 +1,6 @@
 Name:           aeskeyfind
 Version:        1.0
-Release:        13%{?dist}
+Release:        16%{?dist}
 # 3-clause BSD license
 License:        BSD
 Summary:        Locate 128-bit and 256-bit AES keys in a captured memory image
@@ -40,8 +40,16 @@ Source3:        aeskeyfind.1
 Patch1:         aeskeyfind-10_add-GCC-hardening.patch
 
 # Original Debian patch to fix the size of the sbox
-# Author: Samuel Henrique <samueloph@gmail.com>
+# Author: Samuel Henrique <samueloph@debian.org>
 Patch2:         aeskeyfind-20_sbox-size.patch
+
+# Original Debian patch to support for files bigger than 4GB
+# Author: Harry Sintonen <debianbugs@kyber.fi>
+Patch3: 	aeskeyfind-30_big-files-support.patch
+
+# Original Debian patch to fix silent regression caused by UC
+# Author: Adrian Bunk <bunk@debian.org>
+Patch4: 	aeskeyfind-40_fix-undefined-left-shift.patch
 
 Buildrequires:  gcc
 Buildrequires:  make
@@ -88,6 +96,15 @@ install -p -m644 %{SOURCE3} %{buildroot}%{_mandir}/man1
 
 
 %changelog
+* Thu Sep 07 2023 Samuel Henrique <samueloph@debian.org> - 1.0-16
+- sync with the bugfix patches with Debian
+
+* Wed Jul 19 2023 Fedora Release Engineering <releng@fedoraproject.org> - 1.0-15
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_39_Mass_Rebuild
+
+* Wed Jan 18 2023 Fedora Release Engineering <releng@fedoraproject.org> - 1.0-14
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_38_Mass_Rebuild
+
 * Wed Jul 20 2022 Fedora Release Engineering <releng@fedoraproject.org> - 1.0-13
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_37_Mass_Rebuild
 
