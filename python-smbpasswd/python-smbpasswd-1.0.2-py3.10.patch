@@ -1,0 +1,29 @@
+diff -ru py-smbpasswd-1.0.2/smbpasswd.c py-smbpasswd-1.0.2.new/smbpasswd.c
+--- py-smbpasswd-1.0.2/smbpasswd.c	2023-10-05 03:25:33.357593121 +0200
++++ py-smbpasswd-1.0.2.new/smbpasswd.c	2023-10-05 03:23:18.959605228 +0200
+@@ -24,6 +24,7 @@
+ */
+ 
+  
++#define PY_SSIZE_T_CLEAN
+ #include "Python.h" 
+ #include <memory.h>
+ #include <ctype.h>
+@@ -78,7 +79,7 @@
+ lmhash(PyObject *self, PyObject *args)
+     {
+     char *pwd;
+-    int pwd_len;
++    Py_ssize_t pwd_len;
+     unsigned char lmpwd[LMPASSWDLEN+1];
+     char hashout[17];
+     int i;
+@@ -114,7 +115,7 @@
+ nthash(PyObject *self, PyObject *args)
+     {
+     char *pwd;
+-    int pwd_len;
++    Py_ssize_t pwd_len;
+     char hashout[17];
+          
+     pwd = NULL;         
