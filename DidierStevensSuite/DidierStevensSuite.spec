@@ -35,6 +35,11 @@ BuildArch: noarch
 # Require the utilities packaged separately
 Requires:       xorsearch
 
+# ssdeep.py requires python3-ppdeep
+Requires:       python3-ppdeep
+
+
+
 %description
 Forensics tools from Didier Stevens Lab
 
