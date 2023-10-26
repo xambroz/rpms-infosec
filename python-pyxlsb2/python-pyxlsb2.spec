@@ -6,7 +6,7 @@ Version:        0.0.9
 %global         baserelease     0.1
 Summary:        Excel 2007+ Binary Workbook (xlsb) parser
 
-License:        Apache License 2.0
+License:        Apache-2.0
 URL:            https://github.com/DissectMalware/pyxlsb2
 BuildArch:      noarch
 
@@ -43,7 +43,11 @@ BuildRequires:  python3dist(pkginfo)
 %package -n     python%{python3_pkgversion}-pyxlsb2
 
 Summary:        %{summary}
+%if 0%{?rhel}
 %{?python_provide:%python_provide python%{python3_pkgversion}-pyxlsb2 }
+%else
+%py_provides    python3-pyxlsb2
+%endif
 
 %description -n python%{python3_pkgversion}-pyxlsb2 %_description
 
