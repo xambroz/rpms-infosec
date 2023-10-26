@@ -34,8 +34,7 @@ Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{nam
 %endif
 
 BuildRequires:  python%{python3_pkgversion}-devel
-BuildRequires:  python3dist(setuptools)
-BuildRequires:  python3dist(pkginfo)
+BuildRequires:  python%{python3_pkgversion}-setuptools
 
 %description %_description
 
