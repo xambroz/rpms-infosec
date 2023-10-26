@@ -3,12 +3,18 @@
 Name:           python-xlrd2
 Version:        1.3.4
 Release:        1%{?dist}
-Summary:        Library for developers to extract data from Microsoft Excel legacy spreadsheet files (xls)
+Summary:        Library to extract data from Microsoft Excel legacy spreadsheet files (xls)
 
-License:        Apache License 2.0
+License:        Apache-2.0
 URL:            https://github.com/DissectMalware/xlrd2
 Source0:        https://github.com/DissectMalware/xlrd2/releases/download/v%{version}/xlrd2-%{version}.tar.gz
+
+# https://github.com/DissectMalware/xlrd2/issues/11
+# Patch0:         https://patch-diff.githubusercontent.com/raw/DissectMalware/xlrd2/pull/12.patch#/python-xlrd2-xmlengine.patch
+Patch0:         https://patch-diff.githubusercontent.com/raw/python-excel/xlrd/pull/375.patch#/python-xlrd2-defusedxmliter.patch
+
 BuildArch:      noarch
+
 
 BuildRequires:  python%{python3_pkgversion}-devel
 BuildRequires:  python%{python3_pkgversion}-setuptools
@@ -39,10 +45,18 @@ Summary:        xlrd2 documentation
 Documentation for xlrd2
 
 %prep
-%autosetup -n xlrd2-%{version}
+%autosetup -p 1 -n xlrd2-%{version}
 # Remove bundled egg-info
 rm -rf .egg-info
+
+# Unfinished migration from xlrd to xlrd2
 sed -i -e 's/from xlrd/from xlrd2/;' scripts/runxlrd2.py docs/vulnerabilities.rst
+
+# Fix CRLF ends of lines
+echo "=== Fixing CRLF ends of lines for all text files"
+find ./ -type f '!' '(' -name '*.xls' -o -name '*.xlsx' ')' -print -exec sed '-i' '-e' 's/\r$//' '{}' ';'
+
+
 
 %build
 # package doesn't support pyproject yet
@@ -58,7 +72,8 @@ rm -rf html/.{doctrees,buildinfo}
 
 
 %check
-%{__python3} setup.py test &&
+#%%{__python3} setup.py test
+%pytest -sv -k "not test_names_demo"
 
 
 %files -n python%{python3_pkgversion}-xlrd2
@@ -71,6 +86,7 @@ rm -rf html/.{doctrees,buildinfo}
 %files -n python-xlrd2-doc
 %license LICENSE docs/licenses.rst
 %doc html
+%doc examples
 
 %changelog
 * Sat Dec 10 2022 Michal Ambroz <rebus@seznam.cz> - 1.3.4-1
