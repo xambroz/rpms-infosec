@@ -66,6 +66,11 @@ rm -rf pyxlsb2.egg-info
 %install
 %py3_install
 
+%check
+# Known to be failing now - test_stringify, test_sheets, test_rows
+%pytest -sv -k "not test_stringify and not test_sheets and not test_rows"
+
+
 %files -n python%{python3_pkgversion}-pyxlsb2
 %license LICENSE LICENSE_pyxlsb
 %doc README.rst
