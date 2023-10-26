@@ -12,8 +12,9 @@ URL:            https://github.com/elceef/ppdeep
 Source0:        %{pypi_source}
 BuildArch:      noarch
 
-BuildRequires:  python3-devel
-BuildRequires:  python3dist(setuptools)
+BuildRequires:  python%{python3_pkgversion}-devel
+BuildRequires:  python%{python3_pkgversion}-setuptools
+
 
 %description
 This is a pure-Python library for computing context triggered piecewise hashes
@@ -23,11 +24,11 @@ inputs are similar, rather than identical. Fuzzy hashes are widely adopted in
 digital forensics and malware detection.This implementation is based on SpamSum
 by...
 
-%package -n     python3-%{pypi_name}
+%package -n     python%{python3_pkgversion}-%{pypi_name}
 Summary:        %{summary}
-%{?python_provide:%python_provide python3-%{pypi_name}}
+%{?python_provide:%python_provide python%{python3_pkgversion}-%{pypi_name}}
 
-%description -n python3-%{pypi_name}
+%description -n python%{python3_pkgversion}-%{pypi_name}
 This is a pure-Python library for computing context triggered piecewise hashes
 (CTPH), also called fuzzy hashes, or often ssdeep after the name of a popular
 tool. At a very high level, fuzzy hashing is a way to determine whether two
@@ -47,7 +48,7 @@ rm -rf %{pypi_name}.egg-info
 %install
 %py3_install
 
-%files -n python3-%{pypi_name}
+%files -n python%{python3_pkgversion}-%{pypi_name}
 %doc README.md
 %{python3_sitelib}/__pycache__/*
 %{python3_sitelib}/%{pypi_name}.py
