@@ -1,0 +1,22 @@
+https://github.com/DissectMalware/xlrd2/issues/11
+failing with python3 + defusedxml
+tests (and the library) is failing when running on the python3 (3.11.6) 
+and the defusedxml (0.7.1) is present (as this is the preffered xml library by the xlrd2).
+In defusedxml there is some strange situation where Element_has_iter is evaluated as false,
+but at the same time there is no getiterator() function.
+
+diff -ru xlrd2-1.3.4/xlrd2/xlsx.py xlrd2-1.3.4.new/xlrd2/xlsx.py
+--- xlrd2-1.3.4/xlrd2/xlsx.py	2021-06-12 20:52:41.000000000 +0200
++++ xlrd2-1.3.4.new/xlrd2/xlsx.py	2023-10-24 12:10:47.990831505 +0200
+@@ -36,9 +36,9 @@
+         #### 2.7.2.1: fails later with
+         #### NotImplementedError: iterparse is not supported on IronPython. (CP #31923)
+     else:
+-        try: import defusedxml.cElementTree as ET
++        try: import xml.etree.cElementTree as ET
+         except ImportError:
+-            try: import xml.etree.cElementTree as ET
++            try: import defusedxml.ElementTree as ET
+             except ImportError:
+                 try: import cElementTree as ET
+                 except ImportError:

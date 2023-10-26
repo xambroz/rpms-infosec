@@ -1,0 +1,24 @@
+diff -ru xlrd2-1.3.4/xlrd2/xlsx.py xlrd2-1.3.4.defusedxmliter/xlrd2/xlsx.py
+--- xlrd2-1.3.4/xlrd2/xlsx.py	2023-10-26 01:58:08.515447260 +0200
++++ xlrd2-1.3.4.defusedxmliter/xlrd2/xlsx.py	2023-10-26 01:58:44.846830486 +0200
+@@ -36,7 +36,10 @@
+         #### 2.7.2.1: fails later with
+         #### NotImplementedError: iterparse is not supported on IronPython. (CP #31923)
+     else:
+-        try: import defusedxml.cElementTree as ET
++        is_defused_xml = False
++        try:
++            import defusedxml.cElementTree as ET
++            is_defused_xml = True
+         except ImportError:
+             try: import xml.etree.cElementTree as ET
+             except ImportError:
+@@ -56,7 +59,7 @@
+             ET_has_iterparse = True
+         except NotImplementedError:
+             pass
+-    Element_has_iter = hasattr(ET, 'ElementTree') and hasattr(ET.ElementTree, 'iter')
++    Element_has_iter = is_defused_xml or (hasattr(ET, 'ElementTree') and hasattr(ET.ElementTree, 'iter'))
+     if verbosity:
+         etree_version = repr([
+             (item, getattr(ET, item))
