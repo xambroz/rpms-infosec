@@ -36,7 +36,11 @@ spreadsheet files. It is not an end-user tool.**Versions of Python supported**:
 %package -n     python%{python3_pkgversion}-xlrd2
 Summary:        %{summary}
 %description -n python%{python3_pkgversion}-xlrd2 %_description
+%if 0%{?rhel}
 %{?python_provide:%python_provide python%{python3_pkgversion}-xlrd2}
+%else
+%py_provides    python3-xlrd2
+%endif
 
 
 %package -n python-xlrd2-doc
