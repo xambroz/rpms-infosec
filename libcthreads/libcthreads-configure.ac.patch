@@ -1,0 +1,18 @@
+diff -ru libcthreads-a4276aec3255c4902ecb71a72cd852d00cce7df8/configure.ac libcthreads-a4276aec3255c4902ecb71a72cd852d00cce7df8.new/configure.ac
+--- libcthreads-a4276aec3255c4902ecb71a72cd852d00cce7df8/configure.ac	2023-10-25 06:18:59.000000000 +0200
++++ libcthreads-a4276aec3255c4902ecb71a72cd852d00cce7df8.new/configure.ac	2023-10-27 11:36:21.542154567 +0200
+@@ -1,4 +1,4 @@
+-AC_PREREQ([2.71])
++AC_PREREQ([2.69])
+ 
+ AC_INIT(
+  [libcthreads],
+@@ -33,7 +33,7 @@
+ 
+ dnl Support of internationalization (i18n)
+ AM_GNU_GETTEXT([external])
+-AM_GNU_GETTEXT_VERSION([0.21])
++AM_GNU_GETTEXT_VERSION([0.19])
+ 
+ dnl Check for compiler language support
+ AC_C_CONST
