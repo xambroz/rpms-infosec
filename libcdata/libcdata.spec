@@ -5,8 +5,8 @@ URL:            https://github.com/libyal/libcdata
 
 %global         gituser         libyal
 %global         gitname         libcdata
-%global         gitdate         20230108
-%global         commit          1b7d771b83ae58c6c9e84ed704a74bc0ab94e8f9
+%global         gitdate         20230605
+%global         commit          e4fde5bd4007e0a77d0e39a61fd36e4cb933e16c
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 Version:        %{gitdate}
@@ -19,7 +19,7 @@ Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{nam
 Patch0:         %{name}-libs.patch
 
 # Lower the build requirements for RHEL
-Patch1:         libcdata-configure.ac.patch
+Patch1:         https://github.com/libyal/libcdata/pull/7.patch#/libcdata-configure.ac.patch
 
 
 BuildRequires:  gcc
@@ -72,6 +72,9 @@ find %{buildroot} -name '*.la' -exec rm -f {} ';'
 %{_mandir}/man3/%{name}.3*
 
 %changelog
+* Fri Oct 27 2023 Michal Ambroz <rebus AT seznam.cz> - 20230605-1
+- bump to 20230605
+
 * Tue Jun 27 2023 Michal Ambroz <rebus AT seznam.cz> - 20230108-1
 - bump to 20230108
 
