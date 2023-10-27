@@ -1,0 +1,18 @@
+diff -ru libcdata-1b7d771b83ae58c6c9e84ed704a74bc0ab94e8f9/configure.ac libcdata-1b7d771b83ae58c6c9e84ed704a74bc0ab94e8f9.new/configure.ac
+--- libcdata-1b7d771b83ae58c6c9e84ed704a74bc0ab94e8f9/configure.ac	2023-10-27 11:24:04.404425534 +0200
++++ libcdata-1b7d771b83ae58c6c9e84ed704a74bc0ab94e8f9.new/configure.ac	2023-10-27 11:23:59.663247016 +0200
+@@ -1,4 +1,4 @@
+-AC_PREREQ([2.71])
++AC_PREREQ([2.69])
+ 
+ AC_INIT(
+  [libcdata],
+@@ -32,7 +32,7 @@
+ 
+ dnl Support of internationalization (i18n)
+ AM_GNU_GETTEXT([external])
+-AM_GNU_GETTEXT_VERSION([0.21])
++AM_GNU_GETTEXT_VERSION([0.19])
+ 
+ dnl Check for compiler language support
+ AC_C_CONST
