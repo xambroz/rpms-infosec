@@ -6,8 +6,8 @@ URL:            https://github.com/libyal/libcdatetime
 
 %global         gituser         libyal
 %global         gitname         libcdatetime
-%global         gitdate         20230115
-%global         commit          2a8fbb251eab3aca942532b31bbd2d1721b552ab
+%global         gitdate         20230606
+%global         commit          a65c5494daf193f5a1ff14ffa1c40291069b0829
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 Version:        %{gitdate}
@@ -16,6 +16,10 @@ Release:        1%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 #Patch build to use the shared system libraries rather than using embedded ones
 Patch0:         %{name}-libs.patch
+
+# Lower build requirements for rhel
+Patch1:         https://github.com/libyal/libcdatetime/pull/1.patch#/%{name}-configure.ac.patch
+
 
 BuildRequires:  gcc
 BuildRequires:  make
