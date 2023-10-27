@@ -59,6 +59,8 @@ find %{buildroot} -name '*.la' -exec rm -f {} ';'
 
 %postun -p /sbin/ldconfig
 
+%check
+make check
 
 %files
 %license COPYING
