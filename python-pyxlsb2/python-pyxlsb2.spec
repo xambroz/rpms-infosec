@@ -73,10 +73,8 @@ rm -rf pyxlsb2.egg-info
 %check
 # Known to be failing 20231026 - test_stringify, test_sheets, test_rows
 FAILING="not test_stringify and not test_sheets and not test_rows"
-%ifarch s390x
 # Failing on s390x platform
 FAILING="$FAILING and not test_read_string and not test_read_string_u and not test_get_string"
-%endif
 %pytest -sv -k "$FAILING"
 
 
