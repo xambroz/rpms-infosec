@@ -20,9 +20,10 @@ BuildRequires:  python%{python3_pkgversion}-devel
 BuildRequires:  python%{python3_pkgversion}-setuptools
 BuildRequires:  python%{python3_pkgversion}-sphinx
 BuildRequires:  python%{python3_pkgversion}-pkginfo
+BuildRequires:  python%{python3_pkgversion}-pytest
 
 %global _description %{expand:
- xlrd2xlrd2 is an effort to extend [xlrd project]( which is no longer mintained
+The xlrd2 module is an effort to extend [xlrd project]( which is no longer mintained
 by its developers. The main goal is to make it suitable for extracting
 necessary information from malicious xls documents.**Xlrd Purpose**: Provide a
 library for developers to use to extract data from Microsoft Excel (tm)
