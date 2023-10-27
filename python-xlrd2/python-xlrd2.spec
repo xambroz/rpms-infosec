@@ -1,8 +1,3 @@
-%global pypi_name xlrd2
-# macro is not defined on rhel7
-%{!?pytest: %global pytest pytest-3}
-
-
 Name:           python-xlrd2
 Version:        1.3.4
 Release:        1%{?dist}
@@ -18,6 +13,9 @@ Patch0:         https://patch-diff.githubusercontent.com/raw/python-excel/xlrd/p
 
 BuildArch:      noarch
 
+%global pypi_name xlrd2
+# macro is not defined on rhel7
+%{!?pytest: %global pytest pytest-3}
 
 BuildRequires:  python%{python3_pkgversion}-devel
 BuildRequires:  python%{python3_pkgversion}-setuptools
