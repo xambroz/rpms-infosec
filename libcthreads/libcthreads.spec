@@ -56,6 +56,16 @@ make install DESTDIR=%{buildroot} INSTALL="install -p"
 find %{buildroot} -name '*.la' -exec rm -f {} ';'
 
 
+%post -p /sbin/ldconfig
+
+
+%postun -p /sbin/ldconfig
+
+
+%check
+make check
+
+
 %files
 %license COPYING
 %doc AUTHORS NEWS README
