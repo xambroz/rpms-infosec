@@ -6,8 +6,8 @@ Summary:        Libyal library for cross-platform C generic data functions
 
 %global         gituser         libyal
 %global         gitname         libcnotify
-%global         gitdate         20220108
-%global         commit          e4275c83baf9c2fe53a034b6a73bf34238428fc1
+%global         gitdate         20230610
+%global         commit          92cd859fd5b7b0f75e40206fdd188b63c3fb946c
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
@@ -17,6 +17,9 @@ Release:        1%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 #Patch build to use the shared system libraries rather than using embedded ones
 Patch0:         %{name}-libs.patch
+
+Patch1:         https://patch-diff.githubusercontent.com/raw/libyal/libcnotify/pull/4.patch#/%{name}-configure.ac.patch
+
 
 BuildRequires:  gcc
 BuildRequires:  make
@@ -68,6 +71,9 @@ find %{buildroot} -name '*.la' -exec rm -f {} ';'
 %{_mandir}/man3/%{name}.3*
 
 %changelog
+* Fri Oct 27 2023 Michal Ambroz <rebus AT seznam.cz> - 20230610-1
+- bump to 20230610
+
 * Wed Jun 28 2023 Michal Ambroz <rebus AT seznam.cz> - 20220108-1
 - bump to 20220108
 
