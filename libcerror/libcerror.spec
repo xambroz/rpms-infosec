@@ -15,6 +15,8 @@ Version:        %{gitdate}
 Release:        2%{?dist}
 
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
+
+# https://github.com/libyal/libcerror/pull/10
 # there are older versions of gettext and autoconf, but still builds well
 Patch0:         libcerror-configure.ac.patch
 
