@@ -1,6 +1,3 @@
-# with release - build from official release, otherwise build from git
-%bcond_with     release
-
 Name:           python-pyxlsb2
 Version:        0.0.9
 %global         baserelease     0.1
@@ -9,6 +6,13 @@ Summary:        Excel 2007+ Binary Workbook (xlsb) parser
 License:        Apache-2.0
 URL:            https://github.com/DissectMalware/pyxlsb2
 BuildArch:      noarch
+
+# with release - build from official release, otherwise build from git
+%bcond_with     release
+
+# macro pytest is not defined on rhel7
+%{!?pytest: %global pytest pytest-3}
+
 
 %global _description %{expand:
 pyxlsb2 (a variant of pyxlsb - is an Excel 2007+ Binary Workbook (xlsb) parser
