@@ -1,4 +1,7 @@
 %global pypi_name xlrd2
+# macro is not defined on rhel7
+%{!?pytest: %global pytest pytest-3}
+
 
 Name:           python-xlrd2
 Version:        1.3.4
@@ -19,8 +22,12 @@ BuildArch:      noarch
 BuildRequires:  python%{python3_pkgversion}-devel
 BuildRequires:  python%{python3_pkgversion}-setuptools
 BuildRequires:  python%{python3_pkgversion}-sphinx
-BuildRequires:  python%{python3_pkgversion}-pkginfo
+
+%if (0%{?fedora}) || ( 0%{?rhel} && 0%{?rhel} >= 8 ) 
 BuildRequires:  python%{python3_pkgversion}-pytest
+# pkginf used for generating the documentation, missing on rhel7
+BuildRequires:  python%{python3_pkgversion}-pkginfo
+%endif
 
 %global _description %{expand:
 The xlrd2 module is an effort to extend [xlrd project]( which is no longer mintained
@@ -43,11 +50,13 @@ Summary:        %{summary}
 %py_provides    python3-xlrd2
 %endif
 
-
+%if (0%{?fedora}) || ( 0%{?rhel} && 0%{?rhel} >= 8 ) 
+# on rhel7 there is missing package python3-pkginfo
 %package -n python-xlrd2-doc
 Summary:        xlrd2 documentation
 %description -n python-xlrd2-doc
 Documentation for xlrd2
+%endif
 
 %prep
 %autosetup -p 1 -n xlrd2-%{version}
@@ -67,8 +76,12 @@ find ./ -type f '!' '(' -name '*.xls' -o -name '*.xlsx' ')' -print -exec sed '-i
 # package doesn't support pyproject yet
 %py3_build
 
+%if (0%{?fedora}) || ( 0%{?rhel} && 0%{?rhel} >= 8 ) 
+# on rhel7 there is missing package python3-pkginfo
 # generate html docs
 PYTHONPATH=${PWD} sphinx-build-3 docs html
+%endif
+
 # remove the sphinx-build leftovers
 rm -rf html/.{doctrees,buildinfo}
 
@@ -88,10 +101,13 @@ rm -rf html/.{doctrees,buildinfo}
 %{python3_sitelib}/xlrd2
 %{python3_sitelib}/xlrd2-%{version}-py%{python3_version}.egg-info
 
+%if (0%{?fedora}) || ( 0%{?rhel} && 0%{?rhel} >= 8 ) 
+# on rhel7 there is missing package python3-pkginfo
 %files -n python-xlrd2-doc
 %license LICENSE docs/licenses.rst
 %doc html
 %doc examples
+%endif
 
 %changelog
 * Sat Dec 10 2022 Michal Ambroz <rebus@seznam.cz> - 1.3.4-1
