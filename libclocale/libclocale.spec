@@ -5,8 +5,8 @@ URL:            https://github.com/libyal/libclocale
 
 %global         gituser         libyal
 %global         gitname         libclocale
-%global         gitdate         20221218
-%global         commit          58d320eefe77acfff82552b53616b50a6f4c3ea4
+%global         gitdate         20230609
+%global         commit          e8e4875f3e9abdad88ab5d88cf3fa57153c628b1
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 Version:        %{gitdate}
@@ -16,6 +16,9 @@ Summary:        Libyal library for cross-platform C locale functions
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 #Patch build to use the shared system libraries rather than using embedded ones
 Patch0:         %{name}-libs.patch
+
+Patch1:         https://github.com/libyal/libclocale/pull/7.patch#/%{name}-configure.ac.patch
+
 
 BuildRequires:  gcc
 BuildRequires:  make
