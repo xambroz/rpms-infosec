@@ -1,23 +1,17 @@
-%global         gituser         libyal
-%global         gitname         libcfile
-#20150101
-%global         commit          9a0dd17f31db245b1b2e33e854f791ad307f4604
-#20160409
-%global         commit          770fbb56918cd3a97926fa8c498635b222800b9c
-#20160423 - from 20160610
-%global         commit          b6e6c4ba2b6dc39316a62dfeaec035b2812eb923
-%global         shortcommit     %(c=%{commit}; echo ${c:0:7})
-
-
 Name:           libcfile
-Version:        20160423
-Release:        1%{?dist}
 Summary:        Libyal library for cross-platform C file functions
-
 Group:          System Environment/Libraries
 License:        LGPL-3.0-or-later
-#URL:           https://github.com/libyal/libcfile
-URL:            https://github.com/%{gituser}/%{gitname}
+URL:            https://github.com/libyal/libcfile
+
+%global         gituser         libyal
+%global         gitname         libcfile
+%global         gitdate         20230608
+%global         commit          fab8185019d05762f807b4128c80fc4a7d3f62c7
+%global         shortcommit     %(c=%{commit}; echo ${c:0:7})
+
+Version:        %{gitdate}
+Release:        1%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 #Patch build to use the shared system libraries rather than using embedded ones
 Patch0:         %{name}-libs.patch
@@ -50,7 +44,6 @@ developing applications that use %{name}.
 
 %prep
 %autosetup -n %{gitname}-%{commit}
-#%%patch0 -p 1 -b .libs
 ./autogen.sh
 
 
@@ -60,12 +53,18 @@ developing applications that use %{name}.
 
 
 %install
-make install DESTDIR=%{buildroot} INSTALL="install -p"
+%make_install
 find %{buildroot} -name '*.la' -exec rm -f {} ';'
+
 
 %post -p /sbin/ldconfig
 
+
 %postun -p /sbin/ldconfig
+
+
+%check
+make check
 
 
 %files
@@ -80,6 +79,9 @@ find %{buildroot} -name '*.la' -exec rm -f {} ';'
 %{_mandir}/man3/%{name}.3*
 
 %changelog
+* Fri Oct 27 2023 Michal Ambroz <rebus AT seznam.cz> - 20230608-1
+- bump to 20230608
+
 * Mon Jun 20 2016 Michal Ambroz <rebus AT seznam.cz> - 20160423-1
 - bump to 20160423
 

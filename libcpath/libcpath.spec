@@ -48,7 +48,6 @@ developing applications that use %{name}.
 
 %prep
 %autosetup -n %{gitname}-%{commit}
-#%%patch0 -p 1 -b .libs
 ./autogen.sh
 
 
@@ -58,12 +57,18 @@ developing applications that use %{name}.
 
 
 %install
-make install DESTDIR=%{buildroot} INSTALL="install -p"
+%make_install
 find %{buildroot} -name '*.la' -exec rm -f {} ';'
+
 
 %post -p /sbin/ldconfig
 
+
 %postun -p /sbin/ldconfig
+
+
+%check
+make check
 
 
 %files

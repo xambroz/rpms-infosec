@@ -1,13 +1,5 @@
 %global         gituser         libyal
 %global         gitname         libewf
-#%global        commit          5e47a75e30a4dd3068f8210f0a62c37b58329d7f
-#%global        commit          54b0eada69defd015c49e4e1e1e4e26a27409ba3
-#git commit for 20160424
-#%global        commit          93751847e334ea033a0871a65f5aa901782a2276
-#20160519
-#%global        commit          62ba5f578c9ffb0c651b82e06bb99a54a8f07af0
-#20160802
-#%global         commit          986cfbe60b306778e8fbe93e4864c628871659a8
 #20160802
 %global         commit          716431f3c33a649598c2d333e8430c13a7c18ea7
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
@@ -173,14 +165,18 @@ sed -i -e 's! -shared ! -Wl,--as-needed\0!g' libtool
 
 
 %install
-make install DESTDIR=$RPM_BUILD_ROOT INSTALL="install -p"
+%make_install
 find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
-
 
 
 %post -p /sbin/ldconfig
 
+
 %postun -p /sbin/ldconfig
+
+
+%check
+make check
 
 
 %files

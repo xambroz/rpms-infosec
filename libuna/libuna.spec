@@ -71,9 +71,19 @@ Unatools from the libuna package.
 
 
 %install
-make install DESTDIR=%{buildroot} INSTALL="install -p"
+%make_install
 find %{buildroot} -name '*.la' -exec rm -f {} ';'
 rm %{buildroot}%{_mandir}/man1/unaexport.1*
+
+
+%post -p /sbin/ldconfig
+
+
+%postun -p /sbin/ldconfig
+
+
+%check
+make check
 
 
 %files

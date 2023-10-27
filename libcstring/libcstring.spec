@@ -48,7 +48,7 @@ developing applications that use %{name}.
 
 
 %install
-make install DESTDIR=%{buildroot} INSTALL="install -p"
+%make_install
 find %{buildroot} -name '*.la' -exec rm -f {} ';'
 
 %post -p /sbin/ldconfig

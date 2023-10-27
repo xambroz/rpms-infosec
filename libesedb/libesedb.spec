@@ -106,7 +106,12 @@ find %{buildroot} -name '*.la' -exec rm -f {} ';'
 
 %post -p /sbin/ldconfig
 
+
 %postun -p /sbin/ldconfig
+
+
+%check
+make check
 
 
 %files
