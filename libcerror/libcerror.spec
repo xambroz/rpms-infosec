@@ -12,9 +12,11 @@ URL:            https://github.com/libyal/libcerror
 
 
 Version:        %{gitdate}
-Release:        1%{?dist}
+Release:        2%{?dist}
 
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
+# there are older versions of gettext and autoconf, but still builds well
+Patch0:         libcerror-configure.ac.patch
 
 BuildRequires:  gcc
 BuildRequires:  make
@@ -69,6 +71,12 @@ find %{buildroot} -name '*.la' -exec rm -f {} ';'
 %{_mandir}/man3/%{name}.3*
 
 %changelog
+* Fri Oct 27 2023 Michal Ambroz <rebus AT seznam.cz> - 20231024-2
+- lower build requirements for rhel
+
+* Fri Oct 27 2023 Michal Ambroz <rebus AT seznam.cz> - 20231024-1
+- bump to 20231024
+
 * Tue Jun 27 2023 Michal Ambroz <rebus AT seznam.cz> - 20220101-1
 - bump to 20220101
 
