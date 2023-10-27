@@ -6,8 +6,8 @@ URL:            https://github.com/libyal/libcerror
 
 %global         gituser         libyal
 %global         gitname         libcerror
-%global         gitdate         20220101
-%global         commit          f47d1f17b24c2d349e4d5257123e9394db742a0d
+%global         gitdate         20231024
+%global         commit          9846185237f820c31b6b62e0bf586db2bb3c3966
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
