@@ -85,11 +85,13 @@ FAILING="not test_stringify and not test_sheets and not test_rows"
 FAILING="$FAILING and not test_read_string and not test_read_string_u and not test_get_string"
 
 %if 0%{?rhel} && 0%{?rhel} == 9
-# missing python module mock on rhel9
+# missing python module mock on rhel9 
 FAILING="$FAILING and not formula_test and not worksheet_test"
-%endif
 
+%pytest -sv -k "$FAILING" &&
+%else
 %pytest -sv -k "$FAILING"
+%endif
 
 
 %files -n python%{python3_pkgversion}-pyxlsb2
