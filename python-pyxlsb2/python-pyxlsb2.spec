@@ -1,6 +1,6 @@
 Name:           python-pyxlsb2
 Version:        0.0.9
-%global         baserelease     0.1
+%global         baserelease     0.2
 Summary:        Excel 2007+ Binary Workbook (xlsb) parser
 
 License:        Apache-2.0
@@ -85,7 +85,7 @@ FAILING="not test_stringify and not test_sheets and not test_rows"
 FAILING="$FAILING and not test_read_string and not test_read_string_u and not test_get_string"
 
 %if 0%{?rhel} && 0%{?rhel} == 9
-# missing python module mock on rhel9 
+# missing python module mock on rhel9
 FAILING="$FAILING and not formula_test and not worksheet_test"
 
 %pytest -sv -k "$FAILING" &&
@@ -101,5 +101,10 @@ FAILING="$FAILING and not formula_test and not worksheet_test"
 %{python3_sitelib}/pyxlsb2-%{version}-py%{python3_version}.egg-info
 
 %changelog
-* Wed Dec 14 2022 Michal Ambroz <rebus@seznam.cz> - 0.0.9-1
+* Wed Dec 14 2022 Michal Ambroz <rebus@seznam.cz> - 0.0.9-0.2
+- fix dependencies for rhel7 - missing build macro pytest
+- fix dependencies for rhel9 - missing python3-mock = do not fail on the pytest result
+
+
+* Wed Dec 14 2022 Michal Ambroz <rebus@seznam.cz> - 0.0.9-0.1
 - Initial package.
