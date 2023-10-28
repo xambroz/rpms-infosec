@@ -42,7 +42,11 @@ BuildRequires:  python%{python3_pkgversion}-setuptools
 
 # Needed for the %%check
 BuildRequires:  python%{python3_pkgversion}-pytest
+
+# python mock module not yet in rhel9
+%if (0%{?fedora}) || ( 0%{?rhel} && 0%{?rhel} != 9  )
 BuildRequires:  python%{python3_pkgversion}-mock
+%endif
 
 %description %_description
 
@@ -79,6 +83,12 @@ rm -rf pyxlsb2.egg-info
 FAILING="not test_stringify and not test_sheets and not test_rows"
 # Failing on s390x platform
 FAILING="$FAILING and not test_read_string and not test_read_string_u and not test_get_string"
+
+%if 0%{?rhel} && 0%{?rhel} == 9
+# missing python module mock on rhel9
+FAILING="$FAILING and not formula_test and not worksheet_test"
+%endif
+
 %pytest -sv -k "$FAILING"
 
 
