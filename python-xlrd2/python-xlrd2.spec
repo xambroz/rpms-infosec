@@ -20,10 +20,10 @@ BuildArch:      noarch
 BuildRequires:  python%{python3_pkgversion}-devel
 BuildRequires:  python%{python3_pkgversion}-setuptools
 BuildRequires:  python%{python3_pkgversion}-sphinx
+BuildRequires:  python%{python3_pkgversion}-pytest
 
 %if (0%{?fedora}) || ( 0%{?rhel} && 0%{?rhel} >= 8 )
-BuildRequires:  python%{python3_pkgversion}-pytest
-# pkginf used for generating the documentation, missing on rhel7
+# pkginfo used for generating the documentation, missing on rhel7
 BuildRequires:  python%{python3_pkgversion}-pkginfo
 %endif
 
