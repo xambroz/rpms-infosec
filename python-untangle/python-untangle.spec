@@ -18,16 +18,20 @@ Converts XML to a Python object. * Siblings with similar names are grouped into
 a list. * Children can be accessed with parent.child, attributes with
 element['attribute'].
 
-%package -n     python3-untangle
+%package -n     python%{python3_pkgversion}-untangle
 Summary:        %{summary}
-%{?python_provide:%python_provide python3-untangle}
+%if 0%{?rhel}
+%{?python_provide:%python_provide python%{python3_pkgversion}-untangle}
+%else
+%py_provides    python3-xlrd2
+%endif
 
 Requires:       (python3dist(defusedxml) >= 0.7.1 with python3dist(defusedxml) < 0.8~~)
-%description -n python3-untangle
-[![Build Status]( [![PyPi version]( <a href" alt"Code style: black" src"
-Converts XML to a Python object. * Siblings with similar names are grouped into
-a list. * Children can be accessed with parent.child, attributes with
-element['attribute'].
+
+%description -n python%{python3_pkgversion}-untangle
+Converts XML to a Python object. Siblings with similar names are grouped into
+a list. Children can be accessed with parent.child, attributes with
+element.
 
 
 %prep
@@ -39,7 +43,11 @@ element['attribute'].
 %install
 %py3_install
 
-%files -n python3-untangle
+%check
+%pytest
+
+
+%files -n python%{python3_pkgversion}-untangle
 %license LICENSE
 %doc README.md AUTHORS CHANGELOG.md
 %{python3_sitelib}/__pycache__/*
