@@ -1,0 +1,29 @@
+From f43d73673ddd64eec8d68599e7927d393fd678d1 Mon Sep 17 00:00:00 2001
+From: Michal Ambroz <723625+xambroz@users.noreply.github.com>
+Date: Sat, 28 Oct 2023 03:32:56 +0200
+Subject: [PATCH] lower build requirements for rhel
+
+Please consider lowering the requirements to allow build on RHEL.
+---
+ configure.ac | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index a9c16bf..22a1667 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -1,4 +1,4 @@
+-AC_PREREQ([2.71])
++AC_PREREQ([2.69])
+ 
+ AC_INIT(
+  [libcsplit],
+@@ -32,7 +32,7 @@ AC_PATH_PROG(PKGCONFIG,[pkg-config])
+ 
+ dnl Support of internationalization (i18n)
+ AM_GNU_GETTEXT([external])
+-AM_GNU_GETTEXT_VERSION([0.21])
++AM_GNU_GETTEXT_VERSION([0.19])
+ 
+ dnl Check for compiler language support
+ AC_C_CONST

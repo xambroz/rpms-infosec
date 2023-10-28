@@ -6,8 +6,8 @@ URL:            https://github.com/libyal/libcsplit
 
 %global         gituser         libyal
 %global         gitname         libcsplit
-%global         gitdate         20220109
-%global         commit          a23f3a673fe9a8b0b4737d1f661e59f63b024305
+%global         gitdate         20230612
+%global         commit          349a780930fafa808c461769bf8a7a607110143c
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
@@ -16,6 +16,7 @@ Release:        1%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 #Patch build to use the shared system libraries rather than using embedded ones
 Patch0:         %{name}-libs.patch
+Patch1:         https://github.com/libyal/libcsplit/pull/3.patch#/%{name}-configure.ac.patch
 
 BuildRequires:  gcc
 BuildRequires:  make
@@ -76,6 +77,9 @@ make check
 %{_mandir}/man3/%{name}.3*
 
 %changelog
+* Sat Oct 28 2023 Michal Ambroz <rebus AT seznam.cz> - 20230612-1
+- bump to 20230612
+
 * Wed Jun 28 2023 Michal Ambroz <rebus AT seznam.cz> - 20220109-1
 - bump to 20220109
 
