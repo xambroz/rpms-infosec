@@ -16,10 +16,12 @@ URL:            https://github.com/libyal/libuna
 Version:        %{gitdate}
 Release:        1%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
+
+# dynamically loaded libraries
 Patch0:         %{name}-libs.patch
-%if %{with bootstrap}
-Patch1:         %{name}-bootstrap.patch
-%endif
+
+# Allow bootstrapping to break the circular dependency
+Patch100:         %{name}-bootstrap.patch
 
 BuildRequires:  gcc
 BuildRequires:  make
@@ -61,7 +63,11 @@ Unatools from the libuna package.
 
 
 %prep
-%autosetup -n %{gitname}-%{commit}
+%setup -n %{gitname}-%{commit}
+%autopatch -M 99
+%if %{with bootstrap}
+%autopatch 100
+%endif
 ./autogen.sh
 
 
