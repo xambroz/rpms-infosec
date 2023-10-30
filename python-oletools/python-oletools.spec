@@ -80,8 +80,14 @@ BuildRequires:  python%{python3_pkgversion}-pyparsing
 BuildRequires:  python%{python3_pkgversion}-pymilter
 BuildRequires:  python%{python3_pkgversion}-prettytable
 BuildRequires:  python%{python3_pkgversion}-cryptography
+
+# needed for the check tests
 BuildRequires:  python%{python3_pkgversion}-msoffcrypto
 BuildRequires:  python%{python3_pkgversion}-xlmmacrodeobfuscator
+BuildRequires:  python%{python3_pkgversion}-xlrd2
+BuildRequires:  python%{python3_pkgversion}-xlrd2
+BuildRequires:  python%{python3_pkgversion}-pyxlsb2
+BuildRequires:  python%{python3_pkgversion}-untangle
 %if %{without bootstrap}
 BuildRequires:  python%{python3_pkgversion}-pcodedmp
 %endif
@@ -357,7 +363,7 @@ export LANG=en_US.UTF-8
 %endif
 
 # version 0.60.1 fails with xlm_macro
-%{__python3} setup.py test || true
+%pytest -sv &&
 
 # Simple self-test: If it fails, package won't work after installation
 PYTHONPATH=%{buildroot}%{python3_sitelib} %{buildroot}%{_bindir}/olevba-3 --code cheatsheet/oletools_cheatsheet.docx
