@@ -10,7 +10,7 @@ BuildArch:      noarch
 
 
 # macro pytest is not defined on rhel7
-%{!?pytest: %global pytest pytest-3}
+%{!?pytest: %global pytest PYTHONPATH="%{buildroot}%{python3_sitelib}:$PYTHONPATH" pytest-3}
 
 
 BuildRequires:  python3-devel
@@ -51,7 +51,7 @@ element.
 %py3_install
 
 %check
-%pytest
+%pytest -sv
 
 
 %files -n python%{python3_pkgversion}-untangle
