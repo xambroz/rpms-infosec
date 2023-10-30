@@ -13,10 +13,10 @@ BuildArch:      noarch
 %{!?pytest: %global pytest PYTHONPATH="%{buildroot}%{python3_sitelib}:$PYTHONPATH" pytest-3}
 
 
-BuildRequires:  python3-devel
-BuildRequires:  python3-setuptools
-BuildRequires:  python3-defusedxml
-BuildRequires:  python3-pytest
+BuildRequires:  python%{python3_pkgversion}-devel
+BuildRequires:  python%{python3_pkgversion}-setuptools
+BuildRequires:  python%{python3_pkgversion}-defusedxml
+BuildRequires:  python%{python3_pkgversion}-pytest
 
 
 %description
@@ -51,6 +51,12 @@ element.
 %py3_install
 
 %check
+%if 0%{?rhel} == 7
+# avoid UnicodeEncodeError: 'ascii' codec can't encode character '\xe9' in position 6: ordinal not in range(128)
+# in UnicodeTestCase.test_unicode_element
+export LANG=en_US.UTF-8
+%endif
+
 %pytest -sv
 
 
