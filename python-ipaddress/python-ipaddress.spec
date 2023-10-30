@@ -17,6 +17,7 @@ BuildArch:      noarch
 
 BuildRequires:  python%{python3_pkgversion}-devel
 BuildRequires:  python%{python3_pkgversion}-setuptools
+BuildRequires:  python%{python3_pkgversion}-pytest
 
 %description
 Port of the 3.3+ ipaddress module to 2.6, 2.7, 3.2
