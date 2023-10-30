@@ -8,10 +8,16 @@ URL:            https://github.com/stchris/untangle
 Source0:        https://github.com/stchris/untangle/archive/refs/tags/%{version}.tar.gz#/%{name}-%{version}.tar.gz
 BuildArch:      noarch
 
+
+# macro pytest is not defined on rhel7
+%{!?pytest: %global pytest pytest-3}
+
+
 BuildRequires:  python3-devel
 BuildRequires:  python3-setuptools
 BuildRequires:  python3-defusedxml
 BuildRequires:  python3-pytest
+
 
 %description
 [![Build Status]( [![PyPi version]( <a href" alt"Code style: black" src"
