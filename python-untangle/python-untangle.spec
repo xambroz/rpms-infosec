@@ -9,8 +9,8 @@ Source0:        https://github.com/stchris/untangle/archive/refs/tags/%{version}
 BuildArch:      noarch
 
 BuildRequires:  python3-devel
-BuildRequires:  python3dist(setuptools)
-BuildRequires:  python3dist(defusedxml)
+BuildRequires:  python3-setuptools
+BuildRequires:  python3-defusedxml
 BuildRequires:  python3-pytest
 
 %description
