@@ -9,8 +9,8 @@ URL:            https://github.com/libyal/libuna
 
 %global         gituser         libyal
 %global         gitname         libuna
-%global         gitdate         20220611
-%global         commit          0bec9356d6c9fd2684defa2807752e39c5d34014
+%global         gitdate         20230710
+%global         commit          623c23fb8a336fbe18d16ab2d535f27ed93c23da
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 Version:        %{gitdate}
@@ -98,13 +98,17 @@ make check
 %{_libdir}/pkgconfig/%{name}.pc
 %{_mandir}/man3/%{name}.3*
 
+%if %{without bootstrap}
 %files tools
 %{_bindir}/unabase
 %{_bindir}/unaexport
-
+%endif
 
 
 %changelog
+* Mon Oct 30 2023 Michal Ambroz <rebus AT seznam.cz> - 20230710-1
+- bump to 20230710
+
 * Wed Jun 28 2023 Michal Ambroz <rebus AT seznam.cz> - 20220611-1
 - bump to 20220611
 
