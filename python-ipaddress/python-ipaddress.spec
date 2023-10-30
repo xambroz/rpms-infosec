@@ -15,17 +15,17 @@ URL:            https://github.com/phihag/ipaddress
 Source0:        %{pypi_source}
 BuildArch:      noarch
 
-BuildRequires:  python3-devel
-BuildRequires:  python3dist(setuptools)
+BuildRequires:  python%{python3_pkgversion}-devel
+BuildRequires:  python%{python3_pkgversion}-setuptools
 
 %description
 Port of the 3.3+ ipaddress module to 2.6, 2.7, 3.2
 
-%package -n     python3-%{pypi_name}
+%package -n     python%{python3_pkgversion}-ipaddress
 Summary:        %{summary}
-%{?python_provide:%python_provide python3-%{pypi_name}}
+%{?python_provide:%python_provide python%{python3_pkgversion}-ipaddress}
 
-%description -n python3-%{pypi_name}
+%description -n python%{python3_pkgversion}-ipaddress
 Port of the 3.3+ ipaddress module to 2.6, 2.7, 3.2
 
 
@@ -43,7 +43,7 @@ rm -rf %{pypi_name}.egg-info
 %check
 %pytest -sv
 
-%files -n python3-%{pypi_name}
+%files -n python%{python3_pkgversion}-ipaddress
 %license LICENSE
 %doc README.md
 %{python3_sitelib}/__pycache__/*
