@@ -63,10 +63,8 @@ Source1:        https://github.com/nolze/msoffcrypto-tool/archive/v5.0.0/msoffcr
 # Remove the bundled libraries from the build. Use the system libraries instead
 Patch0:         %{name}-01-thirdparty.patch
 
-%if 0%{?with_python2}
-# Bundle msoffcrypto instead of using one from pip
+# with python2 Bundle the msoffcrypto instead of using one from pip
 Patch1:         %{name}-02-msoffcrypto.patch
-%endif
 
 BuildArch:      noarch
 
@@ -194,7 +192,11 @@ Summary:        Documentation files for %{name}
 
 
 %prep
-%autosetup -p 1 -n %{srcname}-%{version}
+%setup -n %{srcname}-%{version}
+%autopatch 0
+%if 0%{?with_python2}
+%autopatch 1
+%endif
 
 # Use globally installed python modules instead of bundled ones
 for i in colorclass easygui olefile prettytable pyparsing; do
