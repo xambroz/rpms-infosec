@@ -35,7 +35,7 @@ Summary:        %{summary}
 
 Requires:       python%{python3_pkgversion}-defusedxml
 Requires:       python%{python3_pkgversion}-lark-parser
-Requires:       python%{python3_pkgversion}-msoffcrypto-tool
+Requires:       python%{python3_pkgversion}-msoffcrypto
 Requires:       python%{python3_pkgversion}-pyxlsb2
 Requires:       python%{python3_pkgversion}-roman
 Requires:       python%{python3_pkgversion}-untangle = 1.2.1
