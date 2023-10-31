@@ -33,13 +33,13 @@ Summary:        %{summary}
 %endif
 
 
-Requires:       python3dist(defusedxml)
-Requires:       python3dist(lark-parser)
-Requires:       python3dist(msoffcrypto-tool)
-Requires:       python3dist(pyxlsb2)
-Requires:       python3dist(roman)
-Requires:       python3dist(untangle) = 1.2.1
-Requires:       python3dist(xlrd2)
+Requires:       python%{python3_pkgversion}-defusedxml
+Requires:       python%{python3_pkgversion}-lark-parser
+Requires:       python%{python3_pkgversion}-msoffcrypto-tool
+Requires:       python%{python3_pkgversion}-pyxlsb2
+Requires:       python%{python3_pkgversion}-roman
+Requires:       python%{python3_pkgversion}-untangle = 1.2.1
+Requires:       python%{python3_pkgversion}-xlrd2
 
 %description -n python%{python3_pkgversion}-xlmmacrodeobfuscator %_description
 
