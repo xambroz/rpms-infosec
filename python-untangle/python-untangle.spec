@@ -33,7 +33,7 @@ Summary:        %{summary}
 %py_provides    python3-xlrd2
 %endif
 
-Requires:       python%{python3_pkgversion}-defusedxml >= 0.7.1
+Requires:       python%{python3_pkgversion}-defusedxml
 
 %description -n python%{python3_pkgversion}-untangle
 Converts XML to a Python object. Siblings with similar names are grouped into
