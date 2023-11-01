@@ -1,0 +1,23 @@
+die gracefully on broken pipe for xmldump.py
+diff -ru DidierStevensSuite-41b01df75c8bb332f37d2e9eb4c8279583164d0e/xmldump.py DidierStevensSuite-41b01df75c8bb332f37d2e9eb4c8279583164d0e.new/xmldump.py
+--- DidierStevensSuite-41b01df75c8bb332f37d2e9eb4c8279583164d0e/xmldump.py	2023-11-01 11:21:10.053088584 +0100
++++ DidierStevensSuite-41b01df75c8bb332f37d2e9eb4c8279583164d0e.new/xmldump.py	2023-11-01 11:22:48.232682490 +0100
+@@ -519,10 +519,14 @@
+         print('List of valid commands: %s' % ' '.join(dCommands.keys()))
+         return
+ 
+-    if len(args) == 1:
+-        ProcessTextFile(command, [''], options)
+-    else:
+-        ProcessTextFile(command, ExpandFilenameArguments(args), options)
++    try:
++        if len(args) == 1:
++            ProcessTextFile(command, [''], options)
++        else:
++            ProcessTextFile(command, ExpandFilenameArguments(args), options)
++    except IOError:
++        # die gracefully on broken pipe
++        pass
+ 
+ if __name__ == '__main__':
+     Main()

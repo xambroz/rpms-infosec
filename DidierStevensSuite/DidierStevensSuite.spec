@@ -27,7 +27,11 @@ Release:       %{baserelease}.git%{shortcommit}%{?dist}
 Source0:       https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 %endif
 
-Patch0:        DidierStevensSuite-1768-json.patch
+# use shared directory in linux for the data files
+Patch0:        DidierStevensSuite-20231016-1768-json.patch
+
+# die gracefully on broken pipe for xmldump.py
+Patch1:        DidierStevensSuite-20231016-brokenpipe.patch
 
 BuildArch: noarch
 #BuildRequires:  
