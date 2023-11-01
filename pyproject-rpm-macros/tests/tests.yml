@@ -1,0 +1,103 @@
+---
+- hosts: localhost
+  tags:
+    - classic
+  tasks:
+    - dnf:
+        name: "*"
+        state: latest
+
+- hosts: localhost
+  roles:
+  - role: standard-test-basic
+    tags:
+    - classic
+    tests:
+    - pytest:
+        dir: .
+        run: ./mocktest.sh python-pytest
+    - entrypoints:
+        dir: .
+        run: ./mocktest.sh python-entrypoints
+    - pluggy:
+        dir: .
+        run: ./mocktest.sh python-pluggy
+    - clikit:
+        dir: .
+        run: ./mocktest.sh python-clikit
+    - distroinfo:
+        dir: .
+        run: ./mocktest.sh python-distroinfo
+    - tldr:
+        dir: .
+        run: ./mocktest.sh tldr
+    - openqa_client:
+        dir: .
+        run: ./mocktest.sh python-openqa_client
+    - httpbin:
+        dir: .
+        run: ./mocktest.sh python-httpbin
+    - ldap:
+        dir: .
+        run: ./mocktest.sh python-ldap
+    - isort:
+        dir: .
+        run: ./mocktest.sh python-isort
+    - mistune:
+        dir: .
+        run: ./mocktest.sh python-mistune
+    - setuptools_scm:
+        dir: .
+        run: ./mocktest.sh python-setuptools_scm
+    - ipykernel:
+        dir: .
+        run: ./mocktest.sh python-ipykernel
+    - zope:
+        dir: .
+        run: ./mocktest.sh python-zope-event
+    - django:
+        dir: .
+        run: ./mocktest.sh python-django
+    - printrun:
+        dir: .
+        run: ./mocktest.sh printrun
+    - dns_lexicon:
+        dir: .
+        run: ./mocktest.sh python-dns-lexicon
+    - flit_core:
+        dir: .
+        run: ./mocktest.sh python-flit-core
+    - poetry_core:
+        dir: .
+        run: ./mocktest.sh python-poetry-core
+    - setuptools:
+        dir: .
+        run: ./mocktest.sh python-setuptools
+    - markupsafe:
+        dir: .
+        run: ./mocktest.sh python-markupsafe
+    - getmac:
+        dir: .
+        run: ./mocktest.sh python-getmac
+    - userpath:
+        dir: .
+        run: ./mocktest.sh python-userpath
+    - double_install:
+        dir: .
+        run: ./mocktest.sh double-install
+    - fake_requirements:
+        dir: .
+        run: ./mocktest.sh fake-requirements
+    - virtualenv:
+        dir: .
+        run: ./mocktest.sh python-virtualenv
+    - escape_percentages:
+        dir: .
+        run: ./mocktest.sh escape_percentages
+    - config-settings-test:
+        dir: .
+        run: ./mocktest.sh config-settings-test
+    required_packages:
+    - mock
+    - rpmdevtools
+    - rpm-build

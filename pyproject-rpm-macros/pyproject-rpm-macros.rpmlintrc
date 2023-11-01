@@ -1,0 +1,5 @@
+# RPM macros, this is expected
+addFilter(r'only-non-binary-in-usr-lib')
+
+# we mention older macro names in the description, they are unexpanded on purpose
+addFilter(r'unexpanded-macro %description .+ %py3_')
