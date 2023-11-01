@@ -1,0 +1,3 @@
+/tox-current-env-*.tar.gz
+results_python-tox-current-env/
+*.rpm
