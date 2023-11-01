@@ -21,7 +21,7 @@ BuildRequires:  python%{python3_pkgversion}-wheel
 # Needed for tests
 BuildRequires:  python%{python3_pkgversion}-pyOpenSSL
 BuildRequires:  python%{python3_pkgversion}-pycryptodomex
-BuildRequires:  python%{python3_pkgversion}-tox
+BuildRequires:  python%{python3_pkgversion}-tox-current-env
 
 
 %global _description %{expand:
