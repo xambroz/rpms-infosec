@@ -58,8 +58,11 @@ rm -rf .egg-info
 
 
 %check
+# rhel7 missing tox and pyproject macros
+%if 0%{?fedora} || ( 0%{?rhel} && 0%{?rhel} >= 9 )
 python3 -m unittest discover -v
 %tox
+%endif
 
 %files -n python%{python3_pkgversion}-dsinternals -f %{pyproject_files}
 %license LICENSE
