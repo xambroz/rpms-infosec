@@ -67,7 +67,7 @@ BuildRequires:  python%{python3_pkgversion}-setuptools)
 BuildRequires:  python%{python3_pkgversion}-tox-current-env) >= 0.0.6
 %endif
 BuildRequires:  python%{python3_pkgversion}-wheel
-%if %{python3_version} < 3.11
+%if 0%{?python3_version} < 3.11
 BuildRequires:  python%{python3_pkgversion}-tomli
 %endif
 %endif
