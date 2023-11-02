@@ -21,8 +21,10 @@ BuildRequires:  python%{python3_pkgversion}-wheel
 # Needed for tests
 BuildRequires:  python%{python3_pkgversion}-pyOpenSSL
 BuildRequires:  python%{python3_pkgversion}-pycryptodomex
-BuildRequires:  python%{python3_pkgversion}-tox-current-env
 
+%if 0%{?fedora} || ( 0%{?rhel} && 0%{?rhel} >= 9 )
+BuildRequires:  python%{python3_pkgversion}-tox-current-env
+%endif
 
 %global _description %{expand:
 Directory Services Internals Library.
