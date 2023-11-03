@@ -1,6 +1,6 @@
 Name:           python-impacket
-Version:        0.10.0
-%global         baserelease     3
+Version:        0.11.0
+%global         baserelease     1
 
 License:        Apache-1.1 AND Zlib
 URL:            https://github.com/fortra/impacket
@@ -25,8 +25,8 @@ the object oriented API makes it simple to work with deep protocol hierarchies.}
 
 %global         gituser         fortra
 %global         gitname         impacket
-%global         commit          7a18ef5c8b06aac5e36334927789429777382928
-%global         gitdate         20220504
+%global         commit          5af85c240076444d631d5f504e294daff065796b
+%global         gitdate         20230731
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
@@ -118,7 +118,6 @@ Python3 package of %{name}. %{common_desc}
 #Missing requirements for tests
 [ ! -f requirements-test.txt ]  && cp requirements.txt requirements-test.txt
 
-
 # Clean-up
 
 # Use explicit python3 shabeng instead of generic env python
@@ -131,6 +130,10 @@ sed -i -e 's|#!/usr/bin/env python|#!/usr/bin/python'"%{python3_pkgversion}"'|' 
 # https://github.com/fortra/impacket/issues/403
 sed -i -e 's|^import uncrc32|from impacket.examples import uncrc32|;' examples/nmapAnswerMachine.py
 
+
+# Rename split.py to splitpcap.py due to generic name colliding with DiderStevensSuite
+mv examples/split.py examples/splitpcap.py
+sed -i -e "s%/split.py%/splitpcap.py%" impacket.egg-info/SOURCES.txt
 
 %generate_buildrequires
 %pyproject_buildrequires -t
@@ -193,7 +196,10 @@ rm -f %{buildroot}%{_defaultdocdir}/%{name}/LICENSE
 
 
 %changelog
-* Mon Jan 30 2023 Michal Ambroz <rebus AT_ seznam.cz> - 0.10.0-3
+* Wed Nov 01 2023 Michal Ambroz <rebus _AT seznam.cz> - 0.11.0-1
+- bump to 0.11.1
+
+* Mon Jan 30 2023 Michal Ambroz <rebus _AT seznam.cz> - 0.10.0-3
 - update the git user / URL
 
 * Mon Jan 30 2023 Miro Hrončok <mhroncok@redhat.com> - 0.10.0-2
