@@ -1,7 +1,7 @@
 Name:           radare2
 Summary:        The reverse engineering framework
 Version:        5.8.8
-%global         baserelease     1
+%global         baserelease     2
 URL:            https://radare.org/
 VCS:            https://github.com/radareorg/radare2
 #               https://github.com/radareorg/radare2/releases
@@ -38,6 +38,20 @@ Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{nam
 Patch1:         radare2-5.6.6-use_openssl.patch
 Patch3:         radare2-5.7.6-use_magic.patch
 Patch4:         radare2-5.6.6-use_lz4.patch
+
+# CVE-2023-4322 - radare2: Heap-based Buffer Overflow in the bf dissassembler
+# fix should be part of 5.9.0
+# https://github.com/radareorg/radare2/commit/ba919adb74ac368bf76b150a00347ded78b572dd
+Patch5:         radare2-5.8.8-CVE-2023-4322.patch
+
+# CVE-2023-5686 - radare2: heap-buffer-overflow in /radare2/shlr/java/code.c:211:21 in java_print_opcode
+# fix should be part of 5.9.0
+# https://github.com/radareorg/radare2/commit/1bdda93e348c160c84e30da3637acef26d0348de
+Patch6:         radare2-5.8.8-CVE-2023-5686.patch
+
+
+
+
 
 License:        LGPLv3+ and GPLv2+ and BSD and MIT and ASL 2.0 and MPLv2.0 and zlib
 # Radare2 as a package is targeting to be licensed/compiled as LGPLv3+
@@ -274,6 +288,7 @@ sed -i -e "s|meson_version : '>=......'|meson_version : '>=0.49.1'|;" meson.buil
 #     --sanitize=address,undefined,signed-integer-overflow \
 
 %meson \
+    -Db_sanitize=address \
     -Duse_sys_magic=true \
 %if 0%{?fedora} || 0%{?rhel} >= 8
     -Duse_sys_zip=true \
@@ -360,6 +375,14 @@ mkdir -p %{buildroot}%{_libdir}/%{name}/%{version}
 
 
 %changelog
+* Thu Oct 26 2023 Michal Ambroz <rebus at, seznam.cz> 5.8.8-2
+- cherrypick from upstream master patches for known vulnerabilities:
+- CVE-2023-4322 - heap-buffer-overflow in the brainfuck dissassembler
+- CVE-2023-5686 - heap-buffer-overflow in /radare2/shlr/java/code.c
+
+* Fri Jul 21 2023 Fedora Release Engineering <releng@fedoraproject.org> - 5.8.8-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_39_Mass_Rebuild
+
 * Wed Jul 05 2023 Michal Ambroz <rebus at, seznam.cz> 5.8.8-1
 - bump to 5.8.8
 
@@ -374,6 +397,7 @@ mkdir -p %{buildroot}%{_libdir}/%{name}/%{version}
 
 * Thu Mar 16 2023 Michal Ambroz <rebus at, seznam.cz> 5.8.4-1
 - bump to 5.8.4
+- fix CVE-2023-27114
 
 * Sun Feb 26 2023 Michal Ambroz <rebus at, seznam.cz> 5.8.2-2
 - cherrypick upstream patch for fixing the sdb generation from meson
@@ -450,6 +474,8 @@ mkdir -p %{buildroot}%{_libdir}/%{name}/%{version}
 - bump to 5.3.0
 - remove radare2-5.2.1-meson_rhel8.patch - accepted upstream
 - remove radare2-5.2.1-xxhash.patch - accepted upstream 
+- fix CVE-2021-32494 #2221281, #2221280, #2221282
+- fix CVE-2021-32495 #2221285, #2221286
 
 * Sat May 15 2021 Michal Ambroz <rebus at, seznam.cz> 5.2.1-3
 - adding the global plugins directory - for example /usr/lib64/radare2/5.2.1
