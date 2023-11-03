@@ -14,9 +14,17 @@ Summary:        Securely erase disks using a variety of recognized methods
 License:        GPL-2.0-only
 # used to be    http://nwipe.sourceforge.net
 URL:            https://github.com/martijnvanbrummelen/nwipe
+VCS:            https://github.com/martijnvanbrummelen/nwipe
+                https://github.com/martijnvanbrummelen/nwipe/releases
+
 #Source0:       https://github.com/%%{gituser}/%%{gitname}/archive/%%{commit}/%%{name}-%%{version}-%%{shortcommit}.tar.gz
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
+
+# Lower the build requirements to autoconf used in rhel6
 Patch1:         nwipe-epel6.patch
+
+# Move the usage of int64t bellow the stdint.h include which defines it
+Patch2:         nwipe-epel-int64t.patch
 
 BuildRequires:  make
 BuildRequires:  gcc
