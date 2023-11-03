@@ -1,0 +1,12 @@
+diff -ru reglookup-src-1.0.1/SConstruct reglookup-src-1.0.1.destdir/SConstruct
+--- reglookup-src-1.0.1/SConstruct	2023-03-18 13:35:13.579196832 +0100
++++ reglookup-src-1.0.1.destdir/SConstruct	2023-03-18 13:35:04.893846185 +0100
+@@ -23,7 +23,7 @@
+ 
+ # Libraries
+ libregfi_static = env.Library(lib_src)
+-libregfi = env.SharedLibrary(lib_src, LIBS=['m','pthread', 'talloc'])
++libregfi = env.SharedLibrary(lib_src, LIBS=['m','pthread', 'talloc'],SHLIBVERSION='1.0.1',SOVERSION='1')
+ 
+ 
+ # Executables
