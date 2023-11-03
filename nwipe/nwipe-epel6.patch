@@ -1,6 +1,12 @@
-diff -ru nwipe-d01b00b4f82ea1899eee1f0ffb47ebc6ac7e5dc2.orig/configure.ac nwipe-d01b00b4f82ea1899eee1f0ffb47ebc6ac7e5dc2/configure.ac
---- nwipe-d01b00b4f82ea1899eee1f0ffb47ebc6ac7e5dc2.orig/configure.ac	2016-07-27 09:33:17.000000000 +0200
-+++ nwipe-d01b00b4f82ea1899eee1f0ffb47ebc6ac7e5dc2/configure.ac	2016-08-03 17:27:19.235806431 +0200
-@@ -4 +4 @@
--AC_PREREQ([2.64])
+diff -ru nwipe-0.35/configure.ac nwipe-0.35.new/configure.ac
+--- nwipe-0.35/configure.ac	2023-11-02 21:19:21.000000000 +0100
++++ nwipe-0.35.new/configure.ac	2023-11-03 15:57:56.276506878 +0100
+@@ -1,7 +1,7 @@
+ #                                               -*- Autoconf -*-
+ # Process this file with autoconf to produce a configure script.
+ 
+-AC_PREREQ([2.71])
 +AC_PREREQ([2.63])
+ AC_INIT([nwipe],[0.35],[git@brumit.nl])
+ AM_INIT_AUTOMAKE(foreign subdir-objects)
+ AC_CONFIG_FILES([Makefile src/Makefile man/Makefile])
