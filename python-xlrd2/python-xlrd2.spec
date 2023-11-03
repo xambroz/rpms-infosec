@@ -27,7 +27,7 @@ BuildRequires:  python%{python3_pkgversion}-pytest
 BuildRequires:  python%{python3_pkgversion}-pkginfo
 %endif
 
-%global _description %{expand:
+%global common_description %{expand:
 The xlrd2 module is an effort to extend [xlrd project]( which is no longer
 mintained by its developers). The main goal is to make it suitable for
 extracting necessary information from malicious xls documents.
@@ -36,12 +36,12 @@ from Microsoft Excel (tm) spreadsheet files.
 It is not an end-user tool.
 }
 
-%description %_description
+%description %common_description
 
 
 %package -n     python%{python3_pkgversion}-xlrd2
 Summary:        %{summary}
-%description -n python%{python3_pkgversion}-xlrd2 %_description
+%description -n python%{python3_pkgversion}-xlrd2 %common_description
 %if 0%{?rhel}
 %{?python_provide:%python_provide python%{python3_pkgversion}-xlrd2}
 %else
@@ -50,9 +50,10 @@ Summary:        %{summary}
 
 
 %package -n python-xlrd2-doc
-Summary:        xlrd2 documentation
+Summary:        The documentation for python module xlrd2
 %description -n python-xlrd2-doc
-Documentation for xlrd2
+The Documentation for the python module xlrd2
+%common_description
 
 
 %prep
