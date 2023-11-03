@@ -20,9 +20,11 @@ VCS:            https://github.com/martijnvanbrummelen/nwipe
 #Source0:       https://github.com/%%{gituser}/%%{gitname}/archive/%%{commit}/%%{name}-%%{version}-%%{shortcommit}.tar.gz
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
+# https://github.com/martijnvanbrummelen/nwipe/pull/517
 # Lower the build requirements to autoconf used in rhel6
 Patch1:         nwipe-epel6.patch
 
+# https://github.com/martijnvanbrummelen/nwipe/pull/516
 # Move the usage of int64t bellow the stdint.h include which defines it
 Patch2:         nwipe-epel-int64t.patch
 
