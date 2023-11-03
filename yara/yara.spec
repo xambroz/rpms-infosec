@@ -1,5 +1,5 @@
 Name:           yara
-Version:        4.3.2
+Version:        4.4.0
 %global         baserelease 1
 Summary:        Pattern matching Swiss knife for malware researchers
 URL:            https://VirusTotal.github.io/yara/
@@ -21,9 +21,9 @@ and a Boolean expression which determine its logic.}
 
 %global         gituser         VirusTotal
 %global         gitname         yara
-%global         gitdate         20230420
-# Commit of version 4.3.1
-%global         commit          a6f6ce1d6d74a03c396660db25765f2a794d9e30
+%global         gitdate         20230915
+# Commit of version 4.4.0
+%global         commit          1a85738e9af3c77acf035d0be4fe432e476bf82e
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 %bcond_without  release
@@ -189,6 +189,12 @@ make check || (
 
 
 %changelog
+* Sun Sep 17 2023 Mikel Olasagasti Uranga <mikel@olasagasti.info> - 4.4.0-1
+- bump to 4.4.0
+
+* Sat Jul 22 2023 Fedora Release Engineering <releng@fedoraproject.org> - 4.3.2-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_39_Mass_Rebuild
+
 * Wed Jun 14 2023 Michal Ambroz <rebus at, seznam.cz> - 4.3.2-1
 - bump to 4.3.2
 
