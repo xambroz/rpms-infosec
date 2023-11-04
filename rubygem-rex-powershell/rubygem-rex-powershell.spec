@@ -28,6 +28,7 @@ Documentation for %{name}.
 
 %prep
 gem unpack %{SOURCE0}
+rm -rf .github
 
 %setup -q -D -T -n  %{gem_name}-%{version}
 
@@ -57,6 +58,8 @@ popd
 %dir %{gem_instdir}
 %exclude %{gem_instdir}/.gitignore
 %exclude %{gem_instdir}/.travis.yml
+%exclude %{gem_instdir}/.github
+%exclude %{gem_instdir}/cortex.yaml
 %{gem_instdir}/CODE_OF_CONDUCT.md
 %license %{gem_instdir}/LICENSE
 %{gem_instdir}/data
@@ -64,6 +67,7 @@ popd
 %exclude %{gem_instdir}/rex-powershell.gemspec
 %exclude %{gem_cache}
 %{gem_spec}
+
 
 %files doc
 %doc %{gem_docdir}
