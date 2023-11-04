@@ -1,24 +1,40 @@
 Summary:        Console hex viewer/editor with disassembler
 Name:           beye
-Version:        20140110
-Release:        1%{?dist}
-License:        GPL
+Version:        6.1.1
+%global         baserelease        0.1
+License:        GPL-2.0-only
 Group:          Applications/Editors
-URL:            http://beye.sourceforge.net/
+URL:            https://github.com/widgetii/beye
+# was:          http://beye.sourceforge.net/
 # was           http://biew.sourceforge.net/
 # fork          https://github.com/widgetii/beye
 
-# SVN snapshot
-# obtained by the script toget.sh
-Source0:        %{name}-%{version}.tar.bz2
-#               http://downloads.sourceforge.net/beye/%{name}-%{real_version}-src.tar.bz2
-#		http://dl.sf.net/beye/biew-%%{real_version}-src.tar.bz2
+
+%global         gituser         widgetii
+%global         gitname         beye
+%global         gitdate         20211007
+%global         commit          a0679f8263f09869e4e2826619d0310a04649ca0
+%global         shortcommit     %(c=%{commit}; echo ${c:0:7})
+
+
+# git snapshot
+Release:        %{baserelease}.%{gitdate}.git%{shortcommit}%{?dist}
+Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-git%{gitdate}-%{shortcommit}.tar.gz
+
+# Enable building with the gpm console support
+Patch0:         beye-enable-gpm.patch
+
+#               http://downloads.sourceforge.net/beye/%%{name}-%%{real_version}-src.tar.bz2
+#               http://dl.sf.net/beye/biew-%%{real_version}-src.tar.bz2
 
 ExcludeArch:    sparc sparc64
 
-BuildRequires:  perl
+BuildRequires:  perl-interpreter
 BuildRequires:  make
 BuildRequires:  gcc-c++
+BuildRequires:  gpm-devel
+BuildRequires:  ncurses-devel
+BuildRequires:  slang-devel
 
 
 
@@ -32,24 +48,29 @@ coff32, PharLap, rdoff executable formats, a code guider, and lot of
 other features, making it invaluable for examining binary code.
 
 %prep
-%autosetup -n %{name}-%{version}
+%autosetup -n %{name}-%{commit}
 
-### Change default prefix to %{_prefix}
+### Change default prefix to %%{_prefix}
 perl -pi.orig -e 's|/usr/local|%{_prefix}|' src/libbeye/osdep/unix/os_dep.cpp
 
 
 %build
-%configure
+./bootstrap
+export LDFLAGS="$LDFLAGS -lgpm"
+%configure --enable-ncurses --enable-iconv --enable-debug --enable-slang
+
 %make_build
 
 %install
 %make_install
+mkdir -p %{buildroot}%{_datadir}/beye/
+
 
 %files
 %license doc/license.en doc/license.ru
 %doc doc/*.en doc/*.txt
-%{_bindir}/biew
-%{_datadir}/biew/
+%{_bindir}/beye
+%{_datadir}/beye/
 
 %changelog
 * Thu Oct 29 2009 Dag Wieers <dag@wieers.com> - 6.0.2-1
