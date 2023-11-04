@@ -1,0 +1,24 @@
+From 22a8229ad18248d85d11f85414ba6d1b740e62e8 Mon Sep 17 00:00:00 2001
+From: Nicolas Chauvet <kwizart@gmail.com>
+Date: Fri, 3 Mar 2017 11:39:11 +0100
+Subject: [PATCH] Use DESTDIR for packaging
+
+---
+ pyaff/Makefile.am | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/pyaff/Makefile.am b/pyaff/Makefile.am
+index 468b0f7..4fa390b 100644
+--- a/pyaff/Makefile.am
++++ b/pyaff/Makefile.am
+@@ -11,6 +11,6 @@ install-exec-local:
+ 	cd $(srcdir) && $(PYTHON) setup.py \
+ 		build --build-base $(abs_builddir)/build \
+ 		egg_info --egg-base $(abs_builddir) \
+-		install --prefix $(prefix) --single-version-externally-managed --record=$(abs_builddir)/installed.txt \
++		install --prefix $(DESTDIR)$(prefix) --single-version-externally-managed --record=$(abs_builddir)/installed.txt \
+ 		bdist_egg --dist-dir $(abs_builddir)/dist
+ endif
+-- 
+2.7.4
+
