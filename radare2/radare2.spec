@@ -6,6 +6,9 @@ URL:            https://radare.org/
 VCS:            https://github.com/radareorg/radare2
 #               https://github.com/radareorg/radare2/releases
 
+# Possible to build with extra memory sanitization
+%bcond_with     asan
+
 # %%if 0%%{?rhel} && 0%%{?rhel} == 8
 # Radare2 fails to build on EPEL8+s390x
 # https://bugzilla.redhat.com/show_bug.cgi?id=1960046
@@ -97,6 +100,10 @@ BuildRequires:  ninja-build
 BuildRequires:  pkgconfig
 # xxhash-devel
 BuildRequires:  pkgconfig(libxxhash)
+
+%if %{?with asan}
+BuildRequires:  pkgconfig(libasan)
+%endif
 
 # version of libzip on rhel7 is too old
 %if 0%{?fedora} || 0%{?rhel} >= 8
@@ -288,7 +295,9 @@ sed -i -e "s|meson_version : '>=......'|meson_version : '>=0.49.1'|;" meson.buil
 #     --sanitize=address,undefined,signed-integer-overflow \
 
 %meson \
+%if %{with asan}
     -Db_sanitize=address \
+%endif
     -Duse_sys_magic=true \
 %if 0%{?fedora} || 0%{?rhel} >= 8
     -Duse_sys_zip=true \
