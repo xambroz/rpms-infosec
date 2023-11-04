@@ -28,6 +28,10 @@ Patch1:         nwipe-epel6.patch
 # Move the usage of int64t bellow the stdint.h include which defines it
 Patch2:         nwipe-epel-int64t.patch
 
+# time.h must be loaded before stdio.h
+Patch3:         nwipe-timespec.patch
+
+
 BuildRequires:  make
 BuildRequires:  gcc
 BuildRequires:  parted-devel
