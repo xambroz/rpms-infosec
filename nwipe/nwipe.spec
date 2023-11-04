@@ -28,6 +28,9 @@ Patch1:         nwipe-epel6.patch
 # Move the usage of int64t bellow the stdint.h include which defines it
 Patch2:         nwipe-epel-int64t.patch
 
+# https://github.com/martijnvanbrummelen/nwipe/issues/519
+# https://github.com/martijnvanbrummelen/nwipe/pull/520
+# Move the time.h include in front od the _POSIX_SOURCE definition to fix build on rhel7
 # time.h must be loaded before stdio.h
 Patch3:         nwipe-timespec.patch
 
