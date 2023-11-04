@@ -1,8 +1,7 @@
-# Generated from sawyer-0.8.1.gem by gem2rpm -*- rpm-spec -*-
 %global gem_name sawyer
 
 Name: rubygem-%{gem_name}
-Version: 0.8.1
+Version: 0.9.1
 Release: 1%{?dist}
 Summary: Secret User Agent of HTTP
 License: MIT
