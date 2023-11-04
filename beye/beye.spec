@@ -73,6 +73,11 @@ mkdir -p %{buildroot}%{_datadir}/beye/
 %{_datadir}/beye/
 
 %changelog
+* Sat Nov 04 2023 Michal Ambroz <rebus _AT seznam.cz> - 6.1.1-0.1
+- switch to fork https://github.com/widgetii/beye
+- Updated to release 6.1.1.pre
+
+
 * Thu Oct 29 2009 Dag Wieers <dag@wieers.com> - 6.0.2-1
 - Updated to release 6.0.2.
 
