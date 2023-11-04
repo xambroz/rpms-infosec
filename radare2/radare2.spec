@@ -7,13 +7,13 @@ VCS:            https://github.com/radareorg/radare2
 #               https://github.com/radareorg/radare2/releases
 
 # Possible to build with extra memory sanitization
-%bcond_with     asan
+%bcond_without  asan
 
 # %%if 0%%{?rhel} && 0%%{?rhel} == 8
 # Radare2 fails to build on EPEL8+s390x
 # https://bugzilla.redhat.com/show_bug.cgi?id=1960046
 # https://docs.fedoraproject.org/en-US/packaging-guidelines/#_architecture_build_failures
-# ExcludeArch:    s390x
+# ExcludeArch:  s390x
 # %%endif
 
 
@@ -35,6 +35,10 @@ Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{version}.tar.
 %else
 Release:        0.%{baserelease}.%{gitdate}git%{shortcommit}%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{commit}.tar.gz#/%{name}-%{version}-git%{gitdate}-%{shortcommit}.tar.gz
+%endif
+
+%if %{with asan}
+%global         release        %{release}~asan
 %endif
 
 # Specific to Fedora - build with system libraries
@@ -101,7 +105,7 @@ BuildRequires:  pkgconfig
 # xxhash-devel
 BuildRequires:  pkgconfig(libxxhash)
 
-%if %{?with asan}
+%if %{with asan}
 BuildRequires:  pkgconfig(libasan)
 %endif
 
