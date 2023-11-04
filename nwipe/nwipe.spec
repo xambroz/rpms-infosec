@@ -1,6 +1,6 @@
 Name:           nwipe
 Version:        0.35
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Securely erase disks using a variety of recognized methods
 
 
