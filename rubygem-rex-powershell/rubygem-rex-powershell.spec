@@ -1,8 +1,7 @@
-# Generated from rex-powershell-0.1.77.gem by gem2rpm -*- rpm-spec -*-
 %global gem_name rex-powershell
 
 Name: rubygem-%{gem_name}
-Version: 0.1.77
+Version: 0.1.99
 Release: 1%{?dist}
 Summary: Rex Powershell Utilities
 License: BSD
@@ -74,5 +73,8 @@ popd
 %{gem_instdir}/Rakefile
 
 %changelog
+* Sat Nov 04 2023 Michal Ambroz <rebus at, seznam.cz> - 0.1.99-1
+- bump to 0.1.99
+
 * Wed Mar 14 2018 Michal Ambroz <rebus at, seznam.cz> - 0.1.77-1
 - Initial package
