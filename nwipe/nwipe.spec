@@ -97,7 +97,10 @@ autoreconf -vif
 %{_mandir}/man1/%{name}.1.gz
 
 %changelog
-* Fri Nov 03 2023 Michal Ambroz <rebus at, seznam.cz> 0.35-2
+* Sat Nov 04 2023 Michal Ambroz <rebus at, seznam.cz> 0.35-2
+- fix build for rhel7/8
+
+* Fri Nov 03 2023 Michal Ambroz <rebus at, seznam.cz> 0.35-1
 - bump to 0.35
 
 * Thu Jul 20 2023 Fedora Release Engineering <releng@fedoraproject.org> - 0.34-3
