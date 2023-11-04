@@ -15,7 +15,7 @@ Source:         http://downloads.sourceforge.net/beye/%{name}-%{real_version}-sr
 
 ExcludeArch:    sparc sparc64
 
-BuildRequires:  perl
+BuildRequires:  perl-interpreter
 BuildRequires:  make
 BuildRequires:  gcc
 
