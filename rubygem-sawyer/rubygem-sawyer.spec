@@ -65,7 +65,7 @@ popd
 %{gem_instdir}/Gemfile
 %doc %{gem_instdir}/README.md
 %{gem_instdir}/Rakefile
-%{gem_instdir}/test
+#%%{gem_instdir}/test
 
 %changelog
 * Wed Mar 14 2018 Michal Ambroz <rebus at, seznam.cz> - 0.8.1-1
