@@ -1,0 +1,47 @@
+[microsoft-prod]
+name=packages-microsoft-com-prod for Fedora $releasever - $basearch
+baseurl=https://packages.microsoft.com/fedora/$releasever/prod
+#baseurl=http://download.example/pub/fedora/linux/releases/$releasever/Everything/$basearch/os/
+enabled=0
+countme=1
+metadata_expire=7d
+repo_gpgcheck=1
+gpgcheck=1
+# gpgkey=https://packages.microsoft.com/keys/microsoft.asc
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-microsoft.asc
+sslverify=1
+skip_if_unavailable=True
+
+[microsoft-prod-rhel9]
+name=packages-microsoft-com-prod for rhel9
+baseurl=https://packages.microsoft.com/rhel/9/prod
+enabled=0
+metadata_expire=7d
+gpgcheck=1
+# gpgkey=https://packages.microsoft.com/keys/microsoft.asc
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-microsoft.asc
+sslverify=1
+skip_if_unavailable=True
+
+[microsoft-prod-rhel8]
+name=packages-microsoft-com-prod for rhel8
+baseurl=https://packages.microsoft.com/rhel/8/prod
+enabled=0
+metadata_expire=7d
+gpgcheck=1
+# gpgkey=https://packages.microsoft.com/keys/microsoft.asc
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-microsoft.asc
+sslverify=1
+skip_if_unavailable=True
+
+[microsoft-prod-rhel7]
+name=packages-microsoft-com-prod for rhel7
+baseurl=https://packages.microsoft.com/rhel/8/prod
+enabled=0
+metadata_expire=7d
+gpgcheck=1
+# gpgkey=https://packages.microsoft.com/keys/microsoft.asc
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-microsoft.asc
+sslverify=1
+skip_if_unavailable=True
+

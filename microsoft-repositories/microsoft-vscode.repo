@@ -1,0 +1,12 @@
+[microsoft-code]
+name=Visual Studio Code
+baseurl=https://packages.microsoft.com/yumrepos/vscode
+enabled=0
+gpgcheck=1
+# gpgkey=https://packages.microsoft.com/keys/microsoft.asc
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-microsoft.asc
+metadata_expire=7d
+skip_if_unavailable=True
+enabled_metadata=1
+
+

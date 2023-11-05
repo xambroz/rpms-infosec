@@ -1,0 +1,22 @@
+[microsoft-skype-stable]
+name=skype (stable)
+baseurl=https://repo.skype.com/rpm/stable/
+enabled=0
+gpgcheck=1
+# gpgkey=https://repo.skype.com/data/SKYPE-GPG-KEY
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-microsoft-SKYPE.asc
+skip_if_unavailable=True
+metadata_expire=7d
+enabled_metadata=1
+
+
+[microsoft-skype-unstable]
+name=skype (stable)
+baseurl=https://repo.skype.com/rpm/unstable/
+enabled=0
+gpgcheck=1
+# gpgkey=https://repo.skype.com/data/SKYPE-GPG-KEY
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-microsoft-SKYPE.asc
+skip_if_unavailable=True
+metadata_expire=7d
+
