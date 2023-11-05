@@ -15,15 +15,16 @@ VCS:            https://github.com/xambroz/rpms-infosec/tree/master/microsoft-re
 # so adding repositories for current Fedora + RHEL9/8/7
 Source0:        https://packages.microsoft.com/keys/microsoft.asc#/RPM-GPG-KEY-microsoft.asc
 Source1:        https://repo.skype.com/data/SKYPE-GPG-KEY#/RPM-GPG-KEY-microsoft-SKYPE.asc
-Source2:        microsoft-azure-cli.repo
-Source3:        microsoft-azurecore.repo
-Source4:        microsoft-cyclecloud.repo
-Source5:        microsoft-edge.repo
-Source6:        microsoft-mssql.repo
-Source7:        microsoft-prod.repo
-Source8:        microsoft-skype.repo
-Source9:        microsoft-teams.repo
-Source10:        microsoft-vscode.repo
+Source2:        microsoft-repositories.conf
+Source3:        microsoft-azure-cli.repo
+Source4:        microsoft-azurecore.repo
+Source5:        microsoft-cyclecloud.repo
+Source6:        microsoft-edge.repo
+Source7:        microsoft-mssql.repo
+Source8:        microsoft-prod.repo
+Source9:        microsoft-skype.repo
+Source10:       microsoft-teams.repo
+Source11:       microsoft-vscode.repo
 
 %description
 Respositories for linux software from Microsoft to be used with gnome-software
@@ -37,10 +38,16 @@ dnf search teams --enablerepo=microsoft*
 
 %install
 
+mkdir -p %{buildroot}%{_sysconfdir}/pki/rpm-gpg
+cp %{SOURCE0} %{buildroot}%{_sysconfdir}/pki/rpm-gpg
+cp %{SOURCE1} %{buildroot}%{_sysconfdir}/pki/rpm-gpg
+
+mkdir -p %{buildroot}%{_prefix}/lib/fedora-third-party/conf.d
+cp %{SOURCE2} %{buildroot}%{_prefix}/lib/fedora-third-party/conf.d/
+
 mkdir -p %{buildroot}%{_sysconfdir}/yum.repos.d
 
 %ifarch x86_64
-cp %{SOURCE2} %{buildroot}%{_sysconfdir}/yum.repos.d/
 cp %{SOURCE3} %{buildroot}%{_sysconfdir}/yum.repos.d/
 cp %{SOURCE4} %{buildroot}%{_sysconfdir}/yum.repos.d/
 cp %{SOURCE5} %{buildroot}%{_sysconfdir}/yum.repos.d/
@@ -49,10 +56,8 @@ cp %{SOURCE7} %{buildroot}%{_sysconfdir}/yum.repos.d/
 cp %{SOURCE8} %{buildroot}%{_sysconfdir}/yum.repos.d/
 cp %{SOURCE9} %{buildroot}%{_sysconfdir}/yum.repos.d/
 cp %{SOURCE10} %{buildroot}%{_sysconfdir}/yum.repos.d/
+cp %{SOURCE11} %{buildroot}%{_sysconfdir}/yum.repos.d/
 %endif
-
-mkdir -p %{buildroot}%{_prefix}/lib/fedora-third-party/conf.d
-cp microsoft-repositories.conf %{buildroot}%{_prefix}/lib/fedora-third-party/conf.d/
 
 
 %files
