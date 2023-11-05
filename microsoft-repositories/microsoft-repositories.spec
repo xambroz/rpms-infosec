@@ -50,8 +50,11 @@ cp %{SOURCE8} %{buildroot}%{_sysconfdir}/yum.repos.d/
 cp %{SOURCE9} %{buildroot}%{_sysconfdir}/yum.repos.d/
 cp %{SOURCE10} %{buildroot}%{_sysconfdir}/yum.repos.d/
 %endif
+
 mkdir -p %{buildroot}%{_prefix}/lib/fedora-third-party/conf.d
 cp microsoft-repositories.conf %{buildroot}%{_prefix}/lib/fedora-third-party/conf.d/
+
+
 %files
 %{_sysconfdir}/yum.repos.d/microsoft-*.repo
 %{_prefix}/lib/fedora-third-party/conf.d/microsoft-repositories.conf
