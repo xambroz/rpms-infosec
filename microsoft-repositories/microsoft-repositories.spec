@@ -61,8 +61,10 @@ cp %{SOURCE11} %{buildroot}%{_sysconfdir}/yum.repos.d/
 
 
 %files
+%ifarch x86_64
 %{_sysconfdir}/yum.repos.d/microsoft-*.repo
 %{_prefix}/lib/fedora-third-party/conf.d/microsoft-repositories.conf
+%endif
 %{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-microsoft.asc
 %{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-microsoft-SKYPE.asc
 
