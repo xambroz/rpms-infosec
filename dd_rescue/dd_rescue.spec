@@ -1,6 +1,6 @@
 Name:           dd_rescue
 Version:        1.99.13
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Fault tolerant "dd" utility for rescuing data from bad media
 # No version specified
 License:        GPL-2.0-only or GPL-3.0-only
