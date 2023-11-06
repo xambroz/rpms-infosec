@@ -101,6 +101,9 @@ popd
 
 
 %changelog
+* Mon Nov 06 2023 Michal Ambroz <rebus AT seznam dot cz> - 1.99.13-2
+- fix epel7 build
+
 * Sun Nov 05 2023 Michal Ambroz <rebus AT seznam dot cz> - 1.99.13-1
 - bump to 1.99.13
 

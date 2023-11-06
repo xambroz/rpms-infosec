@@ -1,6 +1,6 @@
 diff -ru dd_rhelp-0.3.0/dd_rhelp dd_rhelp-0.3.0.new/dd_rhelp
---- dd_rhelp-0.3.0/dd_rhelp	2023-02-15 00:37:55.505879683 +0100
-+++ dd_rhelp-0.3.0.new/dd_rhelp	2023-02-15 00:35:07.698695499 +0100
+--- a/dd_rhelp-0.3.0/dd_rhelp	2023-02-15 00:37:55.505879683 +0100
++++ b/dd_rhelp-0.3.0/dd_rhelp	2023-02-15 00:35:07.698695499 +0100
 @@ -1039,24 +1039,27 @@
  #     fi
  
@@ -34,4 +34,3 @@ diff -ru dd_rhelp-0.3.0/dd_rhelp dd_rhelp-0.3.0.new/dd_rhelp
  	exit 1
      fi
  
-Only in dd_rhelp-0.3.0: dd_rhelp_test.12734.a.tmp.log

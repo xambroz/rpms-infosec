@@ -1,0 +1,90 @@
+Avoid c99 detection on RHEL7.
+diff -ru dd_rescue-1.99.13/sha256.c dd_rescue-1.99.13.new/sha256.c
+--- dd_rescue-1.99.13/sha256.c	2023-02-23 21:51:27.000000000 +0000
++++ dd_rescue-1.99.13.new/sha256.c	2023-11-06 21:22:40.323238437 +0000
+@@ -91,6 +91,7 @@
+ {
+  	/* for each chunk create a 64-entry message schedule array w[0..63] of 32-bit words */
+ 	uint32_t w[64];
++        int i;
+ #ifdef __ANALYZER__
+ 	/* -fanalyzer is not clever enough to see that initializing the first 16 ints is enough */
+ 	memset(w, 0, sizeof(w));
+@@ -100,15 +101,15 @@
+ 	memcpy(w, msg, 64);
+ #else
+ #if defined(HAVE_UNALIGNED_HANDLING)
+-	for (int i = 0; i < 16; ++i)
++	for (i = 0; i < 16; ++i)
+ 		w[i] = htonl(*(uint32_t*)(msg+4*i));
+ #else
+-	for (int i = 0; i < 16; ++i)
++	for (i = 0; i < 16; ++i)
+ 		w[i] = to_int32_be(msg+4*i);
+ #endif
+ #endif
+ 	/* Extend the first 16 words into the remaining 48 words w[16..63] of the message schedule array: */
+-	for (int i = 16; i < 64;  ++i) {
++	for (i = 16; i < 64;  ++i) {
+ 		const uint32_t s0 = RIGHTROTATE(w[i-15], 7) ^ RIGHTROTATE(w[i-15], 18) ^ (w[i-15] >> 3);
+ 		const uint32_t s1 = RIGHTROTATE(w[i-2], 17) ^ RIGHTROTATE(w[i-2] , 19) ^ (w[i-2] >> 10);
+ 		w[i] = w[i-16] + s0 + w[i-7] + s1;
+@@ -117,7 +118,7 @@
+ 	uint32_t a = ctx->sha256_h[0], b = ctx->sha256_h[1], c = ctx->sha256_h[2], d = ctx->sha256_h[3];
+ 	uint32_t e = ctx->sha256_h[4], f = ctx->sha256_h[5], g = ctx->sha256_h[6], h = ctx->sha256_h[7];
+ 	/* Compression function main loop: */
+-	for (int i = 0; i < 64; ++i) {
++	for (i = 0; i < 64; ++i) {
+ 		const uint32_t S1 = RIGHTROTATE(e, 6) ^ RIGHTROTATE(e, 11) ^ RIGHTROTATE(e, 25);
+ 		//const uint32_t ch = (e & f) ^ ((~e) & g);
+ 		const uint32_t ch = g ^ (e & (f ^ g));
+diff -ru dd_rescue-1.99.13/sha512.c dd_rescue-1.99.13.new/sha512.c
+--- dd_rescue-1.99.13/sha512.c	2023-02-23 21:51:27.000000000 +0000
++++ dd_rescue-1.99.13.new/sha512.c	2023-11-06 21:23:43.890123732 +0000
+@@ -121,6 +121,7 @@
+ {
+  	/* for each chunk create a 80-entry message schedule array w[0..79] of 64-bit words */
+ 	uint64_t w[80];
++	int i;
+ #ifdef __ANALYZER__
+ 	/* -fanalyzer is not clever enough to see that initializing the first 16 ints is enough */
+ 	memset(w, 0, sizeof(w));
+@@ -130,15 +131,15 @@
+ 	memcpy(w, msg, 64);
+ #else
+ #if defined(HAVE_UNALIGNED_HANDLING)
+-	for (int i = 0; i < 16; ++i)
++	for (i = 0; i < 16; ++i)
+ 		w[i] = htonll(*(uint64_t*)(msg+8*i));
+ #else
+-	for (int i = 0; i < 16; ++i)
++	for (i = 0; i < 16; ++i)
+ 		w[i] = to_int64_be(msg+8*i);
+ #endif
+ #endif
+ 	/* Extend the first 16 words into the remaining 48 words w[16..63] of the message schedule array: */
+-	for (int i = 16; i < 80;  ++i) {
++	for (i = 16; i < 80;  ++i) {
+ 		const uint64_t s0 = RIGHTROTATE(w[i-15], 1) ^ RIGHTROTATE(w[i-15], 8) ^ (w[i-15] >> 7);
+ 		const uint64_t s1 = RIGHTROTATE(w[i-2], 19) ^ RIGHTROTATE(w[i-2] ,61) ^ (w[i-2]  >> 6);
+ 		w[i] = w[i-16] + s0 + w[i-7] + s1;
+@@ -147,7 +148,7 @@
+ 	uint64_t a = ctx->sha512_h[0], b = ctx->sha512_h[1], c = ctx->sha512_h[2], d = ctx->sha512_h[3];
+ 	uint64_t e = ctx->sha512_h[4], f = ctx->sha512_h[5], g = ctx->sha512_h[6], h = ctx->sha512_h[7];
+ 	/* Compression function main loop: */
+-	for (int i = 0; i < 80; ++i) {
++	for (i = 0; i < 80; ++i) {
+ 		const uint64_t S1 = RIGHTROTATE(e, 14) ^ RIGHTROTATE(e, 18) ^ RIGHTROTATE(e, 41);
+ 		//const uint64_t ch = (e & f) ^ ((~e) & g);
+ 		const uint64_t ch = g ^ (e & (f ^ g));
+@@ -206,8 +207,9 @@
+ static inline
+ unsigned char* sha5xx_beout(unsigned char *buf, const hash_t *ctx, int wd)
+ {
++	int i;
+ 	assert(buf);
+-	for (int i = 0; i < wd; ++i)
++	for (i = 0; i < wd; ++i)
+ 		*((uint64_t*)buf+i) = htonll(ctx->sha512_h[i]);
+ 	return buf;
+ }
