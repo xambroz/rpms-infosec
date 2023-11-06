@@ -61,7 +61,7 @@ might be used with sub-sequent runs cooperatively on the same disk image.
 gpgv2 --keyring %{SOURCE3} %{SOURCE2} %{SOURCE0}
 %setup -q -n %{name}-%{version}
 %setup -q -n %{name}-%{version} -a 1 -D -T
-%autopatch -p 0
+%autopatch -p 1
 
 %build
 autoreconf -vif
