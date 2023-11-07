@@ -17,6 +17,9 @@ Source3:        gpgkey-6669F7340D31E95EC5565490DE4F1B3A2BFFC5BF.gpg
 # Fix the dd_rescue version detection in dd_help
 Patch0:         dd_rescue-rhelp_version.patch
 
+# Avoid c99 detection on RHEL7
+Patch1:         dd_rescue-noc99.patch
+
 BuildRequires:  autoconf
 # We require aclocal which is shipped with automake
 BuildRequires:  automake
