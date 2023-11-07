@@ -1,0 +1,15 @@
+Print --help when no options are entered.
+This fixes annoying bug/feature that the script crashes when no file attribute is provided
+diff -ru officeparser-42c2d40372fe271f2039ca1adc145d2aef8c9545/officeparser.py officeparser-42c2d40372fe271f2039ca1adc145d2aef8c9545.new/officeparser.py
+--- officeparser-42c2d40372fe271f2039ca1adc145d2aef8c9545/officeparser.py	2019-10-25 11:31:02.155119650 +0200
++++ officeparser-42c2d40372fe271f2039ca1adc145d2aef8c9545.new/officeparser.py	2019-10-25 11:10:10.815713212 +0200
+@@ -458,6 +463,9 @@
+ 
+ def _main():
+ 
++    if len(sys.argv) < 2:
++        sys.argv.append('--help')
++
+     parser = OptionParser()
+ 
+     parser.add_option('-l', '--log-level', dest='log_level',

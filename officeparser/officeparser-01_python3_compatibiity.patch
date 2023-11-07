@@ -1,0 +1,334 @@
+From 9f080d4ed363f6a25874ae991806f30922a14671 Mon Sep 17 00:00:00 2001
+From: Lumir Balhar <lbalhar@redhat.com>
+Date: Thu, 24 Oct 2019 10:03:02 +0200
+Subject: [PATCH 1/7] Fix prints - from statement to function
+
+---
+ officeparser.py | 31 ++++++++++++++++---------------
+ 1 file changed, 16 insertions(+), 15 deletions(-)
+
+diff --git a/officeparser.py b/officeparser.py
+index e521d88..5da5bf4 100755
+--- a/officeparser.py
++++ b/officeparser.py
+@@ -5,6 +5,7 @@
+ #             - VBA: fixed infinite loop when output file already exists
+ #             - improved logging output, set default level to INFO
+ 
++from __future__ import print_function
+ import sys
+ from struct import unpack
+ from optparse import OptionParser
+@@ -268,7 +269,7 @@ def read_chain(self, sector_start):
+ 
+     def print_fat_sectors(self):
+         for sector in self.fat_sectors:
+-            print '{0:08X}'.format(sector)
++            print('{0:08X}'.format(sector))
+ 
+     def get_stream(self, index):
+         d = self.directory[index]
+@@ -315,7 +316,7 @@ def __init__(self, data, parser_options=None):
+         self._sectFat = self.header[18:] # sects of first 109 FAT sectors
+ 
+     def pretty_print(self):
+-        print """HEADER DUMP
++        print("""HEADER DUMP
+ _abSig              = {0}
+ _clid               = {1}
+ _uMinorVersion      = {2}
+@@ -353,11 +354,11 @@ def pretty_print(self):
+         '{0:08X}'.format(self._sectMiniFatStart),
+         '{0:08X}'.format(self._csectMiniFat),
+         '{0:08X}'.format(self._sectDifStart),
+-        '{0:08X}'.format(self._csectDif))
++        '{0:08X}'.format(self._csectDif)))
+ 
+         for fat in self._sectFat:
+             if fat != FREESECT:
+-                print '_sectFat            = {0:08X}'.format(fat)
++                print('_sectFat            = {0:08X}'.format(fat))
+ 
+ STGTY_INVALID = 0
+ STGTY_STORAGE = 1
+@@ -416,7 +417,7 @@ def __init__(self, data, index):
+         # last two bytes are padding
+ 
+     def pretty_print(self):
+-        print """
++        print("""
+ _ab                 = {0}
+ _cb                 = {1}
+ _mse                = {2}
+@@ -446,7 +447,7 @@ def pretty_print(self):
+         '{0}'.format(self._time[1]),
+         '{0:08X}'.format(self._sectStart),
+         '{0:08X} ({0} bytes)'.format(self._ulSize),
+-        '{0:04X}'.format(self._dptPropType))
++        '{0:04X}'.format(self._dptPropType)))
+ 
+ def _main():
+ 
+@@ -561,22 +562,22 @@ def _main():
+ 
+     if options.print_directory:
+         for x in xrange(0, len(ofdoc.directory)):
+-            print "Directory Index {0:08X} ({0})".format(x)
++            print("Directory Index {0:08X} ({0})".format(x))
+             ofdoc.directory[x].pretty_print()
+-            print
++            print()
+ 
+     if options.print_fat:
+         for sector in xrange(0, len(ofdoc.fat)):
+-            print '{0:08X}: {1}'.format(sector, fat_value_to_str(ofdoc.fat[sector]))
++            print('{0:08X}: {1}'.format(sector, fat_value_to_str(ofdoc.fat[sector])))
+ 
+     if options.print_mini_fat:
+         for sector in xrange(0, len(ofdoc.minifat)):
+-            print '{0:08X}: {1}'.format(sector, fat_value_to_str(ofdoc.minifat[sector]))
++            print('{0:08X}: {1}'.format(sector, fat_value_to_str(ofdoc.minifat[sector])))
+ 
+     if options.print_streams:
+         for d in ofdoc.directory:
+             if d._mse == STGTY_STREAM:
+-                print '{0}: {1}'.format(d.index, d.name)
++                print('{0}: {1}'.format(d.index, d.name))
+ 
+     if options.print_expected_file_size:
+         expected_file_size = (len([x for x in ofdoc.fat if x != FREESECT]) * ofdoc.sector_size) + 512
+@@ -584,8 +585,8 @@ def _main():
+         size_diff = abs(expected_file_size - actual_file_size)
+         percent_diff = (float(size_diff) / float(expected_file_size)) * 100.0
+ 
+-        print "expected file size {0} actual {1} difference {2} ({3:0.2f}%)".format(
+-            expected_file_size, actual_file_size, size_diff, percent_diff)
++        print("expected file size {0} actual {1} difference {2} ({3:0.2f}%)".format(
++            expected_file_size, actual_file_size, size_diff, percent_diff))
+ 
+     #
+     # analysis options
+@@ -620,7 +621,7 @@ def _main():
+                     logging.warning('invalid FAT sector reference {0:08X}'.format(value))
+ 
+     if options.print_invalid_fat_count:
+-        print "invalid FAT sector references: {0}".format(invalid_fat_sectors)
++        print("invalid FAT sector references: {0}".format(invalid_fat_sectors))
+ 
+     invalid_fat_entries = 0
+     if options.check_fat or options.print_invalid_fat_count:
+@@ -634,7 +635,7 @@ def _main():
+                     logging.warning('invalid FAT sector {0:08X} value {1:08X}'.format(value, ptr))
+ 
+     if options.print_invalid_fat_count:
+-        print "invalid FAT entries: {0}".format(invalid_fat_entries)
++        print("invalid FAT entries: {0}".format(invalid_fat_entries))
+ 
+     if options.check_orphaned_chains:
+         buffer = [False for fat in ofdoc.fat]
+
+From b64db92d77d480f93a973b995fd63c964b16b6fb Mon Sep 17 00:00:00 2001
+From: Lumir Balhar <lbalhar@redhat.com>
+Date: Thu, 24 Oct 2019 10:47:57 +0200
+Subject: [PATCH 2/7] Use BytesIO from compatible io module instead of StringIO
+
+---
+ officeparser.py | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/officeparser.py b/officeparser.py
+index 5da5bf4..82dce4a 100755
+--- a/officeparser.py
++++ b/officeparser.py
+@@ -9,7 +9,7 @@
+ import sys
+ from struct import unpack
+ from optparse import OptionParser
+-from cStringIO import StringIO
++from io import BytesIO
+ import logging
+ import re
+ import os
+@@ -218,7 +218,7 @@ def __init__(self, file, parser_options=None):
+             # chain in the Fat, with the beginning of the chain stored in the
+             # header.
+ 
+-            data = StringIO(self.read_chain(self.header._sectMiniFatStart))
++            data = BytesIO(self.read_chain(self.header._sectMiniFatStart))
+             while True:
+                 chunk = data.read(self.sector_size)
+                 if chunk == '':
+@@ -249,7 +249,7 @@ def __impl_read_chain(self, start, read_sector_f, read_fat_f):
+         """Returns the entire contents of a chain starting at the given sector."""
+         sector = start
+         check = [ sector ] # keep a list of sectors we've already read
+-        buffer = StringIO()
++        buffer = BytesIO()
+         while sector != ENDOFCHAIN:
+             buffer.write(read_sector_f(sector))
+             next = read_fat_f(sector)
+
+From 032a0d058bc59d1c3bef5f0b68298720947ac2c5 Mon Sep 17 00:00:00 2001
+From: Lumir Balhar <lbalhar@redhat.com>
+Date: Thu, 24 Oct 2019 10:48:44 +0200
+Subject: [PATCH 3/7] Different parsing bytes to name for Python 2/3
+
+---
+ officeparser.py | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/officeparser.py b/officeparser.py
+index 82dce4a..c9f1d10 100755
+--- a/officeparser.py
++++ b/officeparser.py
+@@ -28,6 +28,8 @@
+ 
+ BINFILE_NAME = "/vbaProject.bin"
+ 
++PY3 = sys.version_info[0] == 3
++
+ def fat_value_to_str(value):
+     if value == DIFSECT:
+         return '0xFFFFFFFC (DIF)'
+@@ -402,7 +404,12 @@ def __init__(self, data, index):
+         self._ab = self.directory[0]
+         self._cb = self.directory[1]
+         # convert wide chars into ASCII
+-        self.name = ''.join([x for x in self._ab[0:self._cb] if ord(x) != 0])
++        if PY3:
++            # In Python 3 we have numbers we need to convert to chars
++            self.name = ''.join([chr(x) for x in self._ab[0:self._cb] if x != 0])
++        else:
++            # In Python 2 we have chars we need to convert to numbers to check them
++            self.name = ''.join([x for x in self._ab[0:self._cb] if ord(x) != 0])
+         self._mse = self.directory[2]
+         self._bflags = self.directory[3]
+         self._sidLeftSib = self.directory[4]
+
+From 6afb84b3237cf280bafd95b400e454a8484199be Mon Sep 17 00:00:00 2001
+From: Lumir Balhar <lbalhar@redhat.com>
+Date: Thu, 24 Oct 2019 10:49:57 +0200
+Subject: [PATCH 4/7] Use floor division where we need integer as a result
+
+---
+ officeparser.py | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/officeparser.py b/officeparser.py
+index c9f1d10..2d9aa90 100755
+--- a/officeparser.py
++++ b/officeparser.py
+@@ -196,14 +196,14 @@ def __init__(self, file, parser_options=None):
+             if len(data) != self.sector_size:
+                 logging.error('broken FAT (invalid sector size {0} != {1})'.format(len(data), self.sector_size))
+             else:
+-                for value in unpack('<{0}L'.format(self.sector_size / 4), data):
++                for value in unpack('<{0}L'.format(self.sector_size // 4), data):
+                     self.fat.append(value)
+ 
+         # get the list of directory sectors
+         self.directory = []
+         buffer = self.read_chain(self.header._sectDirStart)
+         directory_index = 0
+-        for chunk in unpack("128s" * (len(buffer) / 128), buffer):
++        for chunk in unpack("128s" * (len(buffer) // 128), buffer):
+             self.directory.append(Directory(chunk, directory_index))
+             directory_index += 1
+ 
+@@ -228,7 +228,7 @@ def __init__(self, file, parser_options=None):
+                 if len(chunk) != self.sector_size:
+                     logging.warning("encountered EOF while parsing minifat")
+                     continue
+-                for value in unpack('<{0}L'.format(self.sector_size / 4), chunk):
++                for value in unpack('<{0}L'.format(self.sector_size // 4), chunk):
+                     self.minifat.append(value)
+ 
+     def read_sector(self, sector):
+
+From ace8691eacba4dce0e6bf95292dab9f3a34396eb Mon Sep 17 00:00:00 2001
+From: Lumir Balhar <lbalhar@redhat.com>
+Date: Thu, 24 Oct 2019 10:50:34 +0200
+Subject: [PATCH 5/7] chunk is '' in Python 2 and b'' in Python 3 so better is
+ to check its length
+
+---
+ officeparser.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/officeparser.py b/officeparser.py
+index 2d9aa90..fb1d07c 100755
+--- a/officeparser.py
++++ b/officeparser.py
+@@ -223,7 +223,7 @@ def __init__(self, file, parser_options=None):
+             data = BytesIO(self.read_chain(self.header._sectMiniFatStart))
+             while True:
+                 chunk = data.read(self.sector_size)
+-                if chunk == '':
++                if len(chunk) == 0:
+                     break
+                 if len(chunk) != self.sector_size:
+                     logging.warning("encountered EOF while parsing minifat")
+
+From 0a4c0189d7f6aefb09e4b7299ca0626a39a6d20b Mon Sep 17 00:00:00 2001
+From: Lumir Balhar <lbalhar@redhat.com>
+Date: Thu, 24 Oct 2019 10:57:35 +0200
+Subject: [PATCH 6/7] Use compatible way for writing binary data to stdout
+
+---
+ officeparser.py | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/officeparser.py b/officeparser.py
+index fb1d07c..43d45ea 100755
+--- a/officeparser.py
++++ b/officeparser.py
+@@ -685,20 +685,20 @@ def _main():
+     # dump options
+     #
+     if options.dump_sector:
+-        sys.stdout.write(ofdoc.read_sector(options.dump_sector))
++        os.write(sys.stdout.fileno(), ofdoc.read_sector(options.dump_sector))
+         sys.exit(0)
+ 
+     if options.dump_ministream:
+-        sys.stdout.write(ofdoc.ministream)
++        os.write(sys.stdout.fileno(), (ofdoc.ministream))
+         sys.exit(0)
+ 
+     if options.dump_stream:
+-        sys.stdout.write(ofdoc.get_stream(options.dump_stream))
++        os.write(sys.stdout.fileno(), (ofdoc.get_stream(options.dump_stream)))
+         sys.exit(0)
+ 
+     if options.dump_stream_by_name:
+         d = ofdoc.find_stream_by_name(options.dump_stream_by_name)
+-        sys.stdout.write(ofdoc.get_stream(d.index))
++        os.write(sys.stdout.fileno(), (ofdoc.get_stream(d.index)))
+         sys.exit(0)
+ 
+     #
+
+From fa56b4b1717eb195cd12605a8e3706a33662ffb8 Mon Sep 17 00:00:00 2001
+From: Lumir Balhar <lbalhar@redhat.com>
+Date: Thu, 24 Oct 2019 12:45:10 +0200
+Subject: [PATCH 7/7] Write bytes to file opened as binary
+
+---
+ officeparser.py | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/officeparser.py b/officeparser.py
+index 43d45ea..fdf155a 100755
+--- a/officeparser.py
++++ b/officeparser.py
+@@ -801,8 +801,8 @@ def _main():
+                 f.write(ofdoc.get_stream(d.index))
+                 f.close()
+                 if options.create_manifest:
+-                    manifest.write(os.path.basename(filename))
+-                    manifest.write("\n")
++                    manifest.write(os.path.basename(filename).encode())
++                    manifest.write(b"\n")
+                 logging.debug("created file {0}".format(filename))
+ 
+     while options.extract_macros:
