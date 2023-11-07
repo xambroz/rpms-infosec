@@ -35,6 +35,8 @@ BuildRequires:  gcc-c++
 BuildRequires:  gpm-devel
 BuildRequires:  ncurses-devel
 BuildRequires:  slang-devel
+BuildRequires:  automake
+BuildRequires:  autoconf
 
 
 
