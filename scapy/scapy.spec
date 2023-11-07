@@ -1,6 +1,6 @@
 Name:           scapy
 Version:        2.5.0
-Release:        1%{?dist}
+Release:        5%{?dist}
 Summary:        Interactive packet manipulation tool and network scanner
 
 %global         gituser         secdev
@@ -9,7 +9,9 @@ Summary:        Interactive packet manipulation tool and network scanner
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 License:        GPL-2.0-only
-URL:            http://www.secdev.org/projects/scapy/
+URL:            https://scapy.net/
+#was            http://www.secdev.org/projects/scapy/
+VCS:            https://github.com/secdev/scapy
 #               https://github.com/secdev/scapy/releases
 #               https://bitbucket.org/secdev/scapy/pull-request/80
 #               https://scapy.readthedocs.io/en/latest/introduction.html
@@ -53,12 +55,14 @@ BuildRequires:  /usr/bin/tox
 BuildRequires:  python2
 BuildRequires:  python2-devel
 BuildRequires:  python2-setuptools
+BuildRequires:  python2-tox
 %endif
 
 %if %{with python3}
 BuildRequires:  python%{python3_pkgversion}
 BuildRequires:  python%{python3_pkgversion}-devel
 BuildRequires:  python%{python3_pkgversion}-setuptools
+BuildRequires:  python%{python3_pkgversion}-tox
 %endif
 
 # Recommends only supported on fedora and rhel8+
@@ -223,8 +227,17 @@ ln -s %{_bindir}/scapy3   %{buildroot}%{_bindir}/scapy
 
 
 %changelog
-* Tue Dec 27 2022 Michal Ambroz <rebus _AT seznam.cz> - 2.5.0-1
-- bump to 2.5.0 release
+* Sat Jul 22 2023 Fedora Release Engineering <releng@fedoraproject.org> - 2.5.0-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_39_Mass_Rebuild
+
+* Thu Jun 15 2023 Python Maint <python-maint@redhat.com> - 2.5.0-3
+- Rebuilt for Python 3.12
+
+* Sat Jan 21 2023 Fedora Release Engineering <releng@fedoraproject.org> - 2.5.0-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_38_Mass_Rebuild
+
+* Mon Jan 02 2023 Jonathan Wright <jonathan@almalinux.org> - 2.5.0-1
+- Update to 2.5.0 rhbz#2156396
 
 * Sat Jul 23 2022 Fedora Release Engineering <releng@fedoraproject.org> - 2.4.5-6
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_37_Mass_Rebuild
