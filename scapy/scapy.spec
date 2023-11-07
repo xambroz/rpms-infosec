@@ -34,11 +34,10 @@ requests and replies, and much more.}
 %bcond_with        python2
 %endif
 
-# By default build the documentation
-%if 0%{?fedora} || ( 0%{?rhel} && 0%{?rhel} >= 8 )
+# By default build the documentation only on Fedora due to cc-by-nc-sa license
+%if 0%{?fedora}
 %bcond_without     doc
 %else
-# Documentation build fails on rhel7 due to version of sphinx
 %bcond_with        doc
 %endif
 
@@ -49,20 +48,21 @@ BuildArch:      noarch
 
 BuildRequires:  make
 BuildRequires:  sed
-BuildRequires:  /usr/bin/tox
 
 %if %{with python2}
-BuildRequires:  python2
 BuildRequires:  python2-devel
 BuildRequires:  python2-setuptools
+%if %{with doc}
 BuildRequires:  python2-tox
+%endif
 %endif
 
 %if %{with python3}
-BuildRequires:  python%{python3_pkgversion}
 BuildRequires:  python%{python3_pkgversion}-devel
 BuildRequires:  python%{python3_pkgversion}-setuptools
+%if %{with doc}
 BuildRequires:  python%{python3_pkgversion}-tox
+%endif
 %endif
 
 # Recommends only supported on fedora and rhel8+
@@ -112,6 +112,7 @@ Recommends:     ipython3
 %if %{with doc}
 %package doc
 Summary:        Interactive packet manipulation tool and network scanner
+License:        CC-BY-NC-SA-2.5
 
 BuildRequires:  python%{python3_pkgversion}-sphinx
 BuildRequires:  python%{python3_pkgversion}-sphinx_rtd_theme
@@ -195,7 +196,6 @@ ln -s %{_bindir}/scapy3   %{buildroot}%{_bindir}/scapy
 
 %if %{with python2}
 %files -n python2-%{name}
-%exclude %{python2_sitelib}/test/
 %license LICENSE
 %if ! %{with python3}
 %doc %{_mandir}/man1/scapy.1*
@@ -204,19 +204,20 @@ ln -s %{_bindir}/scapy3   %{buildroot}%{_bindir}/scapy
 %{_bindir}/scapy2
 %{python2_sitelib}/scapy/
 %{python2_sitelib}/scapy-*.egg-info
+%exclude %{python2_sitelib}/test/
 %endif
 
 
 
 %if %{with python3}
 %files -n python%{python3_pkgversion}-%{name}
-%exclude %{python3_sitelib}/test/
 %license LICENSE
 %doc %{_mandir}/man1/scapy.1*
 %{_bindir}/scapy
 %{_bindir}/scapy3
 %{python3_sitelib}/scapy/
 %{python3_sitelib}/scapy-*.egg-info
+%exclude %{python3_sitelib}/test/
 %endif
 
 
