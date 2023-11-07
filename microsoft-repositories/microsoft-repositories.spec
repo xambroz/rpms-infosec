@@ -42,12 +42,11 @@ mkdir -p %{buildroot}%{_sysconfdir}/pki/rpm-gpg
 cp %{SOURCE0} %{buildroot}%{_sysconfdir}/pki/rpm-gpg
 cp %{SOURCE1} %{buildroot}%{_sysconfdir}/pki/rpm-gpg
 
+%ifarch x86_64
 mkdir -p %{buildroot}%{_prefix}/lib/fedora-third-party/conf.d
 cp %{SOURCE2} %{buildroot}%{_prefix}/lib/fedora-third-party/conf.d/
 
 mkdir -p %{buildroot}%{_sysconfdir}/yum.repos.d
-
-%ifarch x86_64
 cp %{SOURCE3} %{buildroot}%{_sysconfdir}/yum.repos.d/
 cp %{SOURCE4} %{buildroot}%{_sysconfdir}/yum.repos.d/
 cp %{SOURCE5} %{buildroot}%{_sysconfdir}/yum.repos.d/
