@@ -1,0 +1,15 @@
+Bad hack by Robert Scheck <robert@fedoraproject.org> for pcodedmp <= 1.2.6
+to avoid build failure "error in pcodedmp setup command: 'install_requires'
+must be a string or list of strings containing valid project/version
+requirement specifiers" with Python 2.7 on RHEL/CentOS 7.
+
+--- pcodedmp-1.2.6/setup.py		2019-07-30 19:45:40.000000000 +0200
++++ pcodedmp-1.2.6/setup.py.python27	2020-05-06 03:00:01.618605812 +0200
+@@ -47,7 +47,6 @@
+ ]
+ INSTALL_REQUIRES = [
+     'oletools>=0.54',
+-    'win_unicode_console; platform_system=="Windows" and platform_python_implementation!="PyPy"',
+ ]
+ 
+ ###################################################################

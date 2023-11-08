@@ -1,0 +1,3 @@
+# python-pcodedmp
+
+Macros written in VBA (Visual Basic for Applications; the macro programming language used in Microsoft Office) exist in three different executable forms, each of which can be what is actually executed at run time, depending on the circumstances: Source code, p-code and execodes. Since most of the time it is the p-code that determines what exactly a macro would do (even if neither source code, nor execodes are present), pcodedmp is a Python library and command line tool to display it.
