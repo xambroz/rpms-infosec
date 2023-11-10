@@ -1,11 +1,14 @@
 Name:           tcping
-Version:        1.3.5
-Release:        27%{?dist}
+Version:        2.1.0
+Release:        1%{?dist}
 Summary:        Check of TCP connection to a given IP/Port
 
-License:        LGPLv3+
-URL:            http://www.linuxco.de/tcping/tcping.html
-Source0:        http://www.linuxco.de/%{name}/%{name}-%{version}.tar.gz
+License:        LGPL-3.0-or-later
+URL:            https://github.com/mkirchner/tcping
+#was URL:       http://www.linuxco.de/tcping/tcping.html
+VCS:            https://github.com/mkirchner/tcping
+Source0:        https://github.com/mkirchner/%{name}/archive/refs/tags/%{version}.tar.gz#/%{name}-%{version}.tar.gz
+# was           http://www.linuxco.de/%%{name}/%%{name}-%%{version}.tar.gz
 
 BuildRequires: make
 BuildRequires:  gcc
@@ -27,10 +30,14 @@ make CCFLAGS="%{optflags}" %{?_smp_mflags}
 install -Dp -m 0755 %{name} %{buildroot}%{_bindir}/%{name}
 
 %files
-%doc LICENSE README
+%doc README
+%license LICENSE
 %{_bindir}/%{name}
 
 %changelog
+* Fri Nov 10 2023 Michal Ambroz <rebus _AT seznam.cz> - 2.1.0-1
+- bump to version 2.1.0, point source to current github
+
 * Sat Jan 22 2022 Fedora Release Engineering <releng@fedoraproject.org> - 1.3.5-27
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
 
