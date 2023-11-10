@@ -1,3 +1,12 @@
+Name:           python-pcodedmp
+Summary:        VBA p-code disassembler
+Version:        1.2.6
+Release:        17%{?dist}
+License:        GPL-3.0-or-later
+URL:            https://github.com/bontchev/pcodedmp
+VCS:            https://github.com/bontchev/pcodedmp
+BuildArch:      noarch
+
 %global srcname pcodedmp
 
 # Bootstrap may be needed to break circular dependencies between
@@ -11,15 +20,10 @@
 %bcond_with     pypandoc
 %endif
 
-Summary:        VBA p-code disassembler
-Name:           python-%{srcname}
-Version:        1.2.6
-Release:        17%{?dist}
-License:        GPLv3+
-URL:            https://github.com/bontchev/pcodedmp
 Source0:        %{pypi_source}
 Patch0:         python-pcodedmp-1.2.6-python27.patch
-BuildArch:      noarch
+
+
 
 %global _description %{expand:
 Macros written in VBA (Visual Basic for Applications; the macro programming
