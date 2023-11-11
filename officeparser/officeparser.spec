@@ -32,6 +32,10 @@ Patch3:         officeparser-03_default_help.patch
 # This fixes issue with --print-header and --print-directory
 Patch4:         officeparser-04_string_conversion.patch
 
+# make find_stream_by_name only return streams
+Patch5:         https://github.com/unixfreak0037/officeparser/pull/12.patch#/officeparser-05_find_stream_by_name.patch
+
+
 BuildArch:      noarch
 BuildRequires:  python3-devel
 BuildRequires:  python3-setuptools
