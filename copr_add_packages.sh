@@ -32,5 +32,5 @@ while read I ; do
         rebus/infosec
     fi
 
-
+    copr build-package rebus/infosec --name "${PACKAGE}"
 done
