@@ -83,11 +83,7 @@ Python 3 bindings for libbde
 %make_install
 find %{buildroot} -name '*.la' -exec rm -f {} ';'
 
-
-%post -p /sbin/ldconfig
-
-
-%postun -p /sbin/ldconfig
+%ldconfig_scriptlets
 
 
 %check

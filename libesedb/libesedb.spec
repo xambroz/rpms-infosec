@@ -103,11 +103,7 @@ aclocal
 make install DESTDIR=%{buildroot}
 find %{buildroot} -name '*.la' -exec rm -f {} ';'
 
-
-%post -p /sbin/ldconfig
-
-
-%postun -p /sbin/ldconfig
+%ldconfig_scriptlets
 
 
 %check

@@ -168,11 +168,7 @@ sed -i -e 's! -shared ! -Wl,--as-needed\0!g' libtool
 %make_install
 find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
 
-
-%post -p /sbin/ldconfig
-
-
-%postun -p /sbin/ldconfig
+%ldconfig_scriptlets
 
 
 %check

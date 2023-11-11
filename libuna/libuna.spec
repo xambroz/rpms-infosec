@@ -82,10 +82,7 @@ find %{buildroot} -name '*.la' -exec rm -f {} ';'
 rm %{buildroot}%{_mandir}/man1/unaexport.1*
 
 
-%post -p /sbin/ldconfig
-
-
-%postun -p /sbin/ldconfig
+%ldconfig_scriptlets
 
 
 %check

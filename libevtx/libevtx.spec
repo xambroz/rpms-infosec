@@ -124,10 +124,8 @@ make DESTDIR=%{buildroot} install
 find %{buildroot} -name '*.la' -delete
 find %{buildroot} -name '*.a' -delete
 
+%ldconfig_scriptlets
 
-%post -p /sbin/ldconfig
-
-%postun -p /sbin/ldconfig
 
 %files
 %license COPYING
