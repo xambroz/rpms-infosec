@@ -2,28 +2,28 @@ Name:           capstone
 Version:        5.0.1
 Release:        1%{?dist}
 Summary:        A lightweight multi-platform, multi-architecture disassembly framework
-
-%global         gituser         capstone-engine
-%global         gitname         capstone
-# 5.0.0
-%global         gitdate         20230823
-%global         commit          097c04d9413c59a58b00d4d1c8d5dc0ac158ffaa
-%global         shortcommit     %(c=%{commit}; echo ${c:0:7})
-
-License:        BSD
+License:        BSD-3-Clause AND BSD-4-Clause AND APSL-2.0 AND NCSA AND MIT
 URL:            http://www.capstone-engine.org/
-VCS:            https://github.com/aquynh/capstone/
-#               https://github.com/aquynh/capstone/releases
-# Source0:      https://github.com/%%{gituser}/%%{gitname}/archive/%%{commit}/%%{name}-%%{version}-%%{shortcommit}.tar.gz
-Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
-
-# modified to remove the GH CI modifications from this patch
-# Patch0:         https://patch-diff.githubusercontent.com/raw/capstone-engine/capstone/pull/2099.patch#/capstone-2099-fix-s390x-build.patch
-
+VCS:            https://github.com/capstone-engine/capstone/
+#               https://github.com/capstone-engine/capstone/releases
 
 %global         common_desc %{expand:
 Capstone is a disassembly framework with the target of becoming the ultimate
 disasm engine for binary analysis and reversing in the security community.}
+
+
+%define _lto_cflags %{nil}
+%global _hardened_build 1
+
+%global         gituser         capstone-engine
+%global         gitname         capstone
+# 5.0.1 release
+%global         gitdate         20230823
+%global         commit          097c04d9413c59a58b00d4d1c8d5dc0ac158ffaa
+%global         shortcommit     %(c=%{commit}; echo ${c:0:7})
+
+# Source0:      https://github.com/%%{gituser}/%%{gitname}/archive/%%{commit}/%%{name}-%%{version}-%%{shortcommit}.tar.gz
+Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
 # Build with python3 package by default
 %bcond_without  python3
@@ -50,14 +50,16 @@ BuildRequires:  java-devel
 %if %{with python2}
 BuildRequires:  python2
 BuildRequires:  python2-devel
+BuildRequires:  python2-pip
 BuildRequires:  python2-setuptools
+BuildRequires:  python2-wheel
 %endif
 
 %if %{with python3}
 BuildRequires:  python%{python3_pkgversion}
 BuildRequires:  python%{python3_pkgversion}-devel
-BuildRequires:  python%{python3_pkgversion}-setuptools
 BuildRequires:  python%{python3_pkgversion}-pip
+BuildRequires:  python%{python3_pkgversion}-setuptools
 BuildRequires:  python%{python3_pkgversion}-wheel
 %endif
 
@@ -124,14 +126,14 @@ The %{name}-java package contains java bindings for %{name}.
 
 
 %prep
-# %%autosetup -n %%{gitname}-%%{commit} -S git
-%autosetup -n %{gitname}-%{version} -p 1 -S git
+# autosetup -n %%{gitname}-%%{commit} -S git
+%autosetup -n %{gitname}-%{version} -S git
+
 %if %{with python3}
 pushd bindings/python
 %pyproject_buildrequires
 popd
 %endif
-
 
 
 %build
@@ -153,7 +155,6 @@ pushd bindings/python
 %endif
 
 %if %{with python3}
-#%%py3_build
 %pyproject_wheel
 %endif
 popd
@@ -173,7 +174,7 @@ popd
 
 %install
 DESTDIR=%{buildroot} PREFIX="%{_prefix}" LIBDIRARCH=%{_lib} \
-INCDIR="%{_includedir}" %make_install
+INCDIR="%{_includedir}" make install
 find %{buildroot} -name '*.la' -exec rm -f {} ';'
 find %{buildroot} -name '*.a' -exec rm -f {} ';'
 
@@ -184,10 +185,9 @@ pushd bindings/python
 %endif
 
 %if %{with python3}
-#%%py3_install
 %pyproject_install
-%pyproject_save_files capstone
 
+%pyproject_save_files capstone
 %endif
 popd
 
@@ -199,11 +199,9 @@ install -D -p -m 0644 bindings/java/%{name}.jar  %{buildroot}/%{_javadir}/%{name
 
 %check
 # ln -s libcapstone.so.5 libcapstone.so
-make check LD_LIBRARY_PATH="$(pwd)"
-
+make check LD_LIBRARY_PATH="`pwd`"
 
 %ldconfig_scriptlets
-
 
 
 %files
@@ -211,7 +209,6 @@ make check LD_LIBRARY_PATH="$(pwd)"
 %doc CREDITS.TXT ChangeLog README.md SPONSORS.TXT
 %{_libdir}/*.so.*
 %{_bindir}/cstool
-
 
 
 %files devel
@@ -240,13 +237,12 @@ make check LD_LIBRARY_PATH="$(pwd)"
 %endif
 
 %changelog
-* Wed Aug 23 2023 Michal Ambroz <rebus AT_ seznam.cz> - 5.0.1-1
-- bump to 5.0.1
+* Sat Nov 11 2023 Jonathan Wright <jonathan@almalinux.org> - 5.0.1-1
+- Update to 5.0.1
+- Modernize spec file using pyproject/wheel build
 
-* Sat Jul 15 2023 Jonathan Wright <jonathan@almalinux.org> - 5.0-1
-- Update to 5.0
-- Remove legacy code from spec
-- Modernize spec file
+* Wed Jul 19 2023 Fedora Release Engineering <releng@fedoraproject.org> - 4.0.2-15
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_39_Mass_Rebuild
 
 * Tue Jun 13 2023 Python Maint <python-maint@redhat.com> - 4.0.2-14
 - Rebuilt for Python 3.12
