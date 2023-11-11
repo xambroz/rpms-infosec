@@ -2,7 +2,7 @@
 %global gem_name rex-random_identifier
 
 Name: rubygem-%{gem_name}
-Version: 0.1.4
+Version: 0.1.11
 Release: 1%{?dist}
 Summary: Random Identifier Generator
 License: BSD
