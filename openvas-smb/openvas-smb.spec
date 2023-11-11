@@ -93,8 +93,8 @@ rm -f %{buildroot}/%{_datadir}/openvas/openvas-lsc-rpm-creator.sh
 #Install openvas-check-setup
 install -m 755 %{SOURCE2} %{buildroot}%{_bindir}/
 
-%post -p /sbin/ldconfig
-%postun -p /sbin/ldconfig
+%ldconfig_scriptlets
+
 
 %files
 %defattr(-,root,root,-)
