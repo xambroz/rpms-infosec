@@ -1,47 +1,69 @@
 #!/bin/bash
 
+SEQUENCE1="
+libcstring
+libcerror
+libcthreads
+libcdata
+libcdatetime
+libclocale
+libcnotify
+libcsplit
+"
+
+SEQUENCE2="
+libuna
+libcfile
+libcpath
+libbfio
+libfcache
+libfdata
+libfvalue
+libfguid
+libfdatetime
+libfwnt
+libhmac
+libcaes
+libodraw
+libsmdev
+libsmraw
+libcsystem
+libfmapi
+libmapidb
+"
+
+for I in $SEQUENCE ; do
+    copr build-package rebus/infosec --name "$I"
+    RESULT=$!
+    if [ "$RESULT" -ne 0 ] ; then
+        echo "==== ERROR: failed package $I "
+        exit
+    fi
+done
+
 # libcstring	DONE
-copr build-package rebus/infosec --name libcstring
-
 # libcerror	DONE
-#	libcstring
-copr build-package rebus/infosec --name libcerror
-
 
 # libcthreads
-#	libcstring
 #	libcerror
-copr build-package rebus/infosec --name libcthreads
-
 
 # libcdata	DONE
-#         libcstring \
 #        libcerror \
 #        libcthreads \
-copr build-package rebus/infosec --name libcdata	
 
 # libcdatetime	DONE
-#        libcstring \
 #        libcerror \
-copr build-package rebus/infosec --name libcdatetime	
 
 
 # libclocale	DONE
-#        libcstring \
 #        libcerror \
-copr build-package rebus/infosec --name libclocale	
 
 # libcnotify	DONE
-#        libcstring \
 #        libcerror \
-copr build-package rebus/infosec --name libcnotify	
 
 
 # libcsplit	DONE
-#        libcstring \
 #        libcerror \
-copr build-package rebus/infosec --name libcsplit	
-
 
 # libuna		PARTIAL !!!!!!!!
 #        libcstring \
@@ -51,14 +73,12 @@ copr build-package rebus/infosec --name libcsplit
 #        libcnotify \
 #        libcfile \
 #        libcsystem \
-copr build-package rebus/infosec --name libuna		
 
 
 # libcfile	DONE
 #	libclocale \
 #        libcnotify \
 #        libuna \
-copr build-package rebus/infosec --name libcfile	
 
 # libcpath	DONE
 #        libcstring \
@@ -66,7 +86,6 @@ copr build-package rebus/infosec --name libcfile
 #        libclocale \
 #        libcsplit \
 #        libuna \
-copr build-package rebus/infosec --name libcpath	
 
 
 # libbfio		DONE
@@ -80,7 +99,6 @@ copr build-package rebus/infosec --name libcpath
 #        libuna \
 #        libcfile \
 #        libcpath \
-copr build-package rebus/infosec --name libbfio		
 
 
 # libfcache	DONE
@@ -88,7 +106,6 @@ copr build-package rebus/infosec --name libbfio
 #        libcerror \
 #        libcthreads \
 #        libcdata \
-copr build-package rebus/infosec --name libfcache	
 
 
 # libfdata	DONE
@@ -98,7 +115,6 @@ copr build-package rebus/infosec --name libfcache
 #        libcdata \
 #        libcnotify \
 #        libfcache \
-copr build-package rebus/infosec --name libfdata	
 
 
 # libfvalue	DONE
@@ -111,19 +127,15 @@ copr build-package rebus/infosec --name libfdata
 #        libfdatetime \
 #        libfguid \
 #        libfwnt \
-copr build-package rebus/infosec --name libfvalue	
 
 
 # libfguid	DONE
 #        libcstring \
 #        libcerror \
-copr build-package rebus/infosec --name libfguid	
-
 
 # libfdatetime	DONE
 #        libcstring \
 #        libcerror \
-copr build-package rebus/infosec --name libfdatetime	
 
 
 # libfwnt		DONE
@@ -132,7 +144,6 @@ copr build-package rebus/infosec --name libfdatetime
 #        libcthreads \
 #        libcdata \
 #        libcnotify \
-copr build-package rebus/infosec --name libfwnt		
 
 
 # libhmac		DONE
@@ -145,13 +156,11 @@ copr build-package rebus/infosec --name libfwnt
 #        libcfile \
 #        libcpath \
 #        libcsystem \
-copr build-package rebus/infosec --name libhmac		
 
 
 # libcaes		DONE
 #        libcstring \
 #        libcerror \
-copr build-package rebus/infosec --name libcaes		
 
 
 # libodraw	DONE
@@ -168,7 +177,6 @@ copr build-package rebus/infosec --name libcaes
 #        libbfio \
 #        libcsystem \
 #        libhmac \
-copr build-package rebus/infosec --name libodraw	
 
 
 # libsmdev	DONE
@@ -181,7 +189,6 @@ copr build-package rebus/infosec --name libodraw
 #        libuna \
 #        libcfile \
 #        libcsystem \
-copr build-package rebus/infosec --name libsmdev	
 
 
 # libsmraw	DONE
@@ -201,7 +208,6 @@ copr build-package rebus/infosec --name libsmdev
 #        libfvalue \
 #        libcsystem \
 #        libhmac \
-copr build-package rebus/infosec --name libsmraw	
 
 
 # libcsystem	DONE
@@ -210,13 +216,8 @@ copr build-package rebus/infosec --name libsmraw
 #        libclocale \
 #        libcnotify \
 #        libuna \
-copr build-package rebus/infosec --name libcsystem	
 
 
 # libfmapi	DONE
-copr build-package rebus/infosec --name libfmapi	
-
 
 # libmapidb	DONE
-copr build-package rebus/infosec --name libmapidb	
-
