@@ -43,14 +43,10 @@ Development libraries and headers for use with  %{name}.
 %make_build
 
 
-
 %install
-rm -rf %{buildroot}
 make install DESTDIR=%{buildroot}
 
-
-%post -p /sbin/ldconfig
-%postun -p /sbin/ldconfig
+%ldconfig_scriptlets
 
 
 %files
