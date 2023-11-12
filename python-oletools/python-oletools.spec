@@ -14,7 +14,7 @@ License:        BSD and MIT and Python
 URL:            https://www.decalage.info/python/oletools
 VCS:            https://github.com/decalage2/oletools/
 #               https://github.com/decalage2/oletools/releases
-#               https://github.com/nolze/msoffcrypto-tool/releases
+#               https://github.com/nolze/msoffcrypto-tool/tags
 
 %global         srcname oletools
 
@@ -58,7 +58,7 @@ Source0:        https://github.com/decalage2/oletools/archive/v%{version}/%{srcn
 
 # For now bundle the msoffcrypto-tool for python2 - new requirement for the oletools not used by anything else
 # but in Fedora we have only the python3 package for it
-Source1:        https://github.com/nolze/msoffcrypto-tool/archive/v5.0.0/msoffcrypto-tool-5.0.0.tar.gz
+Source1:        https://github.com/nolze/msoffcrypto-tool/archive/v5.1.1/msoffcrypto-tool-5.1.1.tar.gz
 
 # Remove the bundled libraries from the build. Use the system libraries instead
 Patch0:         %{name}-01-thirdparty.patch
@@ -68,7 +68,7 @@ Patch1:         %{name}-02-msoffcrypto.patch
 
 BuildArch:      noarch
 
-%if 0%{?with_python3}
+%if %{with python3}
 BuildRequires:  python%{python3_pkgversion}-devel
 BuildRequires:  python%{python3_pkgversion}-setuptools
 BuildRequires:  python%{python3_pkgversion}-colorclass
@@ -95,7 +95,7 @@ BuildRequires:  python%{python3_pkgversion}-pcodedmp
 # python2-pyparsing and python3-pyparsing at Fedora, pyparsing at RHEL 7
 # python2-easygui only at F28+ and EPEL7+
 # python2-prettytable and python3-prettytable at Fedora, python-prettytable at EPEL 7
-%if 0%{?with_python2}
+%if %{with python2}
 BuildRequires:  python2-devel
 BuildRequires:  python2-setuptools
 BuildRequires:  python2-colorclass
@@ -105,14 +105,14 @@ BuildRequires:  python2-cryptography
 BuildRequires:  python2-pcodedmp
 %endif
 
-%if 0%{?with_python2} && 0%{?fedora}
+%if %{with python2} && 0%{?fedora}
 BuildRequires:  python2-pymilter
 BuildRequires:  python2-pyparsing
 BuildRequires:  python2-prettytable
 %endif
 
 # python2 packages for EPEL 7
-%if 0%{?with_python2} && 0%{?rhel}
+%if %{with python2} && 0%{?rhel}
 BuildRequires:  pyparsing
 BuildRequires:  python-prettytable
 BuildRequires:  python-pymilter
@@ -122,7 +122,7 @@ BuildRequires:  python-pymilter
 
 
 
-%if 0%{?with_python2}
+%if %{with python2}
 %package -n python2-%{srcname}
 Summary:        %{summary}
 %{?python_provide:%python_provide python2-%{srcname}}
@@ -148,14 +148,14 @@ Requires:       python2-pcodedmp
 
 # Used by msoffcrypto
 Requires:       python2-cryptography
-Provides:       bundled(msoffcrypto-tool) = 4.11.0
+Provides:       bundled(msoffcrypto-tool) = 5.1.1
 
 %description -n python2-%{srcname} %{_description}
 
 Python2 version.
 %endif
 
-%if 0%{?with_python3}
+%if %{with python3}
 %package -n python%{python3_pkgversion}-%{srcname}
 Summary:        %{summary}
 %{?python_provide:%python_provide python%{python3_pkgversion}-%{srcname}}
@@ -169,6 +169,7 @@ Requires:       python%{python3_pkgversion}-olefile
 Requires:       python%{python3_pkgversion}-prettytable
 Requires:       python%{python3_pkgversion}-cryptography
 Requires:       python%{python3_pkgversion}-msoffcrypto
+Requires:       python%{python3_pkgversion}-xlmmacrodeobfuscator
 %if %{without bootstrap}
 Requires:       python%{python3_pkgversion}-pcodedmp
 %endif
@@ -181,10 +182,10 @@ Python3 version.
 
 %package -n python-%{srcname}-doc
 Summary:        Documentation files for %{name}
-%if 0%{?with_python2}
+%if %{with python2}
 %{?python_provide:%python_provide python2-%{srcname}-doc}
 %endif
-%if 0%{?with_python3}
+%if %{with python3}
 %{?python_provide:%python_provide python%{python3_pkgversion}-%{srcname}-doc}
 %endif
 
@@ -192,10 +193,12 @@ Summary:        Documentation files for %{name}
 
 
 %prep
-%setup -n %{srcname}-%{version}
-%autopatch 0
-%if 0%{?with_python2}
-%autopatch 1
+%autosetup -N -n %{srcname}-%{version}
+%autopatch -m 0 -M 0
+
+# Embed msoffcrypto only when building python2
+%if %{with python2}
+%autopatch -m 1 -M 1
 %endif
 
 # Use globally installed python modules instead of bundled ones
@@ -213,7 +216,7 @@ sed -i -e '
   s|from oletools.thirdparty.easygui import easygui|import easygui|;
 ' */*.py
 
-%if 0%{?with_python2}
+%if %{with python2}
 # for now bundle msoffcrypto-tool for python2
 tar xvf %{SOURCE1}
 mv msoffcrypto-tool-4.11.0/msoffcrypto oletools/thirdparty/
@@ -229,16 +232,16 @@ sed -i -e '/pcodedmp/d' requirements.txt setup.py
 
 
 %build
-%if 0%{?with_python2}
+%if %{with python2}
 %py2_build
 %endif
-%if 0%{?with_python3}
+%if %{with python3}
 %py3_build
 %endif
 
 
 %install
-%if 0%{?with_python2}
+%if %{with python2}
 # Install python2 files
 %py2_install
 
@@ -268,13 +271,13 @@ rm -f %{buildroot}%{python2_sitelib}/%{srcname}/thirdparty/msoffcrypto/LICENSE.t
 %endif
 
 # Old pyparsing in RHEL 7 -> replace pyparsing.infixNotation by pyparsing.operatorPrecedence
-%if 0%{?with_python2} && 0%{?rhel} && 0%{?rhel} < 8
+%if %{with python2} && 0%{?rhel} && 0%{?rhel} < 8
 sed -e 's|infixNotation|operatorPrecedence|g' -i %{buildroot}%{python2_sitelib}/%{srcname}/olevba.py
 %endif
 
 
 
-%if 0%{?with_python3}
+%if %{with python3}
 # Install python3 files
 %py3_install
 
@@ -299,8 +302,9 @@ for file in %{buildroot}%{python3_sitelib}/%{srcname}/{.,*,*/*}/*.py; do
   mv -f "${file}.new" "${file}"
 done
 
-%if 0%{?with_python2}
 # Remove the msoffcrypto bundling for python3 and use the system package instead
+%if %{with python2}
+# bundle is there only when also building with python2
 sed -i -e 's|from oletools.thirdparty import msoffcrypto|import msoffcrypto|;' %{buildroot}%{python3_sitelib}/%{srcname}/crypto.py
 rm -rf %{buildroot}%{python3_sitelib}/%{srcname}/thirdparty/msoffcrypto
 %else
@@ -317,7 +321,7 @@ rm -f %{buildroot}%{python3_sitelib}/%{srcname}/thirdparty/xxxswf/LICENSE.txt
 # For example in FC31 exists python3 package, but puthon2 is the preferred one
 pushd %{buildroot}%{_bindir}
 for i in ezhexviewer ftguess msodde mraptor olebrowse oledir olefile oleid olemap olemeta oleobj oletimes olevba pyxswf rtfobj; do
-%if 0%{?with_python3_default}
+%if %{with python3_default}
     full=$(%{__python3} -c "import sys; sys.stdout.write('{0.major}.{0.minor}'.format(sys.version_info))")  # e.g. 3.4
 %else
     # For now the 2.7 is the default version, python3 support is experimental
@@ -331,13 +335,13 @@ popd
 # Prepare licenses from bundled code for later %%license usage
 mv -f %{srcname}/thirdparty/xglob/LICENSE.txt xglob-LICENSE.txt
 mv -f %{srcname}/thirdparty/xxxswf/LICENSE.txt xxxswf-LICENSE.txt
-%if 0%{?with_python2}
+%if %{with python2}
 mv -f %{srcname}/thirdparty/msoffcrypto/LICENSE.txt msoffcrypto-LICENSE.txt
 %endif
 
 
 %check
-%if 0%{?with_python2}
+%if %{with python2}
 
 # On Fedora the oleobj test fails with python2 and version 0.54.2b.
 # Run the test, but pass it for now.
@@ -357,7 +361,7 @@ PYTHONPATH=%{buildroot}%{python2_sitelib} %{buildroot}%{_bindir}/mraptor-2 cheat
 
 %endif
 
-%if 0%{?with_python3}
+%if %{with python3}
 
 %if 0%{?rhel} == 7
 # Avoid "UnicodeDecodeError: 'ascii' codec can't decode byte 0xc3 in position 459: ordinal not in range(128)"
@@ -374,7 +378,7 @@ PYTHONPATH=%{buildroot}%{python3_sitelib} %{buildroot}%{_bindir}/mraptor-3 cheat
 %endif
 
 
-%if 0%{?with_python2}
+%if %{with python2}
 # Note that there is no %%files section for the unversioned python module if we are building for several python runtimes
 %files -n python2-%{srcname}
 %license %{srcname}/LICENSE.txt xglob-LICENSE.txt xxxswf-LICENSE.txt msoffcrypto-LICENSE.txt
@@ -396,7 +400,7 @@ PYTHONPATH=%{buildroot}%{python3_sitelib} %{buildroot}%{_bindir}/mraptor-3 cheat
 %{_bindir}/pyxswf-2*
 %{_bindir}/rtfobj-2*
 %endif
-%if 0%{?with_python2} && ! 0%{?with_python3_default}
+%if %{with python2} && ! %{with python3_default}
 %{_bindir}/ezhexviewer
 %{_bindir}/ftguess
 %{_bindir}/mraptor
@@ -414,7 +418,7 @@ PYTHONPATH=%{buildroot}%{python3_sitelib} %{buildroot}%{_bindir}/mraptor-3 cheat
 %{_bindir}/rtfobj
 %endif
 
-%if 0%{?with_python3}
+%if %{with python3}
 %files -n python%{python3_pkgversion}-%{srcname}
 %license %{srcname}/LICENSE.txt xglob-LICENSE.txt xxxswf-LICENSE.txt
 %doc README.md
@@ -437,7 +441,7 @@ PYTHONPATH=%{buildroot}%{python3_sitelib} %{buildroot}%{_bindir}/mraptor-3 cheat
 %{_bindir}/pyxswf-3*
 %{_bindir}/rtfobj-3*
 %endif
-%if 0%{?with_python3} && 0%{?with_python3_default}
+%if %{with python3} && %{with python3_default}
 %{_bindir}/ezhexviewer
 %{_bindir}/ftguess
 %{_bindir}/mraptor
