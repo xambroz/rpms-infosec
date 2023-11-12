@@ -25,6 +25,8 @@ Patch0:         python-pcodedmp-1.2.6-python27.patch
 
 
 
+
+
 %global _description %{expand:
 Macros written in VBA (Visual Basic for Applications; the macro programming
 language used in Microsoft Office) exist in three different executable forms,
@@ -72,6 +74,10 @@ BuildRequires:  python%{python3_pkgversion}-lxml
 BuildRequires:  python%{python3_pkgversion}-oletools >= 0.54
 Requires:       python%{python3_pkgversion}-oletools >= 0.54
 %endif
+%if 0%{?fedora}
+Recommends:     %{srcname}
+%endif
+
 %{?python_provide:%python_provide python%{python3_pkgversion}-%{srcname}}
 
 %description -n python%{python3_pkgversion}-%{srcname} %_description
