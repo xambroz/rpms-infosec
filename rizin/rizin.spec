@@ -1,18 +1,19 @@
 Name:           rizin
 Summary:        UNIX-like reverse engineering framework and command-line tool-set
-Version:        0.5.2
+Version:        0.6.3
 URL:            https://rizin.re/
 VCS:            https://github.com/rizinorg/rizin
 
 %global         gituser         rizinorg
 %global         gitname         rizin
-%global         baserelease     2
+%global         baserelease     1
 %global         shortversion    %(c=%{version}; echo ${c} | cut -d'.' -f-2)
 
 Release:        %{baserelease}%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/releases/download/v%{version}/%{name}-src-v%{version}.tar.xz
 
-License:        LGPLv3+ and GPLv2+ and BSD and MIT and ASL 2.0 and MPLv2.0 and zlib
+License:        LGPL-3.0-or-later AND GPL-2.0-or-later AND BSD-2-Clause AND BSD-3-Clause AND MIT AND Apache-2.0 AND MPL-2.0 AND Zlib
+
 
 BuildRequires:  gcc
 BuildRequires:  meson
@@ -180,6 +181,16 @@ information
 
 
 %changelog
+* Mon Nov 13 2023 Michal Ambroz <rebus _AT seznam.cz> - 0.6.3-1
+- Rebase to upstream version 0.6.3
+- change license string to comply with the SPDX
+
+* Mon Aug 21 2023 Riccardo Schirone <rschirone91@gmail.com> - 0.6.1-1
+- Rebase to upstream version 0.6.1
+
+* Fri Jul 21 2023 Fedora Release Engineering <releng@fedoraproject.org> - 0.5.2-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_39_Mass_Rebuild
+
 * Wed Jul 12 2023 Michal Ambroz <rebus _AT seznam.cz> - 0.5.2-2
 - cosmetics, remove the excessive .2 in the release
 - use baserelese (recognized by rpmdev-bumpspec used for massrebuilds)
