@@ -109,11 +109,11 @@ developing applications that use %{name}.
 BuildArch:      noarch
 %{?python_provide:%python_provide python2-capstone}
 # Remove before F30
+# loading the libcapstone dynamically using ctypes, not tied to certain architecture
 Provides:       %{name}-python = %{version}-%{release}
-Provides:       %{name}-python%{?_isa} = %{version}-%{release}
 Obsoletes:      %{name}-python < %{version}-%{release}
 Summary:        Python bindings for %{name}
-Requires:       %{name}%{?_isa} = %{version}-%{release}
+Requires:       %{name} = %{version}-%{release}
 
 %description    -n python2-capstone
 %{common_desc}
@@ -128,9 +128,8 @@ The python2-capstone package contains python bindings for %{name}.
 BuildArch:      noarch
 %{?python_provide:%python_provide python%{python3_pkgversion}-capstone}
 Provides:       %{name}-python%{python3_pkgversion} = %{version}-%{release}
-Provides:       %{name}-python%{python3_pkgversion}%{?_isa} = %{version}-%{release}
 Obsoletes:      %{name}-python%{python3_pkgversion} < %{version}-%{release}
-Requires:       %{name}%{?_isa} = %{version}-%{release}
+Requires:       %{name} = %{version}-%{release}
 Summary:        Python3 bindings for %{name}
 
 
@@ -145,7 +144,7 @@ The python%{python3_pkgversion}-capstone package contains python3 bindings for %
 %ifarch %{java_arches}
 %package        java
 Summary:        Java bindings for %{name}
-Requires:       %{name}%{?_isa} = %{version}-%{release}
+Requires:       %{name} = %{version}-%{release}
 BuildArch:      noarch
 
 %description    java
