@@ -1,0 +1,10 @@
+diff -ru capstone-5.0.1/bindings/java/run.sh capstone-5.0.1.new/bindings/java/run.sh
+--- capstone-5.0.1/bindings/java/run.sh	2023-08-22 18:03:55.000000000 +0200
++++ capstone-5.0.1.new/bindings/java/run.sh	2023-11-12 10:38:18.098344273 +0100
+@@ -1,5 +1,6 @@
+ #!/bin/sh
+ JNA=/usr/share/java/jna.jar
++export LD_LIBRARY_PATH=../../
+ 
+ if [ ! -f ${JNA} ]; then
+   if [ ! -f /usr/share/java/jna/jna.jar ]; then

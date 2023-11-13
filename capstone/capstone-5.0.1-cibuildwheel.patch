@@ -1,0 +1,390 @@
+From 6fec7fb52bbbdd5c9777359274efff2514ed3e8f Mon Sep 17 00:00:00 2001
+From: Anton Kochkov <anton.kochkov@gmail.com>
+Date: Thu, 20 Jul 2023 11:10:24 +0800
+Subject: [PATCH 1/7] ci: use cibuildwheel for python wheels
+
+---
+ .github/workflows/python-publish.yml | 114 +++++++++++----------------
+ 1 file changed, 45 insertions(+), 69 deletions(-)
+
+diff --git a/.github/workflows/python-publish.yml b/.github/workflows/python-publish.yml
+index fcc04606be..4b1dd72a05 100644
+--- a/.github/workflows/python-publish.yml
++++ b/.github/workflows/python-publish.yml
+@@ -1,90 +1,66 @@
+-name: PyPI 📦 Distribution
++name: Build Python Wheels
+ 
+-on: 
+-  push:
++on: [push, pull_request]
+ 
+ jobs:
+-  build:
++  build_wheels:
++    name: Build wheels on ${{ matrix.os }}
+     runs-on: ${{ matrix.os }}
+     strategy:
+-      fail-fast: false
+       matrix:
+-        os: [macos-latest, ubuntu-latest, windows-latest]
+-        platform: [x32, x64]
+-    steps:
+-    - uses: actions/checkout@v3
++        # Keep these old enough for compatibility
++        os: [ubuntu-20.04, windows-2019, macos-11]
+ 
+-    - name: Set up Python
+-      uses: actions/setup-python@v4
+-      # Python is included in manylinux
+-      if: matrix.os != 'ubuntu-latest'
+-      with:
+-        python-version: '3.x'
++    steps:
++      - uses: actions/checkout@v3
+ 
+-    - name: Set up MSVC x86
+-      if: matrix.os == 'windows-latest' && matrix.platform == 'x32'
+-      uses: ilammy/msvc-dev-cmd@v1
+-      with:
+-        arch: x86
++      - name: Build wheels
++        uses: pypa/cibuildwheel@v2.14.1
++        env:
++          CIBW_ARCHS_MACOS: "x86_64 universal2 arm64"
++          CIBW_ARCHS_LINUX: "auto i686 aarch64 ppc64le s390x"
++          CIBW_ARCHS_WINDOWS: "AMD64 x86 ARM64"
++        with:
++          package-dir: bindings/python
+ 
+-    - name: Set up MSVC x64
+-      if: matrix.os == 'windows-latest' && matrix.platform == 'x64'
+-      uses: ilammy/msvc-dev-cmd@v1
++      - uses: actions/upload-artifact@v3
++        with:
++          path: ./wheelhouse/*.whl
+ 
+-    - name: Install Python dependencies
+-      if: matrix.os != 'ubuntu-latest'
+-      run: pip install setuptools wheel
++  make_sdist:
++    name: Make SDist
++    runs-on: ubuntu-latest
++    steps:
++    - uses: actions/checkout@v3
++      with:
++        fetch-depth: 0  # Optional, use if you use setuptools_scm
++        submodules: true  # Optional, use if you have submodules
+ 
+-    - name: Build distribution 📦 (Windows)
+-      if: matrix.os == 'windows-latest'
+-      shell: pwsh
+-      run: |
+-        cd bindings/python && python setup.py build -p win32 bdist_wheel -p win32
++    - name: Build SDist
++      run: pipx run build --sdist
+ 
+-    - name: Build distribution 📦
+-      shell: bash 
+-      run: |
+-        if [ ${{ matrix.platform }} == 'x32' ] && [ ${{ matrix.os }} == 'ubuntu-latest' ]; then
+-             docker run --rm -v `pwd`/:/work dockcross/manylinux2014-x86 > ./dockcross
+-             chmod +x ./dockcross
+-             chmod +x bindings/python/build_wheel.sh
+-             ./dockcross bindings/python/build_wheel.sh
+-        elif [ ${{ matrix.platform }} == 'x64' ] && [ ${{ matrix.os }} == 'ubuntu-latest' ]; then
+-             docker run --rm -v `pwd`/:/work dockcross/manylinux_2_28-x64 > ./dockcross
+-             chmod +x ./dockcross
+-             chmod +x bindings/python/build_wheel.sh
+-             ./dockcross bindings/python/build_wheel.sh
+-        elif [ ${{ matrix.platform }} == 'x32' ] && [ ${{ matrix.os }} == 'macos-latest' ]; then
+-             cd bindings/python && python setup.py sdist
+-        else
+-             cd bindings/python && python setup.py bdist_wheel
+-        fi
+     - uses: actions/upload-artifact@v3
+       with:
+-         path: ${{ github.workspace }}/bindings/python/dist/*
++        path: dist/*.tar.gz
+ 
+-  publish:
+-    needs: [build]
+-    runs-on: ubuntu-latest
++  upload_all:
++    needs: [build_wheels, make_sdist]
++    environment: pypi
+     if: startsWith(github.ref, 'refs/tags')
+     permissions:
+       id-token: write
++    runs-on: ubuntu-latest
++    if: github.event_name == 'release' && github.event.action == 'published'
+     steps:
+-      - uses: actions/download-artifact@v3
+-        with:
+-          name: artifact
+-          path: dist
++    - uses: actions/download-artifact@v3
++      with:
++        name: artifact
++        path: dist
+ 
+-      # - name: Publish distribution 📦 to test PyPI
+-      #   uses: pypa/gh-action-pypi-publish@release/v1
+-      #   with:
+-      #     user: __token__
+-      #     password: ${{ secrets.test_pypi_pass }}
+-      #     repository_url: https://test.pypi.org/legacy/
++    - name: Publish distribution 📦 to PyPI
++      if: ${{ success() }}
++      uses: pypa/gh-action-pypi-publish@release/v1
++      with:
++        user: __token__
++        password: ${{ secrets.pypi_pass }}
+ 
+-      - name: Publish distribution 📦 to PyPI
+-        if: ${{ success() }}
+-        uses: pypa/gh-action-pypi-publish@release/v1
+-        with:
+-          user: __token__
+-          password: ${{ secrets.pypi_pass }}
+
+From c14759f3e3490956cfd67df50f3f3f805e89d3f6 Mon Sep 17 00:00:00 2001
+From: kabeor <kabeor00@gmail.com>
+Date: Fri, 21 Jul 2023 22:11:44 +0800
+Subject: [PATCH 2/7] fix several issues
+
+---
+ .github/workflows/python-publish.yml | 65 ++++++++++++++++++----------
+ 1 file changed, 42 insertions(+), 23 deletions(-)
+
+diff --git a/.github/workflows/python-publish.yml b/.github/workflows/python-publish.yml
+index 4b1dd72a05..e56338880e 100644
+--- a/.github/workflows/python-publish.yml
++++ b/.github/workflows/python-publish.yml
+@@ -1,4 +1,4 @@
+-name: Build Python Wheels
++name: PyPI 📦 Distribution
+ 
+ on: [push, pull_request]
+ 
+@@ -8,18 +8,31 @@ jobs:
+     runs-on: ${{ matrix.os }}
+     strategy:
+       matrix:
+-        # Keep these old enough for compatibility
+-        os: [ubuntu-20.04, windows-2019, macos-11]
+-
++        os: [ubuntu-latest, windows-latest, macos-latest]
+     steps:
+       - uses: actions/checkout@v3
+ 
++      - name: Set up MSVC x64
++        if: matrix.os == 'windows-latest'
++        uses: ilammy/msvc-dev-cmd@v1
++
++      - name: Set up QEMU
++        if: runner.os == 'Linux'
++        uses: docker/setup-qemu-action@v2
++        with:
++          platforms: all
++
+       - name: Build wheels
+         uses: pypa/cibuildwheel@v2.14.1
+         env:
+           CIBW_ARCHS_MACOS: "x86_64 universal2 arm64"
+-          CIBW_ARCHS_LINUX: "auto i686 aarch64 ppc64le s390x"
+-          CIBW_ARCHS_WINDOWS: "AMD64 x86 ARM64"
++          CIBW_ARCHS_LINUX: "x86_64 i686 aarch64" # ppc64le s390x really slow
++          CIBW_ARCHS_WINDOWS: "AMD64 x86" # ARM64  Seems ARM64 will rebuild amd64 wheel for unknow reason.
++          CIBW_BUILD: "cp36-macosx* cp39-macosx* cp312-macosx* \ 
++                       cp36-win* cp39-win_amd64 cp312-win_amd64 \ 
++                       cp36-manylinux* cp39-manylinux_x86_64 \ 
++                       cp312-manylinux_x86_64 cp312-manylinux_aarch64"
++          CIBW_SKIP: ""
+         with:
+           package-dir: bindings/python
+ 
+@@ -37,30 +50,36 @@ jobs:
+         submodules: true  # Optional, use if you have submodules
+ 
+     - name: Build SDist
+-      run: pipx run build --sdist
++      run: |
++        cd bindings/python
++        pipx run build --sdist
+ 
+     - uses: actions/upload-artifact@v3
+       with:
+-        path: dist/*.tar.gz
++        path: bindings/python/dist/*.tar.gz
+ 
+-  upload_all:
+-    needs: [build_wheels, make_sdist]
+-    environment: pypi
++  publish:
++    needs: [build_wheels]
++    runs-on: ubuntu-latest
+     if: startsWith(github.ref, 'refs/tags')
+     permissions:
+       id-token: write
+-    runs-on: ubuntu-latest
+-    if: github.event_name == 'release' && github.event.action == 'published'
+     steps:
+-    - uses: actions/download-artifact@v3
+-      with:
+-        name: artifact
+-        path: dist
++      - uses: actions/download-artifact@v3
++        with:
++          name: artifact
++          path: dist
+ 
+-    - name: Publish distribution 📦 to PyPI
+-      if: ${{ success() }}
+-      uses: pypa/gh-action-pypi-publish@release/v1
+-      with:
+-        user: __token__
+-        password: ${{ secrets.pypi_pass }}
++      # - name: Publish distribution 📦 to test PyPI
++      #   uses: pypa/gh-action-pypi-publish@release/v1
++      #   with:
++      #     user: __token__
++      #     password: ${{ secrets.test_pypi_pass }}
++      #     repository_url: https://test.pypi.org/legacy/
+ 
++      - name: Publish distribution 📦 to PyPI
++        if: ${{ success() }}
++        uses: pypa/gh-action-pypi-publish@release/v1
++        with:
++          user: __token__
++          password: ${{ secrets.pypi_pass }}
+
+From 4ad67bfe6e93be0bd997a40c128ac51188944440 Mon Sep 17 00:00:00 2001
+From: kabeor <kabeor00@gmail.com>
+Date: Fri, 21 Jul 2023 22:17:01 +0800
+Subject: [PATCH 3/7] fix setup.py
+
+---
+ bindings/python/setup.py | 19 +++----------------
+ 1 file changed, 3 insertions(+), 16 deletions(-)
+
+diff --git a/bindings/python/setup.py b/bindings/python/setup.py
+index 92f647bc7e..0abb888bd8 100755
+--- a/bindings/python/setup.py
++++ b/bindings/python/setup.py
+@@ -201,22 +201,9 @@ def run(self):
+     idx = sys.argv.index('bdist_wheel') + 1
+     sys.argv.insert(idx, '--plat-name')
+     name = get_platform()
+-    if 'linux' in name:
+-        # linux_* platform tags are disallowed because the python ecosystem is fubar
+-        # linux builds should be built in the centos 5 vm for maximum compatibility
+-        # see https://github.com/pypa/manylinux
+-        # see also https://github.com/angr/angr-dev/blob/master/bdist.sh
+-        machine = platform.machine()
+-        if machine == "i686":
+-            # manylinux2014 is the last which supports x86 in dockercross
+-            sys.argv.insert(idx + 1, 'manylinux2014-x86')
+-        elif machine == "x86_64":
+-            sys.argv.insert(idx + 1, 'manylinux_2_28-x64')
+-        else:
+-            raise ValueError("Unknown machine: " + machine)
+-    else:
+-        # https://www.python.org/dev/peps/pep-0425/
+-        sys.argv.insert(idx + 1, name.replace('.', '_').replace('-', '_'))
++    pyversion = platform.python_version()
++    major_version, minor_version, *_ = map(int, pyversion.split('.')[:2])
++    sys.argv.insert(idx + 1, name.replace('.', '_').replace('-', '_') + f"_{major_version}{minor_version}")
+ 
+ setup(
+     provides=['capstone'],
+
+From c105cc88d6b3e03e0c1b267ff09d98cad818030b Mon Sep 17 00:00:00 2001
+From: kabeor <kabeor00@gmail.com>
+Date: Fri, 21 Jul 2023 22:24:12 +0800
+Subject: [PATCH 4/7] fix issue
+
+---
+ bindings/python/setup.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/bindings/python/setup.py b/bindings/python/setup.py
+index 0abb888bd8..f82c4e5057 100755
+--- a/bindings/python/setup.py
++++ b/bindings/python/setup.py
+@@ -202,7 +202,7 @@ def run(self):
+     sys.argv.insert(idx, '--plat-name')
+     name = get_platform()
+     pyversion = platform.python_version()
+-    major_version, minor_version, *_ = map(int, pyversion.split('.')[:2])
++    major_version, minor_version = map(int, pyversion.split('.')[:2])
+     sys.argv.insert(idx + 1, name.replace('.', '_').replace('-', '_') + f"_{major_version}{minor_version}")
+ 
+ setup(
+
+From caa76728a0332ce0a6079ee99a86482dd439d52a Mon Sep 17 00:00:00 2001
+From: kabeor <kabeor00@gmail.com>
+Date: Fri, 21 Jul 2023 22:32:04 +0800
+Subject: [PATCH 5/7] Compatible with python2
+
+---
+ bindings/python/setup.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/bindings/python/setup.py b/bindings/python/setup.py
+index f82c4e5057..c3d47dbe0b 100755
+--- a/bindings/python/setup.py
++++ b/bindings/python/setup.py
+@@ -203,7 +203,7 @@ def run(self):
+     name = get_platform()
+     pyversion = platform.python_version()
+     major_version, minor_version = map(int, pyversion.split('.')[:2])
+-    sys.argv.insert(idx + 1, name.replace('.', '_').replace('-', '_') + f"_{major_version}{minor_version}")
++    sys.argv.insert(idx + 1, name.replace('.', '_').replace('-', '_') + "_" + major_version + minor_version)
+ 
+ setup(
+     provides=['capstone'],
+
+From 5e0c3464f6e7d8a9a8f1fb29a2a0f9ae44fc8cda Mon Sep 17 00:00:00 2001
+From: kabeor <kabeor00@gmail.com>
+Date: Fri, 21 Jul 2023 22:34:30 +0800
+Subject: [PATCH 6/7] fix str
+
+---
+ bindings/python/setup.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/bindings/python/setup.py b/bindings/python/setup.py
+index c3d47dbe0b..77fec063d7 100755
+--- a/bindings/python/setup.py
++++ b/bindings/python/setup.py
+@@ -203,7 +203,7 @@ def run(self):
+     name = get_platform()
+     pyversion = platform.python_version()
+     major_version, minor_version = map(int, pyversion.split('.')[:2])
+-    sys.argv.insert(idx + 1, name.replace('.', '_').replace('-', '_') + "_" + major_version + minor_version)
++    sys.argv.insert(idx + 1, name.replace('.', '_').replace('-', '_') + "_" + str(major_version) + str(minor_version))
+ 
+ setup(
+     provides=['capstone'],
+
+From 9f91298c1d91a00bdfbb9189f45bbb4b985d03af Mon Sep 17 00:00:00 2001
+From: kabeor <kabeor00@gmail.com>
+Date: Fri, 21 Jul 2023 23:00:14 +0800
+Subject: [PATCH 7/7] trigger ci
+
+---
+ .github/workflows/python-publish.yml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/.github/workflows/python-publish.yml b/.github/workflows/python-publish.yml
+index e56338880e..9bd52ca1f6 100644
+--- a/.github/workflows/python-publish.yml
++++ b/.github/workflows/python-publish.yml
+@@ -82,4 +82,4 @@ jobs:
+         uses: pypa/gh-action-pypi-publish@release/v1
+         with:
+           user: __token__
+-          password: ${{ secrets.pypi_pass }}
++          password: ${{ secrets.pypi_pass }}
+\ No newline at end of file
