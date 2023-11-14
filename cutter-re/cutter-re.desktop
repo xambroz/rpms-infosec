@@ -3,4 +3,8 @@ Type=Application
 Name=Cutter
 Exec=cutter-re
 Icon=cutter-re
-Categories=Development;
+
+Categories=Qt;Development;Debugger;Viewer;ComputerScience;DataVisualization;Emulator;FileTools;Security;
+GenericName=GUI to Rizin reverse engineering platform
+Comment=It can serve as disassembler, debugger, hex viewer / editor and decompiler to several binary architectures and file formats
+Keywords=cutter-re;cutter;rizin;radare2;radare;r2;iaito;gdb;disassembler;debugger;c;c++;assembler;decompiler;reversing;binary;asm;arm;exe;viewer;
