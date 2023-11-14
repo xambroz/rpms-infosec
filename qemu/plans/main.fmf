@@ -1,0 +1,8 @@
+# toplevel plan boilerplate
+summary: qemu tests
+description:
+    Test qemu
+discover:
+    how: fmf
+execute:
+    how: tmt

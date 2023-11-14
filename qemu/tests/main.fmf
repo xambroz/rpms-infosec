@@ -1,0 +1,20 @@
+# This is 'tmt' config format
+# https://tmt.readthedocs.io/en/stable/spec.html
+
+summary: Runtime test qemu
+
+require:
+    - qemu
+    - qemu-sanity-check
+
+/smoke:
+    # Make sure -help doesn't fail
+    test: |
+        set -eux
+        qemu-system-x86_64 -help
+        qemu-img -help
+
+/qemu-sanity-check:
+    test: |
+        set -eux
+        qemu-sanity-check -v
