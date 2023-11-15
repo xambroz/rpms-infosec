@@ -8,11 +8,10 @@ Subject: [PATCH 5/7] chunk is '' in Python 2 and b'' in Python 3 so better is
  officeparser.py | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/officeparser.py b/officeparser.py
-index 2d9aa90..fb1d07c 100755
---- a/officeparser.py
-+++ b/officeparser.py
-@@ -223,7 +223,7 @@ def __init__(self, file, parser_options=None):
+diff -ru officeparser-fce88741d3f78d5588bb214b824c2d51232287a5/officeparser.py officeparser-fce88741d3f78d5588bb214b824c2d51232287a5.new/officeparser.py
+--- officeparser-fce88741d3f78d5588bb214b824c2d51232287a5/officeparser.py	2023-11-15 10:51:18.703850319 +0100
++++ officeparser-fce88741d3f78d5588bb214b824c2d51232287a5.new/officeparser.py	2023-11-15 10:51:29.680247798 +0100
+@@ -222,7 +222,7 @@
              data = BytesIO(self.read_chain(self.header._sectMiniFatStart))
              while True:
                  chunk = data.read(self.sector_size)
@@ -21,4 +20,3 @@ index 2d9aa90..fb1d07c 100755
                      break
                  if len(chunk) != self.sector_size:
                      logging.warning("encountered EOF while parsing minifat")
-

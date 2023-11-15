@@ -7,11 +7,10 @@ Subject: [PATCH 6/7] Use compatible way for writing binary data to stdout
  officeparser.py | 8 ++++----
  1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/officeparser.py b/officeparser.py
-index fb1d07c..43d45ea 100755
---- a/officeparser.py
-+++ b/officeparser.py
-@@ -685,20 +685,20 @@ def _main():
+diff -ru officeparser-fce88741d3f78d5588bb214b824c2d51232287a5/officeparser.py officeparser-fce88741d3f78d5588bb214b824c2d51232287a5.new/officeparser.py
+--- officeparser-fce88741d3f78d5588bb214b824c2d51232287a5/officeparser.py	2023-11-15 10:53:40.524985968 +0100
++++ officeparser-fce88741d3f78d5588bb214b824c2d51232287a5.new/officeparser.py	2023-11-15 10:53:52.415416546 +0100
+@@ -684,20 +684,20 @@
      # dump options
      #
      if options.dump_sector:
@@ -36,4 +35,3 @@ index fb1d07c..43d45ea 100755
          sys.exit(0)
  
      #
-

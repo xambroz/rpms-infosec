@@ -7,19 +7,18 @@ Subject: [PATCH 1/7] Fix prints - from statement to function
  officeparser.py | 31 ++++++++++++++++---------------
  1 file changed, 16 insertions(+), 15 deletions(-)
 
-diff --git a/officeparser.py b/officeparser.py
-index e521d88..5da5bf4 100755
---- a/officeparser.py
-+++ b/officeparser.py
-@@ -5,6 +5,7 @@
- #             - VBA: fixed infinite loop when output file already exists
- #             - improved logging output, set default level to INFO
+diff -ru officeparser-fce88741d3f78d5588bb214b824c2d51232287a5/officeparser.py officeparser-fce88741d3f78d5588bb214b824c2d51232287a5.new/officeparser.py
+--- officeparser-fce88741d3f78d5588bb214b824c2d51232287a5/officeparser.py	2023-08-21 17:16:35.000000000 +0200
++++ officeparser-fce88741d3f78d5588bb214b824c2d51232287a5.new/officeparser.py	2023-11-15 10:40:45.069905075 +0100
+@@ -4,6 +4,7 @@
+ # 2023-08-12: - VBA: Added check for optional PROJECTCOMPATVERSION Record (MS OVBA 2.3.4.2.1.2 Revision 11.0)
+ #             - VBA: fixed infinite loop if REFERENCE record is corrupt
  
 +from __future__ import print_function
  import sys
  from struct import unpack
  from optparse import OptionParser
-@@ -268,7 +269,7 @@ def read_chain(self, sector_start):
+@@ -267,7 +268,7 @@
  
      def print_fat_sectors(self):
          for sector in self.fat_sectors:
@@ -28,7 +27,7 @@ index e521d88..5da5bf4 100755
  
      def get_stream(self, index):
          d = self.directory[index]
-@@ -315,7 +316,7 @@ def __init__(self, data, parser_options=None):
+@@ -314,7 +315,7 @@
          self._sectFat = self.header[18:] # sects of first 109 FAT sectors
  
      def pretty_print(self):
@@ -37,7 +36,7 @@ index e521d88..5da5bf4 100755
  _abSig              = {0}
  _clid               = {1}
  _uMinorVersion      = {2}
-@@ -353,11 +354,11 @@ def pretty_print(self):
+@@ -352,11 +353,11 @@
          '{0:08X}'.format(self._sectMiniFatStart),
          '{0:08X}'.format(self._csectMiniFat),
          '{0:08X}'.format(self._sectDifStart),
@@ -51,7 +50,7 @@ index e521d88..5da5bf4 100755
  
  STGTY_INVALID = 0
  STGTY_STORAGE = 1
-@@ -416,7 +417,7 @@ def __init__(self, data, index):
+@@ -415,7 +416,7 @@
          # last two bytes are padding
  
      def pretty_print(self):
@@ -60,7 +59,7 @@ index e521d88..5da5bf4 100755
  _ab                 = {0}
  _cb                 = {1}
  _mse                = {2}
-@@ -446,7 +447,7 @@ def pretty_print(self):
+@@ -445,7 +446,7 @@
          '{0}'.format(self._time[1]),
          '{0:08X}'.format(self._sectStart),
          '{0:08X} ({0} bytes)'.format(self._ulSize),
@@ -69,7 +68,7 @@ index e521d88..5da5bf4 100755
  
  def _main():
  
-@@ -561,22 +562,22 @@ def _main():
+@@ -560,22 +561,22 @@
  
      if options.print_directory:
          for x in xrange(0, len(ofdoc.directory)):
@@ -97,7 +96,7 @@ index e521d88..5da5bf4 100755
  
      if options.print_expected_file_size:
          expected_file_size = (len([x for x in ofdoc.fat if x != FREESECT]) * ofdoc.sector_size) + 512
-@@ -584,8 +585,8 @@ def _main():
+@@ -583,8 +584,8 @@
          size_diff = abs(expected_file_size - actual_file_size)
          percent_diff = (float(size_diff) / float(expected_file_size)) * 100.0
  
@@ -108,7 +107,7 @@ index e521d88..5da5bf4 100755
  
      #
      # analysis options
-@@ -620,7 +621,7 @@ def _main():
+@@ -619,7 +620,7 @@
                      logging.warning('invalid FAT sector reference {0:08X}'.format(value))
  
      if options.print_invalid_fat_count:
@@ -117,7 +116,7 @@ index e521d88..5da5bf4 100755
  
      invalid_fat_entries = 0
      if options.check_fat or options.print_invalid_fat_count:
-@@ -634,7 +635,7 @@ def _main():
+@@ -633,7 +634,7 @@
                      logging.warning('invalid FAT sector {0:08X} value {1:08X}'.format(value, ptr))
  
      if options.print_invalid_fat_count:
@@ -136,11 +135,10 @@ Subject: [PATCH 2/7] Use BytesIO from compatible io module instead of StringIO
  officeparser.py | 6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/officeparser.py b/officeparser.py
-index 5da5bf4..82dce4a 100755
---- a/officeparser.py
-+++ b/officeparser.py
-@@ -9,7 +9,7 @@
+diff -ru officeparser-fce88741d3f78d5588bb214b824c2d51232287a5/officeparser.py officeparser-fce88741d3f78d5588bb214b824c2d51232287a5.new/officeparser.py
+--- officeparser-fce88741d3f78d5588bb214b824c2d51232287a5/officeparser.py	2023-11-15 10:45:43.162699655 +0100
++++ officeparser-fce88741d3f78d5588bb214b824c2d51232287a5.new/officeparser.py	2023-11-15 10:45:57.733227285 +0100
+@@ -8,7 +8,7 @@
  import sys
  from struct import unpack
  from optparse import OptionParser
@@ -149,7 +147,7 @@ index 5da5bf4..82dce4a 100755
  import logging
  import re
  import os
-@@ -218,7 +218,7 @@ def __init__(self, file, parser_options=None):
+@@ -217,7 +217,7 @@
              # chain in the Fat, with the beginning of the chain stored in the
              # header.
  
@@ -158,7 +156,7 @@ index 5da5bf4..82dce4a 100755
              while True:
                  chunk = data.read(self.sector_size)
                  if chunk == '':
-@@ -249,7 +249,7 @@ def __impl_read_chain(self, start, read_sector_f, read_fat_f):
+@@ -248,7 +248,7 @@
          """Returns the entire contents of a chain starting at the given sector."""
          sector = start
          check = [ sector ] # keep a list of sectors we've already read
@@ -167,7 +165,7 @@ index 5da5bf4..82dce4a 100755
          while sector != ENDOFCHAIN:
              buffer.write(read_sector_f(sector))
              next = read_fat_f(sector)
-
+Only in officeparser-fce88741d3f78d5588bb214b824c2d51232287a5: officeparser.py.orig
 From 032a0d058bc59d1c3bef5f0b68298720947ac2c5 Mon Sep 17 00:00:00 2001
 From: Lumir Balhar <lbalhar@redhat.com>
 Date: Thu, 24 Oct 2019 10:48:44 +0200
@@ -177,11 +175,10 @@ Subject: [PATCH 3/7] Different parsing bytes to name for Python 2/3
  officeparser.py | 9 ++++++++-
  1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/officeparser.py b/officeparser.py
-index 82dce4a..c9f1d10 100755
---- a/officeparser.py
-+++ b/officeparser.py
-@@ -28,6 +28,8 @@
+diff -ru officeparser-fce88741d3f78d5588bb214b824c2d51232287a5/officeparser.py officeparser-fce88741d3f78d5588bb214b824c2d51232287a5.new/officeparser.py
+--- officeparser-fce88741d3f78d5588bb214b824c2d51232287a5/officeparser.py	2023-11-15 10:45:57.733227285 +0100
++++ officeparser-fce88741d3f78d5588bb214b824c2d51232287a5.new/officeparser.py	2023-11-15 10:48:14.735188421 +0100
+@@ -27,6 +27,8 @@
  
  BINFILE_NAME = "/vbaProject.bin"
  
@@ -190,7 +187,7 @@ index 82dce4a..c9f1d10 100755
  def fat_value_to_str(value):
      if value == DIFSECT:
          return '0xFFFFFFFC (DIF)'
-@@ -402,7 +404,12 @@ def __init__(self, data, index):
+@@ -401,7 +403,12 @@
          self._ab = self.directory[0]
          self._cb = self.directory[1]
          # convert wide chars into ASCII
@@ -204,7 +201,6 @@ index 82dce4a..c9f1d10 100755
          self._mse = self.directory[2]
          self._bflags = self.directory[3]
          self._sidLeftSib = self.directory[4]
-
 From 6afb84b3237cf280bafd95b400e454a8484199be Mon Sep 17 00:00:00 2001
 From: Lumir Balhar <lbalhar@redhat.com>
 Date: Thu, 24 Oct 2019 10:49:57 +0200
@@ -214,11 +210,10 @@ Subject: [PATCH 4/7] Use floor division where we need integer as a result
  officeparser.py | 6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/officeparser.py b/officeparser.py
-index c9f1d10..2d9aa90 100755
---- a/officeparser.py
-+++ b/officeparser.py
-@@ -196,14 +196,14 @@ def __init__(self, file, parser_options=None):
+diff -ru officeparser-fce88741d3f78d5588bb214b824c2d51232287a5/officeparser.py officeparser-fce88741d3f78d5588bb214b824c2d51232287a5.new/officeparser.py
+--- officeparser-fce88741d3f78d5588bb214b824c2d51232287a5/officeparser.py	2023-11-15 10:49:55.693844349 +0100
++++ officeparser-fce88741d3f78d5588bb214b824c2d51232287a5.new/officeparser.py	2023-11-15 10:50:07.342266164 +0100
+@@ -195,14 +195,14 @@
              if len(data) != self.sector_size:
                  logging.error('broken FAT (invalid sector size {0} != {1})'.format(len(data), self.sector_size))
              else:
@@ -235,7 +230,7 @@ index c9f1d10..2d9aa90 100755
              self.directory.append(Directory(chunk, directory_index))
              directory_index += 1
  
-@@ -228,7 +228,7 @@ def __init__(self, file, parser_options=None):
+@@ -227,7 +227,7 @@
                  if len(chunk) != self.sector_size:
                      logging.warning("encountered EOF while parsing minifat")
                      continue
@@ -244,7 +239,6 @@ index c9f1d10..2d9aa90 100755
                      self.minifat.append(value)
  
      def read_sector(self, sector):
-
 From ace8691eacba4dce0e6bf95292dab9f3a34396eb Mon Sep 17 00:00:00 2001
 From: Lumir Balhar <lbalhar@redhat.com>
 Date: Thu, 24 Oct 2019 10:50:34 +0200
@@ -255,11 +249,10 @@ Subject: [PATCH 5/7] chunk is '' in Python 2 and b'' in Python 3 so better is
  officeparser.py | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/officeparser.py b/officeparser.py
-index 2d9aa90..fb1d07c 100755
---- a/officeparser.py
-+++ b/officeparser.py
-@@ -223,7 +223,7 @@ def __init__(self, file, parser_options=None):
+diff -ru officeparser-fce88741d3f78d5588bb214b824c2d51232287a5/officeparser.py officeparser-fce88741d3f78d5588bb214b824c2d51232287a5.new/officeparser.py
+--- officeparser-fce88741d3f78d5588bb214b824c2d51232287a5/officeparser.py	2023-11-15 10:51:18.703850319 +0100
++++ officeparser-fce88741d3f78d5588bb214b824c2d51232287a5.new/officeparser.py	2023-11-15 10:51:29.680247798 +0100
+@@ -222,7 +222,7 @@
              data = BytesIO(self.read_chain(self.header._sectMiniFatStart))
              while True:
                  chunk = data.read(self.sector_size)
@@ -268,7 +261,6 @@ index 2d9aa90..fb1d07c 100755
                      break
                  if len(chunk) != self.sector_size:
                      logging.warning("encountered EOF while parsing minifat")
-
 From 0a4c0189d7f6aefb09e4b7299ca0626a39a6d20b Mon Sep 17 00:00:00 2001
 From: Lumir Balhar <lbalhar@redhat.com>
 Date: Thu, 24 Oct 2019 10:57:35 +0200
@@ -278,11 +270,10 @@ Subject: [PATCH 6/7] Use compatible way for writing binary data to stdout
  officeparser.py | 8 ++++----
  1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/officeparser.py b/officeparser.py
-index fb1d07c..43d45ea 100755
---- a/officeparser.py
-+++ b/officeparser.py
-@@ -685,20 +685,20 @@ def _main():
+diff -ru officeparser-fce88741d3f78d5588bb214b824c2d51232287a5/officeparser.py officeparser-fce88741d3f78d5588bb214b824c2d51232287a5.new/officeparser.py
+--- officeparser-fce88741d3f78d5588bb214b824c2d51232287a5/officeparser.py	2023-11-15 10:53:40.524985968 +0100
++++ officeparser-fce88741d3f78d5588bb214b824c2d51232287a5.new/officeparser.py	2023-11-15 10:53:52.415416546 +0100
+@@ -684,20 +684,20 @@
      # dump options
      #
      if options.dump_sector:
@@ -307,7 +298,6 @@ index fb1d07c..43d45ea 100755
          sys.exit(0)
  
      #
-
 From fa56b4b1717eb195cd12605a8e3706a33662ffb8 Mon Sep 17 00:00:00 2001
 From: Lumir Balhar <lbalhar@redhat.com>
 Date: Thu, 24 Oct 2019 12:45:10 +0200
@@ -317,11 +307,10 @@ Subject: [PATCH 7/7] Write bytes to file opened as binary
  officeparser.py | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/officeparser.py b/officeparser.py
-index 43d45ea..fdf155a 100755
---- a/officeparser.py
-+++ b/officeparser.py
-@@ -801,8 +801,8 @@ def _main():
+diff -ru officeparser-fce88741d3f78d5588bb214b824c2d51232287a5/officeparser.py officeparser-fce88741d3f78d5588bb214b824c2d51232287a5.new/officeparser.py
+--- officeparser-fce88741d3f78d5588bb214b824c2d51232287a5/officeparser.py	2023-11-15 10:55:43.529440224 +0100
++++ officeparser-fce88741d3f78d5588bb214b824c2d51232287a5.new/officeparser.py	2023-11-15 10:55:56.802920884 +0100
+@@ -800,8 +800,8 @@
                  f.write(ofdoc.get_stream(d.index))
                  f.close()
                  if options.create_manifest:

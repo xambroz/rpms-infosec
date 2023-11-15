@@ -7,11 +7,10 @@ Subject: [PATCH 4/7] Use floor division where we need integer as a result
  officeparser.py | 6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/officeparser.py b/officeparser.py
-index c9f1d10..2d9aa90 100755
---- a/officeparser.py
-+++ b/officeparser.py
-@@ -196,14 +196,14 @@ def __init__(self, file, parser_options=None):
+diff -ru officeparser-fce88741d3f78d5588bb214b824c2d51232287a5/officeparser.py officeparser-fce88741d3f78d5588bb214b824c2d51232287a5.new/officeparser.py
+--- officeparser-fce88741d3f78d5588bb214b824c2d51232287a5/officeparser.py	2023-11-15 10:49:55.693844349 +0100
++++ officeparser-fce88741d3f78d5588bb214b824c2d51232287a5.new/officeparser.py	2023-11-15 10:50:07.342266164 +0100
+@@ -195,14 +195,14 @@
              if len(data) != self.sector_size:
                  logging.error('broken FAT (invalid sector size {0} != {1})'.format(len(data), self.sector_size))
              else:
@@ -28,7 +27,7 @@ index c9f1d10..2d9aa90 100755
              self.directory.append(Directory(chunk, directory_index))
              directory_index += 1
  
-@@ -228,7 +228,7 @@ def __init__(self, file, parser_options=None):
+@@ -227,7 +227,7 @@
                  if len(chunk) != self.sector_size:
                      logging.warning("encountered EOF while parsing minifat")
                      continue
@@ -37,4 +36,3 @@ index c9f1d10..2d9aa90 100755
                      self.minifat.append(value)
  
      def read_sector(self, sector):
-

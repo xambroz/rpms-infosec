@@ -7,19 +7,18 @@ Subject: [PATCH 1/7] Fix prints - from statement to function
  officeparser.py | 31 ++++++++++++++++---------------
  1 file changed, 16 insertions(+), 15 deletions(-)
 
-diff --git a/officeparser.py b/officeparser.py
-index e521d88..5da5bf4 100755
---- a/officeparser.py
-+++ b/officeparser.py
-@@ -5,6 +5,7 @@
- #             - VBA: fixed infinite loop when output file already exists
- #             - improved logging output, set default level to INFO
+diff -ru officeparser-fce88741d3f78d5588bb214b824c2d51232287a5/officeparser.py officeparser-fce88741d3f78d5588bb214b824c2d51232287a5.new/officeparser.py
+--- officeparser-fce88741d3f78d5588bb214b824c2d51232287a5/officeparser.py	2023-08-21 17:16:35.000000000 +0200
++++ officeparser-fce88741d3f78d5588bb214b824c2d51232287a5.new/officeparser.py	2023-11-15 10:40:45.069905075 +0100
+@@ -4,6 +4,7 @@
+ # 2023-08-12: - VBA: Added check for optional PROJECTCOMPATVERSION Record (MS OVBA 2.3.4.2.1.2 Revision 11.0)
+ #             - VBA: fixed infinite loop if REFERENCE record is corrupt
  
 +from __future__ import print_function
  import sys
  from struct import unpack
  from optparse import OptionParser
-@@ -268,7 +269,7 @@ def read_chain(self, sector_start):
+@@ -267,7 +268,7 @@
  
      def print_fat_sectors(self):
          for sector in self.fat_sectors:
@@ -28,7 +27,7 @@ index e521d88..5da5bf4 100755
  
      def get_stream(self, index):
          d = self.directory[index]
-@@ -315,7 +316,7 @@ def __init__(self, data, parser_options=None):
+@@ -314,7 +315,7 @@
          self._sectFat = self.header[18:] # sects of first 109 FAT sectors
  
      def pretty_print(self):
@@ -37,7 +36,7 @@ index e521d88..5da5bf4 100755
  _abSig              = {0}
  _clid               = {1}
  _uMinorVersion      = {2}
-@@ -353,11 +354,11 @@ def pretty_print(self):
+@@ -352,11 +353,11 @@
          '{0:08X}'.format(self._sectMiniFatStart),
          '{0:08X}'.format(self._csectMiniFat),
          '{0:08X}'.format(self._sectDifStart),
@@ -51,7 +50,7 @@ index e521d88..5da5bf4 100755
  
  STGTY_INVALID = 0
  STGTY_STORAGE = 1
-@@ -416,7 +417,7 @@ def __init__(self, data, index):
+@@ -415,7 +416,7 @@
          # last two bytes are padding
  
      def pretty_print(self):
@@ -60,7 +59,7 @@ index e521d88..5da5bf4 100755
  _ab                 = {0}
  _cb                 = {1}
  _mse                = {2}
-@@ -446,7 +447,7 @@ def pretty_print(self):
+@@ -445,7 +446,7 @@
          '{0}'.format(self._time[1]),
          '{0:08X}'.format(self._sectStart),
          '{0:08X} ({0} bytes)'.format(self._ulSize),
@@ -69,7 +68,7 @@ index e521d88..5da5bf4 100755
  
  def _main():
  
-@@ -561,22 +562,22 @@ def _main():
+@@ -560,22 +561,22 @@
  
      if options.print_directory:
          for x in xrange(0, len(ofdoc.directory)):
@@ -97,7 +96,7 @@ index e521d88..5da5bf4 100755
  
      if options.print_expected_file_size:
          expected_file_size = (len([x for x in ofdoc.fat if x != FREESECT]) * ofdoc.sector_size) + 512
-@@ -584,8 +585,8 @@ def _main():
+@@ -583,8 +584,8 @@
          size_diff = abs(expected_file_size - actual_file_size)
          percent_diff = (float(size_diff) / float(expected_file_size)) * 100.0
  
@@ -108,7 +107,7 @@ index e521d88..5da5bf4 100755
  
      #
      # analysis options
-@@ -620,7 +621,7 @@ def _main():
+@@ -619,7 +620,7 @@
                      logging.warning('invalid FAT sector reference {0:08X}'.format(value))
  
      if options.print_invalid_fat_count:
@@ -117,7 +116,7 @@ index e521d88..5da5bf4 100755
  
      invalid_fat_entries = 0
      if options.check_fat or options.print_invalid_fat_count:
-@@ -634,7 +635,7 @@ def _main():
+@@ -633,7 +634,7 @@
                      logging.warning('invalid FAT sector {0:08X} value {1:08X}'.format(value, ptr))
  
      if options.print_invalid_fat_count:
@@ -126,4 +125,3 @@ index e521d88..5da5bf4 100755
  
      if options.check_orphaned_chains:
          buffer = [False for fat in ofdoc.fat]
-

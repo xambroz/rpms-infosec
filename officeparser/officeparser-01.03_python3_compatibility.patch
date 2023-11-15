@@ -7,11 +7,10 @@ Subject: [PATCH 3/7] Different parsing bytes to name for Python 2/3
  officeparser.py | 9 ++++++++-
  1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/officeparser.py b/officeparser.py
-index 82dce4a..c9f1d10 100755
---- a/officeparser.py
-+++ b/officeparser.py
-@@ -28,6 +28,8 @@
+diff -ru officeparser-fce88741d3f78d5588bb214b824c2d51232287a5/officeparser.py officeparser-fce88741d3f78d5588bb214b824c2d51232287a5.new/officeparser.py
+--- officeparser-fce88741d3f78d5588bb214b824c2d51232287a5/officeparser.py	2023-11-15 10:45:57.733227285 +0100
++++ officeparser-fce88741d3f78d5588bb214b824c2d51232287a5.new/officeparser.py	2023-11-15 10:48:14.735188421 +0100
+@@ -27,6 +27,8 @@
  
  BINFILE_NAME = "/vbaProject.bin"
  
@@ -20,7 +19,7 @@ index 82dce4a..c9f1d10 100755
  def fat_value_to_str(value):
      if value == DIFSECT:
          return '0xFFFFFFFC (DIF)'
-@@ -402,7 +404,12 @@ def __init__(self, data, index):
+@@ -401,7 +403,12 @@
          self._ab = self.directory[0]
          self._cb = self.directory[1]
          # convert wide chars into ASCII
@@ -34,4 +33,3 @@ index 82dce4a..c9f1d10 100755
          self._mse = self.directory[2]
          self._bflags = self.directory[3]
          self._sidLeftSib = self.directory[4]
-

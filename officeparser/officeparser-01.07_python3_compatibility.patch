@@ -7,11 +7,10 @@ Subject: [PATCH 7/7] Write bytes to file opened as binary
  officeparser.py | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/officeparser.py b/officeparser.py
-index 43d45ea..fdf155a 100755
---- a/officeparser.py
-+++ b/officeparser.py
-@@ -801,8 +801,8 @@ def _main():
+diff -ru officeparser-fce88741d3f78d5588bb214b824c2d51232287a5/officeparser.py officeparser-fce88741d3f78d5588bb214b824c2d51232287a5.new/officeparser.py
+--- officeparser-fce88741d3f78d5588bb214b824c2d51232287a5/officeparser.py	2023-11-15 10:55:43.529440224 +0100
++++ officeparser-fce88741d3f78d5588bb214b824c2d51232287a5.new/officeparser.py	2023-11-15 10:55:56.802920884 +0100
+@@ -800,8 +800,8 @@
                  f.write(ofdoc.get_stream(d.index))
                  f.close()
                  if options.create_manifest:
