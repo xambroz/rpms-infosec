@@ -1,0 +1,41 @@
+From b64db92d77d480f93a973b995fd63c964b16b6fb Mon Sep 17 00:00:00 2001
+From: Lumir Balhar <lbalhar@redhat.com>
+Date: Thu, 24 Oct 2019 10:47:57 +0200
+Subject: [PATCH 2/7] Use BytesIO from compatible io module instead of StringIO
+
+---
+ officeparser.py | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/officeparser.py b/officeparser.py
+index 5da5bf4..82dce4a 100755
+--- a/officeparser.py
++++ b/officeparser.py
+@@ -9,7 +9,7 @@
+ import sys
+ from struct import unpack
+ from optparse import OptionParser
+-from cStringIO import StringIO
++from io import BytesIO
+ import logging
+ import re
+ import os
+@@ -218,7 +218,7 @@ def __init__(self, file, parser_options=None):
+             # chain in the Fat, with the beginning of the chain stored in the
+             # header.
+ 
+-            data = StringIO(self.read_chain(self.header._sectMiniFatStart))
++            data = BytesIO(self.read_chain(self.header._sectMiniFatStart))
+             while True:
+                 chunk = data.read(self.sector_size)
+                 if chunk == '':
+@@ -249,7 +249,7 @@ def __impl_read_chain(self, start, read_sector_f, read_fat_f):
+         """Returns the entire contents of a chain starting at the given sector."""
+         sector = start
+         check = [ sector ] # keep a list of sectors we've already read
+-        buffer = StringIO()
++        buffer = BytesIO()
+         while sector != ENDOFCHAIN:
+             buffer.write(read_sector_f(sector))
+             next = read_fat_f(sector)
+

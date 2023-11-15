@@ -1,0 +1,24 @@
+From ace8691eacba4dce0e6bf95292dab9f3a34396eb Mon Sep 17 00:00:00 2001
+From: Lumir Balhar <lbalhar@redhat.com>
+Date: Thu, 24 Oct 2019 10:50:34 +0200
+Subject: [PATCH 5/7] chunk is '' in Python 2 and b'' in Python 3 so better is
+ to check its length
+
+---
+ officeparser.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/officeparser.py b/officeparser.py
+index 2d9aa90..fb1d07c 100755
+--- a/officeparser.py
++++ b/officeparser.py
+@@ -223,7 +223,7 @@ def __init__(self, file, parser_options=None):
+             data = BytesIO(self.read_chain(self.header._sectMiniFatStart))
+             while True:
+                 chunk = data.read(self.sector_size)
+-                if chunk == '':
++                if len(chunk) == 0:
+                     break
+                 if len(chunk) != self.sector_size:
+                     logging.warning("encountered EOF while parsing minifat")
+
