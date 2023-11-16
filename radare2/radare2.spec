@@ -106,7 +106,7 @@ BuildRequires:  pkgconfig
 BuildRequires:  pkgconfig(libxxhash)
 
 %if %{with asan}
-BuildRequires:  pkgconfig(libasan)
+BuildRequires:  libasan
 %endif
 
 # version of libzip on rhel7 is too old
