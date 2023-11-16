@@ -1,8 +1,10 @@
 Separate functions for the conversion of the python2 binary string / python3 binarray to ascii/hexdump
 This fixes issue with --print-header and --print-directory
---- officeparser-42c2d40372fe271f2039ca1adc145d2aef8c9545/officeparser.py	2019-10-26 19:54:01.632237407 +0200
-+++ officeparser-42c2d40372fe271f2039ca1adc145d2aef8c9545.new/officeparser.py	2019-10-26 19:53:55.603999504 +0200
-@@ -56,6 +56,23 @@
+Only in officeparser-fce88741d3f78d5588bb214b824c2d51232287a5: officeparser-fce88741d3f78d5588bb214b824c2d51232287a5.new
+diff -ru officeparser-fce88741d3f78d5588bb214b824c2d51232287a5/officeparser.py officeparser-fce88741d3f78d5588bb214b824c2d51232287a5.new/officeparser.py
+--- officeparser-fce88741d3f78d5588bb214b824c2d51232287a5/officeparser.py	2023-11-15 11:17:10.988061864 +0100
++++ officeparser-fce88741d3f78d5588bb214b824c2d51232287a5.new/officeparser.py	2023-11-15 11:17:44.386271285 +0100
+@@ -54,6 +54,23 @@
      maximum_length = (0xFFFF >> bit_count) + 3
      return length_mask, offset_mask, bit_count, maximum_length
  
@@ -26,7 +28,7 @@ This fixes issue with --print-header and --print-directory
  def decompress_stream(compressed_container):
      # MS-OVBA
      # 2.4.1.2
-@@ -342,8 +359,8 @@
+@@ -340,8 +357,8 @@
  _csectMiniFat       = {15}
  _sectDifStart       = {16}
  _csectDif           = {17}""".format(
@@ -37,7 +39,7 @@ This fixes issue with --print-header and --print-directory
          '{0:04X}'.format(self._uMinorVersion),
          '{0}'.format(self._uDllVersion),
          '{0:04X}'.format(self._uByteOrder),
-@@ -409,12 +426,7 @@
+@@ -407,12 +424,7 @@
          self._ab = self.directory[0]
          self._cb = self.directory[1]
          # convert wide chars into ASCII
@@ -51,7 +53,7 @@ This fixes issue with --print-header and --print-directory
          self._mse = self.directory[2]
          self._bflags = self.directory[3]
          self._sidLeftSib = self.directory[4]
-@@ -444,8 +456,7 @@
+@@ -442,8 +454,7 @@
  _sectStart          = {11}
  _ulSize             = {12}
  _dptPropType        = {13}""".format(
@@ -61,7 +63,7 @@ This fixes issue with --print-header and --print-directory
          #unicode(self._ab).encode('us-ascii', 'ignore'),
          '{0:04X}'.format(self._cb),
          stgty_to_str(self._mse),
-@@ -453,7 +464,7 @@
+@@ -451,7 +462,7 @@
          '{0:04X}'.format(self._sidLeftSib),
          '{0:04X}'.format(self._sidRightSib),
          '{0:04X}'.format(self._sidChild),

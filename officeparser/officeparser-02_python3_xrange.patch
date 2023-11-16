@@ -1,17 +1,9 @@
 Patch also xrange to range to bring compatibility with python3
 Link range to xrange when running in python2 for backwards compatibility
-diff -ru officeparser-42c2d40372fe271f2039ca1adc145d2aef8c9545.old/officeparser.py officeparser-42c2d40372fe271f2039ca1adc145d2aef8c9545.new/officeparser.py
---- officeparser-42c2d40372fe271f2039ca1adc145d2aef8c9545.old/officeparser.py	2019-10-25 11:37:25.137270591 +0200
-+++ officeparser-42c2d40372fe271f2039ca1adc145d2aef8c9545.new/officeparser.py	2019-10-25 12:15:53.596328846 +0200
-@@ -1,6 +1,7 @@
- #!/usr/bin/env python
- 
- # CHANGELOG:
-+# 2019-10-25: - bring the python3 compatibility
- # 2014-08-15: - VBA: fixed incorrect value check in PROJECTHELPFILEPATH Record
- #             - VBA: fixed infinite loop when output file already exists
- #             - improved logging output, set default level to INFO
-@@ -29,7 +29,11 @@
+diff -ru officeparser-fce88741d3f78d5588bb214b824c2d51232287a5/officeparser.py officeparser-fce88741d3f78d5588bb214b824c2d51232287a5.new/officeparser.py
+--- officeparser-fce88741d3f78d5588bb214b824c2d51232287a5/officeparser.py	2023-11-15 11:10:11.843883754 +0100
++++ officeparser-fce88741d3f78d5588bb214b824c2d51232287a5.new/officeparser.py	2023-11-15 11:10:44.046049864 +0100
+@@ -27,7 +27,11 @@
  
  BINFILE_NAME = "/vbaProject.bin"
  
@@ -24,7 +16,7 @@ diff -ru officeparser-42c2d40372fe271f2039ca1adc145d2aef8c9545.old/officeparser.
  
  def fat_value_to_str(value):
      if value == DIFSECT:
-@@ -95,7 +100,7 @@
+@@ -94,7 +98,7 @@
          while compressed_current < compressed_end:
              flag_byte = ord(compressed_container[compressed_current])
              compressed_current += 1
@@ -33,7 +25,7 @@ diff -ru officeparser-42c2d40372fe271f2039ca1adc145d2aef8c9545.old/officeparser.
                  if compressed_current >= compressed_end:
                      break
                  if (1 << bit_index) & flag_byte == 0: # LiteralToken
-@@ -114,7 +119,7 @@
+@@ -113,7 +117,7 @@
                  temp2 = 16 - bit_count
                  offset = (temp1 >> temp2) + 1
                  copy_source = len(decompressed_container) - offset
@@ -42,7 +34,7 @@ diff -ru officeparser-42c2d40372fe271f2039ca1adc145d2aef8c9545.old/officeparser.
                      decompressed_container += decompressed_container[index]
                  compressed_current += 2
  
-@@ -568,17 +573,17 @@
+@@ -567,17 +571,17 @@
          ofdoc.header.pretty_print()
  
      if options.print_directory:
@@ -63,7 +55,7 @@ diff -ru officeparser-42c2d40372fe271f2039ca1adc145d2aef8c9545.old/officeparser.
              print('{0:08X}: {1}'.format(sector, fat_value_to_str(ofdoc.minifat[sector])))
  
      if options.print_streams:
-@@ -632,7 +637,7 @@
+@@ -631,7 +635,7 @@
  
      invalid_fat_entries = 0
      if options.check_fat or options.print_invalid_fat_count:
@@ -72,7 +64,7 @@ diff -ru officeparser-42c2d40372fe271f2039ca1adc145d2aef8c9545.old/officeparser.
              ptr = ofdoc.read_fat(value)
              if ptr == DIFSECT or ptr == FATSECT or ptr == ENDOFCHAIN or ptr == FREESECT:
                  continue
-@@ -674,7 +679,7 @@
+@@ -673,7 +677,7 @@
                  buffer[index] = True
                  index = ofdoc.read_fat(index)
  
@@ -81,7 +73,7 @@ diff -ru officeparser-42c2d40372fe271f2039ca1adc145d2aef8c9545.old/officeparser.
              #logging.debug('{0:08X} {1} {2}'.format(index, buffer[index], fat_value_to_str(ofdoc.read_fat(index))))
              if ofdoc.read_fat(index) == FREESECT and buffer[index] == True:
                  logging.warning('FREESECT is marked as used')
-@@ -1077,7 +1082,7 @@
+@@ -1090,7 +1094,7 @@
          PROJECTMODULES_ProjectCookieRecord_Cookie = unpack("<H", dir_stream.read(2))[0]
  
          logging.debug("parsing {0} modules".format(PROJECTMODULES_Count))

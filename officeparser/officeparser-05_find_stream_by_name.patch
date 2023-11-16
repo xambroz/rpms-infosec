@@ -1,0 +1,22 @@
+From d2fc9ad154acf96a306854409b2d14c126d99038 Mon Sep 17 00:00:00 2001
+From: Wolfgang Illmeyer <wi@nexxar.com>
+Date: Mon, 6 Mar 2017 18:10:18 +0100
+Subject: [PATCH] make find_stream_by_name only return streams
+
+---
+ officeparser.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/officeparser.py b/officeparser.py
+index 7a4ce7a..c3fe4e3 100755
+--- a/officeparser.py
++++ b/officeparser.py
+@@ -281,7 +281,7 @@ def get_stream(self, index):
+ 
+     def find_stream_by_name(self, name):
+         for d in self.directory:
+-            if d.name == name:
++            if d.name == name and d._mse == STGTY_STREAM:
+                 return d
+         return None
+ 

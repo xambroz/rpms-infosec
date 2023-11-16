@@ -19,7 +19,7 @@ Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{nam
 
 # Patch from Lumir Balhar to introduce the python3 compatibility wit the office parser
 # https://github.com/unixfreak0037/officeparser/pull/19
-Patch1:         https://patch-diff.githubusercontent.com/raw/unixfreak0037/officeparser/pull/19.patch#/officeparser-01_python3_compatibiity.patch
+Patch1:         https://patch-diff.githubusercontent.com/raw/unixfreak0037/officeparser/pull/19.patch#/officeparser-01_python3_compatibility.patch
 
 # Patch also xrange to range to bring compatibility with python3
 Patch2:         officeparser-02_python3_xrange.patch

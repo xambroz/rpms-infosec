@@ -1,9 +1,9 @@
 Print --help when no options are entered.
 This fixes annoying bug/feature that the script crashes when no file attribute is provided
-diff -ru officeparser-42c2d40372fe271f2039ca1adc145d2aef8c9545/officeparser.py officeparser-42c2d40372fe271f2039ca1adc145d2aef8c9545.new/officeparser.py
---- officeparser-42c2d40372fe271f2039ca1adc145d2aef8c9545/officeparser.py	2019-10-25 11:31:02.155119650 +0200
-+++ officeparser-42c2d40372fe271f2039ca1adc145d2aef8c9545.new/officeparser.py	2019-10-25 11:10:10.815713212 +0200
-@@ -458,6 +463,9 @@
+diff -ru officeparser-fce88741d3f78d5588bb214b824c2d51232287a5/officeparser.py officeparser-fce88741d3f78d5588bb214b824c2d51232287a5.new/officeparser.py
+--- officeparser-fce88741d3f78d5588bb214b824c2d51232287a5/officeparser.py	2023-11-15 11:13:50.897816166 +0100
++++ officeparser-fce88741d3f78d5588bb214b824c2d51232287a5.new/officeparser.py	2023-11-15 11:14:00.324157515 +0100
+@@ -461,6 +461,9 @@
  
  def _main():
  
