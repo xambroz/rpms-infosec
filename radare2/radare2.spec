@@ -7,7 +7,7 @@ VCS:            https://github.com/radareorg/radare2
 #               https://github.com/radareorg/radare2/releases
 
 # Possible to build with extra memory sanitization
-%bcond_without  asan
+%bcond_with     asan
 
 # %%if 0%%{?rhel} && 0%%{?rhel} == 8
 # Radare2 fails to build on EPEL8+s390x
