@@ -25,17 +25,10 @@ Patch1:         https://github.com/Gallopsled/pwntools/pull/2302.patch#/%{name}-
 
 
 BuildArch:      noarch
-BuildRequires:  python3-devel
-BuildRequires:  python3-setuptools
+BuildRequires:  python%{python3_pkgversion}-devel
+BuildRequires:  python%{python3_pkgversion}-setuptools
 # Waiting on pwntools to support newer sphinx shipped by Fedora.
-# BuildRequires:  python3-sphinx
-
-# %%check dependencies
-BuildRequires:  python3-pyserial
-BuildRequires:  python3-pysocks
-BuildRequires:  python3-six
-
-
+# BuildRequires:  python%%{python3_pkgversion}-sphinx
 
 
 %description
@@ -43,12 +36,12 @@ Pwntools is a CTF framework and exploit development library. Written
 in Python, it is designed for rapid prototyping and development, and
 intended to make exploit writing as simple as possible.
 
-%package -n python3-%{srcname}
+%package -n python%{python3_pkgversion}-%{srcname}
 Summary:        %{summary}
-%{?python_provide:%python_provide python3-%{srcname}}
+%{?python_provide:%python_provide python%{python3_pkgversion}-%{srcname}}
 Requires:       binutils
 
-%description -n python3-%{srcname}
+%description -n python%{python3_pkgversion}-%{srcname}
 Pwntools is a CTF framework and exploit development library. Written
 in Python, it is designed for rapid prototyping and development, and
 intended to make exploit writing as simple as possible.
@@ -65,6 +58,9 @@ intended to make exploit writing as simple as possible.
 
 #wrong permission
 chmod -x docs/requirements.txt
+
+%generate_buildrequires
+%pyproject_buildrequires
 
 
 %build
@@ -92,7 +88,7 @@ rm -rf %{buildroot}%{_prefix}/pwntools-doc
 python -c "from pwn import *; sh=process('bash'); sh.sendline(b'echo hello | md5sum'); x=sh.read(); assert (x == b'b1946ac92492d2347c6235b4d2611184  -\n');"
 
 
-%files -n python3-%{srcname}
+%files -n python%{python3_pkgversion}-%{srcname}
 %doc CHANGELOG.md CONTRIBUTING.md README.md TESTING.md docs/requirements.txt
 %license LICENSE-pwntools.txt
 %{python3_sitelib}/%{srcname}-%{version}-py%{python3_version}.egg-info/
