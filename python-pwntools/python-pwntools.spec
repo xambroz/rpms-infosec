@@ -14,6 +14,23 @@ License:        MIT AND BSD-2-Clause AND GPL-2.0-or-later
 
 %global srcname pwntools
 
+# Unicorn python3 module currently not available on s390x architecture F39/F40
+# limited functionality will be available
+%if ( 0%{?fedora} && 0%{?fedora} <= 38 )
+%ifarch s390x
+%global __requires_exclude python3-unicorn
+%endif
+%endif
+
+# Some packages are missing in EPEL9/8
+# limited functionality will be available
+%if 0%{?rhel}
+%global __requires_exclude python%{python3_pkgversion}-unicorn,python%{python3_pkgversion}-intervaltree,python%{python3_pkgversion}-colored-traceback,python%{python3_pkgversion}-ROPGadget,python%{python3_pkgversion}-rpyc
+%endif
+
+
+
+
 # Source0:      https://github.com/Gallopsled/%%{srcname}/archive/%%{srcname}-%%{version}.tar.gz
 Source0:        https://github.com/Gallopsled/%{srcname}/archive/refs/tags/%{version}.tar.gz#/%{srcname}-%{version}.tar.gz
 
@@ -23,10 +40,6 @@ Patch0:         https://github.com/Gallopsled/pwntools/pull/2301.patch#/%{name}-
 # Regular expressions matching binary need to be escaped in python 3.12
 Patch1:         https://github.com/Gallopsled/pwntools/pull/2302.patch#/%{name}-4.11.1-python3.12.patch
 
-# Unicorn python3 module currently not available on s390x architecture F39/F40
-%if ( 0%{?fedora} && 0%{?fedora} <= 38 )
-ExcludeArch:    s390x
-%endif
 
 BuildArch:      noarch
 BuildRequires:  python%{python3_pkgversion}-devel
