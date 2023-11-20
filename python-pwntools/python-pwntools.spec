@@ -43,16 +43,24 @@ BuildRequires:  python%{python3_pkgversion}-pyelftools
 BuildRequires:  python%{python3_pkgversion}-pygments
 BuildRequires:  python%{python3_pkgversion}-pyserial
 BuildRequires:  python%{python3_pkgversion}-pysocks
-BuildRequires:  python%{python3_pkgversion}-python-dateutil
+BuildRequires:  python%{python3_pkgversion}-dateutil
 BuildRequires:  python%{python3_pkgversion}-requests
-BuildRequires:  python%{python3_pkgversion}-ropgadget
+
+# ROPGadget not on EPEL
+%if 0%{?fedora}
+BuildRequires:  python%{python3_pkgversion}-ROPGadget
+%endif
+
 BuildRequires:  python%{python3_pkgversion}-rpyc
 BuildRequires:  python%{python3_pkgversion}-setuptools
 BuildRequires:  python%{python3_pkgversion}-six
 BuildRequires:  python%{python3_pkgversion}-sortedcontainers
+
+# Unicorn currently doesn't build on s390
 %ifnarch s390x
 BuildRequires:  python%{python3_pkgversion}-unicorn
 %endif
+
 BuildRequires:  python%{python3_pkgversion}-wheel
 
 
