@@ -108,8 +108,8 @@ chmod -x docs/requirements.txt
 # Generate buildrequres is failing to generate viable deps:
 # - s390x due to missing python3 unicorn module
 # - epel due to missing python3 modules colored-traceback, intervaltree, rpyc, unicorn
-#%%generate_buildrequires
-#%%pyproject_buildrequires
+# generate_buildrequires
+# pyproject_buildrequires
 
 
 %build
