@@ -31,8 +31,9 @@ BuildRequires:  python3-setuptools
 # BuildRequires:  python3-sphinx
 
 # %%check dependencies
-BuildRequires:  python3dist(pyserial)
-BuildRequires:  python3dist(pysocks)
+BuildRequires:  python3-pyserial
+BuildRequires:  python3-pysocks
+BuildRequires:  python3-six
 
 
 
