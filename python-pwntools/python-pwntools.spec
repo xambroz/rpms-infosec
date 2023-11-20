@@ -30,6 +30,31 @@ BuildRequires:  python%{python3_pkgversion}-setuptools
 # Waiting on pwntools to support newer sphinx shipped by Fedora.
 # BuildRequires:  python%%{python3_pkgversion}-sphinx
 
+# Build requirements for %check
+BuildRequires:  python%{python3_pkgversion}-capstone
+BuildRequires:  python%{python3_pkgversion}-colored-traceback
+BuildRequires:  python%{python3_pkgversion}-intervaltree
+BuildRequires:  python%{python3_pkgversion}-mako
+BuildRequires:  python%{python3_pkgversion}-packaging
+BuildRequires:  python%{python3_pkgversion}-paramiko
+BuildRequires:  python%{python3_pkgversion}-pip
+BuildRequires:  python%{python3_pkgversion}-psutil
+BuildRequires:  python%{python3_pkgversion}-pyelftools
+BuildRequires:  python%{python3_pkgversion}-pygments
+BuildRequires:  python%{python3_pkgversion}-pyserial
+BuildRequires:  python%{python3_pkgversion}-pysocks
+BuildRequires:  python%{python3_pkgversion}-python-dateutil
+BuildRequires:  python%{python3_pkgversion}-requests
+BuildRequires:  python%{python3_pkgversion}-ropgadget
+BuildRequires:  python%{python3_pkgversion}-rpyc
+BuildRequires:  python%{python3_pkgversion}-setuptools
+BuildRequires:  python%{python3_pkgversion}-six
+BuildRequires:  python%{python3_pkgversion}-sortedcontainers
+%ifnarch s390x
+BuildRequires:  python%{python3_pkgversion}-unicorn
+%endif
+BuildRequires:  python%{python3_pkgversion}-wheel
+
 
 %description
 Pwntools is a CTF framework and exploit development library. Written
@@ -59,8 +84,9 @@ intended to make exploit writing as simple as possible.
 #wrong permission
 chmod -x docs/requirements.txt
 
-%generate_buildrequires
-%pyproject_buildrequires
+# Generate buildrequres is failing on s390x due to missing Unicorn package
+#%%generate_buildrequires
+#%%pyproject_buildrequires
 
 
 %build
