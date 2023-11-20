@@ -65,13 +65,15 @@ BuildRequires:  python%{python3_pkgversion}-six
 BuildRequires:  python%{python3_pkgversion}-sortedcontainers
 BuildRequires:  python%{python3_pkgversion}-wheel
 
-# some packages missinf on EPEL
+# some packages missing on EPEL
 %if 0%{?fedora}
 BuildRequires:  python%{python3_pkgversion}-intervaltree
 BuildRequires:  python%{python3_pkgversion}-colored-traceback
 BuildRequires:  python%{python3_pkgversion}-ROPGadget
 BuildRequires:  python%{python3_pkgversion}-rpyc
+%ifnarch s390x
 BuildRequires:  python%{python3_pkgversion}-unicorn
+%endif
 %endif
 
 
