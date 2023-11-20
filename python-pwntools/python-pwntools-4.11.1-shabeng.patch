@@ -1,0 +1,158 @@
+From bfb1cff3dba596de6e5b47c2f4d2ab446cc1a4c6 Mon Sep 17 00:00:00 2001
+From: xambroz <723625+xambroz@users.noreply.github.com>
+Date: Mon, 20 Nov 2023 18:09:08 +0100
+Subject: [PATCH] remove python2 shabangs
+
+---
+ pwnlib/commandline/__init__.py   | 1 -
+ pwnlib/commandline/asm.py        | 1 -
+ pwnlib/commandline/checksec.py   | 1 -
+ pwnlib/commandline/constgrep.py  | 1 -
+ pwnlib/commandline/cyclic.py     | 1 -
+ pwnlib/commandline/debug.py      | 1 -
+ pwnlib/commandline/disablenx.py  | 1 -
+ pwnlib/commandline/disasm.py     | 1 -
+ pwnlib/commandline/elfdiff.py    | 1 -
+ pwnlib/commandline/elfpatch.py   | 1 -
+ pwnlib/commandline/hex.py        | 1 -
+ pwnlib/commandline/phd.py        | 1 -
+ pwnlib/commandline/shellcraft.py | 1 -
+ pwnlib/commandline/template.py   | 1 -
+ pwnlib/commandline/unhex.py      | 1 -
+ 15 files changed, 15 deletions(-)
+
+diff --git a/pwnlib/commandline/__init__.py b/pwnlib/commandline/__init__.py
+index a0aeedac1..2c1b31aef 100644
+--- a/pwnlib/commandline/__init__.py
++++ b/pwnlib/commandline/__init__.py
+@@ -1,4 +1,3 @@
+-#!/usr/bin/env python2
+ __all__ = [
+     'asm',
+     'checksec',
+diff --git a/pwnlib/commandline/asm.py b/pwnlib/commandline/asm.py
+index 8f1c39884..03c51a6a2 100644
+--- a/pwnlib/commandline/asm.py
++++ b/pwnlib/commandline/asm.py
+@@ -1,4 +1,3 @@
+-#!/usr/bin/env python2
+ from __future__ import absolute_import
+ from __future__ import division
+ 
+diff --git a/pwnlib/commandline/checksec.py b/pwnlib/commandline/checksec.py
+index 1b7e74c3c..5dcea5e38 100644
+--- a/pwnlib/commandline/checksec.py
++++ b/pwnlib/commandline/checksec.py
+@@ -1,4 +1,3 @@
+-#!/usr/bin/env python2
+ from __future__ import absolute_import
+ from __future__ import division
+ 
+diff --git a/pwnlib/commandline/constgrep.py b/pwnlib/commandline/constgrep.py
+index 5959b5155..bac138d72 100755
+--- a/pwnlib/commandline/constgrep.py
++++ b/pwnlib/commandline/constgrep.py
+@@ -1,4 +1,3 @@
+-#!/usr/bin/env python2
+ from __future__ import absolute_import
+ from __future__ import division
+ 
+diff --git a/pwnlib/commandline/cyclic.py b/pwnlib/commandline/cyclic.py
+index eeb55b9b0..ff012a359 100644
+--- a/pwnlib/commandline/cyclic.py
++++ b/pwnlib/commandline/cyclic.py
+@@ -1,4 +1,3 @@
+-#!/usr/bin/env python2
+ from __future__ import absolute_import
+ from __future__ import division
+ 
+diff --git a/pwnlib/commandline/debug.py b/pwnlib/commandline/debug.py
+index 5c92af36d..fe5fca6f5 100644
+--- a/pwnlib/commandline/debug.py
++++ b/pwnlib/commandline/debug.py
+@@ -1,4 +1,3 @@
+-#!/usr/bin/env python2
+ from __future__ import absolute_import
+ from __future__ import division
+ 
+diff --git a/pwnlib/commandline/disablenx.py b/pwnlib/commandline/disablenx.py
+index 9751f3b6a..29839c0f8 100644
+--- a/pwnlib/commandline/disablenx.py
++++ b/pwnlib/commandline/disablenx.py
+@@ -1,4 +1,3 @@
+-#!/usr/bin/env python2
+ from __future__ import absolute_import
+ from __future__ import division
+ 
+diff --git a/pwnlib/commandline/disasm.py b/pwnlib/commandline/disasm.py
+index 78e69b904..4c4535594 100644
+--- a/pwnlib/commandline/disasm.py
++++ b/pwnlib/commandline/disasm.py
+@@ -1,4 +1,3 @@
+-#!/usr/bin/env python2
+ from __future__ import absolute_import
+ from __future__ import division
+ from __future__ import print_function
+diff --git a/pwnlib/commandline/elfdiff.py b/pwnlib/commandline/elfdiff.py
+index 60e5d8fbf..48afef09f 100644
+--- a/pwnlib/commandline/elfdiff.py
++++ b/pwnlib/commandline/elfdiff.py
+@@ -1,4 +1,3 @@
+-#!/usr/bin/env python2
+ from __future__ import absolute_import
+ from __future__ import division
+ 
+diff --git a/pwnlib/commandline/elfpatch.py b/pwnlib/commandline/elfpatch.py
+index 7de0f2015..10a5adc24 100644
+--- a/pwnlib/commandline/elfpatch.py
++++ b/pwnlib/commandline/elfpatch.py
+@@ -1,4 +1,3 @@
+-#!/usr/bin/env python2
+ from __future__ import absolute_import
+ from __future__ import division
+ 
+diff --git a/pwnlib/commandline/hex.py b/pwnlib/commandline/hex.py
+index 136106c67..d538af246 100644
+--- a/pwnlib/commandline/hex.py
++++ b/pwnlib/commandline/hex.py
+@@ -1,4 +1,3 @@
+-#!/usr/bin/env python2
+ from __future__ import absolute_import
+ from __future__ import division
+ 
+diff --git a/pwnlib/commandline/phd.py b/pwnlib/commandline/phd.py
+index 1ef1fd91a..7f3891e0f 100644
+--- a/pwnlib/commandline/phd.py
++++ b/pwnlib/commandline/phd.py
+@@ -1,4 +1,3 @@
+-#!/usr/bin/env python2
+ from __future__ import absolute_import
+ from __future__ import division
+ 
+diff --git a/pwnlib/commandline/shellcraft.py b/pwnlib/commandline/shellcraft.py
+index 9d49c5608..9f5fe36ae 100644
+--- a/pwnlib/commandline/shellcraft.py
++++ b/pwnlib/commandline/shellcraft.py
+@@ -1,4 +1,3 @@
+-#!/usr/bin/env python2
+ from __future__ import absolute_import
+ from __future__ import division
+ 
+diff --git a/pwnlib/commandline/template.py b/pwnlib/commandline/template.py
+index a8f480dfe..f68461cb6 100755
+--- a/pwnlib/commandline/template.py
++++ b/pwnlib/commandline/template.py
+@@ -1,4 +1,3 @@
+-#!/usr/bin/env python2
+ from __future__ import absolute_import
+ from __future__ import division
+ 
+diff --git a/pwnlib/commandline/unhex.py b/pwnlib/commandline/unhex.py
+index 048bb9224..a254e6b3f 100644
+--- a/pwnlib/commandline/unhex.py
++++ b/pwnlib/commandline/unhex.py
+@@ -1,4 +1,3 @@
+-#!/usr/bin/env python2
+ from __future__ import absolute_import
+ from __future__ import division
+ 

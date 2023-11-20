@@ -17,6 +17,13 @@ License:        MIT AND BSD-2-Clause AND GPL-2.0-or-later
 # Source0:      https://github.com/Gallopsled/%%{srcname}/archive/%%{srcname}-%%{version}.tar.gz
 Source0:        https://github.com/Gallopsled/%{srcname}/archive/refs/tags/%{version}.tar.gz#/%{srcname}-%{version}.tar.gz
 
+# some modules for the pwn command do have python2 shabeng even though imported from python3 lib
+Patch0:         https://github.com/Gallopsled/pwntools/pull/2301.patch#/%{name}-4.11.1-shabeng.patch
+
+# Regular expressions matching binary need to be escaped in python 3.12
+Patch1:         https://github.com/Gallopsled/pwntools/pull/2302.patch#/%{name}-4.11.1-python3.12.patch
+
+
 BuildArch:      noarch
 BuildRequires:  python3-devel
 BuildRequires:  python3-setuptools
@@ -71,6 +78,12 @@ mv %{buildroot}%{_bindir}/checksec %{buildroot}%{_bindir}/checksec-pwntools
 rm -rf %{buildroot}%{python3_sitelib}/pwntools-doc
 rm -rf %{buildroot}%{_prefix}/pwntools-doc
 
+
+%check
+%py3_check_import pwn pwnlib
+python -c "from pwn import *; sh=process('bash'); sh.sendline(b'echo hello | md5sum'); x=sh.read(); assert (x == b'b1946ac92492d2347c6235b4d2611184  -\n');"
+
+
 %files -n python3-%{srcname}
 %doc CHANGELOG.md CONTRIBUTING.md README.md TESTING.md docs/requirements.txt
 %license LICENSE-pwntools.txt
@@ -107,9 +120,12 @@ rm -rf %{buildroot}%{_prefix}/pwntools-doc
 # %%license LICENSE-pwntools.txt
 
 %changelog
-* Mon Nov 20 2023 Michal Ambroz <rebus _AT seznam.czike@flyn.org> - 4.11.1-1
+* Mon Nov 20 2023 Michal Ambroz <rebus _AT seznam.cz> - 4.11.1-1
 - New upstream version 4.11.1
 - change license references to new SPDX format
+- patch python 3.12 regex
+- patch unnecessary shabeng in librery modules
+- add basic check
 
 * Mon Sep 25 2023 W. Michael Petullo <mike@flyn.org> - 4.11.0-2
 - Deal with requirements.txt, which moved.

@@ -1,0 +1,26 @@
+From 9000f3a9e7e476085b241fd7cc8d37e522c74450 Mon Sep 17 00:00:00 2001
+From: Michal Ambroz <723625+xambroz@users.noreply.github.com>
+Date: Mon, 20 Nov 2023 19:34:15 +0100
+Subject: [PATCH] libcdb.py - python 3.12
+
+Python 3.12 would complain if the \d atom is not escaped in the binary string.
+
+/usr/lib/python3.12/site-packages/pwnlib/commandline/libcdb.py:224: SyntaxWarning: invalid escape sequence '\d'
+  libc_version = re.search(b'libc[ -](\d+\.\d+)', exe.data)
+---
+ pwnlib/commandline/libcdb.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/pwnlib/commandline/libcdb.py b/pwnlib/commandline/libcdb.py
+index 1555db2a7..37ba3e772 100644
+--- a/pwnlib/commandline/libcdb.py
++++ b/pwnlib/commandline/libcdb.py
+@@ -221,7 +221,7 @@ def main(args):
+             exe = ELF(file, checksec=False)
+             log.info('%s', text.red(os.path.basename(file)))
+ 
+-            libc_version = re.search(b'libc[ -](\d+\.\d+)', exe.data)
++            libc_version = re.search(b'libc[ -](\\d+\\.\\d+)', exe.data)
+             if libc_version:
+                 log.indented('%-20s %s', text.green('Version:'), libc_version.group(1).decode())
+ 
