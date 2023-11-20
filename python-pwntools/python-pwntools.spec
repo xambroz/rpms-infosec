@@ -30,6 +30,13 @@ BuildRequires:  python3-setuptools
 # Waiting on pwntools to support newer sphinx shipped by Fedora.
 # BuildRequires:  python3-sphinx
 
+# %%check dependencies
+BuildRequires:  python3dist(pyserial)
+BuildRequires:  python3dist(pysocks)
+
+
+
+
 %description
 Pwntools is a CTF framework and exploit development library. Written
 in Python, it is designed for rapid prototyping and development, and
