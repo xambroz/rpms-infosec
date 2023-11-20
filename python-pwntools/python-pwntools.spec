@@ -23,6 +23,10 @@ Patch0:         https://github.com/Gallopsled/pwntools/pull/2301.patch#/%{name}-
 # Regular expressions matching binary need to be escaped in python 3.12
 Patch1:         https://github.com/Gallopsled/pwntools/pull/2302.patch#/%{name}-4.11.1-python3.12.patch
 
+# Unicorn python3 module currently not available on s390x architecture F39/F40
+%if ( 0%{?fedora} && 0%{?fedora} <= 38 )
+ExcludeArch:    s390x
+%endif
 
 BuildArch:      noarch
 BuildRequires:  python%{python3_pkgversion}-devel
@@ -32,8 +36,6 @@ BuildRequires:  python%{python3_pkgversion}-setuptools
 
 # Build requirements for %check
 BuildRequires:  python%{python3_pkgversion}-capstone
-BuildRequires:  python%{python3_pkgversion}-colored-traceback
-BuildRequires:  python%{python3_pkgversion}-intervaltree
 BuildRequires:  python%{python3_pkgversion}-mako
 BuildRequires:  python%{python3_pkgversion}-packaging
 BuildRequires:  python%{python3_pkgversion}-paramiko
@@ -45,23 +47,19 @@ BuildRequires:  python%{python3_pkgversion}-pyserial
 BuildRequires:  python%{python3_pkgversion}-pysocks
 BuildRequires:  python%{python3_pkgversion}-dateutil
 BuildRequires:  python%{python3_pkgversion}-requests
-
-# ROPGadget not on EPEL
-%if 0%{?fedora}
-BuildRequires:  python%{python3_pkgversion}-ROPGadget
-%endif
-
-BuildRequires:  python%{python3_pkgversion}-rpyc
 BuildRequires:  python%{python3_pkgversion}-setuptools
 BuildRequires:  python%{python3_pkgversion}-six
 BuildRequires:  python%{python3_pkgversion}-sortedcontainers
+BuildRequires:  python%{python3_pkgversion}-wheel
 
-# Unicorn currently doesn't build on s390
-%ifnarch s390x
+# some packages missinf on EPEL
+%if 0%{?fedora}
+BuildRequires:  python%{python3_pkgversion}-intervaltree
+BuildRequires:  python%{python3_pkgversion}-colored-traceback
+BuildRequires:  python%{python3_pkgversion}-ROPGadget
+BuildRequires:  python%{python3_pkgversion}-rpyc
 BuildRequires:  python%{python3_pkgversion}-unicorn
 %endif
-
-BuildRequires:  python%{python3_pkgversion}-wheel
 
 
 %description
@@ -92,7 +90,9 @@ intended to make exploit writing as simple as possible.
 #wrong permission
 chmod -x docs/requirements.txt
 
-# Generate buildrequres is failing on s390x due to missing Unicorn package
+# Generate buildrequres is failing to generate viable deps:
+# - s390x due to missing python3 unicorn module
+# - epel due to missing python3 modules colored-traceback, intervaltree, rpyc, unicorn
 #%%generate_buildrequires
 #%%pyproject_buildrequires
 
