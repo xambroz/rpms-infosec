@@ -71,9 +71,11 @@ BuildRequires:  python%{python3_pkgversion}-intervaltree
 BuildRequires:  python%{python3_pkgversion}-colored-traceback
 BuildRequires:  python%{python3_pkgversion}-ROPGadget
 BuildRequires:  python%{python3_pkgversion}-rpyc
-%ifnarch s390x s390
-BuildRequires:  python%{python3_pkgversion}-unicorn
-%endif
+
+# Omiting the unicorn on purpose for now as it creates unwanted build dependency on s390x for some reason
+# %ifnarch s390x s390
+# BuildRequires:  python%{python3_pkgversion}-unicorn
+# %endif
 %endif
 
 
