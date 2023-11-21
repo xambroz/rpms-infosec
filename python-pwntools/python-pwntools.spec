@@ -45,7 +45,7 @@ BuildRequires:  python%{python3_pkgversion}-setuptools
 # Waiting on pwntools to support newer sphinx shipped by Fedora.
 # BuildRequires:  python%%{python3_pkgversion}-sphinx
 
-# Build requirements for %check
+# Build requirements for %%check
 BuildRequires:  python%{python3_pkgversion}-capstone
 BuildRequires:  python%{python3_pkgversion}-mako
 BuildRequires:  python%{python3_pkgversion}-packaging
@@ -70,10 +70,10 @@ BuildRequires:  python%{python3_pkgversion}-colored-traceback
 BuildRequires:  python%{python3_pkgversion}-ROPGadget
 BuildRequires:  python%{python3_pkgversion}-rpyc
 
-# Omiting the unicorn on purpose for now as it creates unwanted build dependency on s390x for some reason
-# %ifnarch s390x s390
-# BuildRequires:  python%{python3_pkgversion}-unicorn
-# %endif
+# Omiting the unicorn on purpose for now as it creates unwanted src.rpm build dependency on s390x for some reason
+# %%ifnarch s390x s390
+# BuildRequires:  python%%{python3_pkgversion}-unicorn
+# %%endif
 %endif
 
 # As we have ignored the requirement of unicorn, lets at least recommend it
@@ -112,10 +112,10 @@ intended to make exploit writing as simple as possible.
 chmod -x docs/requirements.txt
 
 # Generate buildrequres is failing to generate viable deps:
-# - s390x due to missing python3 unicorn module
+# - s390x due to missing (optional) python3 unicorn module
 # - epel due to missing python3 modules colored-traceback, intervaltree, rpyc, unicorn
-# ge.nerate_buildrequires
-# py.project_buildrequires
+# generate_buildrequires
+# pyproject_buildrequires
 
 
 %build
@@ -180,6 +180,10 @@ export PYTHONPATH="${PYTHONPATH:-%{buildroot}%{python3_sitearch}:%{buildroot}%{p
 # %%license LICENSE-pwntools.txt
 
 %changelog
+* Tue Nov 21 2023 Michal Ambroz <rebus _AT seznam.cz> - 4.11.1-3
+- tweak build requirements needed for the tests to run
+- prepare for the epel builds
+
 * Mon Nov 20 2023 Michal Ambroz <rebus _AT seznam.cz> - 4.11.1-1
 - New upstream version 4.11.1
 - change license references to new SPDX format
