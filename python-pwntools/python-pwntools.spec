@@ -29,8 +29,6 @@ License:        MIT AND BSD-2-Clause AND GPL-2.0-or-later
 %endif
 
 
-
-
 # Source0:      https://github.com/Gallopsled/%%{srcname}/archive/%%{srcname}-%%{version}.tar.gz
 Source0:        https://github.com/Gallopsled/%{srcname}/archive/refs/tags/%{version}.tar.gz#/%{srcname}-%{version}.tar.gz
 
@@ -76,6 +74,12 @@ BuildRequires:  python%{python3_pkgversion}-rpyc
 # %ifnarch s390x s390
 # BuildRequires:  python%{python3_pkgversion}-unicorn
 # %endif
+%endif
+
+# As we have ignored the requirement of unicorn, lets at least recommend it
+# Recommends only supported on fedora and rhel8+
+%if (0%{?fedora}) || ( 0%{?rhel} && 0%{?rhel} >= 8 )
+Recommends:      python%{python3_pkgversion}-unicorn
 %endif
 
 
