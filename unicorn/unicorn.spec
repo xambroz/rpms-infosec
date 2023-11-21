@@ -3,18 +3,20 @@ Version:        2.0.1.post1
 Release:        %autorelease
 Summary:        Lightweight multi-platform, multi-architecture CPU emulator framework
 
-# GPLv2:        Most of unicorn is licensed under the GPLv2, with exception
+# GPL-2.0-only: Most of unicorn is licensed under the GPLv2+, with exception
 #               being the code which followed the project's fork of QEMU.
-# LGPLv2:       Portions of code from QEMU
+# LGPLv2+:      Portions of code from QEMU
 # MIT:          Portions of code from QEMU
-# BSD:          Portions of code from QEMU
-License:        GPLv2 and LGPLv2+ and MIT and BSD
+# BSD-3-Clause: Portions of code from QEMU
+License:        GPL-2.0-only AND GPL-2.0-or-later AND LGPL-2.0-or-later AND LGPL-2.1-or-later AND MIT AND BSD-3-Clause
 URL:            https://www.unicorn-engine.org/
-Source0:        https://github.com/unicorn-engine/%{name}/archive/%{version}/%{name}-%{version}.tar.gz
+VCS:            https://github.com/unicorn-engine/unicorn
+
+Source0:        https://github.com/unicorn-engine/unicorn/archive/%{version}/%{name}-%{version}.tar.gz
 BuildRequires:  cmake
 BuildRequires:  gcc
-BuildRequires:  python3-devel
-BuildRequires:  python3-setuptools
+BuildRequires:  python%{python3_pkgversion}-devel
+BuildRequires:  python%{python3_pkgversion}-setuptools
 
 # Much of Unicorn follows from QEMU, which the Unicorn project forked in
 # 2015. Since then, the Unicorn team has applied a number of bugfixes to
@@ -40,13 +42,13 @@ Requires:       %{name} = %{version}-%{release}
 This package provides the libraries, include files, and other resources
 needed for developing applications using unicorn.
 
-%package -n python3-unicorn
+%package -n python%{python3_pkgversion}-unicorn
 Summary:        %{summary}
 Requires:       %{name} = %{version}-%{release}
-Requires:       python3-setuptools
-%{?python_provide:%python_provide python3-%{name}}
+Requires:       python%{python3_pkgversion}-setuptools
+%{?python_provide:%python_provide python%{python3_pkgversion}-%{name}}
 
-%description -n python3-unicorn
+%description -n python%{python3_pkgversion}-unicorn
 The unicorn-python3 package contains python3 bindings for unicorn.
 
 %prep
@@ -82,7 +84,7 @@ rm $RPM_BUILD_ROOT%{_libdir}/libunicorn.a
 %{_libdir}/pkgconfig/unicorn.pc
 %{_includedir}/unicorn/
 
-%files -n python3-unicorn
+%files -n python%{python3_pkgversion}-unicorn
 %{python3_sitelib}/%{name}-%{version}-py%{python3_version}.egg-info/
 %{python3_sitelib}/%{name}/
 
