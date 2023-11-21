@@ -1,6 +1,6 @@
 Name:           python-pwntools
 Version:        4.11.1
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        A CTF framework and exploit development library
 URL:            https://github.com/Gallopsled/pwntools/
 VCS:            https://github.com/Gallopsled/pwntools/
@@ -18,7 +18,7 @@ License:        MIT AND BSD-2-Clause AND GPL-2.0-or-later
 # limited functionality will be available
 %if ( 0%{?fedora} && 0%{?fedora} >= 39 )
 %ifarch s390x
-%global __requires_exclude python3-unicorn
+%global __requires_exclude python%{python3_pkgversion}-unicorn
 %endif
 %endif
 
@@ -66,7 +66,7 @@ BuildRequires:  python%{python3_pkgversion}-sortedcontainers
 BuildRequires:  python%{python3_pkgversion}-wheel
 
 # some packages missing on EPEL
-%if 0%{?fedora}
+%if (0%{?fedora})
 BuildRequires:  python%{python3_pkgversion}-intervaltree
 BuildRequires:  python%{python3_pkgversion}-colored-traceback
 BuildRequires:  python%{python3_pkgversion}-ROPGadget
@@ -108,8 +108,8 @@ chmod -x docs/requirements.txt
 # Generate buildrequres is failing to generate viable deps:
 # - s390x due to missing python3 unicorn module
 # - epel due to missing python3 modules colored-traceback, intervaltree, rpyc, unicorn
-# generate_buildrequires
-# pyproject_buildrequires
+# ge.nerate_buildrequires
+# py.project_buildrequires
 
 
 %build
