@@ -16,7 +16,7 @@ License:        MIT AND BSD-2-Clause AND GPL-2.0-or-later
 
 # Unicorn python3 module currently not available on s390x architecture F39/F40
 # limited functionality will be available
-%if ( 0%{?fedora} && 0%{?fedora} <= 38 )
+%if ( 0%{?fedora} && 0%{?fedora} >= 39 )
 %ifarch s390x
 %global __requires_exclude python3-unicorn
 %endif
@@ -71,7 +71,7 @@ BuildRequires:  python%{python3_pkgversion}-intervaltree
 BuildRequires:  python%{python3_pkgversion}-colored-traceback
 BuildRequires:  python%{python3_pkgversion}-ROPGadget
 BuildRequires:  python%{python3_pkgversion}-rpyc
-%ifnarch s390x
+%ifnarch s390x s390
 BuildRequires:  python%{python3_pkgversion}-unicorn
 %endif
 %endif
@@ -135,7 +135,7 @@ rm -rf %{buildroot}%{_prefix}/pwntools-doc
 %check
 export PYTHONPATH="${PYTHONPATH:-%{buildroot}%{python3_sitearch}:%{buildroot}%{python3_sitelib}}"
 %py3_check_import pwn pwnlib
-python3 -c "from pwn import *; sh=process('bash'); sh.sendline(b'echo hello | md5sum'); x=sh.read(); assert (x == b'b1946ac92492d2347c6235b4d2611184  -\n');"
+%{__python3} -c "from pwn import *; sh=process('bash'); sh.sendline(b'echo hello | md5sum'); x=sh.read(); assert (x == b'b1946ac92492d2347c6235b4d2611184  -\n');"
 
 
 %files -n python%{python3_pkgversion}-%{srcname}
