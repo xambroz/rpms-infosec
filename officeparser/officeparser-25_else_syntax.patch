@@ -1,0 +1,22 @@
+From 256445958dc5399f183e3330e3fc9fab16ac86e8 Mon Sep 17 00:00:00 2001
+From: Michal Ambroz <723625+xambroz@users.noreply.github.com>
+Date: Thu, 23 Nov 2023 08:57:33 +0100
+Subject: [PATCH] else/elif syntax error
+
+---
+ officeparser.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/officeparser.py b/officeparser.py
+index ca6bbd5..b70a475 100755
+--- a/officeparser.py
++++ b/officeparser.py
+@@ -879,7 +879,7 @@ def check_value(name, expected, value):
+             PROJECTCOMPATVERSION_Size = unpack("<L", dir_stream.read(4))[0]
+             check_value('PROJECTCOMPATVERSION_Size', 0x0004, PROJECTCOMPATVERSION_Size)
+             PROJECTCOMPATVERSION_CompatVersion = unpack("<L", dir_stream.read(4))[0]
+-        else record_check == 0x0002:
++        elif record_check == 0x0002:
+             # PROJECTLCID Record
+             PROJECTLCID_Id = record_check
+             check_value('PROJECTLCID_Id', 0x0002, PROJECTLCID_Id)
