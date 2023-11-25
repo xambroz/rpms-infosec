@@ -97,4 +97,4 @@ cp -r *.py %{buildroot}/usr/bin/
 
 %changelog
 * Wed Feb  3 2016 Michal Ambroz <rebus at, seznam.cz>
-- 
+- initial package for Fedora
