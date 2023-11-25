@@ -1,6 +1,6 @@
 Name:           python-pwntools
 Version:        4.11.1
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        A CTF framework and exploit development library
 URL:            https://github.com/Gallopsled/pwntools/
 VCS:            https://github.com/Gallopsled/pwntools/
@@ -14,20 +14,6 @@ License:        MIT AND BSD-2-Clause AND GPL-2.0-or-later
 
 %global srcname pwntools
 
-# Unicorn python3 module currently not available on s390x architecture F39/F40
-# limited functionality will be available
-%if ( 0%{?fedora} && 0%{?fedora} >= 39 )
-%ifarch s390x
-%global __requires_exclude python%{python3_pkgversion}-unicorn
-%endif
-%endif
-
-# Some packages are missing in EPEL9/8
-# limited functionality will be available
-%if 0%{?rhel}
-%global __requires_exclude python%{python3_pkgversion}-unicorn,python%{python3_pkgversion}-intervaltree,python%{python3_pkgversion}-colored-traceback,python%{python3_pkgversion}-ROPGadget,python%{python3_pkgversion}-rpyc
-%endif
-
 
 # Source0:      https://github.com/Gallopsled/%%{srcname}/archive/%%{srcname}-%%{version}.tar.gz
 Source0:        https://github.com/Gallopsled/%{srcname}/archive/refs/tags/%{version}.tar.gz#/%{srcname}-%{version}.tar.gz
@@ -37,6 +23,11 @@ Patch0:         https://github.com/Gallopsled/pwntools/pull/2301.patch#/%{name}-
 
 # Regular expressions matching binary need to be escaped in python 3.12
 Patch1:         https://github.com/Gallopsled/pwntools/pull/2302.patch#/%{name}-4.11.1-python3.12.patch
+
+# fix pwn libcdb file [something]
+# libcdb failing on binaries not containing /bin/sh
+Patch2:         https://github.com/Gallopsled/pwntools/pull/2307.patch#/%{name}-4.11.1-binsh_search.patch
+
 
 
 BuildArch:      noarch
@@ -80,6 +71,19 @@ BuildRequires:  python%{python3_pkgversion}-rpyc
 # Recommends only supported on fedora and rhel8+
 %if (0%{?fedora}) || ( 0%{?rhel} && 0%{?rhel} >= 8 )
 Recommends:      python%{python3_pkgversion}-unicorn
+%endif
+
+
+# Unicorn python3 module currently not available on s390x architecture F39/F40
+# limited functionality will be available
+%if ( 0%{?fedora} && 0%{?fedora} >= 39 )
+%global __requires_exclude ^python.*unicorn.*
+%endif
+
+# Some packages are missing in EPEL9/8
+# limited functionality will be available
+%if 0%{?rhel}
+%global __requires_exclude python%{python3_pkgversion}-unicorn,python%{python3_pkgversion}-intervaltree,python%{python3_pkgversion}-colored-traceback,python%{python3_pkgversion}-ROPGadget,python%{python3_pkgversion}-rpyc
 %endif
 
 
@@ -180,6 +184,9 @@ export PYTHONPATH="${PYTHONPATH:-%{buildroot}%{python3_sitearch}:%{buildroot}%{p
 # %%license LICENSE-pwntools.txt
 
 %changelog
+* Sat Nov 25 2023 Michal Ambroz <rebus _AT seznam.cz> - 4.11.1-4
+- fix pwn libcdb file
+
 * Tue Nov 21 2023 Michal Ambroz <rebus _AT seznam.cz> - 4.11.1-3
 - tweak build requirements needed for the tests to run
 - prepare for the epel builds
