@@ -52,6 +52,7 @@ heavily inspired by the work of Andreas Schuster and his Perl implementation
 Summary:        Dump binary data to hex format and restore from there
 Group:          Development/Libraries
 %{?python_provide:%python_provide python%{python3_pkgversion}-dnsrecon}
+Provides:       dnsrecon
 
 %description -n python%{python3_pkgversion}-dnsrecon
 %common_description
