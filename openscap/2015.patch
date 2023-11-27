@@ -1,0 +1,2213 @@
+From cd1d4289581fa15527e516ddd07be814af7cba55 Mon Sep 17 00:00:00 2001
+From: Evgeny Kolesnikov <ekolesni@redhat.com>
+Date: Mon, 28 Aug 2023 19:53:20 +0200
+Subject: [PATCH 1/4] Add PCRE2 library
+
+Recognize PCRE2 library in the build system.
+
+Add wrapper for pcre_/pcre2_ functions.
+---
+ CMakeLists.txt          |  16 ++-
+ cmake/FindPCRE2.cmake   |  27 +++++
+ config.h.in             |   2 +
+ src/CMakeLists.txt      |   2 +-
+ src/common/oscap_pcre.c | 257 ++++++++++++++++++++++++++++++++++++++++
+ src/common/oscap_pcre.h | 106 +++++++++++++++++
+ 6 files changed, 408 insertions(+), 2 deletions(-)
+ create mode 100644 cmake/FindPCRE2.cmake
+ create mode 100644 src/common/oscap_pcre.c
+ create mode 100644 src/common/oscap_pcre.h
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 74628cdd466..b6e5a825dc1 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -106,7 +106,11 @@ find_package(Doxygen)
+ find_package(GConf)
+ find_package(Ldap)
+ find_package(OpenDbx)
+-find_package(PCRE REQUIRED)
++if(WITH_PCRE2)
++	find_package(PCRE2 REQUIRED)
++else()
++	find_package(PCRE REQUIRED)
++endif()
+ find_package(PerlLibs)
+ find_package(Popt)
+ find_package(Systemd)
+@@ -193,6 +197,13 @@ else()
+ 	set(YAML_FILTER_FOUND FALSE)
+ endif()
+ 
++if(PCRE2_FOUND)
++	set(HAVE_PCRE2 1)
++	message("-- Using PCRE2")
++elseif(PCRE_FOUND)
++	message("-- Using PCRE")
++endif()
++
+ check_library_exists(rt clock_gettime "" HAVE_CLOCK_GETTIME)
+ check_function_exists(posix_memalign HAVE_POSIX_MEMALIGN)
+ check_function_exists(memalign HAVE_MEMALIGN)
+@@ -330,6 +341,8 @@ cmake_dependent_option(ENABLE_OSCAP_UTIL_CHROOT "enables the oscap-chroot utilit
+ option(ENABLE_OSCAP_UTIL_AUTOTAILOR "enables the autotailor utility that is able to perform command-line tailoring" TRUE)
+ option(ENABLE_OSCAP_REMEDIATE_SERVICE "enables the oscap-remediate service" FALSE)
+ 
++option(WITH_PCRE2 "use PCRE2 library" FALSE)
++
+ # ---------- TEST-SUITE SWITCHES
+ 
+ # Tests will be turned off on Windows, because the test suite uses bash
+@@ -563,6 +576,7 @@ include_directories(
+ 	${XMLSEC_INCLUDE_DIRS}
+ 	${OPENSSL_INCLUDE_DIR}
+ 	${PCRE_INCLUDE_DIRS}
++	${PCRE2_INCLUDE_DIRS}
+ )
+ 
+ # Honor visibility properties for all target types
+diff --git a/cmake/FindPCRE2.cmake b/cmake/FindPCRE2.cmake
+new file mode 100644
+index 00000000000..0c430b1fd22
+--- /dev/null
++++ b/cmake/FindPCRE2.cmake
+@@ -0,0 +1,27 @@
++# - Find pcre
++# Find the native PCRE2 headers and libraries.
++#
++# PCRE2_INCLUDE_DIRS	- where to find pcre2.h, etc.
++# PCRE2_LIBRARIES	- List of libraries when using pcre.
++# PCRE2_FOUND	- True if pcre found.
++
++# Look for the header file.
++FIND_PATH(PCRE2_INCLUDE_DIR pcre2.h)
++
++# Look for the library.
++FIND_LIBRARY(PCRE2_LIBRARY NAMES libpcre2.a pcre2-8)
++
++# Handle the QUIETLY and REQUIRED arguments and set PCRE2_FOUND to TRUE if all listed variables are TRUE.
++INCLUDE(FindPackageHandleStandardArgs)
++FIND_PACKAGE_HANDLE_STANDARD_ARGS(PCRE2 DEFAULT_MSG PCRE2_LIBRARY PCRE2_INCLUDE_DIR)
++
++# Copy the results to the output variables.
++IF(PCRE2_FOUND)
++    SET(PCRE2_LIBRARIES ${PCRE2_LIBRARY})
++    SET(PCRE2_INCLUDE_DIRS ${PCRE2_INCLUDE_DIR})
++ELSE(PCRE2_FOUND)
++    SET(PCRE_LIBRARIES)
++    SET(PCRE_INCLUDE_DIRS)
++ENDIF(PCRE2_FOUND)
++
++MARK_AS_ADVANCED(PCRE2_INCLUDE_DIRS PCRE2_LIBRARIES)
+diff --git a/config.h.in b/config.h.in
+index db8afd91410..2bba00719c2 100644
+--- a/config.h.in
++++ b/config.h.in
+@@ -29,6 +29,8 @@
+ #define OSCAP_DEFAULT_CPE_PATH "@OSCAP_DEFAULT_CPE_PATH@"
+ #define OSCAP_TEMP_DIR "@OSCAP_TEMP_DIR@"
+ 
++#cmakedefine HAVE_PCRE2
++
+ #cmakedefine HAVE_ATOMIC_BUILTINS
+ 
+ #cmakedefine HAVE_ACL_EXTENDED_FILE
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index e9339c62ed1..7fa94ff981f 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -81,7 +81,7 @@ set_target_properties(openscap PROPERTIES
+ 	C_VISIBILITY_PRESET hidden
+ )
+ 
+-target_link_libraries(openscap ${LIBXML2_LIBRARIES} ${LIBXSLT_LIBRARIES} ${XMLSEC_LIBRARIES} ${OPENSSL_LIBRARIES} ${LIBXSLT_EXSLT_LIBRARIES} ${PCRE_LIBRARIES} ${CURL_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
++target_link_libraries(openscap ${LIBXML2_LIBRARIES} ${LIBXSLT_LIBRARIES} ${XMLSEC_LIBRARIES} ${OPENSSL_LIBRARIES} ${LIBXSLT_EXSLT_LIBRARIES} ${PCRE_LIBRARIES} ${PCRE2_LIBRARIES} ${CURL_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+ if (BZIP2_FOUND)
+ 	target_link_libraries(openscap ${BZIP2_LIBRARIES})
+ endif()
+diff --git a/src/common/oscap_pcre.c b/src/common/oscap_pcre.c
+new file mode 100644
+index 00000000000..d2e45292ab1
+--- /dev/null
++++ b/src/common/oscap_pcre.c
+@@ -0,0 +1,257 @@
++/*
++ * Copyright 2023 Red Hat Inc., Durham, North Carolina.
++ * All Rights Reserved.
++ *
++ * This library is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU Lesser General Public
++ * License as published by the Free Software Foundation; either
++ * version 2.1 of the License, or (at your option) any later version.
++ *
++ * This library is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * Lesser General Public License for more details.
++ *
++ * You should have received a copy of the GNU Lesser General Public
++ * License along with this library; if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ *
++ * Authors:
++ *      Evgenii Kolesnikov <ekolesni@redhat.com>
++ */
++
++#ifdef HAVE_CONFIG_H
++#include <config.h>
++#endif
++
++#include <memory.h>
++
++#ifdef HAVE_PCRE2
++#define PCRE2_CODE_UNIT_WIDTH 8
++#define PCRE2_ERR_BUF_SIZE 127
++#include <pcre2.h>
++#else
++#include <pcre.h>
++#endif
++
++#include "debug_priv.h"
++#include "oscap_pcre.h"
++
++
++struct oscap_pcre {
++#ifdef HAVE_PCRE2
++	pcre2_code_8           *re;
++	pcre2_match_context_8  *re_ctx;
++#else
++	pcre                   *re;
++	struct pcre_extra      *re_extra;
++#endif
++};
++
++
++static inline int _oscap_pcre_opts_to_pcre(oscap_pcre_options_t opts)
++{
++	int res = 0;
++#ifdef HAVE_PCRE2
++	if (opts & OSCAP_PCRE_OPTS_UTF8)
++		res |= PCRE2_UTF;
++	if (opts & OSCAP_PCRE_OPTS_MULTILINE)
++		res |= PCRE2_MULTILINE;
++	if (opts & OSCAP_PCRE_OPTS_DOTALL)
++		res |= PCRE2_DOTALL;
++	if (opts & OSCAP_PCRE_OPTS_CASELESS)
++		res |= PCRE2_CASELESS;
++	if (opts & OSCAP_PCRE_OPTS_NO_UTF8_CHECK)
++		res |= PCRE2_NO_UTF_CHECK;
++	if (opts & OSCAP_PCRE_OPTS_PARTIAL)
++		res |= PCRE2_PARTIAL_SOFT;
++#else
++	if (opts & OSCAP_PCRE_OPTS_UTF8)
++		res |= PCRE_UTF8;
++	if (opts & OSCAP_PCRE_OPTS_MULTILINE)
++		res |= PCRE_MULTILINE;
++	if (opts & OSCAP_PCRE_OPTS_DOTALL)
++		res |= PCRE_DOTALL;
++	if (opts & OSCAP_PCRE_OPTS_CASELESS)
++		res |= PCRE_CASELESS;
++	if (opts & OSCAP_PCRE_OPTS_NO_UTF8_CHECK)
++		res |= PCRE_NO_UTF8_CHECK;
++	if (opts & OSCAP_PCRE_OPTS_PARTIAL)
++		res |= PCRE_PARTIAL;
++#endif
++	return res;
++};
++
++static inline oscap_pcre_error_t _pcre_error_to_oscap_pcre(int res)
++{
++	switch (res) {
++#ifdef HAVE_PCRE2
++	case PCRE2_ERROR_NOMATCH:
++		return OSCAP_PCRE_ERR_NOMATCH;
++	case PCRE2_ERROR_PARTIAL:
++		return OSCAP_PCRE_ERR_PARTIAL;
++	case PCRE2_ERROR_UTF8_ERR1:
++	case PCRE2_ERROR_UTF8_ERR2:
++	case PCRE2_ERROR_UTF8_ERR3:
++	case PCRE2_ERROR_UTF8_ERR4:
++	case PCRE2_ERROR_UTF8_ERR5:
++	case PCRE2_ERROR_UTF8_ERR6:
++	case PCRE2_ERROR_UTF8_ERR7:
++	case PCRE2_ERROR_UTF8_ERR8:
++	case PCRE2_ERROR_UTF8_ERR9:
++	case PCRE2_ERROR_UTF8_ERR10:
++	case PCRE2_ERROR_UTF8_ERR11:
++	case PCRE2_ERROR_UTF8_ERR12:
++	case PCRE2_ERROR_UTF8_ERR13:
++	case PCRE2_ERROR_UTF8_ERR14:
++	case PCRE2_ERROR_UTF8_ERR15:
++	case PCRE2_ERROR_UTF8_ERR16:
++	case PCRE2_ERROR_UTF8_ERR17:
++	case PCRE2_ERROR_UTF8_ERR18:
++	case PCRE2_ERROR_UTF8_ERR19:
++	case PCRE2_ERROR_UTF8_ERR20:
++	case PCRE2_ERROR_UTF8_ERR21:
++		return OSCAP_PCRE_ERR_BADUTF8;
++	case PCRE2_ERROR_RECURSIONLIMIT:
++		return OSCAP_PCRE_ERR_RECURSIONLIMIT;
++#else
++	case PCRE_ERROR_NOMATCH:
++		return OSCAP_PCRE_ERR_NOMATCH;
++	case PCRE_ERROR_PARTIAL:
++		return OSCAP_PCRE_ERR_PARTIAL;
++	case PCRE_ERROR_BADPARTIAL:
++		return OSCAP_PCRE_ERR_BADPARTIAL;
++	case PCRE_ERROR_BADUTF8:
++		return OSCAP_PCRE_ERR_BADUTF8;
++	case PCRE_ERROR_RECURSIONLIMIT:
++		return OSCAP_PCRE_ERR_RECURSIONLIMIT;
++#endif
++	default:
++		dW("Unknown PCRE error code: %d", res);
++		return OSCAP_PCRE_ERR_UNKNOWN;
++	}
++}
++
++oscap_pcre_t *oscap_pcre_compile(const char *pattern, oscap_pcre_options_t options,
++                                 char **errptr, int *erroffset)
++{
++	oscap_pcre_t *res = malloc(sizeof(oscap_pcre_t));
++#ifdef HAVE_PCRE2
++	int errno;
++	PCRE2_SIZE erroffset2;
++	res->re_ctx = NULL;
++	dD("pcre2_compile_8: patt=%s", pattern);
++	res->re = pcre2_compile_8((PCRE2_SPTR)pattern, PCRE2_ZERO_TERMINATED, _oscap_pcre_opts_to_pcre(options), &errno, &erroffset2, NULL);
++	if (res->re == NULL) {
++		PCRE2_UCHAR8 errmsg[PCRE2_ERR_BUF_SIZE];
++		pcre2_get_error_message_8(errno, errmsg, PCRE2_ERR_BUF_SIZE);
++		dW("pcre2_compile_8: error (at offset %d): %s", erroffset2, errmsg);
++		*erroffset = erroffset2;
++		*errptr = strdup((const char*)errmsg);
++	}
++#else
++	res->re_extra = NULL;
++	dD("pcre_compile: patt=%s", pattern);
++	res->re = pcre_compile(pattern, _oscap_pcre_opts_to_pcre(options), (const char **)errptr, erroffset, NULL);
++	if (res->re == NULL)
++		dW("pcre_compile: error (at offset %d): %s", *erroffset, *errptr);
++#endif
++	if (res->re == NULL) {
++		free(res);
++		res = NULL;
++	}
++	return res;
++}
++
++void oscap_pcre_optimize(oscap_pcre_t *opcre)
++{
++#ifdef HAVE_PCRE2
++	// This is a NOOP for PCRE2 as all patterns are optimized
++	// unless the library configured differently.
++#else
++	const char *errptr = NULL;
++	pcre_extra *extra = pcre_study(opcre->re, 0, &errptr);
++	if (extra != NULL) {
++		if (opcre->re_extra != NULL)
++			free(opcre->re_extra);
++		opcre->re_extra = extra;
++	}
++#endif
++}
++
++void oscap_pcre_set_match_limit_recursion(oscap_pcre_t *opcre, unsigned long limit)
++{
++#ifdef HAVE_PCRE2
++	if (opcre->re_ctx == NULL) {
++		opcre->re_ctx = pcre2_match_context_create_8(NULL);
++	}
++	pcre2_set_depth_limit_8(opcre->re_ctx, limit);
++#else
++	if (opcre->re_extra == NULL) {
++		opcre->re_extra = calloc(1, sizeof(struct pcre_extra));
++	}
++	opcre->re_extra->match_limit_recursion = limit;
++	opcre->re_extra->flags = PCRE_EXTRA_MATCH_LIMIT_RECURSION;
++#endif
++}
++
++int oscap_pcre_exec(const oscap_pcre_t *opcre, const char *subject,
++                    int length, int startoffset, oscap_pcre_options_t options,
++                    int *ovector, int ovecsize)
++{
++	int rc = 0;
++#ifdef HAVE_PCRE2
++	// The ovecsize is multiplied by 3 in the code for compatibility with PCRE1
++	int ovecsize2 = ovecsize/3;
++	pcre2_match_data_8 *mdata = pcre2_match_data_create_8(ovecsize2, NULL);
++	dD("pcre2_match_8: subj=%s", subject);
++	rc = pcre2_match_8(opcre->re, (PCRE2_SPTR8)subject, length, startoffset, _oscap_pcre_opts_to_pcre(options), mdata, opcre->re_ctx);
++	dD("pcre2_match_8: rc=%d, ", rc);
++	if (rc > PCRE2_ERROR_NOMATCH) {
++		PCRE2_SIZE *ovecp = pcre2_get_ovector_pointer_8(mdata);
++		uint32_t ovecp_count = pcre2_get_ovector_count_8(mdata);
++		dD("pcre2_match_8: pcre2_get_ovector_count_8=%d", ovecp_count);
++		for (int i = 0; i < rc; i++) {
++			if (i < ovecsize2) {
++				ovector[i*2] = ovecp[i*2];
++				ovector[i*2+1] = ovecp[i*2+1];
++			}
++		}
++	}
++	pcre2_match_data_free_8(mdata);
++#else
++	dD("pcre_exec: subj=%s", subject);
++	rc = pcre_exec(opcre->re, opcre->re_extra, subject, length, startoffset, _oscap_pcre_opts_to_pcre(options), ovector, ovecsize);
++	dD("pcre_exec: rc=%d, ", rc);
++#endif
++	return rc >= 0 ? rc : _pcre_error_to_oscap_pcre(rc);
++}
++
++void oscap_pcre_free(oscap_pcre_t *opcre)
++{
++	if (opcre != NULL) {
++#ifdef HAVE_PCRE2
++		if (opcre->re_ctx != NULL)
++			pcre2_match_context_free_8(opcre->re_ctx);
++		pcre2_code_free_8(opcre->re);
++#else
++		if (opcre->re_extra != NULL)
++			free(opcre->re_extra);
++		pcre_free(opcre->re);
++#endif
++		free(opcre);
++	}
++}
++
++
++void oscap_pcre_err_free(char *err)
++{
++	if (err != NULL) {
++#ifdef HAVE_PCRE2
++		free(err);
++#else
++		// PCRE1 error messages are static, NOOP.
++#endif
++	}
++}
++
+diff --git a/src/common/oscap_pcre.h b/src/common/oscap_pcre.h
+new file mode 100644
+index 00000000000..df8acd01543
+--- /dev/null
++++ b/src/common/oscap_pcre.h
+@@ -0,0 +1,106 @@
++/*
++ * Copyright 2023 Red Hat Inc., Durham, North Carolina.
++ * All Rights Reserved.
++ *
++ * This library is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU Lesser General Public
++ * License as published by the Free Software Foundation; either
++ * version 2.1 of the License, or (at your option) any later version.
++ *
++ * This library is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * Lesser General Public License for more details.
++ *
++ * You should have received a copy of the GNU Lesser General Public
++ * License along with this library; if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
++ *
++ * Authors:
++ *      Evgenii Kolesnikov <ekolesni@redhat.com>
++ */
++
++#ifndef OSCAP_PCRE_
++#define OSCAP_PCRE_
++
++typedef struct oscap_pcre oscap_pcre_t;
++
++typedef enum {
++	OSCAP_PCRE_OPTS_NONE                        = 0x0001,
++	OSCAP_PCRE_OPTS_UTF8                        = 0x0002,
++	OSCAP_PCRE_OPTS_MULTILINE                   = 0x0004,
++	OSCAP_PCRE_OPTS_DOTALL                      = 0x0008,
++	OSCAP_PCRE_OPTS_CASELESS                    = 0x0010,
++	OSCAP_PCRE_OPTS_NO_UTF8_CHECK               = 0x0020,
++	OSCAP_PCRE_OPTS_PARTIAL                     = 0x0040,
++} oscap_pcre_options_t;
++
++typedef enum {
++	OSCAP_PCRE_ERR_NOMATCH                      = -1,
++	OSCAP_PCRE_ERR_PARTIAL                      = -2,
++	OSCAP_PCRE_ERR_BADPARTIAL                   = -3,
++	OSCAP_PCRE_ERR_BADUTF8                      = -10,
++	OSCAP_PCRE_ERR_RECURSIONLIMIT               = -21,
++	OSCAP_PCRE_ERR_UNKNOWN                      = -100,
++} oscap_pcre_error_t;
++
++
++/**
++ * Compile a regular expression string into PCRE object and returns it.
++ * Caller is responsible for freeing the returned object or the error message
++ * if the result is NULL (USE oscap_pcre_err_free()!).
++ * @param pattern expresstion string
++ * @param options compile options
++ * @param errptr a return value for a string representation of error
++ * @param erroffset the offset in the expression where the problem was detected
++ * @return a PCRE object
++ * NULL on failure
++ */
++oscap_pcre_t* oscap_pcre_compile(const char *pattern, oscap_pcre_options_t options,
++                                 char **errptr, int *erroffset);
++
++/**
++ * Execute the compiled regular expression against a string subject and returns
++ * matches count (or a negative error code).
++ * @param opcre the oscap_pcre_t object
++ * @param subject target string
++ * @param length target string length
++ * @param startoffset the offset for the target string
++ * @param options match options
++ * @param ovector the output vector for match offset pairs, see pcre_exec for details
++ * @param ovecsize the size of ovector, see pcre_exec for details
++ * @return matches count
++ * negative error code on failure
++ */
++int oscap_pcre_exec(const oscap_pcre_t *opcre, const char *subject,
++                    int length, int startoffset, oscap_pcre_options_t options,
++                    int *ovector, int ovecsize);
++
++/**
++ * Free the compiled regular expression object.
++ * @param opcre the oscap_pcre_t object
++ */
++void oscap_pcre_free(oscap_pcre_t *opcre);
++
++/**
++ * Limit the compiled regular expression object's recursion depth for future
++ * matches.
++ * @param opcre the oscap_pcre_t object
++ * @param limit maximum depth
++ */
++void oscap_pcre_set_match_limit_recursion(oscap_pcre_t *opcre, unsigned long limit);
++
++/**
++ * Optimize the compiled regular expression object to increase matching speed.
++ * @param opcre the oscap_pcre_t object
++ */
++void oscap_pcre_optimize(oscap_pcre_t *opcre);
++
++
++/**
++ * Free the error message returned by oscap_pcre_compile. DON'T USE REGULAR free()!
++ * @param err the message
++ */
++void oscap_pcre_err_free(char *err);
++
++#endif
+
+From b34bcbbf559a4f535c936d8e4dcde56da91b1ba0 Mon Sep 17 00:00:00 2001
+From: Evgeny Kolesnikov <ekolesni@redhat.com>
+Date: Mon, 28 Aug 2023 19:55:52 +0200
+Subject: [PATCH 2/4] Add PCRE2 library #2
+
+Use oscap_pcre_* wrapper in the code.
+---
+ docs/developer/developer.adoc                 |   8 +-
+ docs/manual/manual.adoc                       |   2 +-
+ src/CPE/cpename.c                             |  36 ++--
+ src/OVAL/oval_component.c                     |  31 +--
+ src/OVAL/oval_schema_version.c                |  14 +-
+ .../probes/independent/system_info_probe.c    |  13 +-
+ .../independent/textfilecontent54_probe.c     |  26 +--
+ .../independent/textfilecontent_probe.c       |  11 +-
+ .../independent/yamlfilecontent_probe.c       |  13 +-
+ src/OVAL/probes/oval_fts.c                    | 202 +++---------------
+ src/OVAL/probes/oval_fts.h                    |   5 +-
+ src/OVAL/probes/unix/gconf_probe.c            |   1 -
+ src/OVAL/probes/unix/linux/partition_probe.c  |  13 +-
+ src/OVAL/probes/unix/linux/rpmverify_probe.c  |  11 +-
+ .../probes/unix/linux/rpmverifyfile_probe.c   |  20 +-
+ .../unix/linux/rpmverifypackage_probe.c       |   1 -
+ src/OVAL/results/oval_cmp_basic.c             |  21 +-
+ src/XCCDF/item.c                              |  14 +-
+ src/XCCDF_POLICY/xccdf_policy_remediate.c     |  28 +--
+ src/common/util.c                             |  30 ++-
+ src/common/util.h                             |   4 +-
+ .../OVAL/schema_version/test_schema_version.c |   5 +
+ tests/API/XCCDF/unittests/CMakeLists.txt      |   1 +
+ tests/API/probes/CMakeLists.txt               |   1 +
+ tests/API/probes/oval_fts_list.c              |   6 +
+ .../textfilecontent54/test_recursion_limit.sh |   2 +-
+ tests/probes/xinetd/CMakeLists.txt            |   1 +
+ 27 files changed, 205 insertions(+), 315 deletions(-)
+
+diff --git a/docs/developer/developer.adoc b/docs/developer/developer.adoc
+index 52502b60ff1..f1a39b3e2b4 100644
+--- a/docs/developer/developer.adoc
++++ b/docs/developer/developer.adoc
+@@ -89,6 +89,12 @@ libxml-xpath-perl libperl-dev libbz2-dev librpm-dev g++ libapt-pkg-dev libyaml-d
+ libxmlsec1-dev libxmlsec1-openssl
+ ----
+ 
++Since version 1.3.9 OpenSCAP can use either PCRE or PCRE2 library to handle regular
++expressions. The default behaviour for 1.3.x line of versions is to try and link
++with PCRE. In order to switxh the build system to PCRE2 one must configure
++CMake with '-DWITH_PCRE2=True' parameter. Dependencies: Debian/Ubuntu — pcre2-dev,
++Fedora/RHEL — pcre2-devel.
++
+ When you have all the build dependencies installed you can build the library.
+ --
+ 
+@@ -319,7 +325,7 @@ behaviour.
+ * *OSCAP_FULL_VALIDATION=1* - validate all exported documents (slower)
+ * *SEXP_VALIDATE_DISABLE=1* - do not validate SEXP expressions (faster)
+ * *OSCAP_PCRE_EXEC_RECURSION_LIMIT* - override default recursion limit
+-  for match in pcre_exec call in textfilecontent(54) probes.
++  for match in pcre_exec/pcre2_match calls in textfilecontent(54) probes.
+ 
+ 
+ 
+diff --git a/docs/manual/manual.adoc b/docs/manual/manual.adoc
+index d4ecbdd4335..77f7b32e454 100644
+--- a/docs/manual/manual.adoc
++++ b/docs/manual/manual.adoc
+@@ -1613,7 +1613,7 @@ not considered local by the scanner:
+ * `OSCAP_EVALUATION_TARGET` - Change value of target facts `urn:xccdf:fact:identifier` and `urn:xccdf:fact:asset:identifier:ein` in XCCDF results. Used during offline scanning to pass the name of the target system.
+ * `OSCAP_FULL_VALIDATION` - If set, XML schema validation will be performed in every step of SCAP content processing.
+ * `OSCAP_OVAL_COMMAND_OPTIONS` - Additional command line options for `oscap oval` module. The value of this environment variable is appended to the actual command line options of `oscap` command.
+-* `OSCAP_PCRE_EXEC_RECURSION_LIMIT` - Set recursion limit of regular expression matching using `pcre_exec` function.
++* `OSCAP_PCRE_EXEC_RECURSION_LIMIT` - Set recursion limit of regular expression matching using `pcre_exec`/`pcre2_match` functions.
+ * `OSCAP_PROBE_ROOT` - Path to a directory which contains mounted filesystem to be evaluated. Used for offline scanning.
+ * `SEXP_VALIDATE_DISABLE` - If set, `oscap` will not validate SEXP expressions during its execution.
+ * `SOURCE_DATE_EPOCH` - Timestamp in seconds since epoch. This timestamp will be used instead of the current time to populate `timestamp` attributes in SCAP source data streams created by `oscap ds sds-compose` sub-module. This is used for reproducible builds of data streams.
+diff --git a/src/CPE/cpename.c b/src/CPE/cpename.c
+index e2e9230f75c..9030149846f 100644
+--- a/src/CPE/cpename.c
++++ b/src/CPE/cpename.c
+@@ -37,11 +37,11 @@
+ 
+ #include <string.h>
+ #include <stdio.h>
+-#include <pcre.h>
+ #include <ctype.h>
+ 
+ #include "cpe_name.h"
+ #include "common/util.h"
++#include "common/oscap_pcre.h"
+ #include "oscap_helpers.h"
+ 
+ #define CPE_URI_SUPPORTED "2.3"
+@@ -549,8 +549,8 @@ cpe_format_t cpe_name_get_format_of_str(const char *str)
+ 	if (str == NULL)
+ 		return CPE_FORMAT_UNKNOWN;
+ 
+-	pcre *re;
+-	const char *error;
++	oscap_pcre_t *re;
++	char *error;
+ 	int erroffset;
+ 	int rc;
+ 	int ovector[30];
+@@ -559,26 +559,38 @@ cpe_format_t cpe_name_get_format_of_str(const char *str)
+ 	// http://scap.nist.gov/schema/cpe/2.3/cpe-naming_2.3.xsd
+ 	// [c] was replaced with [cC] here and in the schemas
+ 
+-	re = pcre_compile("^[cC][pP][eE]:/[AHOaho]?(:[A-Za-z0-9\\._\\-~%]*){0,6}$", 0, &error, &erroffset, NULL);
+-	rc = pcre_exec(re, NULL, str, strlen(str), 0, 0, ovector, 30);
+-	pcre_free(re);
++	re = oscap_pcre_compile("^[cC][pP][eE]:/[AHOaho]?(:[A-Za-z0-9\\._\\-~%]*){0,6}$", 0, &error, &erroffset);
++	if (re == NULL) {
++		oscap_pcre_err_free(error);
++		return CPE_FORMAT_UNKNOWN;
++	}
++	rc = oscap_pcre_exec(re, str, strlen(str), 0, 0, ovector, 30);
++	oscap_pcre_free(re);
+ 
+ 	if (rc >= 0)
+ 		return CPE_FORMAT_URI;
+ 
+ 	// The regex was taken from the official XSD at
+ 	// http://scap.nist.gov/schema/cpe/2.3/cpe-naming_2.3.xsd
+-	re = pcre_compile("^cpe:2\\.3:[aho\\*\\-](:(((\\?*|\\*?)([a-zA-Z0-9\\-\\._]|(\\\\[\\\\\\*\\?!\"#$$%&'\\(\\)\\+,/:;<=>@\\[\\]\\^`\\{\\|}~]))+(\\?*|\\*?))|[\\*\\-])){5}(:(([a-zA-Z]{2,3}(-([a-zA-Z]{2}|[0-9]{3}))?)|[\\*\\-]))(:(((\\?*|\\*?)([a-zA-Z0-9\\-\\._]|(\\\\[\\\\\\*\\?!\"#$$%&'\\(\\)\\+,/:;<=>@\\[\\]\\^`\\{\\|}~]))+(\\?*|\\*?))|[\\*\\-])){4}$", 0, &error, &erroffset, NULL);
+-	rc = pcre_exec(re, NULL, str, strlen(str), 0, 0, ovector, 30);
+-	pcre_free(re);
++	re = oscap_pcre_compile("^cpe:2\\.3:[aho\\*\\-](:(((\\?*|\\*?)([a-zA-Z0-9\\-\\._]|(\\\\[\\\\\\*\\?!\"#$$%&'\\(\\)\\+,/:;<=>@\\[\\]\\^`\\{\\|}~]))+(\\?*|\\*?))|[\\*\\-])){5}(:(([a-zA-Z]{2,3}(-([a-zA-Z]{2}|[0-9]{3}))?)|[\\*\\-]))(:(((\\?*|\\*?)([a-zA-Z0-9\\-\\._]|(\\\\[\\\\\\*\\?!\"#$$%&'\\(\\)\\+,/:;<=>@\\[\\]\\^`\\{\\|}~]))+(\\?*|\\*?))|[\\*\\-])){4}$", 0, &error, &erroffset);
++	if (re == NULL) {
++		oscap_pcre_err_free(error);
++		return CPE_FORMAT_UNKNOWN;
++	}
++	rc = oscap_pcre_exec(re, str, strlen(str), 0, 0, ovector, 30);
++	oscap_pcre_free(re);
+ 
+ 	if (rc >= 0)
+ 		return CPE_FORMAT_STRING;
+ 
+ 	// FIXME: This should be way more strict
+-	re = pcre_compile("^wfn:\\[.+\\]$", PCRE_CASELESS, &error, &erroffset, NULL);
+-	rc = pcre_exec(re, NULL, str, strlen(str), 0, 0, ovector, 30);
+-	pcre_free(re);
++	re = oscap_pcre_compile("^wfn:\\[.+\\]$", OSCAP_PCRE_OPTS_CASELESS, &error, &erroffset);
++	if (re == NULL) {
++		oscap_pcre_err_free(error);
++		return CPE_FORMAT_UNKNOWN;
++	}
++	rc = oscap_pcre_exec(re, str, strlen(str), 0, 0, ovector, 30);
++	oscap_pcre_free(re);
+ 
+ 	if (rc >= 0)
+ 		return CPE_FORMAT_WFN;
+diff --git a/src/OVAL/oval_component.c b/src/OVAL/oval_component.c
+index 420de1529db..472cf9782a3 100644
+--- a/src/OVAL/oval_component.c
++++ b/src/OVAL/oval_component.c
+@@ -55,8 +55,8 @@
+ #include "common/debug_priv.h"
+ #include "common/_error.h"
+ #include "common/oscap_string.h"
++#include "common/oscap_pcre.h"
+ #include "oval_glob_to_regex.h"
+-#include <pcre.h>
+ 
+ #if !defined(OVAL_PROBES_ENABLED)
+ const char *oval_subtype_to_str(oval_subtype_t subtype);
+@@ -1980,12 +1980,16 @@ static long unsigned int _parse_fmt_sse(char *dt)
+ static bool _match(const char *pattern, const char *string)
+ {
+ 	bool match = false;
+-	pcre *re;
+-	const char *error;
++	oscap_pcre_t *re;
++	char *error;
+ 	int erroffset = -1, ovector[60], ovector_len = sizeof (ovector) / sizeof (ovector[0]);
+-	re = pcre_compile(pattern, PCRE_UTF8, &error, &erroffset, NULL);
+-	match = (pcre_exec(re, NULL, string, strlen(string), 0, 0, ovector, ovector_len) >= 0);
+-	pcre_free(re);
++	re = oscap_pcre_compile(pattern, OSCAP_PCRE_OPTS_UTF8, &error, &erroffset);
++	if (re == NULL) {
++		oscap_pcre_err_free(error);
++		return false;
++	}
++	match = (oscap_pcre_exec(re, string, strlen(string), 0, 0, ovector, ovector_len) >= 0);
++	oscap_pcre_free(re);
+ 	return match;
+ }
+ 
+@@ -2208,13 +2212,14 @@ static oval_syschar_collection_flag_t _oval_component_evaluate_REGEX_CAPTURE(ova
+ 	int rc;
+ 	char *pattern;
+ 	int erroffset = -1;
+-	pcre *re = NULL;
+-	const char *error;
++	oscap_pcre_t *re = NULL;
++	char *error;
+ 
+ 	pattern = oval_component_get_regex_pattern(component);
+-	re = pcre_compile(pattern, PCRE_UTF8, &error, &erroffset, NULL);
++	re = oscap_pcre_compile(pattern, OSCAP_PCRE_OPTS_UTF8, &error, &erroffset);
+ 	if (re == NULL) {
+-		dE("pcre_compile() failed: \"%s\".", error);
++		dE("oscap_pcre_compile() failed: \"%s\".", error);
++		oscap_pcre_err_free(error);
+ 		return SYSCHAR_FLAG_ERROR;
+ 	}
+ 
+@@ -2233,9 +2238,9 @@ static oval_syschar_collection_flag_t _oval_component_evaluate_REGEX_CAPTURE(ova
+ 			for (i = 0; i < ovector_len; ++i)
+ 				ovector[i] = -1;
+ 
+-			rc = pcre_exec(re, NULL, text, strlen(text), 0, 0, ovector, ovector_len);
++			rc = oscap_pcre_exec(re, text, strlen(text), 0, 0, ovector, ovector_len);
+ 			if (rc < -1) {
+-				dE("pcre_exec() failed: %d.", rc);
++				dE("oscap_pcre_exec() failed: %d.", rc);
+ 				flag = SYSCHAR_FLAG_ERROR;
+ 				break;
+ 			}
+@@ -2263,7 +2268,7 @@ static oval_syschar_collection_flag_t _oval_component_evaluate_REGEX_CAPTURE(ova
+ 		oval_collection_free_items(subcoll, (oscap_destruct_func) oval_value_free);
+ 	}
+ 	oval_component_iterator_free(subcomps);
+-	pcre_free(re);
++	oscap_pcre_free(re);
+ 	return flag;
+ }
+ 
+diff --git a/src/OVAL/oval_schema_version.c b/src/OVAL/oval_schema_version.c
+index 9f2d332d5a6..9828f3d6328 100644
+--- a/src/OVAL/oval_schema_version.c
++++ b/src/OVAL/oval_schema_version.c
+@@ -29,12 +29,11 @@
+ #include <string.h>
+ #include <sys/types.h>
+ #include "common/util.h"
++#include "common/oscap_pcre.h"
+ #include "common/debug_priv.h"
+ #include "public/oval_schema_version.h"
+ 
+-#include <pcre.h>
+-
+-#define OVECTOR_LEN 30 // must be a multiple of 30
++#define OVECTOR_LEN 60 // must be a multiple of 30
+ 
+ static int _parse_int(const char *substring, size_t substring_length)
+ {
+@@ -55,16 +54,17 @@ oval_schema_version_t oval_schema_version_from_cstr(const char *ver_str)
+ 		return version;
+ 	}
+ 	const char *pattern = "([0-9]+)\\.([0-9]+)(?:\\.([0-9]+))?(?::([0-9]+)\\.([0-9]+)(?:\\.([0-9]+))?)?";
+-	const char *error;
++	char *error;
+ 	int erroffset;
+-	pcre *re = pcre_compile(pattern, 0, &error, &erroffset, NULL);
++	oscap_pcre_t *re = oscap_pcre_compile(pattern, 0, &error, &erroffset);
+ 	if (re == NULL) {
+ 		dE("Regular expression compilation failed with %s", pattern);
++		oscap_pcre_err_free(error);
+ 		return version;
+ 	}
+ 	int ovector[OVECTOR_LEN];
+-	int rc = pcre_exec(re, NULL, ver_str, strlen(ver_str), 0, 0, ovector, OVECTOR_LEN);
+-	pcre_free(re);
++	int rc = oscap_pcre_exec(re, ver_str, strlen(ver_str), 0, 0, ovector, OVECTOR_LEN);
++	oscap_pcre_free(re);
+ 	if (rc < 0) {
+ 		dE("Regular expression %s did not match string %s", pattern, ver_str);
+ 		return version;
+diff --git a/src/OVAL/probes/independent/system_info_probe.c b/src/OVAL/probes/independent/system_info_probe.c
+index 9f680e14d27..6a239565f80 100644
+--- a/src/OVAL/probes/independent/system_info_probe.c
++++ b/src/OVAL/probes/independent/system_info_probe.c
+@@ -101,7 +101,6 @@
+ #include <net/if.h>
+ #include <arpa/inet.h>
+ #include <sys/types.h>
+-#include <pcre.h>
+ #elif defined(OS_FREEBSD)
+ #include <arpa/inet.h>
+ #include <ifaddrs.h>
+@@ -540,21 +539,23 @@ static char *_get_os_release_elem(char *os_release_data, const char *elem_name)
+ 	char elem_re[128] = {0};
+ 	snprintf(elem_re, sizeof(elem_re), "%s%s%s", "^", elem_name, "=[\"']?(.*?)[\"']?$");
+ 
+-	const char *error;
++	char *error;
+ 	int erroffset, ovec[_REGEX_RES_VECSIZE] = {0};
+-	pcre *re = pcre_compile(elem_re, PCRE_MULTILINE, &error, &erroffset, NULL);
+-	if (re == NULL)
++	oscap_pcre_t *re = oscap_pcre_compile(elem_re, OSCAP_PCRE_OPTS_MULTILINE, &error, &erroffset);
++	if (re == NULL) {
++		oscap_pcre_err_free(error);
+ 		goto finish;
++	}
+ 
+ 	char *ptr = NULL;
+-	int rc = pcre_exec(re, NULL, os_release_data, len, 0, 0, ovec, _REGEX_RES_VECSIZE);
++	int rc = oscap_pcre_exec(re, os_release_data, len, 0, 0, ovec, _REGEX_RES_VECSIZE);
+ 	if (rc >= 0) {
+ 		/* ovec[0] and ovec[1] - are the start and the end of the whole pattern match (=".....")
+ 		 * ovec[2] and ovec[3] - are start and end char positions of the capture group (.*?) */
+ 		ptr = strndup(os_release_data+ovec[2], ovec[3]-ovec[2]);
+ 		ret = ptr;
+ 	}
+-	pcre_free(re);
++	oscap_pcre_free(re);
+ 
+ finish:
+ 	return ret;
+diff --git a/src/OVAL/probes/independent/textfilecontent54_probe.c b/src/OVAL/probes/independent/textfilecontent54_probe.c
+index 322977418ca..af60cdf20a5 100644
+--- a/src/OVAL/probes/independent/textfilecontent54_probe.c
++++ b/src/OVAL/probes/independent/textfilecontent54_probe.c
+@@ -43,7 +43,6 @@
+ #include <fcntl.h>
+ #include <unistd.h>
+ #include <limits.h>
+-#include <pcre.h>
+ 
+ #include "_seap.h"
+ #include <probe-api.h>
+@@ -53,6 +52,7 @@
+ #include <oval_fts.h>
+ #include "common/debug_priv.h"
+ #include "common/util.h"
++#include "common/oscap_pcre.h"
+ #include "textfilecontent54_probe.h"
+ 
+ #define FILE_SEPARATOR '/'
+@@ -112,10 +112,10 @@ static SEXP_t *create_item(const char *path, const char *filename, char *pattern
+ 
+ struct pfdata {
+ 	char *pattern;
+-	int re_opts;
++	oscap_pcre_options_t re_opts;
+ 	SEXP_t *instance_ent;
+-        probe_ctx *ctx;
+-	pcre *compiled_regex;
++	probe_ctx *ctx;
++	oscap_pcre_t *compiled_regex;
+ };
+ 
+ static int process_file(const char *prefix, const char *path, const char *file, void *arg, oval_schema_version_t over)
+@@ -274,7 +274,7 @@ int textfilecontent54_probe_main(probe_ctx *ctx, void *arg)
+ 	struct pfdata pfd;
+ 	int ret = 0;
+ 	int errorffset = -1;
+-	const char *error;
++	char *error;
+ 	OVAL_FTS    *ofts;
+ 	OVAL_FTSENT *ofts_ent;
+ 
+@@ -316,38 +316,38 @@ int textfilecontent54_probe_main(probe_ctx *ctx, void *arg)
+ 
+ 	pfd.instance_ent = inst_ent;
+         pfd.ctx          = ctx;
+-	pfd.re_opts = PCRE_UTF8;
++	pfd.re_opts = OSCAP_PCRE_OPTS_UTF8;
+ 	r0 = probe_ent_getattrval(bh_ent, "ignore_case");
+ 	if (r0) {
+ 		val = SEXP_string_getb(r0);
+ 		SEXP_free(r0);
+ 		if (val)
+-			pfd.re_opts |= PCRE_CASELESS;
++			pfd.re_opts |= OSCAP_PCRE_OPTS_CASELESS;
+ 	}
+ 	r0 = probe_ent_getattrval(bh_ent, "multiline");
+ 	if (r0) {
+ 		val = SEXP_string_getb(r0);
+ 		SEXP_free(r0);
+ 		if (val)
+-			pfd.re_opts |= PCRE_MULTILINE;
++			pfd.re_opts |= OSCAP_PCRE_OPTS_MULTILINE;
+ 	}
+ 	r0 = probe_ent_getattrval(bh_ent, "singleline");
+ 	if (r0) {
+ 		val = SEXP_string_getb(r0);
+ 		SEXP_free(r0);
+ 		if (val)
+-			pfd.re_opts |= PCRE_DOTALL;
++			pfd.re_opts |= OSCAP_PCRE_OPTS_DOTALL;
+ 	}
+ 
+-	pfd.compiled_regex = pcre_compile(pfd.pattern, pfd.re_opts, &error,
+-					  &errorffset, NULL);
++	pfd.compiled_regex = oscap_pcre_compile(pfd.pattern, pfd.re_opts, &error, &errorffset);
+ 	if (pfd.compiled_regex == NULL) {
+ 		SEXP_t *msg;
+ 
+-		msg = probe_msg_creatf(OVAL_MESSAGE_LEVEL_ERROR, "pcre_compile() '%s' %s.", pfd.pattern, error);
++		msg = probe_msg_creatf(OVAL_MESSAGE_LEVEL_ERROR, "oscap_pcre_compile() '%s' %s.", pfd.pattern, error);
+ 		probe_cobj_add_msg(probe_ctx_getresult(pfd.ctx), msg);
+ 		SEXP_free(msg);
+ 		probe_cobj_set_flag(probe_ctx_getresult(pfd.ctx), SYSCHAR_FLAG_ERROR);
++		oscap_pcre_err_free(error);
+ 		goto cleanup;
+ 	}
+ 
+@@ -375,6 +375,6 @@ int textfilecontent54_probe_main(probe_ctx *ctx, void *arg)
+ 	if (pfd.pattern != NULL)
+ 		free(pfd.pattern);
+ 	if (pfd.compiled_regex != NULL)
+-		pcre_free(pfd.compiled_regex);
++		oscap_pcre_free(pfd.compiled_regex);
+ 	return ret;
+ }
+diff --git a/src/OVAL/probes/independent/textfilecontent_probe.c b/src/OVAL/probes/independent/textfilecontent_probe.c
+index 988a6471dcf..224f0ea21a3 100644
+--- a/src/OVAL/probes/independent/textfilecontent_probe.c
++++ b/src/OVAL/probes/independent/textfilecontent_probe.c
+@@ -62,7 +62,6 @@
+ #include <sys/types.h>
+ #include <fcntl.h>
+ #include <limits.h>
+-#include <pcre.h>
+ 
+ #include "_seap.h"
+ #include <probe-api.h>
+@@ -72,6 +71,7 @@
+ #include <oval_fts.h>
+ #include "common/debug_priv.h"
+ #include "common/util.h"
++#include "common/oscap_pcre.h"
+ #include "textfilecontent_probe.h"
+ 
+ #define FILE_SEPARATOR '/'
+@@ -148,11 +148,12 @@ static int process_file(const char *prefix, const char *path, const char *filena
+ 
+ // todo: move to probe_main()?
+ 	int erroffset = -1;
+-	pcre *re = NULL;
+-	const char *error;
++	oscap_pcre_t *re = NULL;
++	char *error;
+ 
+-	re = pcre_compile(pfd->pattern, PCRE_UTF8, &error, &erroffset, NULL);
++	re = oscap_pcre_compile(pfd->pattern, OSCAP_PCRE_OPTS_UTF8, &error, &erroffset);
+ 	if (re == NULL) {
++		oscap_pcre_err_free(error);
+ 		return -1;
+ 	}
+ 
+@@ -218,7 +219,7 @@ static int process_file(const char *prefix, const char *path, const char *filena
+ 	if (whole_path != NULL)
+ 		free(whole_path);
+ 	if (re != NULL)
+-		pcre_free(re);
++		oscap_pcre_free(re);
+ 	free(whole_path_with_prefix);
+ 
+ 	return ret;
+diff --git a/src/OVAL/probes/independent/yamlfilecontent_probe.c b/src/OVAL/probes/independent/yamlfilecontent_probe.c
+index 2d0cac69913..f4698ff4d53 100644
+--- a/src/OVAL/probes/independent/yamlfilecontent_probe.c
++++ b/src/OVAL/probes/independent/yamlfilecontent_probe.c
+@@ -26,7 +26,6 @@
+ 
+ #include <math.h>
+ #include <errno.h>
+-#include <pcre.h>
+ #include <yaml.h>
+ #include <yaml-path.h>
+ 
+@@ -36,6 +35,7 @@
+ #include "oval_fts.h"
+ #include "list.h"
+ #include "probe/probe.h"
++#include "common/oscap_pcre.h"
+ 
+ #define OSCAP_YAML_STRING_TAG "tag:yaml.org,2002:str"
+ #define OSCAP_YAML_BOOL_TAG "tag:yaml.org,2002:bool"
+@@ -52,17 +52,18 @@ int yamlfilecontent_probe_offline_mode_supported()
+ 
+ static bool match_regex(const char *pattern, const char *value)
+ {
+-	const char *errptr;
++	char *errptr;
+ 	int erroroffset;
+-	pcre *re = pcre_compile(pattern, 0, &errptr, &erroroffset, NULL);
++	oscap_pcre_t *re = oscap_pcre_compile(pattern, 0, &errptr, &erroroffset);
+ 	if (re == NULL) {
+-		dE("pcre_compile failed on pattern '%s': %s at %d", pattern,
++		dE("oscap_pcre_compile failed on pattern '%s': %s at %d", pattern,
+ 			errptr, erroroffset);
++		oscap_pcre_err_free(errptr);
+ 		return false;
+ 	}
+ 	int ovector[OVECCOUNT];
+-	int rc = pcre_exec(re, NULL, value, strlen(value), 0, 0, ovector, OVECCOUNT);
+-	pcre_free(re);
++	int rc = oscap_pcre_exec(re, value, strlen(value), 0, 0, ovector, OVECCOUNT);
++	oscap_pcre_free(re);
+ 	if (rc > 0) {
+ 		return true;
+ 	}
+diff --git a/src/OVAL/probes/oval_fts.c b/src/OVAL/probes/oval_fts.c
+index c96247b0945..e4106720208 100644
+--- a/src/OVAL/probes/oval_fts.c
++++ b/src/OVAL/probes/oval_fts.c
+@@ -32,7 +32,6 @@
+ #include <sys/stat.h>
+ #include <limits.h>
+ #include <errno.h>
+-#include <pcre.h>
+ 
+ #include "oscap_helpers.h"
+ #include "fsdev.h"
+@@ -379,150 +378,20 @@ static char *extract_fixed_path_prefix(char *path)
+ 	return strdup("/");
+ }
+ 
+-static int badpartial_check_slash(const char *pattern)
+-{
+-	pcre *regex;
+-	const char *errptr = NULL;
+-	int errofs = 0, fb, ret;
+-
+-	regex = pcre_compile(pattern + 1 /* skip '^' */, 0, &errptr, &errofs, NULL);
+-	if (regex == NULL) {
+-		dE("Failed to validate the pattern: pcre_compile(): "
+-		   "error: '%s', error offset: %d, pattern: '%s'.\n",
+-		   errptr, errofs, pattern);
+-		return -1;
+-	}
+-	ret = pcre_fullinfo(regex, NULL, PCRE_INFO_FIRSTBYTE, &fb);
+-	pcre_free(regex);
+-	regex = NULL;
+-	if (ret != 0) {
+-		dE("Failed to validate the pattern: pcre_fullinfo(): "
+-		   "return code: %d, pattern: '%s'.\n", ret, pattern);
+-		return -1;
+-	}
+-	if (fb != '/') {
+-		dE("Failed to validate the pattern: pcre_fullinfo(): "
+-		   "first byte: %d '%c', pattern: '%s' - the first "
+-		   "byte should be a '/'.\n", fb, fb, pattern);
+-		return -2;
+-	}
+-
+-	return 0;
+-}
+-
+ #define TEST_PATH1 "/"
+ #define TEST_PATH2 "x"
+ 
+-static int badpartial_transform_pattern(char *pattern, pcre **regex_out)
+-{
+-	/*
+-	  PCREPARTIAL(3)
+-	  http://pcre.org/pcre.txt
+-	  Last updated: 21 January 2012
+-
+-	  For releases of PCRE prior to 8.00, because of the way
+-	  certain internal optimizations were implemented in the
+-	  pcre_exec() function, the PCRE_PARTIAL option (predecessor
+-	  of PCRE_PARTIAL_SOFT) could not be used with all patterns.
+-
+-	  Items that were formerly restricted were repeated single
+-	  characters and repeated metasequences. If PCRE_PARTIAL was
+-	  set for a pattern that did not conform to the restrictions,
+-	  pcre_exec() returned the error code PCRE_ERROR_BADPARTIAL
+-	  (-13).
+-	*/
+-
+-	int ret, brkt_lvl = 0, errofs = 0;
+-	const char *rchars = "\\[]()*+{"; /* probably incomplete */
+-	const char *test_path1 = TEST_PATH1;
+-	const char *errptr = NULL;
+-	char *s, *brkt_mark;
+-	bool bracketed = false, found_regex = false;
+-	pcre *regex;
+-
+-	/* The processing bellow builds upon the assumption that
+-	   the pattern has been validated by pcre_compile() */
+-	for (s = brkt_mark = pattern; (s = strpbrk(s, rchars)) != NULL; s++) {
+-		switch (*s) {
+-		case '\\':
+-			s++;
+-			break;
+-		case '[':
+-			if (!bracketed) {
+-				bracketed = true;
+-				if (s[1] == ']')
+-					s++;
+-			}
+-			break;
+-		case ']':
+-			bracketed = false;
+-			break;
+-		case '(':
+-			if (!bracketed) {
+-				if (brkt_lvl++ == 0)
+-					brkt_mark = s;
+-			}
+-			break;
+-		case ')':
+-			if (!bracketed)
+-				brkt_lvl--;
+-			break;
+-		default:
+-			if (!bracketed)
+-				found_regex = true;
+-			break;
+-		}
+-		if (found_regex)
+-			break;
+-	}
+-
+-	if (s == NULL) {
+-		dW("Nonfatal failure: can't transform the pattern for partial "
+-		   "match optimization: none of the suspected culprits found, "
+-		   "pattern: '%s'.", pattern);
+-		return -1;
+-	}
+-
+-	if (brkt_lvl > 0)
+-		*brkt_mark = '\0';
+-	else
+-		*s = '\0';
+-
+-	regex = pcre_compile(pattern, 0, &errptr, &errofs, NULL);
+-	if (regex == NULL) {
+-		dW("Nonfatal failure: can't transform the pattern for partial "
+-		   "match optimization, error: '%s', error offset: %d, "
+-		   "pattern: '%s'.", errptr, errofs, pattern);
+-		return -1;
+-	}
+-
+-	ret = pcre_exec(regex, NULL, test_path1, strlen(test_path1), 0,
+-		PCRE_PARTIAL, NULL, 0);
+-	if (ret != PCRE_ERROR_PARTIAL && ret < 0) {
+-		pcre_free(regex);
+-		dW("Nonfatal failure: can't transform the pattern for partial "
+-		   "match optimization, pcre_exec() return code: %d, pattern: "
+-		   "'%s'.", ret, pattern);
+-		return -1;
+-	}
+-
+-	if (regex_out != NULL)
+-		*regex_out = regex;
+-
+-	return 0;
+-}
+-
+ /* Verify that the path is usable and try to craft a regex to speed up
+    the filesystem traversal. If the path to match is ill-designed, an
+    ugly heuristic is employed to obtain something meaningfull. */
+-static int process_pattern_match(const char *path, pcre **regex_out)
++static int process_pattern_match(const char *path, oscap_pcre_t **regex_out)
+ {
+ 	int ret, errofs = 0;
+ 	char *pattern;
+ 	const char *test_path1 = TEST_PATH1;
+ 	//const char *test_path2 = TEST_PATH2;
+-	const char *errptr = NULL;
+-	pcre *regex;
++	char *errptr = NULL;
++	oscap_pcre_t *regex;
+ 
+ 	if (path[0] != '^') {
+ 		/* Matching has to have a fixed starting point and thus
+@@ -540,19 +409,20 @@ static int process_pattern_match(const char *path, pcre **regex_out)
+ 		pattern = strdup(path);
+ 	}
+ 
+-	regex = pcre_compile(pattern, 0, &errptr, &errofs, NULL);
++	regex = oscap_pcre_compile(pattern, 0, &errptr, &errofs);
+ 	if (regex == NULL) {
+-		dE("Failed to validate the pattern: pcre_compile(): "
++		dE("Failed to validate the pattern: oscap_pcre_compile(): "
+ 		   "error offset: %d, error: '%s', pattern: '%s'.\n",
+ 		   errofs, errptr, pattern);
+ 		free(pattern);
++		oscap_pcre_err_free(errptr);
+ 		return -1;
+ 	}
+-	ret = pcre_exec(regex, NULL, test_path1, strlen(test_path1), 0,
+-		PCRE_PARTIAL, NULL, 0);
++	ret = oscap_pcre_exec(regex, test_path1, strlen(test_path1), 0,
++		OSCAP_PCRE_OPTS_PARTIAL, NULL, 0);
+ 
+ 	switch (ret) {
+-	case PCRE_ERROR_PARTIAL:
++	case OSCAP_PCRE_ERR_PARTIAL:
+ 		/* The pattern has matched a prefix of the test path
+ 		   and probably begins with a slash. Make sure that it
+ 		   doesn't match an arbitrary prefix. */
+@@ -577,35 +447,15 @@ static int process_pattern_match(const char *path, pcre **regex_out)
+ 		}
+ 		*/
+ 		break;
+-	case PCRE_ERROR_BADPARTIAL:
+-		dD("pcre_exec() returned PCRE_ERROR_BADPARTIAL for pattern "
+-		   "'%s' and a test path '%s'. Falling back to "
+-		   "pcre_fullinfo().\n", pattern, test_path1);
+-		pcre_free(regex);
+-		regex = NULL;
+-
+-		/* Fallback to first byte check to determin if
+-		   the pattern begins with a slash. */
+-		ret = badpartial_check_slash((const char *) pattern);
+-		if (ret != 0) {
+-			free(pattern);
+-			return ret;
+-		}
+-		/* The pattern contains features that this version of
+-		   PCRE can't handle for partial matching. At least
+-		   try to find the longest well-bracketed prefix that
+-		   can be handled. */
+-		badpartial_transform_pattern(pattern, &regex);
+-		break;
+-	case PCRE_ERROR_NOMATCH:
++	case OSCAP_PCRE_ERR_NOMATCH:
+ 		/* The pattern doesn't contain a leading slash (or
+ 		   some part of this code is broken). Apologise to the
+ 		   user and fail. */
+-		dE("Failed to validate the pattern: pcre_exec() returned "
++		dE("Failed to validate the pattern: oscap_pcre_exec() returned "
+ 		   "PCRE_ERROR_NOMATCH for pattern '%s' and a test path '%s'. "
+ 		   "This indicates the pattern doesn't match a leading '/'.\n",
+ 		   pattern, test_path1);
+-		pcre_free(regex);
++		oscap_pcre_free(regex);
+ 		free(pattern);
+ 		return -2;
+ 	default:
+@@ -634,10 +484,10 @@ static int process_pattern_match(const char *path, pcre **regex_out)
+ 			break;
+ 		}
+ 		/* Some other error. */
+-		dE("Failed to validate the pattern: pcre_exec() return "
++		dE("Failed to validate the pattern: oscap_pcre_exec() return "
+ 		   "code: %d, pattern '%s', test path '%s'.\n", ret,
+ 		   pattern, test_path1);
+-		pcre_free(regex);
++		oscap_pcre_free(regex);
+ 		free(pattern);
+ 		return -1;
+ 	}
+@@ -685,7 +535,7 @@ OVAL_FTS *oval_fts_open_prefixed(const char *prefix, SEXP_t *path, SEXP_t *filen
+ 
+ 	uint32_t path_op;
+ 	bool nilfilename = false;
+-	pcre *regex = NULL;
++	oscap_pcre_t *regex = NULL;
+ 	struct stat st;
+ 
+ 	if ((path != NULL || filename != NULL || filepath == NULL)
+@@ -845,7 +695,7 @@ OVAL_FTS *oval_fts_open_prefixed(const char *prefix, SEXP_t *path, SEXP_t *filen
+ 			   errno, strerror(errno));
+ 		}
+ 		free((void *) paths[0]);
+-		pcre_free(regex);
++		oscap_pcre_free(regex);
+ 		return NULL;
+ 	}
+ 
+@@ -861,17 +711,15 @@ OVAL_FTS *oval_fts_open_prefixed(const char *prefix, SEXP_t *path, SEXP_t *filen
+ 	if (ofts->ofts_match_path_fts == NULL || errno != 0) {
+ 		dE("fts_open() failed, errno: %d \"%s\".", errno, strerror(errno));
+ 		OVAL_FTS_free(ofts);
+-		pcre_free(regex);
++		oscap_pcre_free(regex);
+ 		return (NULL);
+ 	}
+ 
+ 	ofts->ofts_recurse_path_fts_opts = rec_fts_options;
+ 	ofts->ofts_path_op = path_op;
+ 	if (regex != NULL) {
+-		const char *errptr = NULL;
+-
+ 		ofts->ofts_path_regex = regex;
+-		ofts->ofts_path_regex_extra = pcre_study(regex, 0, &errptr);
++		oscap_pcre_optimize(regex);
+ 	}
+ 
+ 	if (filesystem == OVAL_RECURSE_FS_LOCAL) {
+@@ -997,20 +845,20 @@ static FTSENT *oval_fts_read_match_path(OVAL_FTS *ofts)
+ 		if (ofts->ofts_path_regex != NULL && fts_ent->fts_info == FTS_D) {
+ 			int ret, svec[3];
+ 
+-			ret = pcre_exec(ofts->ofts_path_regex, ofts->ofts_path_regex_extra,
+-					fts_ent->fts_path+shift, fts_ent->fts_pathlen-shift, 0, PCRE_PARTIAL,
++			ret = oscap_pcre_exec(ofts->ofts_path_regex,
++					fts_ent->fts_path+shift, fts_ent->fts_pathlen-shift, 0, OSCAP_PCRE_OPTS_PARTIAL,
+ 					svec, sizeof(svec) / sizeof(svec[0]));
+ 			if (ret < 0) {
+ 				switch (ret) {
+-				case PCRE_ERROR_NOMATCH:
++				case OSCAP_PCRE_ERR_NOMATCH:
+ 					dD("Partial match optimization: PCRE_ERROR_NOMATCH, skipping.");
+ 					fts_set(ofts->ofts_match_path_fts, fts_ent, FTS_SKIP);
+ 					continue;
+-				case PCRE_ERROR_PARTIAL:
++				case OSCAP_PCRE_ERR_PARTIAL:
+ 					dD("Partial match optimization: PCRE_ERROR_PARTIAL, continuing.");
+ 					continue;
+ 				default:
+-					dE("pcre_exec() error: %d.", ret);
++					dE("oscap_pcre_exec() error: %d.", ret);
+ 					return NULL;
+ 				}
+ 			}
+@@ -1384,9 +1232,7 @@ int oval_fts_close(OVAL_FTS *ofts)
+ 		free(ofts->ofts_recurse_path_pthcpy);
+ 
+ 	if (ofts->ofts_path_regex)
+-		pcre_free(ofts->ofts_path_regex);
+-	if (ofts->ofts_path_regex_extra)
+-		pcre_free(ofts->ofts_path_regex_extra);
++		oscap_pcre_free(ofts->ofts_path_regex);
+ 
+ 	if (ofts->ofts_spath != NULL)
+ 		SEXP_free(ofts->ofts_spath);
+diff --git a/src/OVAL/probes/oval_fts.h b/src/OVAL/probes/oval_fts.h
+index d4d898fea64..0134654f4e4 100644
+--- a/src/OVAL/probes/oval_fts.h
++++ b/src/OVAL/probes/oval_fts.h
+@@ -30,8 +30,8 @@
+ #else
+ #include <fts.h>
+ #endif
+-#include <pcre.h>
+ #include "fsdev.h"
++#include "common/oscap_pcre.h"
+ 
+ #define ENT_GET_AREF(ent, dst, attr_name, mandatory)			\
+ 	do {								\
+@@ -78,8 +78,7 @@ typedef struct {
+ 	char *ofts_recurse_path_curpth;
+ 	dev_t ofts_recurse_path_devid;
+ 
+-	pcre       *ofts_path_regex;
+-	pcre_extra *ofts_path_regex_extra;
++	oscap_pcre_t *ofts_path_regex;
+ 	uint32_t ofts_path_op;
+ 
+ 	SEXP_t *ofts_spath;
+diff --git a/src/OVAL/probes/unix/gconf_probe.c b/src/OVAL/probes/unix/gconf_probe.c
+index e41d6741401..3ddfb628218 100644
+--- a/src/OVAL/probes/unix/gconf_probe.c
++++ b/src/OVAL/probes/unix/gconf_probe.c
+@@ -36,7 +36,6 @@
+ #include <stdint.h>
+ #include <limits.h>
+ #include <probe-api.h>
+-#include <pcre.h>
+ #include <gconf/gconf.h>
+ #include "gconf_probe.h"
+ 
+diff --git a/src/OVAL/probes/unix/linux/partition_probe.c b/src/OVAL/probes/unix/linux/partition_probe.c
+index be51f2de850..cd0e1041327 100644
+--- a/src/OVAL/probes/unix/linux/partition_probe.c
++++ b/src/OVAL/probes/unix/linux/partition_probe.c
+@@ -63,9 +63,9 @@
+ #include <probe/probe.h>
+ #include <probe/option.h>
+ #include <mntent.h>
+-#include <pcre.h>
+ 
+ #include "common/debug_priv.h"
++#include "common/oscap_pcre.h"
+ #include "partition_probe.h"
+ 
+ #ifndef MTAB_PATH
+@@ -346,8 +346,8 @@ int partition_probe_main(probe_ctx *ctx, void *probe_arg)
+                 char buffer[MTAB_LINE_MAX];
+                 struct mntent mnt_ent, *mnt_entp;
+ 
+-                pcre *re = NULL;
+-                const char *estr = NULL;
++                oscap_pcre_t *re = NULL;
++                char *estr = NULL;
+                 int eoff = -1;
+ #if defined(HAVE_BLKID_GET_TAG_VALUE)
+                 blkid_cache blkcache;
+@@ -358,13 +358,14 @@ int partition_probe_main(probe_ctx *ctx, void *probe_arg)
+                 }
+ #endif
+                 if (mnt_op == OVAL_OPERATION_PATTERN_MATCH) {
+-                        re = pcre_compile(mnt_path, PCRE_UTF8, &estr, &eoff, NULL);
++                        re = oscap_pcre_compile(mnt_path, OSCAP_PCRE_OPTS_UTF8, &estr, &eoff);
+ 
+                         if (re == NULL) {
+                                 endmntent(mnt_fp);
+ #if defined(HAVE_BLKID_GET_TAG_VALUE)
+                                 blkid_put_cache(blkcache);
+ #endif
++                                oscap_pcre_err_free(estr);
+                                 return (PROBE_EINVAL);
+                         }
+                 }
+@@ -398,7 +399,7 @@ int partition_probe_main(probe_ctx *ctx, void *probe_arg)
+                         } else if (mnt_op == OVAL_OPERATION_PATTERN_MATCH) {
+                                 int rc;
+ 
+-                                rc = pcre_exec(re, NULL, mnt_entp->mnt_dir,
++                                rc = oscap_pcre_exec(re, mnt_entp->mnt_dir,
+                                                strlen(mnt_entp->mnt_dir), 0, 0, NULL, 0);
+ 
+                                 if (rc == 0) {
+@@ -418,7 +419,7 @@ int partition_probe_main(probe_ctx *ctx, void *probe_arg)
+                 endmntent(mnt_fp);
+ 
+                 if (mnt_op == OVAL_OPERATION_PATTERN_MATCH)
+-                        pcre_free(re);
++                        oscap_pcre_free(re);
+ #if defined(HAVE_BLKID_GET_TAG_VALUE)
+                 blkid_put_cache(blkcache);
+ #endif
+diff --git a/src/OVAL/probes/unix/linux/rpmverify_probe.c b/src/OVAL/probes/unix/linux/rpmverify_probe.c
+index 14ee57d89a5..6a8f4b4992e 100644
+--- a/src/OVAL/probes/unix/linux/rpmverify_probe.c
++++ b/src/OVAL/probes/unix/linux/rpmverify_probe.c
+@@ -39,7 +39,6 @@
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <fcntl.h>
+-#include <pcre.h>
+ 
+ #include "rpm-helper.h"
+ 
+@@ -54,6 +53,7 @@
+ 
+ #include <probe/probe.h>
+ #include <probe/option.h>
++#include "common/oscap_pcre.h"
+ 
+ #include "rpmverify_probe.h"
+ 
+@@ -83,18 +83,19 @@ static int rpmverify_collect(probe_ctx *ctx,
+ 	rpmdbMatchIterator match;
+         rpmVerifyAttrs omit = (rpmVerifyAttrs)(flags & RPMVERIFY_RPMATTRMASK);
+ 	Header pkgh;
+-        pcre *re = NULL;
++	oscap_pcre_t *re = NULL;
+ 	int  ret = -1;
+ 
+         /* pre-compile regex if needed */
+         if (file_op == OVAL_OPERATION_PATTERN_MATCH) {
+-                const char *errmsg;
++                char *errmsg;
+                 int erroff;
+ 
+-                re = pcre_compile(file, PCRE_UTF8, &errmsg,  &erroff, NULL);
++                re = oscap_pcre_compile(file, OSCAP_PCRE_OPTS_UTF8, &errmsg,  &erroff);
+ 
+                 if (re == NULL) {
+                         /* TODO */
++                        oscap_pcre_err_free(errmsg);
+                         return (-1);
+                 }
+         }
+@@ -213,7 +214,7 @@ static int rpmverify_collect(probe_ctx *ctx,
+         ret   = 0;
+ ret:
+         if (re != NULL)
+-                pcre_free(re);
++                oscap_pcre_free(re);
+ 
+         RPMVERIFY_UNLOCK;
+         return (ret);
+diff --git a/src/OVAL/probes/unix/linux/rpmverifyfile_probe.c b/src/OVAL/probes/unix/linux/rpmverifyfile_probe.c
+index a61f44e39b7..12145c411f4 100644
+--- a/src/OVAL/probes/unix/linux/rpmverifyfile_probe.c
++++ b/src/OVAL/probes/unix/linux/rpmverifyfile_probe.c
+@@ -41,7 +41,6 @@
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <fcntl.h>
+-#include <pcre.h>
+ 
+ #include "rpm-helper.h"
+ #include "oscap_helpers.h"
+@@ -57,6 +56,8 @@
+ 
+ #include <probe/probe.h>
+ #include <probe/option.h>
++#include "common/oscap_pcre.h"
++
+ #include "rpmverifyfile_probe.h"
+ 
+ struct rpmverify_res {
+@@ -154,25 +155,26 @@ static int _compare_file_with_current_file(oval_operation_t file_op, const char
+ 		}
+ 		*result_file = current_file_realpath ? oscap_strdup(current_file_realpath) : oscap_strdup(current_file);
+ 	} else if (file_op == OVAL_OPERATION_PATTERN_MATCH) {
+-		const char *errmsg;
++		char *errmsg;
+ 		int erroff;
+-		pcre *re = pcre_compile(file, PCRE_UTF8, &errmsg,  &erroff, NULL);
++		oscap_pcre_t *re = oscap_pcre_compile(file, OSCAP_PCRE_OPTS_UTF8, &errmsg,  &erroff);
+ 		if (re == NULL) {
+-			dE("pcre_compile pattern='%s': %s", file, errmsg);
++			dE("oscap_pcre_compile pattern='%s': %s", file, errmsg);
+ 			ret = -1;
++			oscap_pcre_err_free(errmsg);
+ 			goto cleanup;
+ 		}
+-		int pcre_ret = pcre_exec(re, NULL, current_file, strlen(current_file), 0, 0, NULL, 0);
+-		pcre_free(re);
+-		if (pcre_ret == 0) {
++		int pcre_ret = oscap_pcre_exec(re, current_file, strlen(current_file), 0, 0, NULL, 0);
++		oscap_pcre_free(re);
++		if (pcre_ret > OSCAP_PCRE_ERR_NOMATCH) {
+ 			/* match */
+ 			*result_file = oscap_strdup(current_file);
+-		} else if (pcre_ret == -1) {
++		} else if (pcre_ret == OSCAP_PCRE_ERR_NOMATCH) {
+ 			/* no match */
+ 			ret = 1;
+ 			goto cleanup;
+ 		} else {
+-			dE("pcre_exec() failed!");
++			dE("oscap_pcre_exec() failed!");
+ 			ret = -1;
+ 			goto cleanup;
+ 		}
+diff --git a/src/OVAL/probes/unix/linux/rpmverifypackage_probe.c b/src/OVAL/probes/unix/linux/rpmverifypackage_probe.c
+index b56fd43d11e..87a91240757 100644
+--- a/src/OVAL/probes/unix/linux/rpmverifypackage_probe.c
++++ b/src/OVAL/probes/unix/linux/rpmverifypackage_probe.c
+@@ -41,7 +41,6 @@
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <fcntl.h>
+-#include <pcre.h>
+ 
+ #include "rpm-helper.h"
+ #include "probe-chroot.h"
+diff --git a/src/OVAL/results/oval_cmp_basic.c b/src/OVAL/results/oval_cmp_basic.c
+index 7b819d5538d..48fbcf121fc 100644
+--- a/src/OVAL/results/oval_cmp_basic.c
++++ b/src/OVAL/results/oval_cmp_basic.c
+@@ -27,10 +27,10 @@
+ 
+ #include <math.h>
+ #include <string.h>
+-#include <pcre.h>
+ 
+ #include "oval_types.h"
+ #include "common/_error.h"
++#include "common/oscap_pcre.h"
+ #include "common/debug_priv.h"
+ #include "oval_cmp_basic_impl.h"
+ 
+@@ -124,29 +124,30 @@ static oval_result_t strregcomp(const char *pattern, const char *test_str)
+ {
+ 	int ret;
+ 	oval_result_t result = OVAL_RESULT_ERROR;
+-	pcre *re;
+-	const char *err;
++	oscap_pcre_t *re;
++	char *err;
+ 	int errofs;
+ 
+-	re = pcre_compile(pattern, PCRE_UTF8, &err, &errofs, NULL);
++	re = oscap_pcre_compile(pattern, OSCAP_PCRE_OPTS_UTF8, &err, &errofs);
+ 	if (re == NULL) {
+ 		dE("Unable to compile regex pattern '%s', "
+-				"pcre_compile() returned error (offset: %d): '%s'.\n", pattern, errofs, err);
++				"oscap_pcre_compile() returned error (offset: %d): '%s'.\n", pattern, errofs, err);
++		oscap_pcre_err_free(err);
+ 		return OVAL_RESULT_ERROR;
+ 	}
+ 
+-	ret = pcre_exec(re, NULL, test_str, strlen(test_str), 0, 0, NULL, 0);
+-	if (ret > -1 ) {
++	ret = oscap_pcre_exec(re, test_str, strlen(test_str), 0, 0, NULL, 0);
++	if (ret > OSCAP_PCRE_ERR_NOMATCH ) {
+ 		result = OVAL_RESULT_TRUE;
+-	} else if (ret == -1) {
++	} else if (ret == OSCAP_PCRE_ERR_NOMATCH) {
+ 		result = OVAL_RESULT_FALSE;
+ 	} else {
+ 		dE("Unable to match regex pattern '%s' on string '%s', "
+-				"pcre_exec() returned error: %d.\n", pattern, test_str, ret);
++				"oscap_pcre_exec() returned error: %d.\n", pattern, test_str, ret);
+ 		result = OVAL_RESULT_ERROR;
+ 	}
+ 
+-	pcre_free(re);
++	oscap_pcre_free(re);
+ 	return result;
+ }
+ 
+diff --git a/src/XCCDF/item.c b/src/XCCDF/item.c
+index 295e4a7f00a..042d9b3d769 100644
+--- a/src/XCCDF/item.c
++++ b/src/XCCDF/item.c
+@@ -30,7 +30,6 @@
+ #include <string.h>
+ #include <time.h>
+ #include <math.h>
+-#include <pcre.h>
+ 
+ #include <libxml/tree.h>
+ #include <libxml/xpath.h>
+@@ -41,6 +40,7 @@
+ #include "helpers.h"
+ #include "xccdf_impl.h"
+ #include "common/util.h"
++#include "common/oscap_pcre.h"
+ #include "oscap_helpers.h"
+ 
+ /* According to `man 3 pcreapi`, the number passed in ovecsize should always
+@@ -768,12 +768,16 @@ void xccdf_item_add_applicable_platform(struct xccdf_item *item, xmlTextReaderPt
+ 	 * an underscore to workaround the situation that this XCCDF benchmark is
+ 	 * not applicable.
+ 	 */
+-	const char *pcreerror = NULL;
++	char *pcreerror = NULL;
+ 	int erroffset = 0;
+-	pcre *regex = pcre_compile("^(cpe:/o:microsoft:windows)(7.*)", 0, &pcreerror, &erroffset, NULL);
++	oscap_pcre_t *regex = oscap_pcre_compile("^(cpe:/o:microsoft:windows)(7.*)", 0, &pcreerror, &erroffset);
++	if (regex == NULL) {
++		oscap_pcre_err_free(pcreerror);
++		return;
++	}
+ 	int ovector[OVECTOR_LEN];
+-	int rc = pcre_exec(regex, NULL, platform_idref, strlen(platform_idref), 0, 0, ovector, OVECTOR_LEN);
+-	pcre_free(regex);
++	int rc = oscap_pcre_exec(regex, platform_idref, strlen(platform_idref), 0, 0, ovector, OVECTOR_LEN);
++	oscap_pcre_free(regex);
+ 	/* 1 pattern + 2 groups = 3 */
+ 	if (rc == 3) {
+ 		const int first_group_start = ovector[2];
+diff --git a/src/XCCDF_POLICY/xccdf_policy_remediate.c b/src/XCCDF_POLICY/xccdf_policy_remediate.c
+index c5f81d3f0c6..9d4ba16e663 100644
+--- a/src/XCCDF_POLICY/xccdf_policy_remediate.c
++++ b/src/XCCDF_POLICY/xccdf_policy_remediate.c
+@@ -38,12 +38,12 @@
+ #endif
+ 
+ #include <libxml/tree.h>
+-#include <pcre.h>
+ 
+ #include "XCCDF/item.h"
+ #include "common/_error.h"
+ #include "common/debug_priv.h"
+ #include "common/oscap_acquire.h"
++#include "common/oscap_pcre.h"
+ #include "xccdf_policy_priv.h"
+ #include "xccdf_policy_model_priv.h"
+ #include "public/xccdf_policy.h"
+@@ -661,12 +661,12 @@ static int _write_fix_missing_warning_to_fd(const char *sys, int output_fd, stru
+ struct blueprint_entries {
+ 	const char *pattern;
+ 	struct oscap_list *list;
+-	pcre *re;
++	oscap_pcre_t *re;
+ };
+ 
+ static inline int _parse_blueprint_fix(const char *fix_text, struct oscap_list *generic, struct oscap_list *services_enable, struct oscap_list *services_disable, struct oscap_list *kernel_append)
+ {
+-	const char *err;
++	char *err;
+ 	int errofs;
+ 	int ret = 0;
+ 
+@@ -681,9 +681,10 @@ static inline int _parse_blueprint_fix(const char *fix_text, struct oscap_list *
+ 	};
+ 
+ 	for (int i = 0; tab[i].pattern != NULL; i++) {
+-		tab[i].re = pcre_compile(tab[i].pattern, PCRE_UTF8, &err, &errofs, NULL);
++		tab[i].re = oscap_pcre_compile(tab[i].pattern, OSCAP_PCRE_OPTS_UTF8, &err, &errofs);
+ 		if (tab[i].re == NULL) {
+-			dE("Unable to compile /%s/ regex pattern, pcre_compile() returned error (offset: %d): '%s'.\n", tab[i].pattern, errofs, err);
++			dE("Unable to compile /%s/ regex pattern, oscap_pcre_compile() returned error (offset: %d): '%s'.\n", tab[i].pattern, errofs, err);
++			oscap_pcre_err_free(err);
+ 			ret = 1;
+ 			goto exit;
+ 		}
+@@ -695,7 +696,7 @@ static inline int _parse_blueprint_fix(const char *fix_text, struct oscap_list *
+ 
+ 	for (int i = 0; tab[i].pattern != NULL; i++) {
+ 		while (true) {
+-			const int match = pcre_exec(tab[i].re, NULL, fix_text, fix_text_len, start_offset,
++			const int match = oscap_pcre_exec(tab[i].re, fix_text, fix_text_len, start_offset,
+ 			                            0, ovector, sizeof(ovector) / sizeof(ovector[0]));
+ 			if (match == -1)
+ 				break;
+@@ -726,7 +727,7 @@ static inline int _parse_blueprint_fix(const char *fix_text, struct oscap_list *
+ 
+ exit:
+ 	for (int i = 0; tab[i].pattern != NULL; i++)
+-		pcre_free(tab[i].re);
++		oscap_pcre_free(tab[i].re);
+ 
+ 	return ret;
+ }
+@@ -737,13 +738,14 @@ static inline int _parse_ansible_fix(const char *fix_text, struct oscap_list *va
+ 	const char *pattern =
+ 		"- name: XCCDF Value [^ ]+ # promote to variable\n  set_fact:\n"
+ 		"    ([^:]+): (.+)\n  tags:\n    - always\n";
+-	const char *err;
++	char *err;
+ 	int errofs;
+ 
+-	pcre *re = pcre_compile(pattern, PCRE_UTF8, &err, &errofs, NULL);
++	oscap_pcre_t *re = oscap_pcre_compile(pattern, OSCAP_PCRE_OPTS_UTF8, &err, &errofs);
+ 	if (re == NULL) {
+ 		dE("Unable to compile regex pattern, "
+-				"pcre_compile() returned error (offset: %d): '%s'.\n", errofs, err);
++				"oscap_pcre_compile() returned error (offset: %d): '%s'.\n", errofs, err);
++		oscap_pcre_err_free(err);
+ 		return 1;
+ 	}
+ 
+@@ -758,14 +760,14 @@ static inline int _parse_ansible_fix(const char *fix_text, struct oscap_list *va
+ 	const size_t fix_text_len = strlen(fix_text);
+ 	int start_offset = 0;
+ 	while (true) {
+-		const int match = pcre_exec(re, NULL, fix_text, fix_text_len, start_offset,
++		const int match = oscap_pcre_exec(re, fix_text, fix_text_len, start_offset,
+ 				0, ovector, sizeof(ovector) / sizeof(ovector[0]));
+ 		if (match == -1)
+ 			break;
+ 		if (match != 3) {
+ 			dE("Expected 2 capture group matches per XCCDF variable. Found %i!",
+ 				match - 1);
+-			pcre_free(re);
++			oscap_pcre_free(re);
+ 			return 1;
+ 		}
+ 
+@@ -807,7 +809,7 @@ static inline int _parse_ansible_fix(const char *fix_text, struct oscap_list *va
+ 		oscap_list_add(tasks, remediation_part);
+ 	}
+ 
+-	pcre_free(re);
++	oscap_pcre_free(re);
+ 	return 0;
+ }
+ 
+diff --git a/src/common/util.c b/src/common/util.c
+index 69e059a4c71..52362c098ae 100644
+--- a/src/common/util.c
++++ b/src/common/util.c
+@@ -31,13 +31,13 @@
+ #include <limits.h>
+ #include <stdarg.h>
+ #include <math.h>
+-#include <pcre.h>
+ #include <sys/stat.h>
+ 
+ #include "util.h"
+ #include "_error.h"
+ #include "oscap.h"
+ #include "oscap_helpers.h"
++#include "oscap_pcre.h"
+ #include "debug_priv.h"
+ 
+ #ifdef OS_WINDOWS
+@@ -361,7 +361,7 @@ char *oscap_path_join(const char *path1, const char *path2)
+ 	return joined_path;
+ }
+ 
+-int oscap_get_substrings(char *str, int *ofs, pcre *re, int want_substrs, char ***substrings) {
++int oscap_get_substrings(char *str, int *ofs, oscap_pcre_t *re, int want_substrs, char ***substrings) {
+ 	int i, ret, rc;
+ 	int ovector[60], ovector_len = sizeof (ovector) / sizeof (ovector[0]);
+ 	char **substrs;
+@@ -372,30 +372,26 @@ int oscap_get_substrings(char *str, int *ofs, pcre *re, int want_substrs, char *
+ 		ovector[i] = -1;
+ 	}
+ 
+-	struct pcre_extra extra;
+-	extra.match_limit_recursion = OSCAP_PCRE_EXEC_RECURSION_LIMIT_DEFAULT;
++	unsigned long limit = OSCAP_PCRE_EXEC_RECURSION_LIMIT_DEFAULT;
+ 	char *limit_str = getenv("OSCAP_PCRE_EXEC_RECURSION_LIMIT");
+-	if (limit_str != NULL) {
+-		unsigned long limit;
+-		if (sscanf(limit_str, "%lu", &limit) == 1) {
+-			extra.match_limit_recursion = limit;
+-		}
+-	}
+-	extra.flags = PCRE_EXTRA_MATCH_LIMIT_RECURSION;
++	if (limit_str != NULL)
++		if (sscanf(limit_str, "%lu", &limit) <= 0)
++			dW("Unable to parse OSCAP_PCRE_EXEC_RECURSION_LIMIT value");
++	oscap_pcre_set_match_limit_recursion(re, limit);
+ 	size_t str_len = strlen(str);
+ #if defined(OS_SOLARIS)
+-	rc = pcre_exec(re, &extra, str, str_len, *ofs, PCRE_NO_UTF8_CHECK, ovector, ovector_len);
++	rc = oscap_pcre_exec(re, str, str_len, *ofs, OSCAP_PCRE_OPTS_NO_UTF8_CHECK, ovector, ovector_len);
+ #else
+-	rc = pcre_exec(re, &extra, str, str_len, *ofs, 0, ovector, ovector_len);
++	rc = oscap_pcre_exec(re, str, str_len, *ofs, 0, ovector, ovector_len);
+ #endif
+ 
+-	if (rc < -1) {
++	if (rc < OSCAP_PCRE_ERR_NOMATCH) {
+ 		if (str_len < 100)
+-			dE("Function pcre_exec() failed to match a regular expression with return code %d on string '%s'.", rc, str);
++			dE("Function oscap_pcre_exec() failed to match a regular expression with return code %d on string '%s'.", rc, str);
+ 		else
+-			dE("Function pcre_exec() failed to match a regular expression with return code %d on string '%.100s' (truncated, showing first 100 characters).", rc, str);
++			dE("Function oscap_pcre_exec() failed to match a regular expression with return code %d on string '%.100s' (truncated, showing first 100 characters).", rc, str);
+ 		return rc;
+-	} else if (rc == -1) {
++	} else if (rc == OSCAP_PCRE_ERR_NOMATCH) {
+ 		/* no match */
+ 		return 0;
+ 	}
+diff --git a/src/common/util.h b/src/common/util.h
+index 0db36fc31be..7f84e6436bc 100644
+--- a/src/common/util.h
++++ b/src/common/util.h
+@@ -32,8 +32,8 @@
+ #include "public/oscap.h"
+ #include <stdarg.h>
+ #include <string.h>
+-#include <pcre.h>
+ #include "oscap_export.h"
++#include "oscap_pcre.h"
+ 
+ #ifndef __attribute__nonnull__
+ #define __attribute__nonnull__(x) assert((x) != NULL)
+@@ -498,7 +498,7 @@ char *oscap_strerror_r(int errnum, char *buf, size_t buflen);
+  * @return count of matched substrings, 0 if no match
+  * negative value on failure
+  */
+-int oscap_get_substrings(char *str, int *ofs, pcre *re, int want_substrs, char ***substrings);
++int oscap_get_substrings(char *str, int *ofs, oscap_pcre_t *re, int want_substrs, char ***substrings);
+ 
+ 
+ #ifndef OS_WINDOWS
+diff --git a/tests/API/OVAL/schema_version/test_schema_version.c b/tests/API/OVAL/schema_version/test_schema_version.c
+index a282ece099d..d968f916a65 100644
+--- a/tests/API/OVAL/schema_version/test_schema_version.c
++++ b/tests/API/OVAL/schema_version/test_schema_version.c
+@@ -27,6 +27,10 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include "OVAL/public/oval_schema_version.h"
++#include <stddef.h>
++#include <assert.h>
++#include "util.h"
++#include "public/oscap_debug.h"
+ 
+ static const char *cmp_to_cstr(int cmp)
+ {
+@@ -44,6 +48,7 @@ int main(int argc, char **argv)
+ 		printf("Not enough arguments\n");
+ 		return 1;
+ 	}
++	oscap_set_verbose(NULL, NULL);
+ 	const char *v1_str = argv[1];
+ 	const char *v2_str = argv[2];
+ 	int expected_result = atoi(argv[3]);
+diff --git a/tests/API/XCCDF/unittests/CMakeLists.txt b/tests/API/XCCDF/unittests/CMakeLists.txt
+index c9c507791ce..95441b40e1c 100644
+--- a/tests/API/XCCDF/unittests/CMakeLists.txt
++++ b/tests/API/XCCDF/unittests/CMakeLists.txt
+@@ -4,6 +4,7 @@ add_oscap_test_executable(test_oscap_common
+ 	${CMAKE_SOURCE_DIR}/src/common/list.c
+ 	${CMAKE_SOURCE_DIR}/src/common/error.c
+ 	${CMAKE_SOURCE_DIR}/src/common/err_queue.c
++	${CMAKE_SOURCE_DIR}/src/common/oscap_pcre.c
+ )
+ 
+ add_oscap_test_executable(test_xccdf_overrides
+diff --git a/tests/API/probes/CMakeLists.txt b/tests/API/probes/CMakeLists.txt
+index 2ac4081ac27..cd5ca8358d3 100644
+--- a/tests/API/probes/CMakeLists.txt
++++ b/tests/API/probes/CMakeLists.txt
+@@ -27,6 +27,7 @@ add_oscap_test_executable(oval_fts_list
+ 	"${CMAKE_SOURCE_DIR}/src/common/err_queue.c"
+ 	"${CMAKE_SOURCE_DIR}/src/OVAL/probes/probe/entcmp.c"
+ 	"${CMAKE_SOURCE_DIR}/src/common/util.c"
++	"${CMAKE_SOURCE_DIR}/src/common/oscap_pcre.c"
+ 	"${OVAL_RESULTS_SOURCES}"
+ )
+ target_include_directories(oval_fts_list PUBLIC
+diff --git a/tests/API/probes/oval_fts_list.c b/tests/API/probes/oval_fts_list.c
+index eb1ffc283f0..e01526a89c4 100644
+--- a/tests/API/probes/oval_fts_list.c
++++ b/tests/API/probes/oval_fts_list.c
+@@ -9,6 +9,10 @@
+ #include "sexp.h"
+ #include "oval_fts.h"
+ #include "probe-api.h"
++#include <stddef.h>
++#include <assert.h>
++#include "util.h"
++#include "public/oscap_debug.h"
+ 
+ static int create_path_sexpr(char *arg_operation, char *arg_argument, SEXP_t **result)
+ {
+@@ -172,6 +176,8 @@ int main(int argc, char *argv[])
+ 
+ 	int ret = 0;
+ 
++	oscap_set_verbose(NULL, NULL);
++
+ 	if (argc < 11) {
+ 		fprintf(stderr, "Invalid usage -- too few arguments supplied.\n");
+ 		fprintf(stderr, "The following arguments are required, but may be empty:\n\n");
+diff --git a/tests/probes/textfilecontent54/test_recursion_limit.sh b/tests/probes/textfilecontent54/test_recursion_limit.sh
+index 2619dafdd53..f34585dba60 100755
+--- a/tests/probes/textfilecontent54/test_recursion_limit.sh
++++ b/tests/probes/textfilecontent54/test_recursion_limit.sh
+@@ -16,7 +16,7 @@ stderr=$(mktemp)
+ 
+ $OSCAP oval eval --results $result $input > $stdout 2> $stderr
+ 
+-grep -q "Function pcre_exec() failed to match a regular expression with return code -21" $stderr
++grep -q "Function oscap_pcre_exec() failed to match a regular expression with return code -21" $stderr
+ 
+ assert_exists 1 '/oval_results/results/system/definitions/definition[@definition_id="oval:x:def:1" and @result="error"]'
+ 
+diff --git a/tests/probes/xinetd/CMakeLists.txt b/tests/probes/xinetd/CMakeLists.txt
+index c2525277dde..f1bbbbc8bf2 100644
+--- a/tests/probes/xinetd/CMakeLists.txt
++++ b/tests/probes/xinetd/CMakeLists.txt
+@@ -4,6 +4,7 @@ if(ENABLE_PROBES_UNIX)
+ 		"${CMAKE_SOURCE_DIR}/src/common/bfind.c"
+ 		"${CMAKE_SOURCE_DIR}/src/OVAL/probes/SEAP/generic/rbt/rbt_common.c"
+ 		"${CMAKE_SOURCE_DIR}/src/OVAL/probes/SEAP/generic/rbt/rbt_str.c"
++		"${CMAKE_SOURCE_DIR}/src/common/oscap_pcre.c"
+ 	)
+ 	target_link_libraries(test_probe_xinetd openscap)
+ 	target_include_directories(test_probe_xinetd PUBLIC
+
+From f653e07627eea34de72ce6315af571ec4c54f10a Mon Sep 17 00:00:00 2001
+From: Evgeny Kolesnikov <ekolesni@redhat.com>
+Date: Mon, 4 Sep 2023 13:57:19 +0200
+Subject: [PATCH 3/4] Add PCRE2 library #3
+
+Move the oscap_get_substring into the oscap_pcre.c module
+and rename it into oscap_pcre_get_substring.
+
+The function imposes implicit dependencies on PCRE/PCRE2 symbols
+even for utils.c users that won't use PCRE at all (SCE library).
+---
+ CMakeLists.txt                                |  1 +
+ .../independent/textfilecontent54_probe.c     |  2 +-
+ .../independent/textfilecontent_probe.c       |  2 +-
+ src/common/oscap_pcre.c                       | 71 +++++++++++++++++++
+ src/common/oscap_pcre.h                       | 12 ++++
+ src/common/util.c                             | 71 -------------------
+ src/common/util.h                             | 14 ----
+ 7 files changed, 86 insertions(+), 87 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index b6e5a825dc1..802f9d9a2a2 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -530,6 +530,7 @@ endif()
+ 
+ if (${CMAKE_C_COMPILER_ID} STREQUAL "GNU" OR ${CMAKE_C_COMPILER_ID} STREQUAL "Clang")
+ 	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pipe -W -Wall -Wnonnull -Wshadow -Wformat -Wundef -Wno-unused-parameter -Wmissing-prototypes -Wno-unknown-pragmas -Wno-int-conversion -Werror=implicit-function-declaration -D_GNU_SOURCE -std=c99")
++	add_link_options(-Wl,-z,now)
+ endif()
+ if(${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD")
+ 	add_link_options(-lkvm -lm -lprocstat)
+diff --git a/src/OVAL/probes/independent/textfilecontent54_probe.c b/src/OVAL/probes/independent/textfilecontent54_probe.c
+index af60cdf20a5..d3a5c6eb22c 100644
+--- a/src/OVAL/probes/independent/textfilecontent54_probe.c
++++ b/src/OVAL/probes/independent/textfilecontent54_probe.c
+@@ -216,7 +216,7 @@ static int process_file(const char *prefix, const char *path, const char *file,
+ 			want_instance = 0;
+ 
+ 		SEXP_free(next_inst);
+-		substr_cnt = oscap_get_substrings(buf, &ofs, pfd->compiled_regex, want_instance, &substrs);
++		substr_cnt = oscap_pcre_get_substrings(buf, &ofs, pfd->compiled_regex, want_instance, &substrs);
+ 
+ 		if (substr_cnt < 0) {
+ 			SEXP_t *msg;
+diff --git a/src/OVAL/probes/independent/textfilecontent_probe.c b/src/OVAL/probes/independent/textfilecontent_probe.c
+index 224f0ea21a3..d4c1f62bd99 100644
+--- a/src/OVAL/probes/independent/textfilecontent_probe.c
++++ b/src/OVAL/probes/independent/textfilecontent_probe.c
+@@ -196,7 +196,7 @@ static int process_file(const char *prefix, const char *path, const char *filena
+ 	int ofs = 0;
+ 
+ 	while (fgets(line, sizeof(line), fp) != NULL) {
+-		substr_cnt = oscap_get_substrings(line, &ofs, re, 1, &substrs);
++		substr_cnt = oscap_pcre_get_substrings(line, &ofs, re, 1, &substrs);
+ 		if (substr_cnt > 0) {
+ 			int k;
+ 			SEXP_t *item;
+diff --git a/src/common/oscap_pcre.c b/src/common/oscap_pcre.c
+index d2e45292ab1..65694c44037 100644
+--- a/src/common/oscap_pcre.c
++++ b/src/common/oscap_pcre.c
+@@ -26,6 +26,8 @@
+ 
+ #include <memory.h>
+ 
++#define OSCAP_PCRE_EXEC_RECURSION_LIMIT_DEFAULT 3500
++
+ #ifdef HAVE_PCRE2
+ #define PCRE2_CODE_UNIT_WIDTH 8
+ #define PCRE2_ERR_BUF_SIZE 127
+@@ -243,6 +245,75 @@ void oscap_pcre_free(oscap_pcre_t *opcre)
+ 	}
+ }
+ 
++int oscap_pcre_get_substrings(char *str, int *ofs, oscap_pcre_t *re, int want_substrs, char ***substrings) {
++	int i, ret, rc;
++	int ovector[60], ovector_len = sizeof (ovector) / sizeof (ovector[0]);
++	char **substrs;
++
++	// todo: max match count check
++
++	for (i = 0; i < ovector_len; ++i) {
++		ovector[i] = -1;
++	}
++
++	unsigned long limit = OSCAP_PCRE_EXEC_RECURSION_LIMIT_DEFAULT;
++	char *limit_str = getenv("OSCAP_PCRE_EXEC_RECURSION_LIMIT");
++	if (limit_str != NULL)
++		if (sscanf(limit_str, "%lu", &limit) <= 0)
++			dW("Unable to parse OSCAP_PCRE_EXEC_RECURSION_LIMIT value");
++	oscap_pcre_set_match_limit_recursion(re, limit);
++	size_t str_len = strlen(str);
++#if defined(OS_SOLARIS)
++	rc = oscap_pcre_exec(re, str, str_len, *ofs, OSCAP_PCRE_OPTS_NO_UTF8_CHECK, ovector, ovector_len);
++#else
++	rc = oscap_pcre_exec(re, str, str_len, *ofs, 0, ovector, ovector_len);
++#endif
++
++	if (rc < OSCAP_PCRE_ERR_NOMATCH) {
++		if (str_len < 100)
++			dE("Function oscap_pcre_exec() failed to match a regular expression with return code %d on string '%s'.", rc, str);
++		else
++			dE("Function oscap_pcre_exec() failed to match a regular expression with return code %d on string '%.100s' (truncated, showing first 100 characters).", rc, str);
++		return rc;
++	} else if (rc == OSCAP_PCRE_ERR_NOMATCH) {
++		/* no match */
++		return 0;
++	}
++
++	*ofs = (*ofs == ovector[1]) ? ovector[1] + 1 : ovector[1];
++
++	if (!want_substrs) {
++		/* just report successful match */
++		return 1;
++	}
++
++	ret = 0;
++	if (rc == 0) {
++		/* vector too small */
++		// todo: report partial results
++		rc = ovector_len / 3;
++	}
++
++	substrs = malloc(rc * sizeof (char *));
++	for (i = 0; i < rc; ++i) {
++		int len;
++		char *buf;
++
++		if (ovector[2 * i] == -1) {
++			continue;
++		}
++		len = ovector[2 * i + 1] - ovector[2 * i];
++		buf = malloc(len + 1);
++		memcpy(buf, str + ovector[2 * i], len);
++		buf[len] = '\0';
++		substrs[ret] = buf;
++		++ret;
++	}
++
++	*substrings = substrs;
++
++	return ret;
++}
+ 
+ void oscap_pcre_err_free(char *err)
+ {
+diff --git a/src/common/oscap_pcre.h b/src/common/oscap_pcre.h
+index df8acd01543..2f37955d8cb 100644
+--- a/src/common/oscap_pcre.h
++++ b/src/common/oscap_pcre.h
+@@ -96,6 +96,18 @@ void oscap_pcre_set_match_limit_recursion(oscap_pcre_t *opcre, unsigned long lim
+  */
+ void oscap_pcre_optimize(oscap_pcre_t *opcre);
+ 
++/**
++ * Match a regular expression and return substrings.
++ * Caller is responsible for freeing the returned array.
++ * @param str subject string
++ * @param ofs starting offset in str
++ * @param re compiled regular expression
++ * @param want_substrs if non-zero, substrings will be returned
++ * @param substrings contains returned substrings
++ * @return count of matched substrings, 0 if no match
++ * negative value on failure
++ */
++int oscap_pcre_get_substrings(char *str, int *ofs, oscap_pcre_t *re, int want_substrs, char ***substrings);
+ 
+ /**
+  * Free the error message returned by oscap_pcre_compile. DON'T USE REGULAR free()!
+diff --git a/src/common/util.c b/src/common/util.c
+index 52362c098ae..8bce0d6a031 100644
+--- a/src/common/util.c
++++ b/src/common/util.c
+@@ -49,7 +49,6 @@
+ #endif
+ 
+ #define PATH_SEPARATOR '/'
+-#define OSCAP_PCRE_EXEC_RECURSION_LIMIT_DEFAULT 3500
+ 
+ int oscap_string_to_enum(const struct oscap_string_map *map, const char *str)
+ {
+@@ -361,76 +360,6 @@ char *oscap_path_join(const char *path1, const char *path2)
+ 	return joined_path;
+ }
+ 
+-int oscap_get_substrings(char *str, int *ofs, oscap_pcre_t *re, int want_substrs, char ***substrings) {
+-	int i, ret, rc;
+-	int ovector[60], ovector_len = sizeof (ovector) / sizeof (ovector[0]);
+-	char **substrs;
+-
+-	// todo: max match count check
+-
+-	for (i = 0; i < ovector_len; ++i) {
+-		ovector[i] = -1;
+-	}
+-
+-	unsigned long limit = OSCAP_PCRE_EXEC_RECURSION_LIMIT_DEFAULT;
+-	char *limit_str = getenv("OSCAP_PCRE_EXEC_RECURSION_LIMIT");
+-	if (limit_str != NULL)
+-		if (sscanf(limit_str, "%lu", &limit) <= 0)
+-			dW("Unable to parse OSCAP_PCRE_EXEC_RECURSION_LIMIT value");
+-	oscap_pcre_set_match_limit_recursion(re, limit);
+-	size_t str_len = strlen(str);
+-#if defined(OS_SOLARIS)
+-	rc = oscap_pcre_exec(re, str, str_len, *ofs, OSCAP_PCRE_OPTS_NO_UTF8_CHECK, ovector, ovector_len);
+-#else
+-	rc = oscap_pcre_exec(re, str, str_len, *ofs, 0, ovector, ovector_len);
+-#endif
+-
+-	if (rc < OSCAP_PCRE_ERR_NOMATCH) {
+-		if (str_len < 100)
+-			dE("Function oscap_pcre_exec() failed to match a regular expression with return code %d on string '%s'.", rc, str);
+-		else
+-			dE("Function oscap_pcre_exec() failed to match a regular expression with return code %d on string '%.100s' (truncated, showing first 100 characters).", rc, str);
+-		return rc;
+-	} else if (rc == OSCAP_PCRE_ERR_NOMATCH) {
+-		/* no match */
+-		return 0;
+-	}
+-
+-	*ofs = (*ofs == ovector[1]) ? ovector[1] + 1 : ovector[1];
+-
+-	if (!want_substrs) {
+-		/* just report successful match */
+-		return 1;
+-	}
+-
+-	ret = 0;
+-	if (rc == 0) {
+-		/* vector too small */
+-		// todo: report partial results
+-		rc = ovector_len / 3;
+-	}
+-
+-	substrs = malloc(rc * sizeof (char *));
+-	for (i = 0; i < rc; ++i) {
+-		int len;
+-		char *buf;
+-
+-		if (ovector[2 * i] == -1) {
+-			continue;
+-		}
+-		len = ovector[2 * i + 1] - ovector[2 * i];
+-		buf = malloc(len + 1);
+-		memcpy(buf, str + ovector[2 * i], len);
+-		buf[len] = '\0';
+-		substrs[ret] = buf;
+-		++ret;
+-	}
+-
+-	*substrings = substrs;
+-
+-	return ret;
+-}
+-
+ #ifndef OS_WINDOWS
+ FILE *oscap_fopen_with_prefix(const char *prefix, const char *path)
+ {
+diff --git a/src/common/util.h b/src/common/util.h
+index 7f84e6436bc..0811a7698c1 100644
+--- a/src/common/util.h
++++ b/src/common/util.h
+@@ -487,20 +487,6 @@ int oscap_strncasecmp(const char *s1, const char *s2, size_t n);
+  */
+ char *oscap_strerror_r(int errnum, char *buf, size_t buflen);
+ 
+-/**
+- * Match a regular expression and return substrings.
+- * Caller is responsible for freeing the returned array.
+- * @param str subject string
+- * @param ofs starting offset in str
+- * @param re compiled regular expression
+- * @param want_substrs if non-zero, substrings will be returned
+- * @param substrings contains returned substrings
+- * @return count of matched substrings, 0 if no match
+- * negative value on failure
+- */
+-int oscap_get_substrings(char *str, int *ofs, oscap_pcre_t *re, int want_substrs, char ***substrings);
+-
+-
+ #ifndef OS_WINDOWS
+ /**
+  * Open file for reading with prefix added to its name.
+
