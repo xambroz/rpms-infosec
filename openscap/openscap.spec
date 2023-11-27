@@ -19,6 +19,9 @@ Source0:        https://github.com/OpenSCAP/%{name}/releases/download/%{version}
 Patch1:         openscap-1.3.9-perlpath.patch
 
 
+# Implicit declarations due to missing includes
+Patch2:         openscap-1.3.9-includes.patch
+
 BuildRequires:  make
 BuildRequires:  cmake >= 2.6
 BuildRequires:  gcc

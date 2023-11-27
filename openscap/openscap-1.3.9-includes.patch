@@ -1,0 +1,22 @@
+diff -ru openscap-1.3.9/src/common/xml_iterate.c openscap-1.3.9.new/src/common/xml_iterate.c
+--- openscap-1.3.9/src/common/xml_iterate.c	2023-09-06 16:04:46.000000000 +0200
++++ openscap-1.3.9.new/src/common/xml_iterate.c	2023-11-27 03:13:21.931933518 +0100
+@@ -22,6 +22,7 @@
+ #endif
+ 
+ #include <string.h>
++#include <libxml/parser.h>
+ #include "debug_priv.h"
+ #include "xml_iterate.h"
+ #include "oscap_helpers.h"
+diff -ru openscap-1.3.9/src/OVAL/results/oval_cmp_evr_string.c openscap-1.3.9.new/src/OVAL/results/oval_cmp_evr_string.c
+--- openscap-1.3.9/src/OVAL/results/oval_cmp_evr_string.c	2023-09-06 16:04:46.000000000 +0200
++++ openscap-1.3.9.new/src/OVAL/results/oval_cmp_evr_string.c	2023-11-27 03:18:23.003882498 +0100
+@@ -30,6 +30,7 @@
+ #include <math.h>
+ #include <string.h>
+ #include <ctype.h>
++#include <limits.h>
+ #include "oval_cmp_evr_string_impl.h"
+ #include "oval_definitions.h"
+ #include "oval_types.h"
