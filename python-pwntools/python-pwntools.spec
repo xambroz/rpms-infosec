@@ -77,7 +77,7 @@ Recommends:      python%{python3_pkgversion}-unicorn
 # Unicorn python3 module currently not available on s390x architecture F39/F40
 # limited functionality will be available
 #%%if ( 0%%{?fedora} && 0%%{?fedora} >= 39 )
-%global __requires_exclude ^python.*unicorn.*
+#%%global __requires_exclude ^python.*unicorn.*
 #%%endif
 
 # Some packages are missing in EPEL9/8
