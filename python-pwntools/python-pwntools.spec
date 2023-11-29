@@ -69,16 +69,16 @@ BuildRequires:  python%{python3_pkgversion}-rpyc
 
 # As we have ignored the requirement of unicorn, lets at least recommend it
 # Recommends only supported on fedora and rhel8+
-%if (0%{?fedora}) || ( 0%{?rhel} && 0%{?rhel} >= 8 )
+# %%if (0%%{?fedora}) || ( 0%%{?rhel} && 0%%{?rhel} >= 8 )
 Recommends:      python%{python3_pkgversion}-unicorn
-%endif
+# %%endif
 
 
 # Unicorn python3 module currently not available on s390x architecture F39/F40
 # limited functionality will be available
-%if ( 0%{?fedora} && 0%{?fedora} >= 39 )
+#%%if ( 0%%{?fedora} && 0%%{?fedora} >= 39 )
 %global __requires_exclude ^python.*unicorn.*
-%endif
+#%%endif
 
 # Some packages are missing in EPEL9/8
 # limited functionality will be available
