@@ -16,7 +16,11 @@ Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{version}.tar.
 # Was Source0:  http://dnsmap.googlecode.com/files/dnsmap-%%{version}.tar.gz
 
 BuildRequires:  gcc
-BuildRequires: make
+BuildRequires:  make
+BuildRequires:  autoconf
+BuildRequires:  automake
+
+
 %description
 dnsmap is a small tool that perform brute-forcing of domains.
 It can use a built-in list or an external dictionary file and
