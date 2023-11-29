@@ -1,6 +1,6 @@
 Name:           python-pwntools
 Version:        4.11.1
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        A CTF framework and exploit development library
 URL:            https://github.com/Gallopsled/pwntools/
 VCS:            https://github.com/Gallopsled/pwntools/
