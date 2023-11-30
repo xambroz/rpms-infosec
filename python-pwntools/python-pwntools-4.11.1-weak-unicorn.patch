@@ -1,0 +1,41 @@
+diff -ru pwntools-4.11.1/pwnlib/elf/plt.py pwntools-4.11.1.nounicorn/pwnlib/elf/plt.py
+--- pwntools-4.11.1/pwnlib/elf/plt.py	2023-11-14 20:01:02.000000000 +0100
++++ pwntools-4.11.1.nounicorn/pwnlib/elf/plt.py	2023-11-30 22:52:44.820378779 +0100
+@@ -54,7 +54,11 @@
+     return rv
+ 
+ def prepare_unicorn_and_context(elf, got, address, data):
+-    import unicorn as U
++    try:
++        import unicorn as U
++    except ImportError:
++        log.warn("Can't import Unicorn engine on this platform. Could not emulate PLT instructions for %r" % elf)
++        return {}
+ 
+     # Instantiate the emulator with the correct arguments for the current
+     # architecutre.
+@@ -126,7 +130,11 @@
+ 
+ 
+ def emulate_plt_instructions_inner(uc, elf, got, pc, data):
+-    import unicorn as U
++    try:
++        import unicorn as U
++    except ImportError:
++        log.warn("Can't import Unicorn engine on this platform. Could not emulate PLT instructions for %r" % elf)
++        return None
+ 
+     # Hook invalid addresses and any accesses out of the specified address range
+     stopped_addr = []
+diff -ru pwntools-4.11.1/pyproject.toml pwntools-4.11.1.nounicorn/pyproject.toml
+--- pwntools-4.11.1/pyproject.toml	2023-11-14 20:01:02.000000000 +0100
++++ pwntools-4.11.1.nounicorn/pyproject.toml	2023-11-30 22:42:33.264966507 +0100
+@@ -50,7 +50,7 @@
+     "psutil>=3.3.0",
+     "intervaltree>=3.0",
+     "sortedcontainers",
+-    "unicorn>=1.0.2rc1",  # see unicorn-engine/unicorn#1100 and #1170
++#     "unicorn>=1.0.2rc1",  # see unicorn-engine/unicorn#1100 and #1170
+     "six>=1.12.0",
+     "rpyc",
+     "colored_traceback",

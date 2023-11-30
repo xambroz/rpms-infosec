@@ -28,6 +28,9 @@ Patch1:         https://github.com/Gallopsled/pwntools/pull/2302.patch#/%{name}-
 # libcdb failing on binaries not containing /bin/sh
 Patch2:         https://github.com/Gallopsled/pwntools/pull/2307.patch#/%{name}-4.11.1-binsh_search.patch
 
+# Unicorn package currently doesn't build on s390x platform, but it is used ony for resolving plt.
+# Other functionality of pwntools should be still working
+Patch3:         python-pwntools-4.11.1-weak-unicorn.patch
 
 
 BuildArch:      noarch
@@ -67,11 +70,6 @@ BuildRequires:  python%{python3_pkgversion}-rpyc
 # %%endif
 %endif
 
-# As we have ignored the requirement of unicorn, lets at least recommend it
-# Recommends only supported on fedora and rhel8+
-# %%if (0%%{?fedora}) || ( 0%%{?rhel} && 0%%{?rhel} >= 8 )
-Recommends:      python%{python3_pkgversion}-unicorn
-# %%endif
 
 
 # Unicorn python3 module currently not available on s390x architecture F39/F40
@@ -96,6 +94,12 @@ intended to make exploit writing as simple as possible.
 Summary:        %{summary}
 %{?python_provide:%python_provide python%{python3_pkgversion}-%{srcname}}
 Requires:       binutils
+
+# As we have ignored the requirement of unicorn, lets at least recommend it
+# Recommends only supported on fedora and rhel8+
+# %%if (0%%{?fedora}) || ( 0%%{?rhel} && 0%%{?rhel} >= 8 )
+Recommends:      python%{python3_pkgversion}-unicorn
+# %%endif
 
 %description -n python%{python3_pkgversion}-%{srcname}
 Pwntools is a CTF framework and exploit development library. Written
