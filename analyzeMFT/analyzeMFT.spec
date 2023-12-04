@@ -1,33 +1,36 @@
-%define debug_package	%{nil}
+Name:		analyzeMFT
+Summary:	analyzeMFT
+Group:		Applications/Forensics Tools
+Version:	3.0.1
+License:	CPL-1.0
+
+Release:	0.1%{?dist}
+URL:		https://github.com/dkovar/analyzeMFT
+VCS:		https://github.com/dkovar/analyzeMFT
+
+%global         gituser         dkovar
+%global         gitname         analyzeMFT
+%global         gitdate         20220908
+%global         commit          16d12822563cd5cae8675788134ac0ff6e9f5c01
+%global         shortcommit     %(c=%{commit}; echo ${c:0:7})
+
+
+Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 
 %if 0%{?centos}0%{?amzn} == 70
 %define python3_pkgversion 36
 %endif
 
-Summary:	analyzeMFT
-
-Packager:	Lawrence R. Rogers (lrr@cert.org)
-
-Vendor:		cert.org
-Name:		analyzeMFT
-Version:	3.0.0
-Release:	1%{?dist}
-URL:		https://github.com/eddsalkield/analyzeMFT3.git
-
-License:	GPL
-
-Group:		Applications/Forensics Tools
-Source:		%{name}-%{version}.tar.gz
-
-BuildRoot:	%{_tmppath}/rpm-root-%{name}-v%{version}
-BuildRequires:	python%{python3_pkgversion} python%{python3_pkgversion}-devel
+BuildArch:      noarch
+BuildRequires:	python%{python3_pkgversion}
+BuildRequires:	python%{python3_pkgversion}-devel
 
 %description
 analyzeMFT.py is designed to fully parse the MFT file from an NTFS filesystem
 and present the results as accurately as possible in multiple formats.
 
 %prep
-%setup
+%autosetup -n %{name}-%{commit} -p 1
 
 %build
 %py3_build
@@ -37,18 +40,19 @@ and present the results as accurately as possible in multiple formats.
 %py3_install
 ln -s %{name}.py %{buildroot}%{_prefix}/bin/%{name}
 
-%clean
-%{__rm} -rf %{buildroot}
 
 %files
-%defattr(-, root, root, 0755)
-%doc 
+%doc CHANGES.txt README.txt
+%license LICENSE.txt
 %attr(755, root, root)	%{_bindir}/%{name}.py
 %attr(-,   root, root)	%{_bindir}/%{name}
 %attr(644, root, root)	%{python3_sitelib}/*/*
 %attr(644, root, root)	%{python3_sitelib}/*egg-info
 
 %changelog
+* Mon Dec 04 2023 Michal Ambroz <rebus _AT seznam.cz> - 3.0.1-0.1
+- update to 3.0.1 python3 version from git snapshot
+
 * Fri Mar 23 2018 Lawrence R. Rogers <lrr@cert.org> - 2.0.19.1-1
 - Release 2.0.19.1
 	Changes current to 2018-03-23.
