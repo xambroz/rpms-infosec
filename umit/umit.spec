@@ -2,7 +2,7 @@ Name:           umit
 Version:        1.0
 Release:        16%{?dist}
 Summary:        Nmap front-end
-License:        GPLv2+ and LGPLv2+
+License:        GPL-2.0-or-later AND LGPL-2.0-or-later
 URL:            http://umit.sourceforge.net/
 Source0:        http://downloads.sourceforge.net/umit/umit-%{version}.tar.gz
 # http://trac.umitproject.org/ticket/378
