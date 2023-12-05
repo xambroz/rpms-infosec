@@ -1,0 +1,626 @@
+diff -ru nmap-7.94/configure.ac nmap-7.94.new/configure.ac
+--- nmap-7.94/configure.ac	2023-05-01 19:44:45.000000000 +0200
++++ nmap-7.94.new/configure.ac	2023-12-04 20:18:41.827607489 +0100
+@@ -510,7 +510,7 @@
+ 
+ # First we test whether they specified libpcre explicitly
+ AC_ARG_WITH(libpcre,
+-AC_HELP_STRING([--with-libpcre=DIR], [Use an existing (compiled) pcre lib from DIR/include and DIR/lib.])
++AC_HELP_STRING([--with-libpcre=DIR], [Use an existing (compiled) pcre2 lib from DIR/include and DIR/lib.])
+ AC_HELP_STRING([--with-libpcre=included], [Always use the version included with Nmap]),
+ [  case "$with_libpcre" in
+   yes)
+@@ -528,27 +528,28 @@
+ 
+ # If they didn't specify it, we try to find it
+ if test $have_pcre != yes -a $requested_included_pcre != yes ; then
+-  AC_CHECK_HEADER(pcre.h,
+-    AC_CHECK_LIB(pcre, pcre_version, [have_pcre=yes ]),
+-    [AC_CHECK_HEADER(pcre/pcre.h,
+-      [AC_CHECK_LIB(pcre, pcre_version, [have_pcre=yes])]
+-    )]
++  AC_CHECK_HEADER(pcre2.h,
++    AC_CHECK_LIB(pcre2-8, pcre2_compile_8, [have_pcre=yes ]),
++    [],
++    [
++#define PCRE2_CODE_UNIT_WIDTH 8
++     ]
+   )
+ fi
+ 
+ # If we still don't have it, we use our own
+ if test $have_pcre != yes ; then
+   AC_CONFIG_SUBDIRS( libpcre )
+-  CPPFLAGS="-I\$(top_srcdir)/$LIBPCREDIR $CPPFLAGS"
+-  LIBPCRE_LIBS="$LIBPCREDIR/libpcre.a"
++  CPPFLAGS="-I\$(top_srcdir)/$LIBPCREDIR/src $CPPFLAGS"
++  LIBPCRE_LIBS="$LIBPCREDIR/.libs/libpcre2-8.a"
+   PCRE_BUILD="build-pcre"
+   PCRE_CLEAN="clean-pcre"
+   PCRE_DIST_CLEAN="distclean-pcre"
+-  AC_DEFINE(PCRE_INCLUDED, 1, [Using included libpcre])
++  AC_DEFINE(PCRE_INCLUDED, 1, [Using included libpcre2])
+ else
+ # We only need to check for and use this if we are NOT using included pcre
+-  AC_CHECK_HEADERS(pcre/pcre.h)
+-  LIBPCRE_LIBS="-lpcre"
++  AC_CHECK_HEADERS(pcre2.h)
++  LIBPCRE_LIBS="-lpcre2-8"
+   PCRE_BUILD=""
+   PCRE_CLEAN=""
+   PCRE_DIST_CLEAN=""
+Only in nmap-7.94.new: configure.ac.orig
+diff -ru nmap-7.94/Makefile.in nmap-7.94.new/Makefile.in
+--- nmap-7.94/Makefile.in	2022-12-07 21:34:05.000000000 +0100
++++ nmap-7.94.new/Makefile.in	2023-12-05 00:01:57.668132344 +0100
+@@ -88,9 +88,12 @@
+ UNINSTALLNPING=@UNINSTALLNPING@
+ 
+ ifneq (@NOLUA@,yes)
+-NSE_SRC=nse_main.cc nse_utility.cc nse_nsock.cc nse_db.cc nse_dnet.cc nse_fs.cc nse_nmaplib.cc nse_debug.cc nse_pcrelib.cc nse_lpeg.cc
+-NSE_HDRS=nse_main.h nse_utility.h nse_nsock.h nse_db.h nse_dnet.h nse_fs.h nse_nmaplib.h nse_debug.h nse_pcrelib.h nse_lpeg.h
+-NSE_OBJS=nse_main.o nse_utility.o nse_nsock.o nse_db.o nse_dnet.o nse_fs.o nse_nmaplib.o nse_debug.o nse_pcrelib.o nse_lpeg.o
++# NSE_SRC=nse_main.cc nse_utility.cc nse_nsock.cc nse_db.cc nse_dnet.cc nse_fs.cc nse_nmaplib.cc nse_debug.cc nse_pcrelib.cc nse_lpeg.cc
++# NSE_HDRS=nse_main.h nse_utility.h nse_nsock.h nse_db.h nse_dnet.h nse_fs.h nse_nmaplib.h nse_debug.h nse_pcrelib.h nse_lpeg.h
++# NSE_OBJS=nse_main.o nse_utility.o nse_nsock.o nse_db.o nse_dnet.o nse_fs.o nse_nmaplib.o nse_debug.o nse_pcrelib.o nse_lpeg.o
++NSE_SRC=nse_main.cc nse_utility.cc nse_nsock.cc nse_db.cc nse_dnet.cc nse_fs.cc nse_nmaplib.cc nse_debug.cc nse_lpeg.cc
++NSE_HDRS=nse_main.h nse_utility.h nse_nsock.h nse_db.h nse_dnet.h nse_fs.h nse_nmaplib.h nse_debug.h nse_lpeg.h
++NSE_OBJS=nse_main.o nse_utility.o nse_nsock.o nse_db.o nse_dnet.o nse_fs.o nse_nmaplib.o nse_debug.o nse_lpeg.o
+ ifneq (@OPENSSL_LIBS@,)
+ NSE_SRC+=nse_openssl.cc nse_ssl_cert.cc
+ NSE_HDRS+=nse_openssl.h nse_ssl_cert.h
+diff -ru nmap-7.94/nmap.cc nmap-7.94.new/nmap.cc
+--- nmap-7.94/nmap.cc	2023-05-09 16:16:46.000000000 +0200
++++ nmap-7.94.new/nmap.cc	2023-12-04 20:18:41.830607492 +0100
+@@ -2803,10 +2803,12 @@
+   without.push_back("libz");
+ #endif
+ 
++  char pcre2_version[255];
++  pcre2_config(PCRE2_CONFIG_VERSION, pcre2_version);
+ #ifdef PCRE_INCLUDED
+-  with.push_back(std::string("nmap-libpcre-") + get_word_or_quote(pcre_version(), 0));
++  with.push_back(std::string("nmap-libpcre2-") + get_word_or_quote(pcre2_version, 0));
+ #else
+-  with.push_back(std::string("libpcre-") + get_word_or_quote(pcre_version(), 0));
++  with.push_back(std::string("libpcre2-") + get_word_or_quote(pcre2_version, 0));
+ #endif
+ 
+ #ifdef WIN32
+Only in nmap-7.94.new: nmap.cc.orig
+diff -ru nmap-7.94/nmap_config.h.in nmap-7.94.new/nmap_config.h.in
+--- nmap-7.94/nmap_config.h.in	2023-04-14 19:11:46.000000000 +0200
++++ nmap-7.94.new/nmap_config.h.in	2023-12-04 20:18:41.831607493 +0100
+@@ -103,8 +103,6 @@
+ 
+ #undef HAVE_TERMIOS_H
+ 
+-#undef HAVE_PCRE_PCRE_H
+-
+ #undef BSD_NETWORKING
+ 
+ #undef IN_ADDR_DEEPSTRUCT
+Only in nmap-7.94.new: nmap_config.h.in.orig
+diff -ru nmap-7.94/nping/nping_config.h.in nmap-7.94.new/nping/nping_config.h.in
+--- nmap-7.94/nping/nping_config.h.in	2023-04-14 19:11:46.000000000 +0200
++++ nmap-7.94.new/nping/nping_config.h.in	2023-12-04 20:18:41.831607493 +0100
+@@ -101,8 +101,6 @@
+ 
+ #undef HAVE_TERMIOS_H
+ 
+-#undef HAVE_PCRE_PCRE_H
+-
+ #undef BSD_NETWORKING
+ 
+ #undef IN_ADDR_DEEPSTRUCT
+Only in nmap-7.94.new/nping: nping_config.h.in.orig
+diff -ru nmap-7.94/nselib/unittest.lua nmap-7.94.new/nselib/unittest.lua
+--- nmap-7.94/nselib/unittest.lua	2023-05-01 19:44:40.000000000 +0200
++++ nmap-7.94.new/nselib/unittest.lua	2023-12-04 20:18:41.842607505 +0100
+@@ -107,7 +107,6 @@
+ "ospf",
+ "outlib",
+ "packet",
+-"pcre",
+ "pgsql",
+ "pop3",
+ "pppoe",
+Only in nmap-7.94.new/nselib: unittest.lua.orig
+diff -ru nmap-7.94/nse_main.cc nmap-7.94.new/nse_main.cc
+--- nmap-7.94/nse_main.cc	2023-05-01 19:44:45.000000000 +0200
++++ nmap-7.94.new/nse_main.cc	2023-12-04 20:18:41.839607502 +0100
+@@ -15,7 +15,6 @@
+ #include "nse_fs.h"
+ #include "nse_nsock.h"
+ #include "nse_nmaplib.h"
+-#include "nse_pcrelib.h"
+ #include "nse_openssl.h"
+ #include "nse_debug.h"
+ #include "nse_lpeg.h"
+@@ -562,7 +561,6 @@
+ static void set_nmap_libraries (lua_State *L)
+ {
+   static const luaL_Reg libs[] = {
+-    {NSE_PCRELIBNAME, luaopen_pcrelib},
+     {NSE_NMAPLIBNAME, luaopen_nmap},
+     {NSE_DBLIBNAME, luaopen_db},
+     {LFSLIBNAME, luaopen_lfs},
+Only in nmap-7.94.new: nse_main.cc.orig
+diff -ru nmap-7.94/nse_main.lua nmap-7.94.new/nse_main.lua
+--- nmap-7.94/nse_main.lua	2023-05-01 19:44:45.000000000 +0200
++++ nmap-7.94.new/nse_main.lua	2023-12-04 20:18:41.841607504 +0100
+@@ -292,7 +292,7 @@
+ rawset(stdnse, "silent_require", function (...)
+   local status, mod = pcall(require, ...);
+   if not status then
+-    print_debug(1, "%s", traceback(mod));
++    print_debug(2, "%s", traceback(mod));
+     error(REQUIRE_ERROR)
+   else
+     return mod;
+Only in nmap-7.94.new: nse_main.lua.orig
+diff -ru nmap-7.94/service_scan.cc nmap-7.94.new/service_scan.cc
+--- nmap-7.94/service_scan.cc	2023-04-14 19:11:46.000000000 +0200
++++ nmap-7.94.new/service_scan.cc	2023-12-04 20:41:00.512077682 +0100
+@@ -250,7 +250,7 @@
+   product_template = version_template = info_template = NULL;
+   hostname_template = ostype_template = devicetype_template = NULL;
+   regex_compiled = NULL;
+-  regex_extra = NULL;
++  match_data = NULL;
+   isInitialized = false;
+   matchops_ignorecase = false;
+   matchops_dotall = false;
+@@ -269,8 +269,22 @@
+   if (devicetype_template) free(devicetype_template);
+   for (it = cpe_templates.begin(); it != cpe_templates.end(); it++)
+     free(*it);
+-  if (regex_compiled) pcre_free(regex_compiled);
+-  if (regex_extra) pcre_free(regex_extra);
++  if (regex_compiled)
++  {
++    pcre2_code_free(regex_compiled);
++    regex_compiled=NULL;
++  }
++  if (match_data)
++  {
++    pcre2_match_data_free(match_data);
++    match_data=NULL;
++  }
++  if (match_context)
++  {
++    pcre2_match_context_free(match_context);
++    match_context=NULL;
++  }
++
+   isInitialized = false;
+ }
+ 
+@@ -350,9 +364,9 @@
+   char *tmptemplate;
+   char modestr[4];
+   char flags[4];
+-  int pcre_compile_ops = 0;
+-  const char *pcre_errptr = NULL;
+-  int pcre_erroffset = 0;
++  int pcre2_compile_ops = 0;
++  int pcre2_errcode;
++  PCRE2_SIZE  pcre2_erroffset;
+   char **curr_tmp = NULL;
+ 
+   if (isInitialized) fatal("Sorry ... %s does not yet support reinitializion", __func__);
+@@ -405,38 +419,40 @@
+ 
+   // Next we compile and study the regular expression to match
+   if (matchops_ignorecase)
+-    pcre_compile_ops |= PCRE_CASELESS;
++    pcre2_compile_ops |= PCRE2_CASELESS;
+ 
+   if (matchops_dotall)
+-    pcre_compile_ops |= PCRE_DOTALL;
++    pcre2_compile_ops |= PCRE2_DOTALL;
+ 
+-  regex_compiled = pcre_compile(matchstr, pcre_compile_ops, &pcre_errptr,
+-                                   &pcre_erroffset, NULL);
++  regex_compiled = pcre2_compile((PCRE2_SPTR)matchstr,PCRE2_ZERO_TERMINATED, pcre2_compile_ops, &pcre2_errcode,
++                                   &pcre2_erroffset, NULL);
+ 
+   if (regex_compiled == NULL)
+-    fatal("%s: illegal regexp on line %d of nmap-service-probes (at regexp offset %d): %s\n", __func__, lineno, pcre_erroffset, pcre_errptr);
++    fatal("%s: illegal regexp on line %d of nmap-service-probes (at regexp offset %ld): %d\n", __func__, lineno, pcre2_erroffset, pcre2_errcode);
+ 
+-  // Now study the regexp for greater efficiency
+-  regex_extra = pcre_study(regex_compiled, 0
+-#ifdef PCRE_STUDY_EXTRA_NEEDED
+-  | PCRE_STUDY_EXTRA_NEEDED
+-#endif
+-  , &pcre_errptr);
+-  if (pcre_errptr != NULL)
+-    fatal("%s: failed to pcre_study regexp on line %d of nmap-service-probes: %s\n", __func__, lineno, pcre_errptr);
+-
+-  if (!regex_extra) {
+-    regex_extra = (pcre_extra *) pcre_malloc(sizeof(pcre_extra));
+-    memset(regex_extra, 0, sizeof(pcre_extra));
++  // creates a new match data block for holding the result of a match
++  match_data = pcre2_match_data_create_from_pattern(
++    regex_compiled,NULL
++  );
++
++  if (!match_data) {
++    fatal("%s: failed to allocate match_data\n", __func__);
+   }
+ 
++  match_context = pcre2_match_context_create(NULL);
++
++  if (!match_context) {
++    fatal("%s: failed to allocate match_context\n", __func__);
++  }
+   // Set some limits to avoid evil match cases.
+   // These are flexible; if they cause problems, increase them.
+-#ifdef PCRE_ERROR_MATCHLIMIT
+-  regex_extra->match_limit = 100000; // 100K
+-#endif
+-#ifdef PCRE_ERROR_RECURSIONLIMIT
+-  regex_extra->match_limit_recursion = 10000; // 10K
++  pcre2_set_match_limit(match_context, 100000);
++#ifdef pcre2_set_depth_limit
++  // Changed name in PCRE2 10.30. PCRE2 uses macro definitions for function
++  // names, so we don't have to add this to configure.ac.
++  pcre2_set_depth_limit(match_context, 10000);
++#else
++  pcre2_set_recursion_limit(match_context, 10000);
+ #endif
+ 
+ 
+@@ -509,34 +525,29 @@
+   static char devicetype[32];
+   static char cpe_a[80], cpe_h[80], cpe_o[80];
+   char *bufc = (char *) buf;
+-  int ovector[150]; // allows 50 substring matches (including the overall match)
+   assert(isInitialized);
+ 
+   // Clear out the output struct
+   memset(&MD_return, 0, sizeof(MD_return));
+   MD_return.isSoft = isSoft;
+ 
+-  rc = pcre_exec(regex_compiled, regex_extra, bufc, buflen, 0, 0, ovector, sizeof(ovector) / sizeof(*ovector));
++  rc = pcre2_match(regex_compiled, (PCRE2_SPTR8)bufc, buflen, 0, 0, match_data, match_context);
+   if (rc < 0) {
+-#ifdef PCRE_ERROR_MATCHLIMIT  // earlier PCRE versions lack this
+-    if (rc == PCRE_ERROR_MATCHLIMIT) {
++    if (rc == PCRE2_ERROR_MATCHLIMIT) {
+       if (o.debugging || o.verbose > 1)
+         error("Warning: Hit PCRE_ERROR_MATCHLIMIT when probing for service %s with the regex '%s'", servicename, matchstr);
+     } else
+-#endif // PCRE_ERROR_MATCHLIMIT
+-#ifdef PCRE_ERROR_RECURSIONLIMIT
+-    if (rc == PCRE_ERROR_RECURSIONLIMIT) {
++    if (rc == PCRE2_ERROR_RECURSIONLIMIT) {
+       if (o.debugging || o.verbose > 1)
+         error("Warning: Hit PCRE_ERROR_RECURSIONLIMIT when probing for service %s with the regex '%s'", servicename, matchstr);
+     } else
+-#endif // PCRE_ERROR_RECURSIONLIMIT
+-      if (rc != PCRE_ERROR_NOMATCH) {
++      if (rc != PCRE2_ERROR_NOMATCH) {
+         fatal("Unexpected PCRE error (%d) when probing for service %s with the regex '%s'", rc, servicename, matchstr);
+       }
+   } else {
+     // Yeah!  Match apparently succeeded.
+     // Now lets get the version number if available
+-    getVersionStr(buf, buflen, ovector, rc, product, sizeof(product), version, sizeof(version), info, sizeof(info),
++    getVersionStr(buf, buflen, product, sizeof(product), version, sizeof(version), info, sizeof(info),
+                   hostname, sizeof(hostname), ostype, sizeof(ostype), devicetype, sizeof(devicetype),
+                   cpe_a, sizeof(cpe_a), cpe_h, sizeof(cpe_h), cpe_o, sizeof(cpe_o));
+     if (*product) MD_return.product = product;
+@@ -685,18 +696,17 @@
+ // This function does the substitution of a placeholder like $2 or $P(4). It
+ // returns a newly allocated string, or NULL if it fails. tmplvar is a template
+ // variable, such as "$P(2)". We set *tmplvarend to the character after the
+-// variable. subject, subjectlen, ovector, and nummatches mean the same as in
++// variable. subject, subjectlen, and match_data mean the same as in
+ // dotmplsubst().
+ static char *substvar(char *tmplvar, char **tmplvarend,
+-             const u8 *subject, int subjectlen, int *ovector,
+-             int nummatches) {
++             const u8 *subject, size_t subjectlen, pcre2_match_data *match_data
++             ) {
+   char substcommand[16];
+   char *p = NULL;
+   char *p_end;
+-  int subnum = 0;
+-  int offstart, offend;
++  u8 subnum = 0;
++  PCRE2_SIZE offstart, offend;
+   int rc;
+-  int i;
+   struct substargs command_args;
+   char *result;
+   size_t n, len;
+@@ -728,6 +738,8 @@
+   }
+ 
+   if (tmplvarend) *tmplvarend = tmplvar;
++  u32 nummatches = pcre2_get_ovector_count(match_data);
++  PCRE2_SIZE *ovector = pcre2_get_ovector_pointer(match_data);
+ 
+   strbuf_init(&result, &n, &len);
+   if (!*substcommand) {
+@@ -735,9 +747,10 @@
+     if (subnum > 9 || subnum <= 0) return NULL;
+     if (subnum >= nummatches) return NULL;
+     offstart = ovector[subnum * 2];
++    if (offstart == PCRE2_UNSET) return NULL;
+     offend = ovector[subnum * 2 + 1];
+-    assert(offstart >= 0 && offstart <= subjectlen);
+-    assert(offend >= 0 && offend <= subjectlen);
++    assert(offstart <= subjectlen);
++    assert(offend != PCRE2_UNSET && offend <= subjectlen);
+     // A plain-jane copy
+     strbuf_append(&result, &n, &len, (const char *) subject + offstart, offend - offstart);
+   } else if (strcmp(substcommand, "P") == 0) {
+@@ -749,13 +762,14 @@
+     if (subnum > 9 || subnum <= 0) return NULL;
+     if (subnum >= nummatches) return NULL;
+     offstart = ovector[subnum * 2];
++    if (offstart == PCRE2_UNSET) return NULL;
+     offend = ovector[subnum * 2 + 1];
+-    assert(offstart >= 0 && offstart <= subjectlen);
+-    assert(offend >= 0 && offend <= subjectlen);
++    assert(offstart <= subjectlen);
++    assert(offend != PCRE2_UNSET && offend <= subjectlen);
+     // This filter only includes printable characters.  It is particularly
+     // useful for collapsing unicode text that looks like
+     // "W\0O\0R\0K\0G\0R\0O\0U\0P\0"
+-    for(i=offstart; i < offend; i++) {
++    for(PCRE2_SIZE i=offstart; i < offend; i++) {
+       if (isprint((int) subject[i]))
+         strbuf_append(&result, &n, &len, (const char *) subject + i, 1);
+     }
+@@ -772,14 +786,15 @@
+     if (subnum > 9 || subnum <= 0) return NULL;
+     if (subnum >= nummatches) return NULL;
+     offstart = ovector[subnum * 2];
++    if (offstart == PCRE2_UNSET) return NULL;
+     offend = ovector[subnum * 2 + 1];
+-    assert(offstart >= 0 && offstart <= subjectlen);
+-    assert(offend >= 0 && offend <= subjectlen);
++    assert(offstart <= subjectlen);
++    assert(offend != PCRE2_UNSET && offend <= subjectlen);
+     findstr = command_args.str_args[1];
+     findstrlen = command_args.str_args_len[1];
+     replstr = command_args.str_args[2];
+     replstrlen = command_args.str_args_len[2];
+-    for(i=offstart; i < offend; ) {
++    for(PCRE2_SIZE i=offstart; i < offend; ) {
+       if (memcmp(subject + i, findstr, findstrlen) != 0) {
+         strbuf_append(&result, &n, &len, (const char *) subject + i, 1); // no match
+         i++;
+@@ -805,8 +820,9 @@
+     if (subnum > 9 || subnum <= 0) return NULL;
+     if (subnum >= nummatches) return NULL;
+     offstart = ovector[subnum * 2];
++    if (offstart == PCRE2_UNSET) return NULL;
+     offend = ovector[subnum * 2 + 1];
+-    assert(offstart >= 0 && offstart <= subjectlen);
++    assert(offend != PCRE2_UNSET && offstart <= subjectlen);
+ 
+     // overflow
+     if (offend - offstart > 8) {
+@@ -824,11 +840,11 @@
+         break;
+     }
+     if (bigendian) {
+-      for(i=offstart; i < offend; i++) {
++      for(PCRE2_SIZE i=offstart; i < offend; i++) {
+         val = (val<<8) + subject[i];
+       }
+     } else {
+-      for(i=offend - 1; i > offstart - 1; i--) {
++      for(PCRE2_SIZE i=offend - 1; i > offstart - 1; i--) {
+         val = (val<<8) + subject[i];
+       }
+     }
+@@ -847,16 +863,16 @@
+ 
+ // This function takes a template string (tmpl) which can have
+ // placeholders in it such as $1 for substring matches in a regexp
+-// that was run against subject, and subjectlen, with the 'nummatches'
+-// matches in ovector.  The NUL-terminated newly composted string is
++// that was run against subject, and subjectlen, with the
++// matches in match_data.  The NUL-terminated newly composted string is
+ // placed into 'newstr', as long as it doesn't exceed 'newstrlen'
+ // bytes.  Trailing whitespace and commas are removed.  Returns zero for success
+ //
+ // The transform argument is a function pointer. If not NULL, the given
+ // function is applied to all substitutions before they are inserted
+ // into the result string.
+-static int dotmplsubst(const u8 *subject, int subjectlen,
+-                       int *ovector, int nummatches, char *tmpl, char *newstr,
++static int dotmplsubst(const u8 *subject, size_t subjectlen,
++                       pcre2_match_data *match_data, char *tmpl, char *newstr,
+                        int newstrlen,
+                        char *(*transform)(const char *) = NULL) {
+   int newlen;
+@@ -895,7 +911,7 @@
+         dst += newlen;
+       }
+       srcstart = srcend;
+-      subst = substvar(srcstart, &srcend, subject, subjectlen, ovector, nummatches);
++      subst = substvar(srcstart, &srcend, subject, subjectlen, match_data);
+       if (subst == NULL)
+         return -1;
+       /* Apply transformation if requested. */
+@@ -937,14 +953,14 @@
+ // for a string, that string will have zero length after the function
+ // call (assuming the corresponding length passed in is at least 1)
+ 
+-int ServiceProbeMatch::getVersionStr(const u8 *subject, int subjectlen,
+-            int *ovector, int nummatches, char *product, int productlen,
+-            char *version, int versionlen, char *info, int infolen,
+-                  char *hostname, int hostnamelen, char *ostype, int ostypelen,
+-                  char *devicetype, int devicetypelen,
+-                  char *cpe_a, int cpe_alen,
+-                  char *cpe_h, int cpe_hlen,
+-                  char *cpe_o, int cpe_olen) const {
++int ServiceProbeMatch::getVersionStr(const u8 *subject, size_t subjectlen,
++            char *product, size_t productlen,
++            char *version, size_t versionlen, char *info, size_t infolen,
++                  char *hostname, size_t hostnamelen, char *ostype, size_t ostypelen,
++                  char *devicetype, size_t devicetypelen,
++                  char *cpe_a, size_t cpe_alen,
++                  char *cpe_h, size_t cpe_hlen,
++                  char *cpe_o, size_t cpe_olen) const {
+ 
+   int rc;
+   assert(productlen >= 0 && versionlen >= 0 && infolen >= 0 &&
+@@ -963,9 +979,9 @@
+ 
+   // Now lets get this started!  We begin with the product name
+   if (product_template) {
+-    rc = dotmplsubst(subject, subjectlen, ovector, nummatches, product_template, product, productlen);
++    rc = dotmplsubst(subject, subjectlen, match_data, product_template, product, productlen);
+     if (rc != 0) {
+-      error("Warning: Servicescan failed to fill product_template (subjectlen: %d, productlen: %d). Capture exceeds length? Match string was line %d: p/%s/%s/%s", subjectlen, productlen, deflineno,
++      error("Warning: Servicescan failed to fill product_template (subjectlen: %lu, productlen: %lu). Capture exceeds length? Match string was line %d: p/%s/%s/%s", subjectlen, productlen, deflineno,
+             (product_template)? product_template : "",
+             (version_template)? version_template : "",
+             (info_template)? info_template : "");
+@@ -975,9 +991,9 @@
+   }
+ 
+   if (version_template) {
+-    rc = dotmplsubst(subject, subjectlen, ovector, nummatches, version_template, version, versionlen);
++    rc = dotmplsubst(subject, subjectlen, match_data, version_template, version, versionlen);
+     if (rc != 0) {
+-      error("Warning: Servicescan failed to fill version_template (subjectlen: %d, versionlen: %d). Capture exceeds length? Match string was line %d: v/%s/%s/%s", subjectlen, versionlen, deflineno,
++      error("Warning: Servicescan failed to fill version_template (subjectlen: %lu, versionlen: %lu). Capture exceeds length? Match string was line %d: v/%s/%s/%s", subjectlen, versionlen, deflineno,
+             (product_template)? product_template : "",
+             (version_template)? version_template : "",
+             (info_template)? info_template : "");
+@@ -987,9 +1003,9 @@
+   }
+ 
+   if (info_template) {
+-    rc = dotmplsubst(subject, subjectlen, ovector, nummatches, info_template, info, infolen);
++    rc = dotmplsubst(subject, subjectlen, match_data, info_template, info, infolen);
+     if (rc != 0) {
+-      error("Warning: Servicescan failed to fill info_template (subjectlen: %d, infolen: %d). Capture exceeds length? Match string was line %d: i/%s/%s/%s", subjectlen, infolen, deflineno,
++      error("Warning: Servicescan failed to fill info_template (subjectlen: %lu, infolen: %lu). Capture exceeds length? Match string was line %d: i/%s/%s/%s", subjectlen, infolen, deflineno,
+             (product_template)? product_template : "",
+             (version_template)? version_template : "",
+             (info_template)? info_template : "");
+@@ -999,9 +1015,9 @@
+   }
+ 
+   if (hostname_template) {
+-    rc = dotmplsubst(subject, subjectlen, ovector, nummatches, hostname_template, hostname, hostnamelen);
++    rc = dotmplsubst(subject, subjectlen, match_data, hostname_template, hostname, hostnamelen);
+     if (rc != 0) {
+-      error("Warning: Servicescan failed to fill hostname_template (subjectlen: %d, hostnamelen: %d). Capture exceeds length? Match string was line %d: h/%s/", subjectlen, hostnamelen, deflineno,
++      error("Warning: Servicescan failed to fill hostname_template (subjectlen: %lu, hostnamelen: %lu). Capture exceeds length? Match string was line %d: h/%s/", subjectlen, hostnamelen, deflineno,
+             (hostname_template)? hostname_template : "");
+       if (hostnamelen > 0) *hostname = '\0';
+       retval = -1;
+@@ -1009,9 +1025,9 @@
+   }
+ 
+   if (ostype_template) {
+-    rc = dotmplsubst(subject, subjectlen, ovector, nummatches, ostype_template, ostype, ostypelen);
++    rc = dotmplsubst(subject, subjectlen, match_data, ostype_template, ostype, ostypelen);
+     if (rc != 0) {
+-      error("Warning: Servicescan failed to fill ostype_template (subjectlen: %d, ostypelen: %d). Capture exceeds length? Match string was line %d: o/%s/", subjectlen, ostypelen, deflineno,
++      error("Warning: Servicescan failed to fill ostype_template (subjectlen: %lu, ostypelen: %lu). Capture exceeds length? Match string was line %d: o/%s/", subjectlen, ostypelen, deflineno,
+             (ostype_template)? ostype_template : "");
+       if (ostypelen > 0) *ostype = '\0';
+       retval = -1;
+@@ -1019,9 +1035,9 @@
+   }
+ 
+   if (devicetype_template) {
+-    rc = dotmplsubst(subject, subjectlen, ovector, nummatches, devicetype_template, devicetype, devicetypelen);
++    rc = dotmplsubst(subject, subjectlen, match_data, devicetype_template, devicetype, devicetypelen);
+     if (rc != 0) {
+-      error("Warning: Servicescan failed to fill devicetype_template (subjectlen: %d, devicetypelen: %d). Too long? Match string was line %d: d/%s/", subjectlen, devicetypelen, deflineno,
++      error("Warning: Servicescan failed to fill devicetype_template (subjectlen: %lu, devicetypelen: %lu). Too long? Match string was line %d: d/%s/", subjectlen, devicetypelen, deflineno,
+             (devicetype_template)? devicetype_template : "");
+       if (devicetypelen > 0) *devicetype = '\0';
+       retval = -1;
+@@ -1032,7 +1048,7 @@
+      store in cpe_a, cpe_h, or cpe_o as appropriate. */
+   for (unsigned int i = 0; i < cpe_templates.size(); i++) {
+     char *cpe;
+-    int cpelen;
++    size_t cpelen;
+     int part;
+ 
+     part = cpe_get_part(cpe_templates[i]);
+@@ -1055,9 +1071,9 @@
+       continue;
+       break;
+     }
+-    rc = dotmplsubst(subject, subjectlen, ovector, nummatches, cpe_templates[i], cpe, cpelen, transform_cpe);
++    rc = dotmplsubst(subject, subjectlen, match_data, cpe_templates[i], cpe, cpelen, transform_cpe);
+     if (rc != 0) {
+-      error("Warning: Servicescan failed to fill cpe_%c (subjectlen: %d, cpelen: %d). Too long? Match string was line %d: %s", part, subjectlen, cpelen, deflineno,
++      error("Warning: Servicescan failed to fill cpe_%c (subjectlen: %lu, cpelen: %lu). Too long? Match string was line %d: %s", part, subjectlen, cpelen, deflineno,
+             (cpe_templates[i])? cpe_templates[i] : "");
+       if (cpelen > 0) *cpe = '\0';
+       retval = -1;
+Only in nmap-7.94.new: service_scan.cc.orig
+diff -ru nmap-7.94/service_scan.h nmap-7.94.new/service_scan.h
+--- nmap-7.94/service_scan.h	2023-04-14 19:11:46.000000000 +0200
++++ nmap-7.94.new/service_scan.h	2023-12-04 20:43:21.284232209 +0100
+@@ -69,16 +69,8 @@
+ 
+ #include <vector>
+ 
+-#ifdef HAVE_CONFIG_H
+-/* Needed for HAVE_PCRE_PCRE_H below */
+-#include "nmap_config.h"
+-#endif /* HAVE_CONFIG_H */
+-
+-#ifdef HAVE_PCRE_PCRE_H
+-# include <pcre/pcre.h>
+-#else
+-# include <pcre.h>
+-#endif
++#define PCRE2_CODE_UNIT_WIDTH 8
++#include <pcre2.h>
+ 
+ #undef NDEBUG
+ #include <assert.h>
+@@ -155,8 +147,9 @@
+   bool isInitialized; // Has InitMatch yet been called?
+   const char *servicename;
+   char *matchstr; // Regular expression text
+-  pcre *regex_compiled;
+-  pcre_extra *regex_extra;
++  pcre2_code *regex_compiled;
++  pcre2_match_data *match_data;
++  pcre2_match_context *match_context;
+   bool matchops_ignorecase;
+   bool matchops_dotall;
+   bool isSoft; // is this a soft match? ("softmatch" keyword in nmap-service-probes)
+@@ -179,14 +172,14 @@
+   // are sufficient).  Returns zero for success.  If no template is available
+   // for a string, that string will have zero length after the function
+   // call (assuming the corresponding length passed in is at least 1)
+-  int getVersionStr(const u8 *subject, int subjectlen, int *ovector,
+-                  int nummatches, char *product, int productlen,
+-                  char *version, int versionlen, char *info, int infolen,
+-                  char *hostname, int hostnamelen, char *ostype, int ostypelen,
+-                  char *devicetype, int devicetypelen,
+-                  char *cpe_a, int cpe_alen,
+-                  char *cpe_h, int cpe_hlen,
+-                  char *cpe_o, int cpe_olen) const;
++  int getVersionStr(const u8 *subject, size_t subjectlen,
++                  char *product, size_t productlen,
++                  char *version, size_t versionlen, char *info, size_t infolen,
++                  char *hostname, size_t hostnamelen, char *ostype, size_t ostypelen,
++                  char *devicetype, size_t devicetypelen,
++                  char *cpe_a, size_t cpe_alen,
++                  char *cpe_h, size_t cpe_hlen,
++                  char *cpe_o, size_t cpe_olen) const;
+ };
+ 
+ 

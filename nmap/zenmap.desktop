@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Zenmap
+GenericName=Nmap Security Scanner
+Comment=GUI frontend for Nmap security/port scanner
+Version=1.0
+TryExec=zenmap-root
+Exec=zenmap-root
+Icon=zenmap
+Terminal=false
+Type=Application
+Categories=System;Security;GTK;

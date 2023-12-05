@@ -1,0 +1,4 @@
+USER=root
+PROGRAM=/usr/bin/zenmap
+SESSION=true
+FALLBACK=true

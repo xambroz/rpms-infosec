@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2017 Pavel Zhukov <landgraf@fedoraproject.org> -->
+<component type="desktop">
+  <id>zenmap.desktop</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>Nmap</project_license>
+  <name>Zenmap</name>
+  <summary>The GTK+ front end for nmap</summary>
+  <description>
+    <p>
+      This package includes zenmap, a GTK+ front end for nmap. The nmap package must
+      be installed before installing nmap front end.
+    </p>
+  </description>
+  <screenshots>
+    <screenshot type="default">
+      <image>https://nmap.org/zenmap/images/zenmap-multi-1220x700.png</image>
+    </screenshot>
+    <screenshot>
+      <image>https://nmap.org/zenmap/images/zenmap-no-648x700.png</image>
+    </screenshot>
+  </screenshots>
+  <url type="homepage">https://nmap.org/zenmap/</url>
+  <update_contact>landgraf_at_fedoraproject.org</update_contact>
+</component>
