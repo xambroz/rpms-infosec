@@ -33,7 +33,9 @@ BuildRequires:  perl-generators
 
 # Nikto can work well with outputs from nmap.
 # It can parse hosts in a form of the nmap grepable optput
+%if 0%{?fedora} || ( 0%{?rhel} && 0%{?rhel} >= 8 )
 Recommends:     nmap
+%endif
 
 # Requires potentially not found by the auto dependency search
 Requires:       perl(Time::HiRes)
