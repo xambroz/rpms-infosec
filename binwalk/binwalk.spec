@@ -14,11 +14,17 @@ BuildArch:      noarch
 BuildRequires:  python%{python3_pkgversion}-devel
 BuildRequires:  python%{python3_pkgversion}-setuptools
 # https://github.com/ReFirmLabs/binwalk/issues/507
+
+# Conditional requirements not available in rhel7
+%if 0%{?fedora} || ( 0%{?rhel} && 0%{?rhel} >= 8 )
 BuildRequires:  (python%{python3_pkgversion}-zombie-imp if python%{python3_pkgversion}-devel >= 3.12)
+%endif
+
 # For tests
 BuildRequires:  python%{python3_pkgversion}-nose
 BuildRequires:  python%{python3_pkgversion}-coverage
 
+# Weak dependencied not available in rhel7
 %if 0%{?fedora} || ( 0%{?rhel} && 0%{?rhel} >= 8 )
 # Optional, for graphs and visualizations
 Suggests:       python%{python3_pkgversion}-pyqtgraph
@@ -28,6 +34,10 @@ Suggests:       capstone
 Recommends:     mtd-utils gzip bzip2 tar arj p7zip p7zip-plugins cabextract squashfs-tools lzop srecord
 Suggests:       sleuthkit
 %endif
+
+# binwalk package is shipping importable python module, it should generate the relevant python provide stanzas
+%py_provides python%{python3_pkgversion}-binwalk
+
 
 %description
 Binwalk is a tool for searching a given binary image for embedded files and
