@@ -1,25 +1,33 @@
 Name:           binwalk
-Version:        2.3.3
-Release:        3%{?dist}
+Version:        2.3.4
+Release:        5%{?dist}
 Summary:        Firmware analysis tool
 License:        MIT
 URL:            https://github.com/ReFirmLabs/binwalk
 Source0:        %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
 Patch0:         binwalk-2.3.3-tests.patch
 Patch1:         %{url}/pull/559/commits/6e7736869d998edb6384728c03a348cd9ab1f9ca.patch
-Patch2:         %{url}/pull/617/commits/696fe34ed680ffd951bfeca737feb4a0b98dde5c.patch
+Patch2:         version-oops.patch
+# https://github.com/ReFirmLabs/binwalk/issues/507
+Patch3:         requires-zombie-imp.patch
 BuildArch:      noarch
-BuildRequires:  python3-devel
-BuildRequires:  python3-setuptools
+BuildRequires:  python%{python3_pkgversion}-devel
+BuildRequires:  python%{python3_pkgversion}-setuptools
+# https://github.com/ReFirmLabs/binwalk/issues/507
+BuildRequires:  (python%{python3_pkgversion}-zombie-imp if python%{python3_pkgversion}-devel >= 3.12)
 # For tests
-BuildRequires:  python3-nose python3-coverage
+BuildRequires:  python%{python3_pkgversion}-nose
+BuildRequires:  python%{python3_pkgversion}-coverage
+
+%if 0%{?fedora} || ( 0%{?rhel} && 0%{?rhel} >= 8 )
 # Optional, for graphs and visualizations
-Suggests:       python3-pyqtgraph
+Suggests:       python%{python3_pkgversion}-pyqtgraph
 # Optional, for --disasm functionality
 Suggests:       capstone
 # Optional, for automatic extraction/decompression of files and data
 Recommends:     mtd-utils gzip bzip2 tar arj p7zip p7zip-plugins cabextract squashfs-tools lzop srecord
 Suggests:       sleuthkit
+%endif
 
 %description
 Binwalk is a tool for searching a given binary image for embedded files and
@@ -47,6 +55,21 @@ PYTHONPATH=%{buildroot}%{python3_sitelib} %{__python3} setup.py test
 %{python3_sitelib}/%{name}-%{version}*.egg-info
 
 %changelog
+* Thu Dec 07 2023 Michal Ambroz <rebus _AT seznam.cz> - 2.3.4-5
+- build for epel
+
+* Wed Jul 19 2023 Fedora Release Engineering <releng@fedoraproject.org> - 2.3.4-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_39_Mass_Rebuild
+
+* Wed Jun 28 2023 Scott Talbert <swt@techie.net> - 2.3.4-3
+- BR python3-zombie-imp to fix FTBFS with Python 3.12
+
+* Tue Jun 13 2023 Python Maint <python-maint@redhat.com> - 2.3.4-2
+- Rebuilt for Python 3.12
+
+* Fri Feb 03 2023 Scott Talbert <swt@techie.net> - 2.3.4-1
+- Update to new upstream release 2.3.4 (#2166724)
+
 * Fri Jan 27 2023 Scott Talbert <swt@techie.net> - 2.3.3-3
 - Fix path traversal in PFS extractor script (#2165006)
 

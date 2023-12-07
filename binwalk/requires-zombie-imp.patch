@@ -1,0 +1,11 @@
+diff -up binwalk-2.3.4/setup.py.imp binwalk-2.3.4/setup.py
+--- binwalk-2.3.4/setup.py.imp	2023-02-02 20:28:44.655410043 -0500
++++ binwalk-2.3.4/setup.py	2023-06-28 22:26:04.279845937 -0400
+@@ -336,6 +336,7 @@ setup(
+     author="Craig Heffner",
+     url="https://github.com/ReFirmLabs/%s" % MODULE_NAME,
+     requires=[],
++    install_requires=["zombie-imp;python_version>='3.12'"],
+     python_requires=">=3",
+     package_dir={"": "src"},
+     packages=[MODULE_NAME],
