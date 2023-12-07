@@ -1,0 +1,24 @@
+From 3623aa254df5a9029415f1d5e5e784b2691ef07d Mon Sep 17 00:00:00 2001
+From: Michal Ambroz <723625+xambroz@users.noreply.github.com>
+Date: Thu, 7 Dec 2023 10:09:56 +0100
+Subject: [PATCH] Update obsolete FSF address
+
+---
+ program/replay.pl | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/program/replay.pl b/program/replay.pl
+index ed603229..f710bd15 100755
+--- a/program/replay.pl
++++ b/program/replay.pl
+@@ -14,8 +14,8 @@
+ #  GNU General Public License for more details.
+ #
+ #  You should have received a copy of the GNU General Public License
+-#  along with this program; if not, write to the Free Software
+-#  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
++#  along with this program; if not, write to the Free Software 
++#  Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1335, USA
+ ###############################################################################
+ # PURPOSE:
+ # Replay a saved request

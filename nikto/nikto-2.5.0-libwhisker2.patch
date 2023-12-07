@@ -1,0 +1,47 @@
+diff -ru nikto-2.5.0/program/nikto.pl nikto-2.5.0.new/program/nikto.pl
+--- nikto-2.5.0/program/nikto.pl	2023-12-03 17:16:14.000000000 +0100
++++ nikto-2.5.0.new/program/nikto.pl	2023-12-07 09:30:21.363661688 +0100
+@@ -52,13 +52,13 @@
+ setup_dirs();
+ require "$CONFIGFILE{'PLUGINDIR'}/nikto_core.plugin";
+ nprint("T:" . localtime($COUNTERS{'scan_start'}) . ": Starting", "d");
+-require "$CONFIGFILE{'PLUGINDIR'}/LW2.pm";
++#require "$CONFIGFILE{'PLUGINDIR'}/LW2.pm";
+ $VARIABLES{'GMTOFFSET'} = gmt_offset();
+ 
+-# use LW2;                   ### Change this line to use a different installed version
++use LW2;                   ### Change this line to use a different installed version
+ 
+ #set SSL Engine
+-LW2::init_ssl_engine($CONFIGFILE{'LW_SSL_ENGINE'});
++#LW2::init_ssl_engine($CONFIGFILE{'LW_SSL_ENGINE'});
+ 
+ my ($a, $b) = split(/\./, $LW2::VERSION);
+ die("- You must use LW2 2.4 or later\n") if ($a != 2 || $b < 4);
+Only in nikto-2.5.0.new/program: nikto.pl.orig
+diff -ru nikto-2.5.0/program/plugins/nikto_core.plugin nikto-2.5.0.new/program/plugins/nikto_core.plugin
+--- nikto-2.5.0/program/plugins/nikto_core.plugin	2023-12-03 17:16:14.000000000 +0100
++++ nikto-2.5.0.new/program/plugins/nikto_core.plugin	2023-12-07 09:30:21.367661709 +0100
+@@ -2825,7 +2825,7 @@
+              "+ WARNING: Module JSON::PP missing. -Savedir and replay functionality cannot be used."
+              );
+     }
+-    LW2::init_ssl_engine();
++    # LW2::init_ssl_engine();
+     my ($avail, $lib, $ver) = LW2::ssl_is_available();
+     if (!$avail) {
+         nprint("+ WARNING: SSL: support not available.");
+Only in nikto-2.5.0.new/program/plugins: nikto_core.plugin.orig
+diff -ru nikto-2.5.0/program/replay.pl nikto-2.5.0.new/program/replay.pl
+--- nikto-2.5.0/program/replay.pl	2023-12-03 17:16:14.000000000 +0100
++++ nikto-2.5.0.new/program/replay.pl	2023-12-07 09:30:21.368661714 +0100
+@@ -22,7 +22,8 @@
+ ###############################################################################
+ use Getopt::Long;
+ use JSON::PP;
+-require 'plugins/LW2.pm';
++#require 'plugins/LW2.pm';
++use LW2;                   ### Change this line to use a different installed version   
+ my ($infile, $proxy, %request, $header, %result, $s_request);
+ LW2::http_init_request(\%request);
+ 
