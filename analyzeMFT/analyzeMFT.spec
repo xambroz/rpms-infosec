@@ -24,6 +24,7 @@ Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{nam
 BuildArch:      noarch
 BuildRequires:	python%{python3_pkgversion}
 BuildRequires:	python%{python3_pkgversion}-devel
+BuildRequires:	python%{python3_pkgversion}-setuptools
 
 %description
 analyzeMFT.py is designed to fully parse the MFT file from an NTFS filesystem
