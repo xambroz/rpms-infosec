@@ -1,0 +1,91 @@
+From 42308daf7065cf59b73ef7279708c9636916df04 Mon Sep 17 00:00:00 2001
+From: Joel Capitao <jcapitao@redhat.com>
+Date: Thu, 30 Jun 2022 15:59:19 +0200
+Subject: [PATCH] Replace unicodecsv by standard csv module
+
+unicodecsv is not maintained since a while now [1].
+It was preferred over standard csv because of the
+unicode support. Now that Python3 csv module [2]
+supports it, let's use it.
+
+For more context, we hit issues while rebuilding
+uncicodecsv during Fedora Python3.11 mass rebuild [3].
+
+[1] https://github.com/jdunck/python-unicodecsv
+[2] https://docs.python.org/3/library/csv.html
+[3] https://copr.fedorainfracloud.org/coprs/g/python/python3.11/package/python-unicodecsv/
+
+(cherry picked from commit 49a8952884447fc22d1fe86b0392bd3d77c21bfd)
+---
+ samples/amcache.py | 14 +++++++-------
+ setup.py           |  4 ++--
+ 2 files changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/samples/amcache.py b/samples/amcache.py
+index f215b04..e816b93 100644
+--- a/samples/amcache.py
++++ b/samples/amcache.py
+@@ -21,7 +21,7 @@ import datetime
+ from collections import namedtuple
+ 
+ import argparse
+-import unicodecsv
++import csv
+ from Registry import Registry
+ from Registry.RegistryParse import parse_windows_timestamp as _parse_windows_timestamp
+ 
+@@ -166,7 +166,7 @@ TimelineEntry = namedtuple("TimelineEntry", ["timestamp", "type", "entry"])
+ def main(argv=None):
+     if argv is None:
+         argv = sys.argv
+-        
++
+     parser = argparse.ArgumentParser(
+         description="Parse program execution entries from the Amcache.hve Registry hive")
+     parser.add_argument("registry_hive", type=str,
+@@ -185,7 +185,7 @@ def main(argv=None):
+     if sys.platform == "win32":
+         import os, msvcrt
+         msvcrt.setmode(sys.stdout.fileno(), os.O_BINARY)
+-        
++
+     r = Registry.Registry(args.registry_hive)
+ 
+     try:
+@@ -208,14 +208,14 @@ def main(argv=None):
+                     continue
+ 
+                 entries.append(TimelineEntry(ts, t, e))
+-        w = unicodecsv.writer(sys.stdout, delimiter="|", quotechar="\"",
+-                              quoting=unicodecsv.QUOTE_MINIMAL, encoding="utf-8")
++        w = csv.writer(sys.stdout, delimiter="|", quotechar="\"",
++                              quoting=csv.QUOTE_MINIMAL, encoding="utf-8")
+         w.writerow(["timestamp", "timestamp_type", "path", "sha1"])
+         for e in sorted(entries, key=lambda e: e.timestamp):
+             w.writerow([e.timestamp, e.type, e.entry.path, e.entry.sha1])
+     else:
+-        w = unicodecsv.writer(sys.stdout, delimiter="|", quotechar="\"",
+-                              quoting=unicodecsv.QUOTE_MINIMAL, encoding="utf-8")
++        w = csv.writer(sys.stdout, delimiter="|", quotechar="\"",
++                              quoting=csv.QUOTE_MINIMAL, encoding="utf-8")
+         w.writerow(map(lambda e: e.name, FIELDS))
+         for e in ee:
+             w.writerow(map(lambda i: getattr(e, i.name), FIELDS))
+diff --git a/setup.py b/setup.py
+index 87681f6..89d08ae 100755
+--- a/setup.py
++++ b/setup.py
+@@ -13,8 +13,8 @@ setup(name='python-registry',
+       packages=['Registry'],
+       classifiers = ["Programming Language :: Python",
+                      "Programming Language :: Python :: 3",
+-                     "Operating System :: OS Independent", 
++                     "Operating System :: OS Independent",
+                      "License :: OSI Approved :: Apache Software License"],
+-     install_requires=['enum-compat', 'unicodecsv']
++     install_requires=['enum-compat']
+      )
+ 
+-- 
+2.35.3
+
