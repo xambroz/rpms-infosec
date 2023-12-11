@@ -1,18 +1,20 @@
+Name:           nmap
+Epoch:          3
+Version:        7.94
+#global prerelease TEST5
+Release:        1%{?dist}
+Summary:        Network exploration tool and security scanner
+URL:            http://nmap.org/
+
+# Uses combination of licenses based on GPL license, but with extra modification
+# so it got its own license tag rhbz#1055861
+License: NPSL-0.95
+
+
 #Todo: stop using local copy of libdnet, once system distributed version
 #supports sctp (grep sctp /usr/include/dnet.h)
 
 %global _hardened_build 1
-
-Name: nmap
-Epoch: 3
-Version: 7.94
-#global prerelease TEST5
-Release: 1%{?dist}
-Summary: Network exploration tool and security scanner
-URL: http://nmap.org/
-# Uses combination of licenses based on GPL license, but with extra modification
-# so it got its own license tag rhbz#1055861
-License: NPSL-0.95
 
 # By default build with the frontend
 %bcond_without frontend
@@ -20,6 +22,7 @@ License: NPSL-0.95
 Source0: http://nmap.org/dist/%{name}-%{version}%{?prerelease}.tar.bz2
 Source1: https://nmap.org/dist/sigs/%{name}-%{version}.tar.bz2.asc
 Source2: https://svn.nmap.org/nmap/docs/nmap_gpgkeys.txt
+
 %if %{with frontend}
 Source3: zenmap.desktop
 Source4: zenmap-root.pamd
@@ -62,9 +65,14 @@ BuildRequires: zlib-devel
 BuildRequires: gnupg2
 Requires: %{name}-ncat = %{epoch}:%{version}-%{release}
 
+# zenmap frontend and ndiff were originally using python2
+# thus have been disabled in f28
+# since version 7.94 there is python3 support for those
+# so they will be re-enabled
+# still package built
 %if %{without frontend}
-Obsoletes: nmap-frontend
-Obsoletes: nmap-ndiff
+Obsoletes: nmap-frontend < 7.70-1
+Obsoletes: nmap-ndiff    < 7.70-1
 %endif
 
 %define pixmap_srcdir zenmap/share/pixmaps
@@ -113,6 +121,10 @@ Requires(preun): %{_sbindir}/alternatives
 Obsoletes: nc < 1.109.20120711-2
 Obsoletes: nc6 < 1.00-22
 Provides: nc nc6
+# for convenience provide ncat next to nmap-ncat
+Provides: ncat = %{epoch}:%{version}-%{release}
+
+
 
 %description ncat
 Ncat is a feature packed networking utility which will read and

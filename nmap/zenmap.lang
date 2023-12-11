@@ -1,0 +1,11 @@
+%lang(ru) /zenmap/share/locale/ru/LC_MESSAGES/zenmap.mo
+%lang(de) /zenmap/share/locale/de/LC_MESSAGES/zenmap.mo
+%lang(ja) /zenmap/share/locale/ja/LC_MESSAGES/zenmap.mo
+%lang(hi) /zenmap/share/locale/hi/LC_MESSAGES/zenmap.mo
+%lang(pt) /zenmap/share/locale/pt_BR/LC_MESSAGES/zenmap.mo
+%lang(es) /zenmap/share/locale/es/LC_MESSAGES/zenmap.mo
+%lang(fr) /zenmap/share/locale/fr/LC_MESSAGES/zenmap.mo
+%lang(hr) /zenmap/share/locale/hr/LC_MESSAGES/zenmap.mo
+%lang(pl) /zenmap/share/locale/pl/LC_MESSAGES/zenmap.mo
+%lang(it) /zenmap/share/locale/it/LC_MESSAGES/zenmap.mo
+%lang(zh) /zenmap/share/locale/zh/LC_MESSAGES/zenmap.mo
