@@ -1,5 +1,5 @@
-Name:           burpsuite
-Version:        1.7.36
+Name:           burpsuite_community
+Version:        2023.11.1.3
 Release:        1%{?dist}
 Summary:        Security tool for analyzing web application security
 
@@ -10,9 +10,11 @@ License:        Burp License
 
 URL:            http://portswigger.net/suite/
 #               http://portswigger.net/burp/burpsuite_free_v1.6.jar
-#               https://portswigger.net/Burp/Releases/Download?productId=100&version=1.7.06&type=Jar
-#Source0:       http://portswigger.net/burp/burpsuite_free_v%{version}.jar
+#               https://portswigger.net/Burp/Releases/Download?productId=100&version=%%{version}6&type=Jar
+# Source0:       http://portswigger.net/burp/burpsuite_free_v%{version}.jar
+# Source0:      https://portswigger.net/Burp/Releases/Download?productId=100&version=2023.11.1.3&type=Jar#/burpsuite_community_2023.11.1.3.jar
 Source0:        https://portswigger.net/Burp/Releases/Download?productId=100&version=%{version}&type=Jar#/burpsuite_community_%{version}.jar
+
 Source1:        %{name}.in
 NoSource:       0
 BuildArch:      noarch
@@ -71,17 +73,19 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/%{name}.desktop
 
 mkdir -p %{buildroot}/%{_datadir}/icons/hicolor/{16x16,20x20,28x28,32x32,64x64}/apps
 cd %{buildroot}/%{_datadir}/icons/hicolor
-jar xvf %{SOURCE0} resources/Media/icon16.png resources/Media/icon20.png resources/Media/icon28.png resources/Media/icon32.png resources/Media/icon64.png
-mv resources/Media/icon16.png ./16x16/apps/%{name}.png
-mv resources/Media/icon20.png ./20x20/apps/%{name}.png
-mv resources/Media/icon28.png ./28x28/apps/%{name}.png
-mv resources/Media/icon32.png ./32x32/apps/%{name}.png
-mv resources/Media/icon64.png ./64x64/apps/%{name}.png
+jar xvf %{SOURCE0} resources/Media/icon16community.png \
+                   resources/Media/icon20community.png \
+                   resources/Media/icon28community.png \
+                   resources/Media/icon32community.png \
+                   resources/Media/icon64community.png
+mv resources/Media/icon16community.png ./16x16/apps/%{name}.png
+mv resources/Media/icon20community.png ./20x20/apps/%{name}.png
+mv resources/Media/icon28community.png ./28x28/apps/%{name}.png
+mv resources/Media/icon32community.png ./32x32/apps/%{name}.png
+mv resources/Media/icon64community.png ./64x64/apps/%{name}.png
 rm -rf burp
 
 
-%clean
-rm -rf %{buildroot}
 
 %post
 update-desktop-database &> /dev/null ||:
