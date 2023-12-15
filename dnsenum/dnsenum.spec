@@ -1,11 +1,16 @@
 Name:       dnsenum 
-Version:    1.2.4.2
-Release:    27%{?dist}
+Version:    1.3.1
+Release:    1%{?dist}
 Summary:    A tool to enumerate DNS info about domains 
 
-License:    GPLv2+
-URL:        https://github.com/fwaeytens/dnsenum
-Source0:    https://github.com/fwaeytens/dnsenum/archive/%{version}.tar.gz
+License:    GPL-2.0-or-later
+URL:        https://github.com/SparrowOchon/dnsenum2
+#Was URL:   https://github.com/fwaeytens/dnsenum
+Source0:    https://github.com/SparrowOchon/dnsenum2/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
+# Source0:    https://github.com/fwaeytens/dnsenum/archive/%%{version}.tar.gz
+Source1:    %{name}.1
+
+
 BuildArch:  noarch
 BuildRequires:  perl-generators
 
@@ -20,19 +25,28 @@ file, calculate C class domain network ranges, perform reverse lookups on
 netranges, writes ip-blocks to domain_ips.txt.
 
 %prep
-%setup -q
+%autosetup -n dnsenum2-%{version} -p 1
+cp -p %{SOURCE1} ./
 
 %build
 # nothing to build
 
 %install
-%{__install} -Dp -m0755 %{name}.pl %{buildroot}%{_bindir}/%{name}
+%make_install INSTALL_DEPS=-1
 
 %files
-%doc README.md dns.txt
+%doc README.md
 %{_bindir}/%{name}
+%{_datadir}/%{name}
+%{_mandir}/man1/%{name}.1*
+
 
 %changelog
+* Fri Dec 01 2023 Michal Ambroz <rebus_AT seznam.cz> - 1.3.1-1
+- switch to repository https://github.com/SparrowOchon/dnsenum2
+- add manpage
+- license to 2 SPDX
+
 * Wed Jul 19 2023 Fedora Release Engineering <releng@fedoraproject.org> - 1.2.4.2-27
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_39_Mass_Rebuild
 
