@@ -183,6 +183,7 @@ install -m 755 run/stats %{buildroot}%{_libexecdir}/john/
 install -m 755 run/*.conf %{buildroot}%{_libexecdir}/john/
 install -d -m 755 %{buildroot}%{_datarootdir}/%{name}/extra/
 
+
 for LINK in `find run/ -type l` ; do
     LINKNAME=$(basename "$LINK" )
     pushd %{buildroot}%{_bindir}
@@ -191,6 +192,7 @@ for LINK in `find run/ -type l` ; do
 done
 
 # Remove files conflicting with john package
+rm -f %{buildroot}%{_bindir}/john
 rm -f %{buildroot}%{_bindir}/unafs
 rm -f %{buildroot}%{_bindir}/unique
 rm -f %{buildroot}%{_bindir}/unshadow
