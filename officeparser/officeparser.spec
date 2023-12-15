@@ -1,5 +1,5 @@
 Name:           officeparser
-Release:        9%{?dist}
+Release:        1%{?dist}
 Summary:        Parse the format of OLE compound documents used by MS Office applications
 License:        MIT
 URL:            https://github.com/unixfreak0037/officeparser
@@ -33,7 +33,12 @@ Patch3:         officeparser-03_default_help.patch
 Patch4:         officeparser-04_string_conversion.patch
 
 # make find_stream_by_name only return streams
-Patch5:         https://github.com/unixfreak0037/officeparser/pull/12.patch#/officeparser-05_find_stream_by_name.patch
+Patch12:         https://github.com/unixfreak0037/officeparser/pull/12.patch#/officeparser-12_find_stream_by_name.patch
+
+# else/elif syntax error
+Patch25:         https://patch-diff.githubusercontent.com/raw/unixfreak0037/officeparser/pull/25.patch#/officeparser-25_syntax.patch
+
+
 
 
 BuildArch:      noarch
