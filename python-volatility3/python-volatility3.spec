@@ -1,6 +1,6 @@
 Name:           python-volatility3
 Summary:        The volatile memory extraction framework
-Version:        2.4.0
+Version:        2.5.0
 %global         baserelease     1
 
 
