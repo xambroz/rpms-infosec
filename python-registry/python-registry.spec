@@ -7,7 +7,7 @@ Version:        1.4
 Release:        11%{?dist}
 Summary:        Read access to Windows Registry files
 
-License:        ASL 2.0
+License:        Apache-2.0
 URL:            https://github.com/williballenthin/python-registry
 Source0:        %{url}/archive/%{version}/%{pypi_name}-%{version}.tar.gz
 Patch0001:      0001-Replace-unicodecsv-by-standard-csv-module.patch
