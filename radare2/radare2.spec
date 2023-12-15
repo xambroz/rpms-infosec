@@ -388,6 +388,9 @@ mkdir -p %{buildroot}%{_libdir}/%{name}/%{version}
 
 
 %changelog
+* Thu Oct 26 2023 Michal Ambroz <rebus at, seznam.cz> 5.8.8-3
+- rebuild F40+ with capstone 5.0.1+
+
 * Thu Oct 26 2023 Michal Ambroz <rebus at, seznam.cz> 5.8.8-2
 - cherrypick from upstream master patches for known vulnerabilities:
 - CVE-2023-4322 - heap-buffer-overflow in the brainfuck dissassembler
