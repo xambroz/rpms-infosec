@@ -1,5 +1,6 @@
 Name:           nmap
-Epoch:          3
+# epoch bump needed with re-enabling the frontend
+Epoch:          4
 Version:        7.94
 #global prerelease TEST5
 Release:        1%{?dist}
@@ -69,7 +70,6 @@ Requires: %{name}-ncat = %{epoch}:%{version}-%{release}
 # thus have been disabled in f28
 # since version 7.94 there is python3 support for those
 # so they will be re-enabled
-# still package built
 %if %{without frontend}
 Obsoletes: nmap-frontend < 7.70-1
 Obsoletes: nmap-ndiff    < 7.70-1
