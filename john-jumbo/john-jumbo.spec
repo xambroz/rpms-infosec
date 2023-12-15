@@ -9,6 +9,15 @@ URL:            http://www.openwall.com/john
 VCS:            https://github.com/openwall/john
 Group:          Applications/System
 
+# everything is generated with debug, but then it fails
+# RPM build errors:
+#   Could not open %files file /rpmbuild/BUILD/john-4222aa48e282fdd608b4b54a7efadb834a999b42/debugsourcefiles.list: No such file or directory
+%bcond_with     debug
+
+%if %{without debug}
+%global debug_package %{nil}
+%endif
+
 %global         common_desc     %{expand:
 John the Ripper is a fast password cracker. Its primary purpose is to
 detect weak Unix passwords, but a number of other hash types are
@@ -169,6 +178,7 @@ install -d -m 755 %{buildroot}%{_libexecdir}/john
 install -m 755 run/*.pl %{buildroot}%{_bindir}/
 install -m 755 run/*.py %{buildroot}%{_bindir}/
 install -m 755 run/*.rb %{buildroot}%{_bindir}/
+install -m 755 run/john-* %{buildroot}%{_libexecdir}/john/
 install -m 755 run/stats %{buildroot}%{_libexecdir}/john/
 install -m 755 run/*.conf %{buildroot}%{_libexecdir}/john/
 install -d -m 755 %{buildroot}%{_datarootdir}/%{name}/extra/
@@ -205,10 +215,14 @@ chmod a-x %{buildroot}%{_datarootdir}/%{name}/extra/*.pl &&
 %doc %{_datarootdir}/%{name}/extra
 %license
 %{_bindir}/*
+%{_libexecdir}/john/john-*
 %{_libexecdir}/john/stats
 %{_libexecdir}/john/dumb16.conf
 %{_libexecdir}/john/dumb32.conf
 %{_libexecdir}/john/dynamic.conf
+%{_libexecdir}/john/rules-by-rate.conf
+%{_libexecdir}/john/rules-by-score.conf
+%{_libexecdir}/john/unisubst.conf
 %{_libexecdir}/john/dynamic_disabled.conf
 %{_libexecdir}/john/dynamic_flat_sse_formats.conf
 %{_libexecdir}/john/john.conf
