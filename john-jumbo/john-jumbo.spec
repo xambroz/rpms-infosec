@@ -1,7 +1,7 @@
 Summary:        John the Ripper password cracker
 Name:           john-jumbo
 Version:        1.9.0
-%global         baserelease     7
+%global         baserelease     8
 %global         jumbo_version 1
 
 License:        GPL-2.0-only
@@ -11,7 +11,7 @@ Group:          Applications/System
 
 # everything is generated with debug, but then it fails
 # RPM build errors:
-#   Could not open %files file /rpmbuild/BUILD/john-4222aa48e282fdd608b4b54a7efadb834a999b42/debugsourcefiles.list: No such file or directory
+#   Could not open %%files file /rpmbuild/BUILD/john-4222aa48e282fdd608b4b54a7efadb834a999b42/debugsourcefiles.list: No such file or directory
 %bcond_with     debug
 
 %if %{without debug}
@@ -237,6 +237,9 @@ chmod a-x %{buildroot}%{_datarootdir}/%{name}/extra/*.pl &&
 
 
 %changelog
+* Fri Apr 23 2021 Michal Ambroz <rebus _AT seznam.cz> - 1.9.0-jumbo.1.7
+- solve conflicts with john
+
 * Fri Apr 23 2021 Michal Ambroz <rebus _AT seznam.cz> - 1.9.0-jumbo.1.6
 - try with current git snapshot
 
