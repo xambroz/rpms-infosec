@@ -17,7 +17,7 @@ Patch0:         https://github.com/dirkjanm/ldapdomaindump/pull/59.patch#/%{name
 BuildArch:      noarch
 
 BuildRequires:  python%{python3_pkgversion}-devel
-BuildRequires:  python3dist(setuptools)
+BuildRequires:  pyproject-rpm-macros
 
 %global common_description %{expand:
 ldapdomaindump is a tool for collecting and parsing information available
@@ -26,7 +26,6 @@ as well as machine readable json and csv/tsv/greppable files.
 }
 
 %description %common_description
-
 
 
 %package -n     python%{python3_pkgversion}-ldapdomaindump
@@ -39,6 +38,9 @@ Requires:       python%{python3_pkgversion}-ldap3
 
 %description -n python%{python3_pkgversion}-ldapdomaindump %common_description
 
+
+%generate_buildrequires
+%pyproject_buildrequires
 
 %prep
 %autosetup -n ldapdomaindump-%{version} -p 1
