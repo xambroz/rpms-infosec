@@ -1,4 +1,5 @@
 Name:           python-impacket
+Summary:        Collection of Python classes providing access to network packets
 Version:        0.11.0
 %global         baserelease     1
 
@@ -6,6 +7,12 @@ License:        Apache-1.1 AND Zlib
 URL:            https://github.com/fortra/impacket
 # was           https://github.com/SecureAuthCorp/impacket
 # was           https://github.com/CoreSecurity/impacket
+
+# During re-add of the python2-impacket we found about dependency to ldapdomaindump
+# feature can be avoided by option --no-dump to ntlmrelay.py
+# https://bugzilla.redhat.com/show_bug.cgi?id=1672052#c8
+# Also exclude stuff from examples, recommended manually
+%global __requires_exclude ldapdomaindump|flask|httplib2
 
 %global         sum             Collection of Python classes providing access to network packets
 
@@ -29,11 +36,9 @@ the object oriented API makes it simple to work with deep protocol hierarchies.}
 %global         gitdate         20230731
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
-
 # By defualt build with python3
 # To disable python3 subpackage do: rpmbuild --rebuild python-impacket.*.src.rpm --without python3
 %bcond_without  python3
-
 
 %global         pkgver          %(echo %{version} | sed 's/\\./_/g')
 
@@ -49,9 +54,6 @@ Release:        %{baserelease}.%{gitdate}git%{shortcommit}%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 %endif
 
-
-Summary:        %{sum}
-
 BuildArch:      noarch
 
 BuildRequires:  sed
@@ -59,12 +61,10 @@ BuildRequires:  grep
 
 BuildRequires:  python%{python3_pkgversion}-devel
 BuildRequires:  python%{python3_pkgversion}-setuptools
-BuildRequires:  python%{python3_pkgversion}-wheel
-BuildRequires:  python%{python3_pkgversion}-tox-current-env
-
 
 %description
 %{common_desc}
+
 
 #===== the python3 package definition
 %package -n python%{python3_pkgversion}-%{gitname}
@@ -103,7 +103,6 @@ Requires:       python%{python3_pkgversion}-flask
 Python3 package of %{name}. %{common_desc}
 
 
-
 #===== Preparation
 %prep
 %if %{with release}
@@ -115,14 +114,11 @@ Python3 package of %{name}. %{common_desc}
 %autosetup -p 1 -n %{gitname}-%{commit}
 %endif
 
-#Missing requirements for tests
-[ ! -f requirements-test.txt ]  && cp requirements.txt requirements-test.txt
-
 # Clean-up
 
 # Use explicit python3 shabeng instead of generic env python
 # to get prepared for switch the default to python3
-sed -i -e 's|#!/usr/bin/env python|#!/usr/bin/python'"%{python3_pkgversion}"'|' \
+sed -i -e 's|#!/usr/bin/env python|#!/usr/bin/python3|' \
     impacket/mqtt.py \
     impacket/examples/ntlmrelayx/servers/socksserver.py
 
@@ -130,32 +126,28 @@ sed -i -e 's|#!/usr/bin/env python|#!/usr/bin/python'"%{python3_pkgversion}"'|' 
 # https://github.com/fortra/impacket/issues/403
 sed -i -e 's|^import uncrc32|from impacket.examples import uncrc32|;' examples/nmapAnswerMachine.py
 
-
 # Rename split.py to splitpcap.py due to generic name colliding with DiderStevensSuite
 mv examples/split.py examples/splitpcap.py
 sed -i -e "s%/split.py%/splitpcap.py%" impacket.egg-info/SOURCES.txt
 
-%generate_buildrequires
-%pyproject_buildrequires -t
-
+# Drop useles dependency on future
+# https://github.com/fortra/impacket/commit/d7b5e3 - will be fixed in 0.12.0
+sed -i "s/'future',//" setup.py
 
 #===== Build
 %build
-%pyproject_wheel
+%py3_build
 
 
 #===== Check
 %check
-%tox
-# Default tox
-# PYTHONPATH=%%{buildroot}%%{python3_sitelib} python3 -c \
-#    'import impacket.ImpactPacket ; impacket.ImpactPacket.IP().get_packet()'
-
+PYTHONPATH=$BUILD_ROOT/usr/lib/python%{python3_version}/site-packages/ python3 -c \
+    'import impacket.ImpactPacket ; impacket.ImpactPacket.IP().get_packet()'
 
 
 #===== Install
 %install
-%pyproject_install
+%py3_install
 pushd %{buildroot}%{_bindir}
 for I in *.py ; do
     BASENAME=$(basename "$I" .py)
@@ -177,14 +169,14 @@ popd
 #now in license directory
 rm -f %{buildroot}%{_defaultdocdir}/%{name}/LICENSE
 
-%pyproject_save_files impacket
-
 
 #===== files for python3 package
 %if %{with python3}
-%files -n       python%{python3_pkgversion}-%{gitname} -f %{pyproject_files}
+%files -n       python%{python3_pkgversion}-%{gitname}
 %license        LICENSE
 %doc            ChangeLog.md README.md
+%{python3_sitelib}/%{gitname}/
+%{python3_sitelib}/%{gitname}*.egg-info
 %exclude %{_defaultdocdir}/%{gitname}
 # %%exclude %%{_defaultdocdir}/%%{gitname}/testcases/*
 %exclude %{_defaultdocdir}/%{gitname}/README.md
@@ -197,7 +189,16 @@ rm -f %{buildroot}%{_defaultdocdir}/%{name}/LICENSE
 
 %changelog
 * Wed Nov 01 2023 Michal Ambroz <rebus _AT seznam.cz> - 0.11.0-1
-- bump to 0.11.1
+- bump to 0.11.0
+
+* Wed Sep 20 2023 Lumír Balhar <lbalhar@redhat.com> - 0.10.0-5
+- Remove dependency on future
+
+* Fri Jul 21 2023 Fedora Release Engineering <releng@fedoraproject.org> - 0.10.0-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_39_Mass_Rebuild
+
+* Tue Jun 13 2023 Python Maint <python-maint@redhat.com> - 0.10.0-3
+- Rebuilt for Python 3.12
 
 * Mon Jan 30 2023 Michal Ambroz <rebus _AT seznam.cz> - 0.10.0-3
 - update the git user / URL
