@@ -32,7 +32,7 @@ as well as machine readable json and csv/tsv/greppable files.
 Summary:        %{summary}
 %{?python_provide:%python_provide python%{python3_pkgversion}-ldapdomaindump}
 
-Requires:       python%{python3_pkgversion}-dnspython
+Requires:       python%{python3_pkgversion}-dns
 Requires:       python%{python3_pkgversion}-future
 Requires:       python%{python3_pkgversion}-ldap3
 
