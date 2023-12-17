@@ -1,5 +1,5 @@
-Name:		analyzeMFT
-Summary:	analyzeMFT
+Name:		python-analyzemft
+Summary:	Python tool to analyze NTFS MFT
 Group:		Applications/Forensics Tools
 Version:	3.0.1
 License:	CPL-1.0
@@ -15,7 +15,7 @@ VCS:		https://github.com/dkovar/analyzeMFT
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
-Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
+Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{gitname}-%{version}-%{shortcommit}.tar.gz
 
 %if 0%{?centos}0%{?amzn} == 70
 %define python3_pkgversion 36
@@ -26,12 +26,25 @@ BuildRequires:	python%{python3_pkgversion}
 BuildRequires:	python%{python3_pkgversion}-devel
 BuildRequires:	python%{python3_pkgversion}-setuptools
 
-%description
+%global         common_description %{expand:
 analyzeMFT.py is designed to fully parse the MFT file from an NTFS filesystem
 and present the results as accurately as possible in multiple formats.
+}
+
+%description %common_description
+
+
+%package -n     python3-analyzemft
+Summary:        %{summary}
+%{?python_provide:%python_provide python3-analyzemft}
+# for convenience update the older CERT package
+Provides: analyzeMFT = %{version}-%{release}
+Obsoletes: analyzeMFT <= 3.0.1
+
+%description -n python3-analyzemft %common_description
 
 %prep
-%autosetup -n %{name}-%{commit} -p 1
+%autosetup -n %{gitname}-%{commit} -p 1
 
 %build
 %py3_build
@@ -39,16 +52,16 @@ and present the results as accurately as possible in multiple formats.
 
 %install
 %py3_install
-ln -s %{name}.py %{buildroot}%{_prefix}/bin/%{name}
+ln -s %{gitname}.py %{buildroot}%{_prefix}/bin/%{gitname}
 
 
-%files
+%files -n python3-analyzemft
 %doc CHANGES.txt README.txt
 %license LICENSE.txt
-%attr(755, root, root)	%{_bindir}/%{name}.py
-%attr(-,   root, root)	%{_bindir}/%{name}
-%attr(644, root, root)	%{python3_sitelib}/*/*
-%attr(644, root, root)	%{python3_sitelib}/*egg-info
+%{_bindir}/%{gitname}
+%{_bindir}/%{gitname}.py
+%{python3_sitelib}/analyzemft
+%{python3_sitelib}/*egg-info
 
 %changelog
 * Mon Dec 04 2023 Michal Ambroz <rebus _AT seznam.cz> - 3.0.1-0.1
