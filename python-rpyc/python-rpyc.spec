@@ -24,9 +24,7 @@ so that remote objects can be manipulated as if they were local.
 %package -n python3-%{modname}
 Summary:        %{summary}
 
-BuildRequires:  python3
-BuildRequires:  python3-devel
-BuildRequires:  python3-setuptools
+BuildRequires:  python%{python3_pkgversion}-devel
 Obsoletes:      python2-%{modname} < 4.0.1-4
 %{?python_provide:%python_provide python3-%{modname}}
 
