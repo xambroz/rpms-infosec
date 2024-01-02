@@ -20,19 +20,33 @@ so that remote objects can be manipulated as if they were local.
 
 %description %_description
 
+BuildRequires:  pyproject-rpm-macros
+
 
 %package -n python3-%{modname}
 Summary:        %{summary}
 
 BuildRequires:  python%{python3_pkgversion}-devel
+
+# pyproject_buildrequires might not work on EPEL <= 8
+BuildRequires:  python3dist(hatchling) >= 1.6
+BuildRequires:  python3dist(packaging)
+BuildRequires:  python3dist(pip) >= 19
+BuildRequires:  python3dist(plumbum)
+BuildRequires:  python3dist(tox)
+BuildRequires:  python3dist(tox-current-env) >= 0.0.6
+
 Obsoletes:      python2-%{modname} < 4.0.1-4
 %{?python_provide:%python_provide python3-%{modname}}
 
 %description -n python3-%{modname} %_description
 
-
+# pyproject_buildrequires might not work on EPEL <= 8
+%{?pyproject_buildrequires:
 %generate_buildrequires
 %pyproject_buildrequires -t
+}
+
 
 
 %prep
@@ -61,5 +75,7 @@ mv %{buildroot}%{_bindir}/rpyc_registry.py %{buildroot}%{_bindir}/rpyc_registry
 %{_bindir}/rpyc_*
 
 %changelog
+%{?%autochangelog:
 %autochangelog
+}
 
