@@ -78,6 +78,7 @@ BuildRequires:  xmlsec1-devel
 BuildRequires:  xmlsec1-openssl-devel
 %if 0%{?epel}
 BuildRequires:  epel-rpm-macros
+BuildRequires:  cmake-rpm-macros
 %endif
 
 %if %{with apt}
@@ -225,6 +226,8 @@ Tool for scanning Atomic containers.
 %autosetup -p1
 
 %build
+%undefine __cmake_in_source_build
+
 # gconf is a legacy system not used any more, and it blocks testing of oscap-anaconda-addon
 # as gconf is no longer part of the installation medium
 %cmake \
