@@ -1,6 +1,6 @@
 Name:           openscap
 Version:        1.3.9
-Release:        1%{?dist}
+Release:        6%{?dist}
 Epoch:          1
 Summary:        Set of open source libraries enabling integration of the SCAP line of standards
 License:        LGPL-2.1-or-later
@@ -8,11 +8,19 @@ URL:            http://www.open-scap.org/
 VCS:            https://github.com/OpenSCAP/openscap
 Source0:        https://github.com/OpenSCAP/%{name}/releases/download/%{version}/%{name}-%{version}.tar.gz
 
+# By default build with checks
 %bcond_without  check
 
-# merged to 1.3.9
-# port to PCRE2 (PR#2015), minus CI-specific changes
-# Patch0:       2015.patch
+# apt is missing in CentOS, opendbx is missing in RHEL
+# conditional allows for example rebuild in COPR + EPEL
+%bcond_with     apt
+%bcond_with     opendbx
+
+# By default fedora package is built with apt and opendbx support
+%if %{?fedora}
+%bcond_without  apt
+%bcond_without  opendbx
+%endif
 
 # Fedora arched lib directories
 # https://github.com/OpenSCAP/openscap/pull/2056
@@ -20,7 +28,23 @@ Patch1:         openscap-1.3.9-perlpath.patch
 
 
 # Implicit declarations due to missing includes
+# reported in #PR2060, #PR2061, #PR2062
+# https://github.com/OpenSCAP/openscap/pull/2060
+# https://github.com/OpenSCAP/openscap/pull/2061
+# https://github.com/OpenSCAP/openscap/pull/2062
 Patch2:         openscap-1.3.9-includes.patch
+
+# Fix test test_sysctl_probe_all.sh
+# https://github.com/OpenSCAP/openscap/commit/f8366b395b977392d724c6cc84c7295590c39ee8
+Patch3: openscap-1.3.10-fix_sysctl_probe_tests-PR-2050.patch
+
+# Fix type of libxml2 error callback function
+# https://github.com/OpenSCAP/openscap/pull/2069
+Patch4:         openscap-1.3.9-c99-libxml2.patch
+
+# Python bindings: Do not reuse $result for pointer conversion result
+# https://github.com/OpenSCAP/openscap/pull/2069
+Patch5:         openscap-1.3.9-c99-python.patch
 
 BuildRequires:  make
 BuildRequires:  cmake >= 2.6
@@ -44,8 +68,17 @@ BuildRequires:  dbus-devel
 BuildRequires:  libyaml-devel
 BuildRequires:  xmlsec1-devel
 BuildRequires:  xmlsec1-openssl-devel
+
+%if %{with apt}
+# apt-libs missing on Centos
 BuildRequires:  apt-devel
+%endif
+
+%if %{with opendbx}
+# opendbx is not available in RHEL
 BuildRequires:  opendbx-devel
+%endif
+
 # GConf2 not used on purpose as obsolete and blocking anaconda addon
 # BuildRequires:  GConf2-devel
 BuildRequires:  procps-ng-devel
@@ -69,6 +102,13 @@ Requires:       popt
 # Fedora has procps-ng, which provides procps
 Requires:       procps
 Requires:       xmlsec1 xmlsec1-openssl
+
+%if %{with apt}
+# apt-libs missing on Centos
+Requires:       apt-libs
+%endif
+
+
 
 %description
 OpenSCAP is a set of open source libraries providing an easier path
@@ -102,13 +142,13 @@ libraries can be used by python3.
 %package        perl
 Summary:        Perl bindings for %{name}
 Requires:       %{name}%{?_isa} = %{epoch}:%{version}-%{release}
-BuildRequires:	coreutils
-BuildRequires:	findutils
-BuildRequires:	make
-BuildRequires:	perl-generators
+BuildRequires:  coreutils
+BuildRequires:  findutils
+BuildRequires:  make
+BuildRequires:  perl-generators
 BuildRequires:  perl-interpreter
 BuildRequires:  perl-devel
-BuildRequires:	perl-XML-Parser
+BuildRequires:  perl-XML-Parser
 
 %description    perl
 The perl package contains the bindings so that %{name}
@@ -190,10 +230,10 @@ ctest -V -E sce/test_sce_in_ds.sh
 %install
 %cmake_install
 
-find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
+find %{buildroot} -name '*.la' -exec rm -f {} ';'
 
 # fix python shebangs
-%{__python3} %{_rpmconfigdir}/redhat/pathfix.py -i %{__python3} -p -n $RPM_BUILD_ROOT%{_bindir}/scap-as-rpm
+%{__python3} %{_rpmconfigdir}/redhat/pathfix.py -i %{__python3} -p -n %{buildroot}%{_bindir}/scap-as-rpm
 
 %ldconfig_scriptlets
 
@@ -262,6 +302,23 @@ find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
 %{_mandir}/man8/oscap-podman.8*
 
 %changelog
+* Wed Jan 10 2024 Michal Ambroz <rebus _AT seznam.cz> - 1:1.3.9-6
+- add conditionals to be able to rebuild with opendbx/apt even on EPEL+RHEL
+- cosmetics: rename patches, add comments, use buildroot macro instead of env
+
+* Thu Jan 04 2024 Yaakov Selkowitz <yselkowi@redhat.com> - 1:1.3.9-5
+- Enable opendbx for SQL probes only in Fedora
+
+* Wed Jan 03 2024 Florian Weimer <fweimer@redhat.com> - 1:1.3.9-4
+- Fix C compatibility issues
+
+* Wed Dec 20 2023 Jan Černý <jcerny@redhat.com> - 1:1.3.9-3
+- Fix test test_sysctl_probe_all.sh
+- Clean up the repository
+
+* Thu Nov 23 2023 Michal Ambroz <rebus _AT seznam.cz> - 1:1.3.9-2
+- adding conditional for apt-devel apt-libs as proposed upstream
+
 * Thu Nov 23 2023 Michal Ambroz <rebus _AT seznam.cz> - 1:1.3.9-1
 - bump to 1.3.9
 - provide perl binding

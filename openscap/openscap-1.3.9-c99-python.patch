@@ -1,0 +1,25 @@
+Python bindings: Do not reuse $result for pointer conversion result
+
+The $result variable may be a pointer, but SWIG_ConvertPtr returns
+an int.  This change avoids a compilation failure with current
+compilers due to a C type error.
+
+Submitted upstream: <https://github.com/OpenSCAP/openscap/pull/2069>x
+
+diff --git a/swig/openscap.i b/swig/openscap.i
+index 219e1aa3c9ddf28b..6f29fc23c808bcfc 100644
+--- a/swig/openscap.i
++++ b/swig/openscap.i
+@@ -64,9 +64,9 @@
+ }
+ 
+ %typemap(in) void * {
+-    $result = SWIG_ConvertPtr($input,%as_voidptrptr(&$1), 0, $disown);
+-    if (!SWIG_IsOK($result)) {
+-        %argument_fail($result, "$type", $symname, $argnum);
++    int ptrres = SWIG_ConvertPtr($input,%as_voidptrptr(&$1), 0, $disown);
++    if (!SWIG_IsOK(ptrres)) {
++        %argument_fail(ptrres, "$type", $symname, $argnum);
+     }
+ }
+ 

@@ -1,0 +1,41 @@
+Fix type of libxml2 error callback function
+
+Current libxml2 uses void(void *user, const xmlError *error),
+previously void(void *user, xmlError *error) was used.  Switch the
+function definition to the current type and add a cast to avoid
+incompatible-pointer-types errors with newer compilers building
+against older libxml2.
+
+Submitted upstream: <https://github.com/OpenSCAP/openscap/pull/2069>x
+
+diff --git a/src/source/validate.c b/src/source/validate.c
+index da8c46dcb185c3fe..ffc54f55031746fc 100644
+--- a/src/source/validate.c
++++ b/src/source/validate.c
+@@ -46,7 +46,7 @@ struct ctxt {
+ 	char *filename;
+ };
+ 
+-static void oscap_xml_validity_handler(void *user, xmlErrorPtr error)
++static void oscap_xml_validity_handler(void *user, const xmlError *error)
+ {
+ 	struct ctxt * context = (struct ctxt *) user;
+ 
+@@ -111,7 +111,7 @@ static inline int oscap_validate_xml(struct oscap_source *source, const char *sc
+ 		goto cleanup;
+ 	}
+ 
+-	xmlSchemaSetParserStructuredErrors(parser_ctxt, oscap_xml_validity_handler, &context);
++	xmlSchemaSetParserStructuredErrors(parser_ctxt, (xmlStructuredErrorFunc) oscap_xml_validity_handler, &context);
+ 
+ 	schema = xmlSchemaParse(parser_ctxt);
+ 	if (schema == NULL) {
+@@ -125,7 +125,7 @@ static inline int oscap_validate_xml(struct oscap_source *source, const char *sc
+ 		goto cleanup;
+ 	}
+ 
+-	xmlSchemaSetValidStructuredErrors(ctxt, oscap_xml_validity_handler, &context);
++	xmlSchemaSetValidStructuredErrors(ctxt, (xmlStructuredErrorFunc) oscap_xml_validity_handler, &context);
+ 
+ 	doc = oscap_source_get_xmlDoc(source);
+ 	if (!doc)
