@@ -30,8 +30,9 @@ for the expression of Computer Network Defense related information.}
 %endif
 
 # Fedora arched lib directories
-# https://github.com/OpenSCAP/openscap/pull/2056
-Patch1:         openscap-1.3.9-perlpath.patch
+# originally https://github.com/OpenSCAP/openscap/pull/2056
+# accepted was https://github.com/OpenSCAP/openscap/pull/2054
+Patch1:         https://github.com/OpenSCAP/openscap/pull/2054.patch#/openscap-1.3.9-perlpath.patch
 
 
 # Implicit declarations due to missing includes
@@ -266,7 +267,7 @@ find %{buildroot} -name '*.la' -exec rm -f {} ';'
 
 
 %files perl
-%{perl_vendorarch}/openscap_pm.pm
+%{perl_vendorlib}/openscap_pm.pm
 %{perl_vendorarch}/openscap_pm.so
 
 
