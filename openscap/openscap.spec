@@ -75,6 +75,9 @@ BuildRequires:  dbus-devel
 BuildRequires:  libyaml-devel
 BuildRequires:  xmlsec1-devel
 BuildRequires:  xmlsec1-openssl-devel
+%if 0%{?epel}
+BuildRequires:  epel-rpm-macros
+%endif
 
 %if %{with apt}
 # apt-libs missing on Centos
