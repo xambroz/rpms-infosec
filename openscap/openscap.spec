@@ -93,11 +93,13 @@ BuildRequires:  opendbx-devel
 # GConf2 not used on purpose as obsolete and blocking anaconda addon
 # BuildRequires:  GConf2-devel
 BuildRequires:  procps-ng-devel
+
 %if %{with check}
 BuildRequires:  perl-interpreter
 BuildRequires:  perl-XML-XPath
 BuildRequires:  bzip2
 %endif
+
 BuildRequires:  systemd-rpm-macros
 
 Requires:       bash
@@ -247,9 +249,15 @@ ctest -V -E sce/test_sce_in_ds.sh
 find %{buildroot} -name '*.la' -exec rm -f {} ';'
 
 # fix python shebangs
+%if 0%{?fedora}
 %{__python3} %{_rpmconfigdir}/redhat/pathfix.py -i %{__python3} -p -n %{buildroot}%{_bindir}/scap-as-rpm
+%else
+pathfix.py -i %{__python3} -p -n %{buildroot}%{_bindir}/scap-as-rpm
+%endif
+
 
 %ldconfig_scriptlets
+
 
 %files
 %doc AUTHORS NEWS README.md
