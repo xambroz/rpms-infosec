@@ -1,12 +1,121 @@
-diff -ru openscap-1.3.9/swig/perl/CMakeLists.txt openscap-1.3.9.new/swig/perl/CMakeLists.txt
---- openscap-1.3.9/swig/perl/CMakeLists.txt	2023-09-06 16:04:46.000000000 +0200
-+++ openscap-1.3.9.new/swig/perl/CMakeLists.txt	2023-11-23 23:55:45.662845801 +0100
-@@ -20,7 +20,7 @@
+From f997cee6f74f4698aadc136b821bc0d5875c59de Mon Sep 17 00:00:00 2001
+From: Stephen L Arnold <sarnold@vctlabs.com>
+Date: Tue, 11 Jul 2023 17:49:10 -0700
+Subject: [PATCH 1/3] make default perl install path respect
+ CMAKE_INSTALL_PREFIX
+
+Signed-off-by: Stephen L Arnold <sarnold@vctlabs.com>
+---
+ swig/perl/CMakeLists.txt | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/swig/perl/CMakeLists.txt b/swig/perl/CMakeLists.txt
+index 057b365bf7..5ce41e9fa8 100644
+--- a/swig/perl/CMakeLists.txt
++++ b/swig/perl/CMakeLists.txt
+@@ -1,6 +1,8 @@
+ include(UseSWIG)
+ include(FindPerlLibs)
+ 
++string(SUBSTRING "${PERL_VERSION_STRING}" 0 4 PERL_VERSION_MINOR)
++
+ set(CMAKE_SWIG_FLAGS "-module" "openscap_pm")
+ if (${CMAKE_VERSION} VERSION_LESS "3.8.0")
+ 	swig_add_module(openscap_pm perl5 ../openscap.i)
+@@ -20,7 +22,7 @@ if (APPLE OR (${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD"))
                  DESTINATION ${CMAKE_INSTALL_DATADIR}/perl5/vendor_perl)
  else()
          install(TARGETS ${SWIG_MODULE_openscap_pm_REAL_NAME}
 -               DESTINATION ${PERL_VENDORLIB})
-+               DESTINATION ${PERL_VENDORARCH})
++               DESTINATION ${CMAKE_INSTALL_LIBDIR}/perl5/${PERL_VERSION_MINOR})
          install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/openscap_pm.pm
-                DESTINATION ${PERL_VENDORARCH})
+-               DESTINATION ${PERL_VENDORARCH})
++               DESTINATION ${CMAKE_INSTALL_LIBDIR}/perl5/vendor_perl/${PERL_VERSION_MINOR})
  endif()
+
+From 6549f7f3142fa071966a6b7c97cd1b85edece990 Mon Sep 17 00:00:00 2001
+From: Stephen L Arnold <sarnold@vctlabs.com>
+Date: Thu, 14 Dec 2023 16:06:34 -0800
+Subject: [PATCH 2/3] chg: dev: use cmake vendor paths for perl install
+ defaults
+
+* also display both vendor/non-vendor system paths in linux envs
+
+Signed-off-by: Stephen L Arnold <sarnold@vctlabs.com>
+---
+ CMakeLists.txt           |  4 ++++
+ swig/perl/CMakeLists.txt | 10 ++++++++--
+ 2 files changed, 12 insertions(+), 2 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 6244980583..d43993bce5 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -463,6 +463,10 @@ message(STATUS " ")
+ message(STATUS "Language bindings:")
+ message(STATUS "python3 bindings: ${ENABLE_PYTHON3}")
+ message(STATUS "perl bindings: ${ENABLE_PERL}")
++message(STATUS "perl vendorlib: ${PERL_VENDORLIB}")
++message(STATUS "perl vendorarch: ${PERL_VENDORARCH}")
++message(STATUS "perl privlib: ${PERL_PRIVLIB}")
++message(STATUS "perl archlib: ${PERL_ARCHLIB}")
+ message(STATUS " ")
+ 
+ message(STATUS "Utilities:")
+diff --git a/swig/perl/CMakeLists.txt b/swig/perl/CMakeLists.txt
+index 5ce41e9fa8..789394636c 100644
+--- a/swig/perl/CMakeLists.txt
++++ b/swig/perl/CMakeLists.txt
+@@ -3,6 +3,12 @@ include(FindPerlLibs)
+ 
+ string(SUBSTRING "${PERL_VERSION_STRING}" 0 4 PERL_VERSION_MINOR)
+ 
++# process cmake vendor paths to respect install prefix, use as Linux defaults below
++STRING(REGEX REPLACE "^/usr/" "${CMAKE_INSTALL_PREFIX}/" PERL_VENDORARCH "${PERL_VENDORARCH}")
++STRING(REGEX REPLACE "^/usr/" "${CMAKE_INSTALL_PREFIX}/" PERL_VENDORLIB "${PERL_VENDORLIB}")
++message(STATUS "perl install libdir: ${PERL_VENDORARCH}")
++message(STATUS "perl install archdir: ${PERL_VENDORLIB}")
++
+ set(CMAKE_SWIG_FLAGS "-module" "openscap_pm")
+ if (${CMAKE_VERSION} VERSION_LESS "3.8.0")
+ 	swig_add_module(openscap_pm perl5 ../openscap.i)
+@@ -22,7 +28,7 @@ if (APPLE OR (${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD"))
+                 DESTINATION ${CMAKE_INSTALL_DATADIR}/perl5/vendor_perl)
+ else()
+         install(TARGETS ${SWIG_MODULE_openscap_pm_REAL_NAME}
+-               DESTINATION ${CMAKE_INSTALL_LIBDIR}/perl5/${PERL_VERSION_MINOR})
++                DESTINATION ${PERL_VENDORARCH}/auto/openscap_pm/)
+         install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/openscap_pm.pm
+-               DESTINATION ${CMAKE_INSTALL_LIBDIR}/perl5/vendor_perl/${PERL_VERSION_MINOR})
++                DESTINATION ${PERL_VENDORARCH})
+ endif()
+
+From f70f38ecaf659474e69c902454f3bfcfedc89cc0 Mon Sep 17 00:00:00 2001
+From: Stephen L Arnold <sarnold@vctlabs.com>
+Date: Fri, 15 Dec 2023 16:44:53 -0800
+Subject: [PATCH 3/3] check for default prefix before (possibly) munging with
+ prefix string
+
+Signed-off-by: Stephen L Arnold <sarnold@vctlabs.com>
+---
+ swig/perl/CMakeLists.txt | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/swig/perl/CMakeLists.txt b/swig/perl/CMakeLists.txt
+index 789394636c..ca4d2705e2 100644
+--- a/swig/perl/CMakeLists.txt
++++ b/swig/perl/CMakeLists.txt
+@@ -4,8 +4,11 @@ include(FindPerlLibs)
+ string(SUBSTRING "${PERL_VERSION_STRING}" 0 4 PERL_VERSION_MINOR)
+ 
+ # process cmake vendor paths to respect install prefix, use as Linux defaults below
+-STRING(REGEX REPLACE "^/usr/" "${CMAKE_INSTALL_PREFIX}/" PERL_VENDORARCH "${PERL_VENDORARCH}")
+-STRING(REGEX REPLACE "^/usr/" "${CMAKE_INSTALL_PREFIX}/" PERL_VENDORLIB "${PERL_VENDORLIB}")
++if (NOT CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
++        STRING(REGEX REPLACE "^/usr/" "${CMAKE_INSTALL_PREFIX}/" PERL_VENDORARCH "${PERL_VENDORARCH}")
++        STRING(REGEX REPLACE "^/usr/" "${CMAKE_INSTALL_PREFIX}/" PERL_VENDORLIB "${PERL_VENDORLIB}")
++endif()
++
+ message(STATUS "perl install libdir: ${PERL_VENDORARCH}")
+ message(STATUS "perl install archdir: ${PERL_VENDORLIB}")
+ 

@@ -139,6 +139,9 @@ Summary:        Python 3 bindings for %{name}
 Requires:       %{name}%{?_isa} = %{epoch}:%{version}-%{release}
 %{?python_provide:%python_provide python%{python3_pkgversion}-openscap }
 BuildRequires:  python%{python3_pkgversion}-devel
+%if 0%{?fedora}
+BuildRequires:  python-rpm-macros
+%endif
 
 %description    python3
 The %{name}-python3 package contains the bindings so that %{name}
@@ -267,8 +270,8 @@ find %{buildroot} -name '*.la' -exec rm -f {} ';'
 
 
 %files perl
-%{perl_vendorlib}/openscap_pm.pm
-%{perl_vendorarch}/openscap_pm.so
+%{perl_vendorarch}/openscap_pm.pm
+%{perl_vendorarch}/auto/openscap_pm/openscap_pm.so
 
 
 %files devel
@@ -485,10 +488,10 @@ find %{buildroot} -name '*.la' -exec rm -f {} ';'
 * Thu Jun 13 2019 Jan Černý <jcerny@redhat.com> - 1:1.3.1-1
 - upgrade to the latest upstream release
 
-* Mon Jun 10 22:13:21 CET 2019 Igor Gnatenko <ignatenkobrain@fedoraproject.org> - 1:1.3.0-7
+* Mon Jun 10 2019 Igor Gnatenko <ignatenkobrain@fedoraproject.org> - 1:1.3.0-7
 - Rebuild for RPM 4.15
 
-* Mon Jun 10 15:42:04 CET 2019 Igor Gnatenko <ignatenkobrain@fedoraproject.org> - 1:1.3.0-6
+* Mon Jun 10 2019 Igor Gnatenko <ignatenkobrain@fedoraproject.org> - 1:1.3.0-6
 - Rebuild for RPM 4.15
 
 * Sat Jun 01 2019 Jitka Plesnikova <jplesnik@redhat.com> - 1:1.3.0-5
