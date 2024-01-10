@@ -8,6 +8,13 @@ URL:            http://www.open-scap.org/
 VCS:            https://github.com/OpenSCAP/openscap
 Source0:        https://github.com/OpenSCAP/%{name}/releases/download/%{version}/%{name}-%{version}.tar.gz
 
+%global         common_description %{expand:
+OpenSCAP is a set of open source libraries providing an easier path
+for integration of the SCAP line of standards. SCAP is a line of standards
+managed by NIST with the goal of providing a standard language
+for the expression of Computer Network Defense related information.}
+
+
 # By default build with checks
 %bcond_without  check
 
@@ -17,7 +24,7 @@ Source0:        https://github.com/OpenSCAP/%{name}/releases/download/%{version}
 %bcond_with     opendbx
 
 # By default fedora package is built with apt and opendbx support
-%if %{?fedora}
+%if 0%{?fedora}
 %bcond_without  apt
 %bcond_without  opendbx
 %endif
@@ -108,13 +115,8 @@ Requires:       xmlsec1 xmlsec1-openssl
 Requires:       apt-libs
 %endif
 
+%description %{common_description}
 
-
-%description
-OpenSCAP is a set of open source libraries providing an easier path
-for integration of the SCAP line of standards. SCAP is a line of standards
-managed by NIST with the goal of providing a standard language
-for the expression of Computer Network Defense related information.
 
 %package        devel
 Summary:        Development files for %{name}
@@ -126,7 +128,7 @@ BuildRequires:  doxygen
 %description    devel
 The %{name}-devel package contains libraries and header files for
 developing applications that use %{name}.
-
+%{common_description}
 
 %package        python3
 Summary:        Python 3 bindings for %{name}
@@ -137,7 +139,7 @@ BuildRequires:  python%{python3_pkgversion}-devel
 %description    python3
 The %{name}-python3 package contains the bindings so that %{name}
 libraries can be used by python3.
-
+%{common_description}
 
 %package        perl
 Summary:        Perl bindings for %{name}
@@ -153,7 +155,7 @@ BuildRequires:  perl-XML-Parser
 %description    perl
 The perl package contains the bindings so that %{name}
 libraries can be used by perl.
-
+%{common_description}
 
 %package        scanner
 Summary:        OpenSCAP Scanner Tool (oscap)
@@ -165,6 +167,7 @@ BuildRequires:  libcurl-devel >= 7.12.0
 The %{name}-scanner package contains oscap command-line tool. The oscap
 is configuration and vulnerability scanner, capable of performing
 compliance checking using SCAP content.
+%{common_description}
 
 %package        utils
 Summary:        OpenSCAP Utilities
@@ -176,6 +179,7 @@ Requires:       %{name}-scanner%{?_isa} = %{epoch}:%{version}-%{release}
 The %{name}-utils package contains command-line tools build on top
 of OpenSCAP library. Historically, openscap-utils included oscap
 tool which is now separated to %{name}-scanner sub-package.
+%{common_description}
 
 %package        engine-sce
 Summary:        Script Check Engine plug-in for OpenSCAP
@@ -185,6 +189,7 @@ Requires:       %{name}%{?_isa} = %{epoch}:%{version}-%{release}
 The Script Check Engine is non-standard extension to SCAP protocol. This
 engine allows content authors to avoid OVAL language and write their assessment
 commands using a scripting language (Bash, Perl, Python, Ruby, ...).
+%{common_description}
 
 %package        engine-sce-devel
 Summary:        Development files for %{name}-engine-sce
@@ -195,6 +200,7 @@ Requires:       pkgconfig
 %description    engine-sce-devel
 The %{name}-engine-sce-devel package contains libraries and header files
 for developing applications that use %{name}-engine-sce.
+%{common_description}
 
 %package        containers
 Summary:        Utils for scanning containers
@@ -204,6 +210,7 @@ BuildArch:      noarch
 
 %description    containers
 Tool for scanning Atomic containers.
+%{common_description}
 
 %prep
 %autosetup -p1
