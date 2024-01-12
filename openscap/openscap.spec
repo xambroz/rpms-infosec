@@ -228,6 +228,7 @@ Tool for scanning Atomic containers.
 
 %prep
 %autosetup -p1
+rpm --showrc
 
 %build
 %undefine __cmake_in_source_build
