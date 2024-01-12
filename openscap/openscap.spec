@@ -15,18 +15,22 @@ managed by NIST with the goal of providing a standard language
 for the expression of Computer Network Defense related information.}
 
 
-# By default build with checks
+# By default build with checks (time consuming)
 %bcond_without  check
 
-# apt is missing in CentOS, opendbx is missing in RHEL
-# conditional allows for example rebuild in COPR + EPEL
-%bcond_with     apt
-%bcond_with     opendbx
-
 # By default fedora package is built with apt and opendbx support
-%if 0%{?fedora}
 %bcond_without  apt
 %bcond_without  opendbx
+
+# conditional allows for example rebuild in COPR + EPEL
+# apt is missing in CentOS (ELN builds) and in EPEL available currently only in 9
+%if ( 0%{?rhel} && ! 0%{?epel} ) || ( 0%{?epel} && 0%{?epel} < 9 )
+%bcond_with     apt
+%endif
+
+# opendbx is missing in RHEL (ELN builds) without rest of the EPEL packages
+%if 0%{?rhel} && ! 0%{?epel}
+%bcond_with     opendbx
 %endif
 
 # Fedora arched lib directories
