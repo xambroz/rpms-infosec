@@ -24,12 +24,12 @@ for the expression of Computer Network Defense related information.}
 
 # conditional allows for example rebuild in COPR + EPEL
 # apt is missing in CentOS (ELN builds) and in EPEL available currently only in 9
-%if ( 0%{?rhel} && ! 0%{?epel} ) || ( 0%{?epel} && 0%{?rhel} < 9 )
+%if ( 0%{?rhel} && 0%{?eln} ) || ( 0%{?rhel} && 0%{?rhel} < 9 )
 %bcond_with     apt
 %endif
 
 # opendbx is missing in RHEL (ELN builds) without rest of the EPEL packages
-%if 0%{?rhel} && ! 0%{?epel}
+%if 0%{?rhel} && 0%{?eln}
 %bcond_with     opendbx
 %endif
 
