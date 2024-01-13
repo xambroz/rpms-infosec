@@ -24,12 +24,14 @@ for the expression of Computer Network Defense related information.}
 
 # conditional allows for example rebuild in COPR + EPEL
 # apt is missing in CentOS (ELN builds) and in EPEL available currently only in 9
-%if ( 0%{?rhel} && 0%{?eln} ) || ( 0%{?rhel} && 0%{?rhel} < 9 )
+# %%if ( 0%{?rhel} && 0%{?eln} ) || ( 0%{?rhel} && 0%{?rhel} < 9 )
+%if ! 0%{?fedora}
 %bcond_with     apt
 %endif
 
 # opendbx is missing in RHEL (ELN builds) without rest of the EPEL packages
-%if 0%{?rhel} && 0%{?eln}
+# %%if 0%{?rhel} && 0%{?eln}
+%if ! 0%{?fedora}
 %bcond_with     opendbx
 %endif
 
@@ -80,7 +82,7 @@ BuildRequires:  dbus-devel
 BuildRequires:  libyaml-devel
 BuildRequires:  xmlsec1-devel
 BuildRequires:  xmlsec1-openssl-devel
-%if 0%{?epel}
+%if 0%{?rhel}
 BuildRequires:  epel-rpm-macros
 BuildRequires:  cmake-rpm-macros
 %endif
