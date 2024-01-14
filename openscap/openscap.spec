@@ -18,21 +18,21 @@ for the expression of Computer Network Defense related information.}
 # By default build with checks (time consuming)
 %bcond_without  check
 
-# By default fedora package is built with apt and opendbx support
+# By default fedora package is built with apt
+%if 0%{?fedora}
 %bcond_without  apt
-%bcond_without  opendbx
-
-# conditional allows for example rebuild in COPR + EPEL
+%else
 # apt is missing in CentOS (ELN builds) and in EPEL available currently only in 9
-# %%if ( 0%{?rhel} && 0%{?eln} ) || ( 0%{?rhel} && 0%{?rhel} < 9 )
-%if ! 0%{?fedora}
 %bcond_with     apt
 %endif
 
+# By default fedora package is built with opendbx support
+%if 0%{?fedora}
+%bcond_without  opendbx
+%else
 # opendbx is missing in RHEL (ELN builds) without rest of the EPEL packages
-# %%if 0%{?rhel} && 0%{?eln}
-%if ! 0%{?fedora}
-%bcond_with     opendbx
+# conditional allows for example rebuild in COPR + EPEL
+%bcond_with  opendbx
 %endif
 
 # Fedora arched lib directories
