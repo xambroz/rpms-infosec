@@ -69,6 +69,11 @@ BuildRequires:  cmake-rpm-macros
 BuildRequires:  cmake3
 %endif
 
+%if 0%{?rhel} && ! 0%{?eln}
+BuildRequires:  epel-rpm-macros
+%endif
+
+
 BuildRequires:  gcc
 BuildRequires:  gcc-c++
 BuildRequires:  swig
@@ -89,9 +94,6 @@ BuildRequires:  dbus-devel
 BuildRequires:  libyaml-devel
 BuildRequires:  xmlsec1-devel
 BuildRequires:  xmlsec1-openssl-devel
-%if 0%{?rhel}
-BuildRequires:  epel-rpm-macros
-%endif
 
 %if %{with apt}
 # apt-libs missing on Centos
