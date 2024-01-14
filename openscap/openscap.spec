@@ -61,8 +61,14 @@ Patch4:         openscap-1.3.9-c99-libxml2.patch
 Patch5:         openscap-1.3.9-c99-python.patch
 
 BuildRequires:  make
-# BuildRequires:  cmake >= 2.6
+
+%if 0%{?fedora} || 0%{?rhel} >= 8
+BuildRequires:  cmake >= 2.6
+BuildRequires:  cmake-rpm-macros
+%else
 BuildRequires:  cmake3
+%endif
+
 BuildRequires:  gcc
 BuildRequires:  gcc-c++
 BuildRequires:  swig
@@ -85,7 +91,6 @@ BuildRequires:  xmlsec1-devel
 BuildRequires:  xmlsec1-openssl-devel
 %if 0%{?rhel}
 BuildRequires:  epel-rpm-macros
-BuildRequires:  cmake3-rpm-macros
 %endif
 
 %if %{with apt}
