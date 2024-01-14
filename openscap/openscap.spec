@@ -61,7 +61,8 @@ Patch4:         openscap-1.3.9-c99-libxml2.patch
 Patch5:         openscap-1.3.9-c99-python.patch
 
 BuildRequires:  make
-BuildRequires:  cmake >= 2.6
+# BuildRequires:  cmake >= 2.6
+BuildRequires:  cmake3
 BuildRequires:  gcc
 BuildRequires:  gcc-c++
 BuildRequires:  swig
@@ -84,7 +85,7 @@ BuildRequires:  xmlsec1-devel
 BuildRequires:  xmlsec1-openssl-devel
 %if 0%{?rhel}
 BuildRequires:  epel-rpm-macros
-BuildRequires:  cmake-rpm-macros
+BuildRequires:  cmake3-rpm-macros
 %endif
 
 %if %{with apt}
@@ -237,13 +238,13 @@ rpm --showrc
 
 # gconf is a legacy system not used any more, and it blocks testing of oscap-anaconda-addon
 # as gconf is no longer part of the installation medium
-%cmake \
+%cmake3 \
     -DWITH_PCRE2=ON \
     -DENABLE_PERL=ON \
     -DENABLE_DOCS=ON \
     -DOPENSCAP_PROBE_UNIX_GCONF=OFF \
     -DGCONF_LIBRARY=
-%cmake_build
+%cmake3_build
 make docs
 
 %check
@@ -254,7 +255,7 @@ ctest -V -E sce/test_sce_in_ds.sh
 %endif
 
 %install
-%cmake_install
+%cmake3_install
 
 find %{buildroot} -name '*.la' -exec rm -f {} ';'
 
