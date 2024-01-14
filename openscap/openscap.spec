@@ -105,7 +105,10 @@ BuildRequires:  opendbx-devel
 
 # GConf2 not used on purpose as obsolete and blocking anaconda addon
 # BuildRequires:  GConf2-devel
+
+%if ! 0%{?eln}
 BuildRequires:  procps-devel
+%endif
 
 %if %{with check}
 BuildRequires:  perl-interpreter
