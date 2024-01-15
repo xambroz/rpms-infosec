@@ -69,11 +69,6 @@ BuildRequires:  cmake-rpm-macros
 BuildRequires:  cmake3
 %endif
 
-%if 0%{?rhel} && ! 0%{?eln}
-BuildRequires:  epel-rpm-macros
-%endif
-
-
 BuildRequires:  gcc
 BuildRequires:  gcc-c++
 BuildRequires:  swig
@@ -94,6 +89,9 @@ BuildRequires:  dbus-devel
 BuildRequires:  libyaml-devel
 BuildRequires:  xmlsec1-devel
 BuildRequires:  xmlsec1-openssl-devel
+%if 0%{?rhel}
+BuildRequires:  epel-rpm-macros
+%endif
 
 %if %{with apt}
 # apt-libs missing on Centos
@@ -107,10 +105,7 @@ BuildRequires:  opendbx-devel
 
 # GConf2 not used on purpose as obsolete and blocking anaconda addon
 # BuildRequires:  GConf2-devel
-
-%if ! 0%{?eln}
 BuildRequires:  procps-devel
-%endif
 
 %if %{with check}
 BuildRequires:  perl-interpreter
@@ -241,20 +236,27 @@ Tool for scanning Atomic containers.
 
 %prep
 %autosetup -p1
+# TDOD - remove when putting back to Fedora
+echo "===== SHOWRC ====="
 rpm --showrc
+echo "===== SHOWRC end ====="
 
 %build
+
+# definition controlling to use out-of-source build by default
+# still needed for EPEL8 build
+# more info - https://bugzilla.redhat.com/show_bug.cgi?id=1861329
 %undefine __cmake_in_source_build
 
 # gconf is a legacy system not used any more, and it blocks testing of oscap-anaconda-addon
 # as gconf is no longer part of the installation medium
-%cmake3 \
+%cmake \
     -DWITH_PCRE2=ON \
     -DENABLE_PERL=ON \
     -DENABLE_DOCS=ON \
     -DOPENSCAP_PROBE_UNIX_GCONF=OFF \
     -DGCONF_LIBRARY=
-%cmake3_build
+%cmake_build
 make docs
 
 %check
@@ -265,7 +267,7 @@ ctest -V -E sce/test_sce_in_ds.sh
 %endif
 
 %install
-%cmake3_install
+%cmake_install
 
 find %{buildroot} -name '*.la' -exec rm -f {} ';'
 
