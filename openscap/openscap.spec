@@ -64,6 +64,8 @@ Patch5:         openscap-1.3.9-c99-python.patch
 BuildRequires:  epel-rpm-macros
 %endif
 
+BuildRequires:  systemd-rpm-macros
+
 BuildRequires:  make
 
 %if 0%{?fedora} || 0%{?rhel} >= 8
@@ -94,6 +96,9 @@ BuildRequires:  libyaml-devel
 BuildRequires:  xmlsec1-devel
 BuildRequires:  xmlsec1-openssl-devel
 
+# Fedora has procps-ng-devel, which provides procps-devel
+BuildRequires:  procps-devel
+
 %if %{with apt}
 # apt-libs missing on Centos
 BuildRequires:  apt-devel
@@ -106,7 +111,6 @@ BuildRequires:  opendbx-devel
 
 # GConf2 not used on purpose as obsolete and blocking anaconda addon
 # BuildRequires:  GConf2-devel
-BuildRequires:  procps-devel
 
 %if %{with check}
 BuildRequires:  perl-interpreter
@@ -114,7 +118,6 @@ BuildRequires:  perl-XML-XPath
 BuildRequires:  bzip2
 %endif
 
-BuildRequires:  systemd-rpm-macros
 
 Requires:       bash
 Requires:       bzip2-libs
