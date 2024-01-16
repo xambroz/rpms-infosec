@@ -60,6 +60,10 @@ Patch4:         openscap-1.3.9-c99-libxml2.patch
 # https://github.com/OpenSCAP/openscap/pull/2069
 Patch5:         openscap-1.3.9-c99-python.patch
 
+%if 0%{?rhel} && ! 0%{?eln}
+BuildRequires:  epel-rpm-macros
+%endif
+
 BuildRequires:  make
 
 %if 0%{?fedora} || 0%{?rhel} >= 8
@@ -89,9 +93,6 @@ BuildRequires:  dbus-devel
 BuildRequires:  libyaml-devel
 BuildRequires:  xmlsec1-devel
 BuildRequires:  xmlsec1-openssl-devel
-%if 0%{?rhel}
-BuildRequires:  epel-rpm-macros
-%endif
 
 %if %{with apt}
 # apt-libs missing on Centos
