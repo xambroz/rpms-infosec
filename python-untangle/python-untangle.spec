@@ -1,13 +1,17 @@
 Name:           python-untangle
 Version:        1.2.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Converts XML to Python objects
 
 License:        MIT
 URL:            https://github.com/stchris/untangle
-Source0:        https://github.com/stchris/untangle/archive/refs/tags/%{version}.tar.gz#/%{name}-%{version}.tar.gz
+VCS:            https://github.com/stchris/untangle
+Source0:        %{url}/archive/refs/tags/%{version}.tar.gz#/%{name}-%{version}.tar.gz
 BuildArch:      noarch
 
+# Remove unnecessary shebang
+# https://github.com/stchris/untangle/pull/140
+Patch0:         https://github.com/stchris/untangle/pull/140.patch#/python-untangle-1.2.1-shebang.patch
 
 # macro pytest is not defined on rhel7
 %{!?pytest: %global pytest PYTHONPATH="%{buildroot}%{python3_sitelib}:$PYTHONPATH" pytest-3}
@@ -29,7 +33,7 @@ Summary:        %{summary}
 %if 0%{?rhel}
 %{?python_provide:%python_provide python%{python3_pkgversion}-untangle}
 %else
-%py_provides    python3-xlrd2
+%py_provides    python3-untangle
 %endif
 
 Requires:       python%{python3_pkgversion}-defusedxml
@@ -44,10 +48,12 @@ element.
 %autosetup -n untangle-%{version}
 
 %build
+# using old py3_build/py3_install to keep remain compatible with EPEL7/8 builds
 %py3_build
 
 %install
 %py3_install
+
 
 %check
 %if 0%{?rhel} == 7
@@ -67,5 +73,8 @@ export LANG=en_US.UTF-8
 %{python3_sitelib}/untangle-%{version}-py%{python3_version}.egg-info
 
 %changelog
+* Thu Jan 18 2022 Michal Ambroz <rebus@seznam.cz> - 1.2.1-2
+- #PR140 - remove unnecessary shebang
+
 * Wed Dec 07 2022 Michal Ambroz <rebus@seznam.cz> - 1.2.1-1
 - Initial package.

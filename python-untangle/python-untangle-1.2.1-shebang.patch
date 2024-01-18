@@ -1,0 +1,28 @@
+From c059f3a0cad589106bc172d3ca8d55c346a817a0 Mon Sep 17 00:00:00 2001
+From: Michal Ambroz <723625+xambroz@users.noreply.github.com>
+Date: Thu, 18 Jan 2024 10:13:31 +0100
+Subject: [PATCH] remove unnecessary shebang
+
+As file untangle.py is meant to be used only via import and not as directly executed commandline tool the shebang on the beginning is not needed.
+
+The usage of the env python can also have its security implications.
+
+Having shebang on non-executable file is even being reported as error by some tools - for example Fedora/Red Hat's rpmlint:
+https://bugzilla.redhat.com/show_bug.cgi?id=2250689#c4
+
+Best regards
+Michal Ambroz
+---
+ untangle.py | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/untangle.py b/untangle.py
+index 68525a3..1950067 100755
+--- a/untangle.py
++++ b/untangle.py
+@@ -1,5 +1,3 @@
+-#!/usr/bin/env python
+-
+ """
+  untangle
+ 
