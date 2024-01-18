@@ -73,8 +73,8 @@ export LANG=en_US.UTF-8
 %{python3_sitelib}/untangle-%{version}-py%{python3_version}.egg-info
 
 %changelog
-* Thu Jan 18 2022 Michal Ambroz <rebus@seznam.cz> - 1.2.1-2
+* Thu Jan 18 2024 Michal Ambroz <rebus@seznam.cz> - 1.2.1-2
 - #PR140 - remove unnecessary shebang
 
-* Wed Dec 07 2022 Michal Ambroz <rebus@seznam.cz> - 1.2.1-1
+* Wed Dec 07 2023 Michal Ambroz <rebus@seznam.cz> - 1.2.1-1
 - Initial package.
