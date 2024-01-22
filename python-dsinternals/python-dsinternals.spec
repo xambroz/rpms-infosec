@@ -1,18 +1,24 @@
-# Created by pyp2rpm-3.3.8
+Name:           python-dsinternals
+Version:        1.2.4
+Release:        2%{?dist}
+Summary:        Directory Services Internals Library for python
+License:        GPL-2.0-only
+URL:            http://github.com/p0dalirius/pydsinternals
+
 %global pypi_name dsinternals
 %global pypi_version 1.2.4
 
-Name:           python-dsinternals
-Version:        1.2.4
-Release:        1%{?dist}
-Summary:        Directory Services Internals Library for python
-
-License:        GPL2
-URL:            http://github.com/p0dalirius/pydsinternals
 Source0:        %{pypi_source}
+
+# Build related stuff
+# https://github.com/p0dalirius/pydsinternals/pull/8.patch
 Patch0:         dsinternals-1.2.4-build.patch
+
+
 BuildArch:      noarch
 
+%if 0%{?rhel} && 0%{?rhel} < 9
+# Planning the compatibility with EPEL, hence using the pkgversion
 BuildRequires:  python%{python3_pkgversion}-devel
 BuildRequires:  python%{python3_pkgversion}-setuptools
 BuildRequires:  python%{python3_pkgversion}-pip
@@ -21,6 +27,8 @@ BuildRequires:  python%{python3_pkgversion}-wheel
 # Needed for tests
 BuildRequires:  python%{python3_pkgversion}-pyOpenSSL
 BuildRequires:  python%{python3_pkgversion}-pycryptodomex
+%endif
+
 
 %if 0%{?fedora} || ( 0%{?rhel} && 0%{?rhel} >= 9 )
 BuildRequires:  python%{python3_pkgversion}-tox-current-env
@@ -44,10 +52,27 @@ Summary:        %{summary}
 %description -n python%{python3_pkgversion}-dsinternals
 %_description
 
+
+
 %prep
 %autosetup -p1 -n dsinternals-%{version}
 # Remove bundled egg-info
 rm -rf .egg-info
+
+# Sanitize the executable permissions
+find ./ -type f -exec chmod -x '{}' ';'
+chmod +x setup.py
+
+%py3_shebang_fix dsinternals
+%py3_shebang_fix tests
+
+
+# Generating of build requirements doesn't work on epel7, has problems on epel8
+%if 0%{?fedora} || ( 0%{?rhel} && 0%{?rhel} >= 9 )
+%generate_buildrequires
+%pyproject_buildrequires -t
+%endif
+
 
 %build
 %pyproject_wheel
@@ -71,5 +96,8 @@ python3 -m unittest discover -v
 %doc README.md
 
 %changelog
+* Mon Jan 23 2024 Michal Ambroz <rebus@seznam.cz> - 1.2.4-2
+- conditionalized pyproject_buildrequires
+
 * Mon Jan 30 2023 Michal Ambroz <rebus@seznam.cz> - 1.2.4-1
 - Initial package
