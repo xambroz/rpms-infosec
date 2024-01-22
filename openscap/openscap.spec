@@ -158,6 +158,7 @@ Summary:        Python 3 bindings for %{name}
 Requires:       %{name}%{?_isa} = %{epoch}:%{version}-%{release}
 %{?python_provide:%python_provide python%{python3_pkgversion}-openscap }
 BuildRequires:  python%{python3_pkgversion}-devel
+BuildRequires:  python%{python3_pkgversion}-packaging
 %if 0%{?fedora}
 BuildRequires:  python-rpm-macros
 %endif
