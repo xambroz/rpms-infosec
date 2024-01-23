@@ -42,6 +42,7 @@ Requires:       python%{python3_pkgversion}-ldap3
 %generate_buildrequires
 %pyproject_buildrequires
 
+
 %prep
 %autosetup -n ldapdomaindump-%{version} -p 1
 # Remove bundled egg-info
@@ -55,9 +56,15 @@ sed -i -e 's/\r//g;' Readme.md  ldapdomaindump/__init__.py ldapdomaindump/conver
 %build
 %pyproject_wheel
 
+
 %install
 %pyproject_install
 %pyproject_save_files ldapdomaindump
+
+
+%check
+%pyproject_check_import
+
 
 %files -n python%{python3_pkgversion}-ldapdomaindump -f %{pyproject_files}
 %license LICENSE
@@ -67,5 +74,8 @@ sed -i -e 's/\r//g;' Readme.md  ldapdomaindump/__init__.py ldapdomaindump/conver
 %{_bindir}/ldd2pretty
 
 %changelog
+* Tue Jan 23 2024 Michal Ambroz <rebus@seznam.cz> - 0.9.4-2
+- adding at least import check
+
 * Sun Dec 17 2023 Michal Ambroz <rebus@seznam.cz> - 0.9.4-1
 - Initial package.
