@@ -98,7 +98,7 @@ python3 -m unittest discover -v
 %doc README.md
 
 %changelog
-* Mon Jan 23 2024 Michal Ambroz <rebus@seznam.cz> - 1.2.4-2
+* Tue Jan 23 2024 Michal Ambroz <rebus@seznam.cz> - 1.2.4-2
 - conditionalized pyproject_buildrequires
 
 * Mon Jan 30 2023 Michal Ambroz <rebus@seznam.cz> - 1.2.4-1
