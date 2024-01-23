@@ -19,10 +19,11 @@ BuildArch:      noarch
 
 BuildRequires:  pyproject-rpm-macros
 BuildRequires:  python3-rpm-macros
+BuildRequires:  python%{python3_pkgversion}-devel
+
 
 %if 0%{?rhel} && 0%{?rhel} < 9
 # Planning the compatibility with EPEL, hence using the pkgversion
-BuildRequires:  python%{python3_pkgversion}-devel
 BuildRequires:  python%{python3_pkgversion}-setuptools
 BuildRequires:  python%{python3_pkgversion}-pip
 BuildRequires:  python%{python3_pkgversion}-wheel
@@ -80,11 +81,10 @@ chmod +x setup.py
 %build
 %pyproject_wheel
 
+
 %install
 %pyproject_install
-
 %pyproject_save_files dsinternals
-
 
 
 %check
