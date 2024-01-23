@@ -17,10 +17,11 @@ Patch0:         dsinternals-1.2.4-build.patch
 
 BuildArch:      noarch
 
+BuildRequires:  pyproject-rpm-macros
+BuildRequires:  python3-rpm-macros
+
 %if 0%{?rhel} && 0%{?rhel} < 9
 # Planning the compatibility with EPEL, hence using the pkgversion
-BuildRequires:  pyproject-rpm-macros
-
 BuildRequires:  python%{python3_pkgversion}-devel
 BuildRequires:  python%{python3_pkgversion}-setuptools
 BuildRequires:  python%{python3_pkgversion}-pip
