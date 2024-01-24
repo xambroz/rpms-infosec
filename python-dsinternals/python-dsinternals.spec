@@ -19,8 +19,8 @@ BuildArch:      noarch
 
 BuildRequires:  python3-rpm-macros
 
-%if ! 0%{?rhel} == 7
 # pyproject-rpm-macros missing on EPEL7
+%if 0%{?fedora} || ( 0%{?rhel} && 0%{?rhel} >= 8 )
 BuildRequires:  pyproject-rpm-macros
 %endif
 
@@ -29,6 +29,7 @@ BuildRequires:  python%{python3_pkgversion}-devel
 BuildRequires:  python%{python3_pkgversion}-setuptools
 
 
+# deps bellow should be added by generate_buildrequires on newer platforms
 %if 0%{?rhel} && 0%{?rhel} < 9
 BuildRequires:  python%{python3_pkgversion}-pip
 BuildRequires:  python%{python3_pkgversion}-wheel
