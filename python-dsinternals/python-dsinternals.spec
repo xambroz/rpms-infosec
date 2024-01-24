@@ -17,14 +17,19 @@ Patch0:         dsinternals-1.2.4-build.patch
 
 BuildArch:      noarch
 
-BuildRequires:  pyproject-rpm-macros
 BuildRequires:  python3-rpm-macros
+
+%if ! 0%{?rhel} == 7
+# pyproject-rpm-macros missing on EPEL7
+BuildRequires:  pyproject-rpm-macros
+%endif
+
+# Planning the compatibility with EPEL, hence using the pkgversion
 BuildRequires:  python%{python3_pkgversion}-devel
+BuildRequires:  python%{python3_pkgversion}-setuptools
 
 
 %if 0%{?rhel} && 0%{?rhel} < 9
-# Planning the compatibility with EPEL, hence using the pkgversion
-BuildRequires:  python%{python3_pkgversion}-setuptools
 BuildRequires:  python%{python3_pkgversion}-pip
 BuildRequires:  python%{python3_pkgversion}-wheel
 
@@ -55,7 +60,6 @@ Summary:        %{summary}
 
 %description -n python%{python3_pkgversion}-dsinternals
 %_description
-
 
 
 %prep
@@ -94,9 +98,11 @@ python3 -m unittest discover -v
 %tox
 %endif
 
+
 %files -n python%{python3_pkgversion}-dsinternals -f %{pyproject_files}
 %license LICENSE
 %doc README.md
+
 
 %changelog
 * Tue Jan 23 2024 Michal Ambroz <rebus@seznam.cz> - 1.2.4-2
