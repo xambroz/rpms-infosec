@@ -1,7 +1,7 @@
 Name:           python-impacket
 Summary:        Collection of Python classes providing access to network packets
 Version:        0.11.0
-%global         baserelease     1
+%global         baserelease     3
 
 License:        Apache-1.1 AND Zlib
 URL:            https://github.com/fortra/impacket
@@ -24,11 +24,13 @@ conjunction with a packet capture utility or package such as Pcapy. Packets
 can be constructed from scratch, as well as parsed from raw data. Furthermore,
 the object oriented API makes it simple to work with deep protocol hierarchies.}
 
-# During re-add of the python2-impacket we found about dependency to ldapdomaindump
-# feature can be avoided by option --no-dump to ntlmrelay.py
+# weak dependencies not needed for the core python impacket library
+# used by example scripts
+# dsinternals and ldapdomaindump
+# - used by ntlmrelayx.py example - feature can be avoided by option --no-dump
 # https://bugzilla.redhat.com/show_bug.cgi?id=1672052#c8
 # Also exclude stuff from examples, recommended manually
-%global __requires_exclude ldapdomaindump|flask|httplib2
+%global __requires_exclude ldapdomaindump|flask|httplib2|dsinternals
 
 %global         gituser         fortra
 %global         gitname         impacket
@@ -53,6 +55,10 @@ Source0:        https://github.com/%{gituser}/%{gitname}/releases/download/%{git
 Release:        %{baserelease}.%{gitdate}git%{shortcommit}%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 %endif
+
+# https://github.com/fortra/impacket/pull/1689
+# remove unnecessary shebang 
+Patch0:         python-impacket-0.11.0-cleanup.patch
 
 BuildArch:      noarch
 
@@ -109,6 +115,17 @@ Python3 package of %{name}. %{common_desc}
 # Build from git release version
 %autosetup -p 1 -n %{gitname}-%{version}
 
+# https://github.com/fortra/impacket/pull/1689
+# 1) set library modules as non-executable as there is no main functionality and is meant to be used only via import
+# impacket/examples/ldap_shell.py
+# impacket/examples/smbclient.py
+# 2) convert ends of lines from windows to unix (as rest of the project) for the file impacket/examples/mssqlshell.py
+# 3) remove unnecessary shebang for impacket/examples/mssqlshell.py
+chmod -x impacket/examples/ldap_shell.py impacket/examples/smbclient.py
+sed -i -e 's/\r//g' impacket/examples/mssqlshell.py
+
+
+
 %else
 # Build from git commit
 %autosetup -p 1 -n %{gitname}-%{commit}
@@ -117,10 +134,7 @@ Python3 package of %{name}. %{common_desc}
 # Clean-up
 
 # Use explicit python3 shabeng instead of generic env python
-# to get prepared for switch the default to python3
-sed -i -e 's|#!/usr/bin/env python|#!/usr/bin/python3|' \
-    impacket/mqtt.py \
-    impacket/examples/ntlmrelayx/servers/socksserver.py
+%py3_shebang_fix impacket examples
 
 # Moving uncrc32
 # https://github.com/fortra/impacket/issues/403
@@ -148,23 +162,6 @@ PYTHONPATH=$BUILD_ROOT/usr/lib/python%{python3_version}/site-packages/ python3 -
 #===== Install
 %install
 %py3_install
-pushd %{buildroot}%{_bindir}
-for I in *.py ; do
-    BASENAME=$(basename "$I" .py)
-    mv "$I" "${BASENAME}-%{python3_version}"
-    ln -s "${BASENAME}-%{python3_version}" "${BASENAME}-3"
-done
-popd
-
-# Default link
-pushd %{buildroot}%{_bindir}
-
-#Link to python3 as default on fedora 31+ and rhel8+ and everything else
-for I in *-3 ; do
-    BASENAME=$(basename "$I" "-3" )
-    ln -s "${I}" "${BASENAME}.py"
-done
-popd
 
 #now in license directory
 rm -f %{buildroot}%{_defaultdocdir}/%{name}/LICENSE
@@ -180,14 +177,21 @@ rm -f %{buildroot}%{_defaultdocdir}/%{name}/LICENSE
 %exclude %{_defaultdocdir}/%{gitname}
 # %%exclude %%{_defaultdocdir}/%%{gitname}/testcases/*
 %exclude %{_defaultdocdir}/%{gitname}/README.md
-%{_bindir}/*-%{python3_version}
-%{_bindir}/*-3
 %{_bindir}/*.py
 # with python3
 %endif
 
 
 %changelog
+* Tue Jan 23 2024 Michal Ambroz <rebus@seznam.cz> - 0.11.0-4
+- remove the python version links (python2 support removed long time ago)
+
+* Tue Jan 23 2024 Yaakov Selkowitz <yselkowi@redhat.com> - 0.11.0-3
+- Remove unavailable dsinternals dependency
+
+* Mon Jan 22 2024 Fedora Release Engineering <releng@fedoraproject.org> - 0.11.0-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_40_Mass_Rebuild
+
 * Wed Nov 01 2023 Michal Ambroz <rebus _AT seznam.cz> - 0.11.0-1
 - bump to 0.11.0
 
