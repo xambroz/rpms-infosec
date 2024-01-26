@@ -25,6 +25,7 @@ Release:        %{baserelease}.%{gitdate}git%{shortcommit}%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 %endif
 
+# https://github.com/ya-mouse/fatresize/pull/36
 # https://bugzilla.redhat.com/show_bug.cgi?id=2256775
 # This component makes use of autoconf internals in it configure.ac, which leads to a build failure with 2.72 since the internals have changed.
 # As far as "AC_SYS_LARGEFILE" is called, there is no need to modify the CFLAGS as that is done by autoconf if necessary.
