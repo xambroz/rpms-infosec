@@ -1,0 +1,13 @@
+diff -ru fatresize-ab78c48fe46d0eb29fcdfa3c6586ade223218433/configure.ac fatresize-ab78c48fe46d0eb29fcdfa3c6586ade223218433.new/configure.ac
+--- fatresize-ab78c48fe46d0eb29fcdfa3c6586ade223218433/configure.ac	2022-11-16 16:27:15.000000000 +0100
++++ fatresize-ab78c48fe46d0eb29fcdfa3c6586ade223218433.new/configure.ac	2024-01-26 04:20:58.711884199 +0100
+@@ -29,7 +29,8 @@
+ 
+ # Check for LFS
+ AC_SYS_LARGEFILE
+-CFLAGS="$CFLAGS -D_FILE_OFFSET_BITS=${ac_cv_sys_file_offset_bits}"
++# not needed
++# CFLAGS="$CFLAGS -D_FILE_OFFSET_BITS=${ac_cv_sys_file_offset_bits}"
+ 
+ dnl libparted
+ # hack

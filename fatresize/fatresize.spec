@@ -1,23 +1,34 @@
-%global         gituser         ya-mouse
-%global         gitname         fatresize
-%global         commit          321973ba156bbf2489e82c47c94b2bca74b16316
-%global         shortcommit     %(c=%{commit}; echo ${c:0:7})
-
-
 Name:           fatresize
 Version:        1.1.0
-# Build from git commit
-# Release:       0.1.git%%{shortcommit}%%{?dist}
-# Build from git release version
-Release:        6%{?dist}
+%global         baserelease     11
 License:        GPL-3.0-or-later
 Summary:        FAT16/FAT32 resizer
 URL:            https://github.com/ya-mouse/fatresize
-#               http://sourceforge.net/projects/fatresize/
-# Build from git commit
-# Source0:       https://github.com/%%{gituser}/%%{gitname}/archive/%%{commit}/%%{name}-%%{version}-%%{shortcommit}.tar.gz
-# Build from git release version
+VCS:            https://github.com/ya-mouse/fatresize
+
+# by default it builds from the git snapshot
+# to build from release use rpmbuild --with=releasetag
+%bcond_with     releasetag
+
+%global         gituser         ya-mouse
+%global         gitname         fatresize
+%global         gitdate         20221116
+%global         commit          ab78c48fe46d0eb29fcdfa3c6586ade223218433
+%global         shortcommit     %(c=%{commit}; echo ${c:0:7})
+
+%if %{with releasetag}
+Release:        %{baserelease}%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
+%else
+# Build from git commit
+Release:        %{baserelease}.%{gitdate}git%{shortcommit}%{?dist}
+Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
+%endif
+
+# https://bugzilla.redhat.com/show_bug.cgi?id=2256775
+# This component makes use of autoconf internals in it configure.ac, which leads to a build failure with 2.72 since the internals have changed.
+# As far as "AC_SYS_LARGEFILE" is called, there is no need to modify the CFLAGS as that is done by autoconf if necessary.
+Patch0:         fatresize-autoconf2.72.patch
 
 
 BuildRequires:  gcc
@@ -33,10 +44,12 @@ BuildRequires: make
 The FAT16/FAT32 non-destructive resizer.
 
 %prep
-# Build from git commit
-# setup -q -n %%{gitname}-%%{commit}
+%if %{with releasetag}
 # Build from git release version
-%setup -q -n %{gitname}-%{version}
+%autosetup -n %{gitname}-%{version} -p1
+%else
+%autosetup -n %%{gitname}-%%{commit} -p1
+%endif
 
 #docbook-to-man not available in Fedora
 sed -i -e 's|docbook-to-man|docbook2man|;' Makefile.am
@@ -56,6 +69,21 @@ autoreconf -ifv
 %{_mandir}/man1/*
 
 %changelog
+* Fri Jan 26 2024 Michal Ambroz <rebus _AT seznam.cz> - 1.1.0-11
+- us git snapshot from 20221116
+
+* Wed Jan 24 2024 Fedora Release Engineering <releng@fedoraproject.org> - 1.1.0-10
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_40_Mass_Rebuild
+
+* Fri Jan 19 2024 Fedora Release Engineering <releng@fedoraproject.org> - 1.1.0-9
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_40_Mass_Rebuild
+
+* Wed Jul 19 2023 Fedora Release Engineering <releng@fedoraproject.org> - 1.1.0-8
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_39_Mass_Rebuild
+
+* Thu Jan 19 2023 Fedora Release Engineering <releng@fedoraproject.org> - 1.1.0-7
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_38_Mass_Rebuild
+
 * Thu Jul 21 2022 Fedora Release Engineering <releng@fedoraproject.org> - 1.1.0-6
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_37_Mass_Rebuild
 
