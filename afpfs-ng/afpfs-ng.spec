@@ -1,6 +1,6 @@
 Name:           afpfs-ng
 Version:        0.8.1
-Release:        40%{?dist}
+Release:        45%{?dist}
 Summary:        Apple Filing Protocol client
 
 
@@ -9,7 +9,7 @@ Summary:        Apple Filing Protocol client
 %bcond_without     fuse
 
 
-License:        GPL-1.0-or-later
+License:        GPL-2.0-or-later
 URL:            http://alexthepuffin.googlepages.com/home
 Source0:        http://downloads.sourceforge.net/afpfs-ng/%{name}-%{version}.tar.bz2
 Patch0:         afpfs-ng-0.8.1-overflows.patch
@@ -17,6 +17,7 @@ Patch1:         afpfs-ng-0.8.1-pointer.patch
 # Sent by e-mail to Alex deVries <alexthepuffin@gmail.com>
 Patch2:         afpfs-ng-0.8.1-formatsec.patch
 Patch3:         afpfs-ng-0.8.1-longoptions.patch
+Patch4:         afpfs-ng-0.8.1-c99.patch
 
 %{?with_fuse:BuildRequires: fuse-devel}
 BuildRequires: gcc
@@ -108,6 +109,21 @@ cp -p include/* %{buildroot}%{_includedir}/afpfs-ng
 %{_libdir}/*.so
 
 %changelog
+* Mon Jan 22 2024 Fedora Release Engineering <releng@fedoraproject.org> - 0.8.1-45
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_40_Mass_Rebuild
+
+* Fri Jan 19 2024 Fedora Release Engineering <releng@fedoraproject.org> - 0.8.1-44
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_40_Mass_Rebuild
+
+* Wed Jul 19 2023 Fedora Release Engineering <releng@fedoraproject.org> - 0.8.1-43
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_39_Mass_Rebuild
+
+* Wed Jan 18 2023 Fedora Release Engineering <releng@fedoraproject.org> - 0.8.1-42
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_38_Mass_Rebuild
+
+* Wed Dec 21 2022 Florian Weimer <fweimer@redhat.com> - 0.8.1-41
+- Port to C99
+
 * Tue Oct 25 2022 Michal Ambroz <rebus _AT seznam.cz> - 0.8.1-40
 - remove the libafpclient.la libtool file
 
