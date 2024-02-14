@@ -1,21 +1,22 @@
 Name:           python-yara
-Version:        4.3.1
+Version:        4.5.0
 %global         baserelease     1
 Summary:        Python binding for the YARA pattern matching tool
 License:        Apache-2.0
 URL:            https://github.com/VirusTotal/yara-python/
 VCS:            https://github.com/VirusTotal/yara-python/
+#               https://github.com/VirusTotal/yara-python/tags
 #               https://github.com/VirusTotal/yara-python/releases/
 
 # By default build from a release tarball.
-# If you want to rebuild from a unversioned commit from git do that with 
+# If you want to rebuild from a unversioned commit from git do that with
 # rpmbuild --rebuild python-yara.src.dpm --without release
 %bcond_without  release
 
 %global         gituser         VirusTotal
 %global         gitname         yara-python
-%global         commit          37dcb76cd5a07c62e6ed2646968c496e22e70729
-%global         gitdate         20230421
+%global         gitdate         20240214
+%global         commit          3d5674a30808b26b44fc896dd059e94e704e4d63
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
@@ -150,6 +151,27 @@ pytest-3 -k "$EXCLUDE" tests.py -v
 
 #====================================================================
 %changelog
+* Wed Feb 14 2024 Michal Ambroz <rebus at, seznam.cz> - 4.5.0-1
+- bump to 4.5.0
+
+* Fri Jan 26 2024 Fedora Release Engineering <releng@fedoraproject.org> - 4.4.0-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_40_Mass_Rebuild
+
+* Mon Jan 22 2024 Fedora Release Engineering <releng@fedoraproject.org> - 4.4.0-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_40_Mass_Rebuild
+
+* Sun Sep 17 2023 Mikel Olasagasti Uranga <mikel@olasagasti.info> - 4.4.0-1
+- bump to 4.4.0
+
+* Fri Aug 25 2023 Mikel Olasagasti Uranga <mikel@olasagasti.info> - 4.3.1-4
+- Fix rhbz#2226378 rhbz#2220571
+
+* Fri Jul 21 2023 Fedora Release Engineering <releng@fedoraproject.org> - 4.3.1-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_39_Mass_Rebuild
+
+* Wed Jun 14 2023 Python Maint <python-maint@redhat.com> - 4.3.1-2
+- Rebuilt for Python 3.12
+
 * Wed Apr 26 2023 Michal Ambroz <rebus at, seznam.cz> - 4.3.1-1
 - bump to 4.3.1
 
