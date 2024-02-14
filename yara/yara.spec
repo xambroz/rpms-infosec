@@ -21,9 +21,9 @@ and a Boolean expression which determine its logic.}
 
 %global         gituser         VirusTotal
 %global         gitname         yara
-%global         gitdate         20230915
-# Commit of version 4.4.0
-%global         commit          1a85738e9af3c77acf035d0be4fe432e476bf82e
+# Commit of version 4.5.0
+%global         gitdate         20240213
+%global         commit          8fa55cde4c0cde8a1ba4ced1c131827eb4005f0d
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 %bcond_without  release
@@ -192,7 +192,10 @@ make check || (
 * Wed Feb 14 2024 Michal Ambroz <rebus at, seznam.cz> - 4.5.0-1
 - bump to 4.5.0
 
-* Sat Jan 27 2024 Fedora Release Engineering <releng@fedoraproject.org> - 4.4.0-2
+* Fri Jan 26 2024 Fedora Release Engineering <releng@fedoraproject.org> - 4.4.0-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_40_Mass_Rebuild
+ 
+* Mon Jan 22 2024 Fedora Release Engineering <releng@fedoraproject.org> - 4.4.0-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_40_Mass_Rebuild
 
 * Sun Sep 17 2023 Mikel Olasagasti Uranga <mikel@olasagasti.info> - 4.4.0-1
