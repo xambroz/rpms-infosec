@@ -1,6 +1,6 @@
 Name:           openscap
 Version:        1.3.9
-Release:        6%{?dist}
+Release:        7%{?dist}
 Epoch:          1
 Summary:        Set of open source libraries enabling integration of the SCAP line of standards
 License:        LGPL-2.1-or-later
@@ -59,10 +59,6 @@ Patch4:         openscap-1.3.9-c99-libxml2.patch
 # Python bindings: Do not reuse $result for pointer conversion result
 # https://github.com/OpenSCAP/openscap/pull/2069
 Patch5:         openscap-1.3.9-c99-python.patch
-
-%if 0%{?rhel} && ! 0%{?eln}
-BuildRequires:  epel-rpm-macros
-%endif
 
 BuildRequires:  systemd-rpm-macros
 
@@ -241,10 +237,6 @@ Tool for scanning Atomic containers.
 
 %prep
 %autosetup -p1
-# TDOD - remove when putting back to Fedora
-echo "===== SHOWRC ====="
-rpm --showrc
-echo "===== SHOWRC end ====="
 
 %build
 
@@ -277,7 +269,7 @@ ctest -V -E sce/test_sce_in_ds.sh
 find %{buildroot} -name '*.la' -exec rm -f {} ';'
 
 # fix python shebangs
-%if 0%{?fedora}
+%if 0%{?fedora} || 0%{?rhel} >= 9
 %{__python3} %{_rpmconfigdir}/redhat/pathfix.py -i %{__python3} -p -n %{buildroot}%{_bindir}/scap-as-rpm
 %else
 pathfix.py -i %{__python3} -p -n %{buildroot}%{_bindir}/scap-as-rpm
@@ -352,9 +344,16 @@ pathfix.py -i %{__python3} -p -n %{buildroot}%{_bindir}/scap-as-rpm
 %{_mandir}/man8/oscap-podman.8*
 
 %changelog
-* Wed Jan 10 2024 Michal Ambroz <rebus _AT seznam.cz> - 1:1.3.9-6
+* Mon Feb 19 2024 Yaakov Selkowitz <yselkowi@redhat.com> - 1:1.3.9-8
+- preparations for RHEL10 fork
+
+* Sun Jan 21 2024 Michal Ambroz <rebus _AT seznam.cz> - 1:1.3.9-7
 - add conditionals to be able to rebuild with opendbx/apt even on EPEL+RHEL
 - cosmetics: rename patches, add comments, use buildroot macro instead of env
+- add explicit build requirement to python3-setuptools, needed for 3.13+
+
+* Sun Jan 21 2024 Fedora Release Engineering <releng@fedoraproject.org> - 1:1.3.9-6
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_40_Mass_Rebuild
 
 * Thu Jan 04 2024 Yaakov Selkowitz <yselkowi@redhat.com> - 1:1.3.9-5
 - Enable opendbx for SQL probes only in Fedora
