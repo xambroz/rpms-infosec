@@ -269,7 +269,7 @@ ctest -V -E sce/test_sce_in_ds.sh
 find %{buildroot} -name '*.la' -exec rm -f {} ';'
 
 # fix python shebangs
-%if 0%{?fedora} || 0%{?rhel} >= 9
+%if 0%{?fedora} || 0%{?rhel} > 9
 %{__python3} %{_rpmconfigdir}/redhat/pathfix.py -i %{__python3} -p -n %{buildroot}%{_bindir}/scap-as-rpm
 %else
 pathfix.py -i %{__python3} -p -n %{buildroot}%{_bindir}/scap-as-rpm
