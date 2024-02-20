@@ -60,10 +60,6 @@ Patch4:         openscap-1.3.9-c99-libxml2.patch
 # https://github.com/OpenSCAP/openscap/pull/2069
 Patch5:         openscap-1.3.9-c99-python.patch
 
-%if 0%{?rhel} && ! 0%{?eln}
-BuildRequires:  epel-rpm-macros
-%endif
-
 BuildRequires:  systemd-rpm-macros
 
 BuildRequires:  make
