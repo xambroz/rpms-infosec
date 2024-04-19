@@ -1,0 +1,50 @@
+diff -ru libscca-48029ad8c93780e041e51793b3c03013198fd49a.old/configure.ac libscca-48029ad8c93780e041e51793b3c03013198fd49a.new/configure.ac
+--- libscca-48029ad8c93780e041e51793b3c03013198fd49a.old/configure.ac	2024-04-19 16:20:51.841548654 +0200
++++ libscca-48029ad8c93780e041e51793b3c03013198fd49a.new/configure.ac	2024-04-19 16:22:10.210910060 +0200
+@@ -166,21 +166,6 @@
+ AC_CONFIG_FILES([Makefile])
+ AC_CONFIG_FILES([include/Makefile])
+ AC_CONFIG_FILES([common/Makefile])
+-AC_CONFIG_FILES([libcerror/Makefile])
+-AC_CONFIG_FILES([libcthreads/Makefile])
+-AC_CONFIG_FILES([libcdata/Makefile])
+-AC_CONFIG_FILES([libclocale/Makefile])
+-AC_CONFIG_FILES([libcnotify/Makefile])
+-AC_CONFIG_FILES([libcsplit/Makefile])
+-AC_CONFIG_FILES([libuna/Makefile])
+-AC_CONFIG_FILES([libcfile/Makefile])
+-AC_CONFIG_FILES([libcpath/Makefile])
+-AC_CONFIG_FILES([libbfio/Makefile])
+-AC_CONFIG_FILES([libfcache/Makefile])
+-AC_CONFIG_FILES([libfdata/Makefile])
+-AC_CONFIG_FILES([libfdatetime/Makefile])
+-AC_CONFIG_FILES([libfvalue/Makefile])
+-AC_CONFIG_FILES([libfwnt/Makefile])
+ AC_CONFIG_FILES([libscca/Makefile])
+ AC_CONFIG_FILES([pyscca/Makefile])
+ AC_CONFIG_FILES([sccatools/Makefile])
+diff -ru libscca-48029ad8c93780e041e51793b3c03013198fd49a.old/Makefile.am libscca-48029ad8c93780e041e51793b3c03013198fd49a.new/Makefile.am
+--- libscca-48029ad8c93780e041e51793b3c03013198fd49a.old/Makefile.am	2024-04-19 16:20:51.839548644 +0200
++++ libscca-48029ad8c93780e041e51793b3c03013198fd49a.new/Makefile.am	2024-04-19 16:22:42.979057884 +0200
+@@ -3,21 +3,6 @@
+ SUBDIRS = \
+ 	include \
+ 	common \
+-	libcerror \
+-	libcthreads \
+-	libcdata \
+-	libclocale \
+-	libcnotify \
+-	libcsplit \
+-	libuna \
+-	libcfile \
+-	libcpath \
+-	libbfio \
+-	libfcache \
+-	libfdata \
+-	libfdatetime \
+-	libfvalue \
+-	libfwnt \
+ 	libscca \
+ 	sccatools \
+ 	pyscca \
