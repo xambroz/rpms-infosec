@@ -36,18 +36,18 @@ Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{nam
 
 # Specific to Fedora - build with system libraries
 Patch1:         radare2-5.6.6-use_openssl.patch
-Patch3:         radare2-5.7.6-use_magic.patch
+Patch3:         radare2-5.9.0-use_magic.patch
 Patch4:         radare2-5.6.6-use_lz4.patch
 
 # CVE-2023-4322 - radare2: Heap-based Buffer Overflow in the bf dissassembler
 # fix should be part of 5.9.0
 # https://github.com/radareorg/radare2/commit/ba919adb74ac368bf76b150a00347ded78b572dd
-Patch5:         radare2-5.8.8-CVE-2023-4322.patch
+# Patch5:         radare2-5.8.8-CVE-2023-4322.patch
 
 # CVE-2023-5686 - radare2: heap-buffer-overflow in /radare2/shlr/java/code.c:211:21 in java_print_opcode
 # fix should be part of 5.9.0
 # https://github.com/radareorg/radare2/commit/1bdda93e348c160c84e30da3637acef26d0348de
-Patch6:         radare2-5.8.8-CVE-2023-5686.patch
+# Patch6:         radare2-5.8.8-CVE-2023-5686.patch
 
 
 
