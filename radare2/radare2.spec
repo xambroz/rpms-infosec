@@ -1,19 +1,16 @@
 Name:           radare2
 Summary:        The reverse engineering framework
-Version:        5.8.8
-%global         baserelease     2
+Version:        5.9.0
+%global         baserelease     1
 URL:            https://radare.org/
 VCS:            https://github.com/radareorg/radare2
 #               https://github.com/radareorg/radare2/releases
-
-# Possible to build with extra memory sanitization
-%bcond_with     asan
 
 # %%if 0%%{?rhel} && 0%%{?rhel} == 8
 # Radare2 fails to build on EPEL8+s390x
 # https://bugzilla.redhat.com/show_bug.cgi?id=1960046
 # https://docs.fedoraproject.org/en-US/packaging-guidelines/#_architecture_build_failures
-# ExcludeArch:  s390x
+# ExcludeArch:    s390x
 # %%endif
 
 
@@ -24,8 +21,8 @@ VCS:            https://github.com/radareorg/radare2
 %global         gituser         radareorg
 %global         gitname         radare2
 
-%global         gitdate         20230608
-%global         commit          ea7f0356519884715cf1d5fba16042bac72b2df5
+%global         gitdate         20240331
+%global         commit          4a07098809c71c21515d0f862ac4ca044ae95e95
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
@@ -35,10 +32,6 @@ Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{version}.tar.
 %else
 Release:        0.%{baserelease}.%{gitdate}git%{shortcommit}%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{commit}.tar.gz#/%{name}-%{version}-git%{gitdate}-%{shortcommit}.tar.gz
-%endif
-
-%if %{with asan}
-%global         release        %{release}~asan
 %endif
 
 # Specific to Fedora - build with system libraries
@@ -60,7 +53,7 @@ Patch6:         radare2-5.8.8-CVE-2023-5686.patch
 
 
 
-License:        LGPLv3+ and GPLv2+ and BSD and MIT and ASL 2.0 and MPLv2.0 and zlib
+License:        LGPL-3.0-or-later AND GPL-2.0-or-later AND BSD-2-Clause AND BSD-3-Clause AND MIT AND Apache-2.0 AND MPL-2.0 AND Zlib
 # Radare2 as a package is targeting to be licensed/compiled as LGPLv3+
 # during build for Fedora the GPL code is not omitted so effectively it is GPLv2+
 # some code has originally different license:
@@ -104,10 +97,6 @@ BuildRequires:  ninja-build
 BuildRequires:  pkgconfig
 # xxhash-devel
 BuildRequires:  pkgconfig(libxxhash)
-
-%if %{with asan}
-BuildRequires:  libasan
-%endif
 
 # version of libzip on rhel7 is too old
 %if 0%{?fedora} || 0%{?rhel} >= 8
@@ -299,9 +288,6 @@ sed -i -e "s|meson_version : '>=......'|meson_version : '>=0.49.1'|;" meson.buil
 #     --sanitize=address,undefined,signed-integer-overflow \
 
 %meson \
-%if %{with asan}
-    -Db_sanitize=address \
-%endif
     -Duse_sys_magic=true \
 %if 0%{?fedora} || 0%{?rhel} >= 8
     -Duse_sys_zip=true \
@@ -388,6 +374,15 @@ mkdir -p %{buildroot}%{_libdir}/%{name}/%{version}
 
 
 %changelog
+* Sat Apr 20 2024 Michal Ambroz <rebus at, seznam.cz> 5.9.0-1
+- bump to 5.9.0
+
+* Fri Jan 26 2024 Fedora Release Engineering <releng@fedoraproject.org> - 5.8.8-5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_40_Mass_Rebuild
+
+* Mon Jan 22 2024 Fedora Release Engineering <releng@fedoraproject.org> - 5.8.8-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_40_Mass_Rebuild
+
 * Thu Oct 26 2023 Michal Ambroz <rebus at, seznam.cz> 5.8.8-3
 - rebuild F40+ with capstone 5.0.1+
 
