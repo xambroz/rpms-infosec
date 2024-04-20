@@ -1,21 +1,20 @@
-%global         gituser         libyal
-%global         gitname         libcpath
-#20150101
-#%global        commit          626f55595a0d9129930c3c421e9b27a36a67b0f2
-#20160425
-%global         commit          57207207d89a035e458cd37d17fb1002c7f15014
-%global         shortcommit     %(c=%{commit}; echo ${c:0:7})
-
-
 Name:           libcpath
-Version:        20160425
+Version:        20240414
 Release:        1%{?dist}
 Summary:        Libyal library for cross-platform C path functions
 
 Group:          System Environment/Libraries
 License:        LGPL-3.0-or-later
-#URL:           https://github.com/libyal/libcpath
-URL:            https://github.com/%{gituser}/%{gitname}
+URL:            https://github.com/libyal/libcpath
+VCS:            https://github.com/libyal/libcpath
+
+%global         gituser         libyal
+%global         gitname         libcpath
+#20240414
+%global         commit          fcc7645b094e904cfb57ce5eb9e7515ad12b420f
+%global         shortcommit     %(c=%{commit}; echo ${c:0:7})
+
+
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 #Patch build to use the shared system libraries rather than using embedded ones
 Patch0:         %{name}-libs.patch
@@ -79,6 +78,9 @@ make check
 %{_mandir}/man3/%{name}.3*
 
 %changelog
+* Sat Apr 20 2024 Michal Ambroz <rebus AT seznam.cz> - 20240414-1
+- bump to 20240414
+
 * Mon Aug 01 2016 Michal Ambroz <rebus AT seznam.cz> - 20160425-1
 - bump to 20160425
 
