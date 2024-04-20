@@ -37,7 +37,9 @@ Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{nam
 # Specific to Fedora - build with system libraries
 Patch1:         radare2-5.6.6-use_openssl.patch
 Patch3:         radare2-5.9.0-use_magic.patch
-Patch4:         radare2-5.6.6-use_lz4.patch
+
+# using system-wide LZ4 should be done using conditionals
+# Patch4:         radare2-5.6.6-use_lz4.patch
 
 # CVE-2023-4322 - radare2: Heap-based Buffer Overflow in the bf dissassembler
 # fix should be part of 5.9.0
