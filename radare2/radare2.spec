@@ -370,6 +370,7 @@ mkdir -p %{buildroot}%{_libdir}/%{name}/%{version}
 %{_datadir}/%{name}/%{version}/opcodes
 %{_datadir}/%{name}/%{version}/syscall
 %{_datadir}/%{name}/%{version}/charsets
+%{_datadir}/%{name}/%{version}/platform
 %dir %{_datadir}/%{name}
 %dir %{_datadir}/doc/%{name}
 %dir %{_datadir}/%{name}/%{version}
