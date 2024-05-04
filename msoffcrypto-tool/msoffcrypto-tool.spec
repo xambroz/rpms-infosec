@@ -56,6 +56,7 @@ Requires:       python%{python3_pkgversion}-olefile >= 0.45
 
 %install
 %pyproject_install
+rm -f %{buildroot}%{python3_sitelib}/NOTICE.txt
 %pyproject_save_files %{modulename}
 
 
@@ -74,7 +75,8 @@ pytest-3 -sv
 
 
 %files -n python%{python3_pkgversion}-%{modulename} -f %{pyproject_files}
-%license LICENSE.txt
+%license LICENSE.txt NOTICE.txt
+
 
 
 %changelog
