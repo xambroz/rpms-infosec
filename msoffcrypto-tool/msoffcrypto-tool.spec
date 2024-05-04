@@ -17,6 +17,8 @@ intermediate key, or private key which generated its escrow key.
 
 %global modulename msoffcrypto
 
+# python command needed for tests
+BuildRequires:  /usr/bin/python
 BuildRequires:  python%{python3_pkgversion}-devel
 %if 0%{?rhel} && 0%{?rhel} < 9
 BuildRequires:  pyproject-rpm-macros
