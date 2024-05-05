@@ -1,7 +1,7 @@
 Name:           iaito
 Summary:        GUI for radare2 reverse engineering framework
-Version:        5.8.8
-%global         baserelease     2
+Version:        5.9.0
+%global         baserelease     1
 %global         upversion       %{version}-beta
 URL:            https://radare.org/n/iaito.html
 VCS:            https://github.com/radareorg/iaito/
@@ -23,8 +23,8 @@ VCS:            https://github.com/radareorg/iaito/
 %global         gituser         radareorg
 %global         gitname         iaito
 
-%global         gitdate         20230620
-%global         commit          1c984ae94b128e9f9c526cc418956801cd035d6e
+%global         gitdate         20240331
+%global         commit          eaba7bbdad9cf4c4152657160df55c176a8607aa
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 %global         iaito_translations_gitdate      20221114
@@ -43,7 +43,7 @@ Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{nam
 
 # CC-BY-SA: src/img/icons/
 # CC0: src/fonts/Anonymous Pro.ttf
-License:        GPLv3 and CC-BY-SA and CC0
+License:        GPL-3.0-only AND CC-BY-SA-3.0 AND CC0-1.0
 
 Source1:        https://github.com/radareorg/iaito-translations/archive/%{iaito_translations_commit}.tar.gz#/iaito-translations-git%{iaito_translations_gitdate}.tar.gz
 Patch0:         iaito-5.8.8-norpath.patch
@@ -192,6 +192,21 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
 
 
 %changelog
+* Sun May 05 2024 Michal Ambroz <rebus _AT seznam.cz> - 5.9.0-1
+- rebuild with radare2 5.9.0
+
+* Wed Jan 24 2024 Fedora Release Engineering <releng@fedoraproject.org> - 5.8.8-6
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_40_Mass_Rebuild
+
+* Sat Jan 20 2024 Fedora Release Engineering <releng@fedoraproject.org> - 5.8.8-5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_40_Mass_Rebuild
+
+* Mon Nov 13 2023 Michal Ambroz <rebus _AT seznam.cz> - 5.8.8-4
+- rebuild with capstone 5.0.1
+
+* Thu Jul 20 2023 Fedora Release Engineering <releng@fedoraproject.org> - 5.8.8-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_39_Mass_Rebuild
+
 * Sun Jul 09 2023 Michal Ambroz <rebus _AT seznam.cz> - 5.8.8-2
 - rebuild with radare2 5.8.8
 
