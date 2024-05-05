@@ -1,6 +1,6 @@
 Name:           python-xlmmacrodeobfuscator
 Version:        0.2.7
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        XLM Emulation engine to deobfuscate malicious XLM macros, also known as Excel 4
 
 License:        Apache-2.0
@@ -9,6 +9,11 @@ URL:            https://github.com/DissectMalware/XLMMacroDeobfuscator
 # Source0:        https://files.pythonhosted.org/packages/source/x/xlmmacrodeobfuscator/XLMMacroDeobfuscator-%%{version}.tar.gz
 Source0:        https://github.com/DissectMalware/XLMMacroDeobfuscator/releases/download/v%{version}/XLMMacroDeobfuscator-%{version}.tar.gz
 BuildArch:      noarch
+
+# Message about missing pywin32 on stdout is not wanted on Linux as it will be mostly missing
+# and will causing errors when processing output in JSON
+Patch0:         %{name}-01-pywin32.patch
+
 
 BuildRequires:  python%{python3_pkgversion}-devel
 BuildRequires:  python%{python3_pkgversion}-setuptools
@@ -46,7 +51,7 @@ Requires:       python%{python3_pkgversion}-xlrd2
 
 
 %prep
-%autosetup -n XLMMacroDeobfuscator-%{version}
+%autosetup -n XLMMacroDeobfuscator-%{version} -p 1
 # Remove bundled egg-info
 rm -rf xlmmacrodeobfuscator.egg-info
 
@@ -64,8 +69,11 @@ rm -rf xlmmacrodeobfuscator.egg-info
 %{python3_sitelib}/XLMMacroDeobfuscator-%{version}-py%{python3_version}.egg-info
 
 %changelog
-* Thu Oct 26 2023 Michal Ambroz <rebus@seznam.cz> - 0.2.7-2
+* Sat May 04 2024 Michal Ambroz <rebus _AT seznam.cz> - 0.2.7-3
+- omit warning about pywin32 missing to fix parsing of json output in oletools
+
+* Thu Oct 26 2023 Michal Ambroz <rebus _AT seznam.cz> - 0.2.7-2
 - change SPDX license from long to short format
 
-* Tue Dec 06 2022 Michal Ambroz <rebus@seznam.cz> - 0.2.7-1
+* Tue Dec 06 2022 Michal Ambroz <rebus _AT seznam.cz> - 0.2.7-1
 - Initial package.

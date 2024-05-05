@@ -1,0 +1,20 @@
+diff -ru XLMMacroDeobfuscator-0.2.7/XLMMacroDeobfuscator/deobfuscator.py XLMMacroDeobfuscator-0.2.7.new/XLMMacroDeobfuscator/deobfuscator.py
+--- XLMMacroDeobfuscator-0.2.7/XLMMacroDeobfuscator/deobfuscator.py	2022-09-21 20:01:40.000000000 +0200
++++ XLMMacroDeobfuscator-0.2.7.new/XLMMacroDeobfuscator/deobfuscator.py	2024-05-04 17:41:11.815398831 +0200
+@@ -13,6 +13,7 @@
+ import sys
+ import time
+ import roman
++import platform
+ 
+ 
+ from enum import Enum
+@@ -33,7 +34,7 @@
+     HAS_XLSWrapper = True
+ except:
+     HAS_XLSWrapper = False
+-    if not SILENT:
++    if not SILENT and platform.system() != "Linux":
+         print('XLMMacroDeobfuscator: pywin32 is not installed (only is required if you want to use MS Excel)')
+ 
+ from XLMMacroDeobfuscator.xls_wrapper_2 import XLSWrapper2
