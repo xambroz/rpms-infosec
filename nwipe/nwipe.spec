@@ -1,6 +1,6 @@
 Name:           nwipe
-Version:        0.35
-Release:        2%{?dist}
+Version:        0.36
+Release:        1%{?dist}
 Summary:        Securely erase disks using a variety of recognized methods
 
 
@@ -20,19 +20,22 @@ VCS:            https://github.com/martijnvanbrummelen/nwipe
 #Source0:       https://github.com/%%{gituser}/%%{gitname}/archive/%%{commit}/%%{name}-%%{version}-%%{shortcommit}.tar.gz
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
+# merged in
 # https://github.com/martijnvanbrummelen/nwipe/pull/517
 # Lower the build requirements to autoconf used in rhel6
-Patch1:         nwipe-epel6.patch
+# Patch1:         nwipe-epel6.patch
 
+# merged in
 # https://github.com/martijnvanbrummelen/nwipe/pull/516
 # Move the usage of int64t bellow the stdint.h include which defines it
-Patch2:         nwipe-epel-int64t.patch
+# Patch2:         nwipe-epel-int64t.patch
 
+# merged in
 # https://github.com/martijnvanbrummelen/nwipe/issues/519
 # https://github.com/martijnvanbrummelen/nwipe/pull/520
 # Move the time.h include in front od the _POSIX_SOURCE definition to fix build on rhel7
 # time.h must be loaded before stdio.h
-Patch3:         nwipe-timespec.patch
+# Patch3:         nwipe-timespec.patch
 
 
 BuildRequires:  make
@@ -42,6 +45,14 @@ BuildRequires:  ncurses-devel
 BuildRequires:  libconfig-devel
 BuildRequires:  autoconf
 BuildRequires:  automake
+
+# Runtime dependencies
+Requires:       /usr/bin/readlink
+Requires:       /usr/sbin/dmidecode
+Requires:       /usr/sbin/hdparm
+Requires:       /usr/sbin/modprobe
+Requires:       /usr/sbin/smartctl
+
 
 # Recommends only supported on fedora and rhel8+
 %if (0%{?fedora}) || ( 0%{?rhel} && 0%{?rhel} >= 8 )
@@ -96,7 +107,20 @@ autoreconf -vif
 %{_bindir}/%{name}
 %{_mandir}/man1/%{name}.1.gz
 
+
 %changelog
+* Sun May 05 2024 Michal Ambroz <rebus at, seznam.cz> 0.36-2
+- add runtime dependencies to system tools - #2265944
+
+* Sun Mar 10 2024 Michal Ambroz <rebus at, seznam.cz> 0.36-1
+- bump to 0.36
+
+* Thu Jan 25 2024 Fedora Release Engineering <releng@fedoraproject.org> - 0.35-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_40_Mass_Rebuild
+
+* Sun Jan 21 2024 Fedora Release Engineering <releng@fedoraproject.org> - 0.35-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_40_Mass_Rebuild
+
 * Sat Nov 04 2023 Michal Ambroz <rebus at, seznam.cz> 0.35-2
 - fix build for rhel7/8
 
