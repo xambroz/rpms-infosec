@@ -1,7 +1,7 @@
-diff -ru libcdata-1a9343ba70ffcbf24da7ef5693b10740cfaef654.orig/configure.ac libcdata-1a9343ba70ffcbf24da7ef5693b10740cfaef654.new/configure.ac
---- libcdata-1a9343ba70ffcbf24da7ef5693b10740cfaef654.orig/configure.ac	2015-02-18 07:25:28.000000000 +0100
-+++ libcdata-1a9343ba70ffcbf24da7ef5693b10740cfaef654.new/configure.ac	2015-06-07 12:53:10.128233758 +0200
-@@ -128,8 +128,6 @@
+diff -ru libcdata-ed66801e97c516c405486508d280fda3e8114e9d.old/configure.ac libcdata-ed66801e97c516c405486508d280fda3e8114e9d.new/configure.ac
+--- libcdata-ed66801e97c516c405486508d280fda3e8114e9d.old/configure.ac	2024-04-14 05:59:58.000000000 +0200
++++ libcdata-ed66801e97c516c405486508d280fda3e8114e9d.new/configure.ac	2024-05-13 15:22:21.960071737 +0200
+@@ -94,8 +94,6 @@
  AC_CONFIG_FILES([Makefile])
  AC_CONFIG_FILES([include/Makefile])
  AC_CONFIG_FILES([common/Makefile])
@@ -10,9 +10,9 @@ diff -ru libcdata-1a9343ba70ffcbf24da7ef5693b10740cfaef654.orig/configure.ac lib
  AC_CONFIG_FILES([libcdata/Makefile])
  AC_CONFIG_FILES([po/Makefile.in])
  AC_CONFIG_FILES([po/Makevars])
-diff -ru libcdata-1a9343ba70ffcbf24da7ef5693b10740cfaef654.orig/Makefile.am libcdata-1a9343ba70ffcbf24da7ef5693b10740cfaef654.new/Makefile.am
---- libcdata-1a9343ba70ffcbf24da7ef5693b10740cfaef654.orig/Makefile.am	2015-02-18 07:25:28.000000000 +0100
-+++ libcdata-1a9343ba70ffcbf24da7ef5693b10740cfaef654.new/Makefile.am	2015-06-07 12:47:18.285041330 +0200
+diff -ru libcdata-ed66801e97c516c405486508d280fda3e8114e9d.old/Makefile.am libcdata-ed66801e97c516c405486508d280fda3e8114e9d.new/Makefile.am
+--- libcdata-ed66801e97c516c405486508d280fda3e8114e9d.old/Makefile.am	2024-04-14 05:59:58.000000000 +0200
++++ libcdata-ed66801e97c516c405486508d280fda3e8114e9d.new/Makefile.am	2024-05-13 15:22:21.961071741 +0200
 @@ -3,8 +3,6 @@
  SUBDIRS = \
  	include \
@@ -22,7 +22,7 @@ diff -ru libcdata-1a9343ba70ffcbf24da7ef5693b10740cfaef654.orig/Makefile.am libc
  	libcdata \
  	po \
  	manuals \
-@@ -56,8 +53,6 @@
+@@ -61,8 +59,6 @@
  
  library:
  	cd $(srcdir)/common && $(MAKE) $(AM_MAKEFLAGS)
@@ -31,12 +31,3 @@ diff -ru libcdata-1a9343ba70ffcbf24da7ef5693b10740cfaef654.orig/Makefile.am libc
  	cd $(srcdir)/libcdata && $(MAKE) $(AM_MAKEFLAGS)
  	cd $(srcdir)/po && $(MAKE) $(AM_MAKEFLAGS)
  
-@@ -75,8 +69,6 @@
- 	done && test -z "$$fail"
- 
- splint:
--	(cd $(srcdir)/libcerror && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libcthreads && $(MAKE) splint $(AM_MAKEFLAGS))
- 	(cd $(srcdir)/libcdata && $(MAKE) splint $(AM_MAKEFLAGS))
- 	(cd $(srcdir)/po && $(MAKE) splint $(AM_MAKEFLAGS))
- 	(cd $(srcdir)/tests && $(MAKE) splint $(AM_MAKEFLAGS))
