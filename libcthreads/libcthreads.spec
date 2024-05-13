@@ -1,16 +1,17 @@
 Name:           libcthreads
+Version:        20240413
 Summary:        Libyal library for cross-platform C threads functions
 Group:          System Environment/Libraries
 License:        LGPL-3.0-or-later
 URL:            https://github.com/libyal/libcthreads
+#               https://github.com/libyal/libcthreads/releases
 
 %global         gituser         libyal
 %global         gitname         libcthreads
-%global         gitdate         20231025
-%global         commit          a4276aec3255c4902ecb71a72cd852d00cce7df8
+%global         gitdate         %{version}
+%global         commit          b80e4921334bfe06eb3ac3a9ea0912e06c6ad31e
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
-Version:        %{gitdate}
 Release:        1%{?dist}
 
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
@@ -75,6 +76,9 @@ make check
 %{_mandir}/man3/%{name}.3*
 
 %changelog
+* Mon May 13 2024 Michal Ambroz <rebus AT seznam.cz> - 20240413-1
+- bump to 20240413
+
 * Fri Oct 27 2023 Michal Ambroz <rebus AT seznam.cz> - 20231025-1
 - bump to 20231025
 
