@@ -1,21 +1,22 @@
+Name:           libfvalue
+Version:        20240415
+Summary:        Libyal library for generic file value functions
+Group:          System Environment/Libraries
+License:        LGPL-3.0-or-later
+URL:            https://github.com/libyal/libfvalue
+VCS:            https://github.com/libyal/libfvalue
+#               https://github.com/libyal/libfvalue/releases
+
+
 %global         gituser         libyal
 %global         gitname         libfvalue
-#20150322
-#%global        commit          a5b2497f680b4d656f80be82fc82abce1b2e0352
-#20160718
-%global         commit          8b5638c730ac9f203fa14420a33e83273aa318e5
+%global         gitdate         %{varsion}
+%global         commit          7357315fa55d5a30273aa78d98ca8e9c62d2cd8a
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
-Name:           libfvalue
-Version:        20160718
 Release:        1%{?dist}
-Summary:        Libyal library for generic file value functions
 
-Group:          System Environment/Libraries
-License:        LGPL-3.0-or-later
-#URL:           https://github.com/libyal/libfvalue
-URL:            https://github.com/%{gituser}/%{gitname}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 #Patch build to use the shared system libraries rather than using embedded ones
 Patch0:         %{name}-libs.patch
@@ -26,7 +27,6 @@ BuildRequires:  pkgconfig
 BuildRequires:  automake
 BuildRequires:  libtool
 BuildRequires:  gettext-devel
-BuildRequires:  libcstring-devel
 BuildRequires:  libcerror-devel
 BuildRequires:  libcthreads-devel
 BuildRequires:  libcdata-devel
@@ -84,6 +84,9 @@ make check
 %{_mandir}/man3/%{name}.3*
 
 %changelog
+* Mon May 13 2024 Michal Ambroz <rebus AT seznam.cz> - 20240415-1
+- bump to 20240415
+
 * Mon Aug 01 2016 Michal Ambroz <rebus AT seznam.cz> - 20160718-1
 - bump to 20160718
 
