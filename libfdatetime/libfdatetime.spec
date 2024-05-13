@@ -1,19 +1,20 @@
+Name:           libfdatetime
+Version:        20240415
+Summary:        Libyal library for date and time data types
+License:        LGPL-3.0-or-later
+URL:            https://github.com/libyal/libfdatetime
+#               https://github.com/libyal/libfdatetime/releases
+
 %global         gituser         libyal
 %global         gitname         libfdatetime
-#%global         commit          284b8418ef4649b5b775cef8074d52cde9e43fb6
-%global         commit          ebb59ab0bae599089c69c49b0eca18103a4ebb44
+%global         gitdate         %{version}
+%global         commit          133ca426176073d54f4e5eb1f7f61a39e0050fe2
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
-Name:           libfdatetime
-Version:        20160426
 Release:        1%{?dist}
-Summary:        Libyal library for date and time data types
 
 Group:          System Environment/Libraries
-License:        LGPL-3.0-or-later
-#URL:           https://github.com/libyal/libfdatetime
-URL:            https://github.com/%{gituser}/%{gitname}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 #Patch build to use the shared system libraries rather than using embedded ones
 Patch0:         %{name}-libs.patch
