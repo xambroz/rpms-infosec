@@ -1,7 +1,7 @@
-diff -ru libclocale-58d320eefe77acfff82552b53616b50a6f4c3ea4.old/configure.ac libclocale-58d320eefe77acfff82552b53616b50a6f4c3ea4.new/configure.ac
---- libclocale-58d320eefe77acfff82552b53616b50a6f4c3ea4.old/configure.ac	2022-12-18 08:19:43.000000000 +0100
-+++ libclocale-58d320eefe77acfff82552b53616b50a6f4c3ea4.new/configure.ac	2023-06-28 01:35:51.139517044 +0200
-@@ -93,7 +93,6 @@
+diff -ru libclocale-45b989bec6c5578b762f5b13dbce03aa2e999426.old/configure.ac libclocale-45b989bec6c5578b762f5b13dbce03aa2e999426.new/configure.ac
+--- libclocale-45b989bec6c5578b762f5b13dbce03aa2e999426.old/configure.ac	2024-04-14 06:27:18.000000000 +0200
++++ libclocale-45b989bec6c5578b762f5b13dbce03aa2e999426.new/configure.ac	2024-05-13 16:16:09.437468453 +0200
+@@ -94,7 +94,6 @@
  AC_CONFIG_FILES([Makefile])
  AC_CONFIG_FILES([include/Makefile])
  AC_CONFIG_FILES([common/Makefile])
@@ -9,9 +9,9 @@ diff -ru libclocale-58d320eefe77acfff82552b53616b50a6f4c3ea4.old/configure.ac li
  AC_CONFIG_FILES([libclocale/Makefile])
  AC_CONFIG_FILES([po/Makefile.in])
  AC_CONFIG_FILES([po/Makevars])
-diff -ru libclocale-58d320eefe77acfff82552b53616b50a6f4c3ea4.old/Makefile.am libclocale-58d320eefe77acfff82552b53616b50a6f4c3ea4.new/Makefile.am
---- libclocale-58d320eefe77acfff82552b53616b50a6f4c3ea4.old/Makefile.am	2022-12-18 08:19:43.000000000 +0100
-+++ libclocale-58d320eefe77acfff82552b53616b50a6f4c3ea4.new/Makefile.am	2023-06-28 01:36:35.157151067 +0200
+diff -ru libclocale-45b989bec6c5578b762f5b13dbce03aa2e999426.old/Makefile.am libclocale-45b989bec6c5578b762f5b13dbce03aa2e999426.new/Makefile.am
+--- libclocale-45b989bec6c5578b762f5b13dbce03aa2e999426.old/Makefile.am	2024-04-14 06:27:18.000000000 +0200
++++ libclocale-45b989bec6c5578b762f5b13dbce03aa2e999426.new/Makefile.am	2024-05-13 16:16:09.439468463 +0200
 @@ -3,7 +3,6 @@
  SUBDIRS = \
  	include \
@@ -20,7 +20,7 @@ diff -ru libclocale-58d320eefe77acfff82552b53616b50a6f4c3ea4.old/Makefile.am lib
  	libclocale \
  	po \
  	manuals \
-@@ -53,7 +52,6 @@
+@@ -60,7 +59,6 @@
  
  library:
  	cd $(srcdir)/common && $(MAKE) $(AM_MAKEFLAGS)
@@ -28,11 +28,3 @@ diff -ru libclocale-58d320eefe77acfff82552b53616b50a6f4c3ea4.old/Makefile.am lib
  	cd $(srcdir)/libclocale && $(MAKE) $(AM_MAKEFLAGS)
  	cd $(srcdir)/po && $(MAKE) $(AM_MAKEFLAGS)
  
-@@ -70,7 +68,6 @@
- 	done && test -z "$$fail"
- 
- splint:
--	(cd $(srcdir)/libcerror && $(MAKE) splint $(AM_MAKEFLAGS))
- 	(cd $(srcdir)/libclocale && $(MAKE) splint $(AM_MAKEFLAGS))
- 	(cd $(srcdir)/po && $(MAKE) splint $(AM_MAKEFLAGS))
- 	(cd $(srcdir)/tests && $(MAKE) splint $(AM_MAKEFLAGS))
