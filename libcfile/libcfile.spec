@@ -76,6 +76,9 @@ make check
 %{_mandir}/man3/%{name}.3*
 
 %changelog
+* Mon May 13 2024 Michal Ambroz <rebus AT seznam.cz> - 20240414-1
+- bump to 20240414
+
 * Fri Oct 27 2023 Michal Ambroz <rebus AT seznam.cz> - 20230608-1
 - bump to 20230608
 
