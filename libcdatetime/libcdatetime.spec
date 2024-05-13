@@ -19,6 +19,7 @@ Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{nam
 Patch0:         %{name}-libs.patch
 
 # Lower build requirements for rhel
+# https://github.com/libyal/libcdatetime/pull/1
 Patch1:         https://github.com/libyal/libcdatetime/pull/1.patch#/%{name}-configure.ac.patch
 
 
