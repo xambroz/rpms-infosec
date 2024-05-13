@@ -37,14 +37,3 @@ diff -ru libcfile-ef3bf71af478386946e4cfcdb7280d9c10284cdb/Makefile.am libcfile-
  	cd $(srcdir)/libcfile && $(MAKE) $(AM_MAKEFLAGS)
  	cd $(srcdir)/po && $(MAKE) $(AM_MAKEFLAGS)
  
-@@ -76,10 +68,6 @@
- 	done && test -z "$$fail"
- 
- splint:
--	(cd $(srcdir)/libcerror && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libclocale && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libcnotify && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libuna && $(MAKE) splint $(AM_MAKEFLAGS))
- 	(cd $(srcdir)/libcfile && $(MAKE) splint $(AM_MAKEFLAGS))
- 	(cd $(srcdir)/po && $(MAKE) splint $(AM_MAKEFLAGS))
- 	(cd $(srcdir)/tests && $(MAKE) splint $(AM_MAKEFLAGS))
