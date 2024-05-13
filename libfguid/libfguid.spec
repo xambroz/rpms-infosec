@@ -1,18 +1,18 @@
 Name:           libfguid
+Summary:        Libyal library for GUID/UUID data types
+Group:          System Environment/Libraries
+License:        LGPL-3.0-or-later
+URL:            https://github.com/libyal/libfguid
 Version:        20240415
 
 %global         gituser         libyal
 %global         gitname         libfguid
+%global         gitdate         %{version}
 %global         commit          c79feddbafec7d24df8c661e8c9be1417d4dedf4
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 Release:        1%{?dist}
-Summary:        Libyal library for GUID/UUID data types
 
-Group:          System Environment/Libraries
-License:        LGPL-3.0-or-later
-#URL:           https://github.com/libyal/libfguid
-URL:            https://github.com/%{gituser}/%{gitname}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 #Patch build to use the shared system libraries rather than using embedded ones
 Patch0:         %{name}-libs.patch
@@ -23,9 +23,7 @@ BuildRequires:  pkgconfig
 BuildRequires:  automake
 BuildRequires:  libtool
 BuildRequires:  gettext-devel
-BuildRequires:  libcstring-devel
 BuildRequires:  libcerror-devel
-BuildRequires:  libcthreads-devel
 
 %description
 Library for GUID/UUID data types.
@@ -75,6 +73,9 @@ make check
 %{_mandir}/man3/%{name}.3*
 
 %changelog
+* Mon May 13 2024 Michal Ambroz <rebus AT seznam.cz> - 20240415-1
+- bump to 20240415
+
 * Mon Aug 01 2016 Michal Ambroz <rebus AT seznam.cz> - 20160426-1
 - bump to 20160426
 
