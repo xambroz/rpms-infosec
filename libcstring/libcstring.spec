@@ -1,18 +1,19 @@
 Name:           libcstring
+Version:        20180218
 Summary:        Libyal library for cross-platform C string functions
-
 Group:          System Environment/Libraries
 License:        LGPL-3.0-or-later
+URL:            https://github.com/libyal/libcstring
+#               https://github.com/libyal/libcstring/releases
 
 %global         gituser         libyal
 %global         gitname         libcstring
-%global         gitdate         20180218
+%global         gitdate         %{version}
 %global         commit          9a6461ffcdaaa0cda5dd4736b0298de7b1e99aaa
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 Version:        %{gitdate}
 Release:        1%{?dist}
-URL:            https://github.com/libyal/libcstring
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 
 
