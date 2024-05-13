@@ -38,16 +38,3 @@ diff -ru libuna-0bec9356d6c9fd2684defa2807752e39c5d34014/Makefile.am libuna-0bec
  	cd $(srcdir)/libuna && $(MAKE) $(AM_MAKEFLAGS)
  	cd $(srcdir)/po && $(MAKE) $(AM_MAKEFLAGS)
  
-@@ -77,12 +71,7 @@
- 	done && test -z "$$fail"
- 
- splint:
--	(cd $(srcdir)/libcerror && $(MAKE) splint $(AM_MAKEFLAGS))
- 	(cd $(srcdir)/libuna && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libcdatetime && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libclocale && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libcnotify && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libcfile && $(MAKE) splint $(AM_MAKEFLAGS))
- 	(cd $(srcdir)/unatools && $(MAKE) splint $(AM_MAKEFLAGS))
- 	(cd $(srcdir)/po && $(MAKE) splint $(AM_MAKEFLAGS))
- 	(cd $(srcdir)/tests && $(MAKE) splint $(AM_MAKEFLAGS))

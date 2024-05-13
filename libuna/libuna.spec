@@ -1,19 +1,20 @@
 Name:           libuna
+Version:        20240414
 Summary:        Libyal library to support Unicode and ASCII (byte string) conversions
 Group:          System Environment/Libraries
 License:        LGPL-3.0-or-later
 URL:            https://github.com/libyal/libuna
+#               https://github.com/libyal/libuna/releases
 
 # Bootstrap round dependency to libcfile
 %bcond_with     bootstrap
 
 %global         gituser         libyal
 %global         gitname         libuna
-%global         gitdate         20230710
-%global         commit          623c23fb8a336fbe18d16ab2d535f27ed93c23da
+%global         gitdate         %{version}
+%global         commit          ee21db63eed2820396cff0a7442e408c028535f2
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
-Version:        %{gitdate}
 Release:        1%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 
@@ -109,6 +110,9 @@ make check
 
 
 %changelog
+* Mon May 13 2024 Michal Ambroz <rebus AT seznam.cz> - 20240414-1
+- bump to 20240414
+
 * Mon Oct 30 2023 Michal Ambroz <rebus AT seznam.cz> - 20230710-1
 - bump to 20230710
 
