@@ -1,15 +1,16 @@
 Name:           libclocale
+Version:        20240414
 Group:          System Environment/Libraries
 License:        LGPL-3.0-or-later
 URL:            https://github.com/libyal/libclocale
+#               https://github.com/libyal/libclocale/releases
 
 %global         gituser         libyal
 %global         gitname         libclocale
-%global         gitdate         20230609
-%global         commit          e8e4875f3e9abdad88ab5d88cf3fa57153c628b1
+%global         gitdate         %{version}
+%global         commit          45b989bec6c5578b762f5b13dbce03aa2e999426
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
-Version:        %{gitdate}
 Release:        1%{?dist}
 Summary:        Libyal library for cross-platform C locale functions
 
@@ -75,6 +76,9 @@ make check
 %{_mandir}/man3/%{name}.3*
 
 %changelog
+* Mon May 13 2024 Michal Ambroz <rebus AT seznam.cz> - 20240414-1
+- bump to 20240414
+
 * Fri Oct 27 2023 Michal Ambroz <rebus AT seznam.cz> - 20230609-1
 - bump to 20230609
 
