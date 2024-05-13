@@ -6,13 +6,13 @@ URL:            https://github.com/libyal/libcerror
 
 %global         gituser         libyal
 %global         gitname         libcerror
-%global         gitdate         20231024
-%global         commit          9846185237f820c31b6b62e0bf586db2bb3c3966
+%global         gitdate         20240413
+%global         commit          9b13d0ca59dcc83f94eef7c6c4e99c46b84550c8
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
 Version:        %{gitdate}
-Release:        2%{?dist}
+Release:        1%{?dist}
 
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 
@@ -75,6 +75,9 @@ make check
 %{_mandir}/man3/%{name}.3*
 
 %changelog
+* Mon May 13 2024 Michal Ambroz <rebus AT seznam.cz> - 20240413-1
+- bump to 20240413
+
 * Fri Oct 27 2023 Michal Ambroz <rebus AT seznam.cz> - 20231024-2
 - lower build requirements for rhel
 
