@@ -1,6 +1,6 @@
-diff -ru libcnotify-e4275c83baf9c2fe53a034b6a73bf34238428fc1/configure.ac libcnotify-e4275c83baf9c2fe53a034b6a73bf34238428fc1.new/configure.ac
---- libcnotify-e4275c83baf9c2fe53a034b6a73bf34238428fc1/configure.ac	2022-01-08 06:39:14.000000000 +0100
-+++ libcnotify-e4275c83baf9c2fe53a034b6a73bf34238428fc1.new/configure.ac	2023-06-28 12:35:40.105573721 +0200
+diff -ru libcnotify-d1bd4e920356ecd29c66f4d21bb36fa2834dbf31.old/configure.ac libcnotify-d1bd4e920356ecd29c66f4d21bb36fa2834dbf31.new/configure.ac
+--- libcnotify-d1bd4e920356ecd29c66f4d21bb36fa2834dbf31.old/configure.ac	2024-04-14 07:29:46.000000000 +0200
++++ libcnotify-d1bd4e920356ecd29c66f4d21bb36fa2834dbf31.new/configure.ac	2024-05-13 16:09:22.874620057 +0200
 @@ -91,7 +91,6 @@
  AC_CONFIG_FILES([Makefile])
  AC_CONFIG_FILES([include/Makefile])
@@ -9,9 +9,9 @@ diff -ru libcnotify-e4275c83baf9c2fe53a034b6a73bf34238428fc1/configure.ac libcno
  AC_CONFIG_FILES([libcnotify/Makefile])
  AC_CONFIG_FILES([po/Makefile.in])
  AC_CONFIG_FILES([po/Makevars])
-diff -ru libcnotify-e4275c83baf9c2fe53a034b6a73bf34238428fc1/Makefile.am libcnotify-e4275c83baf9c2fe53a034b6a73bf34238428fc1.new/Makefile.am
---- libcnotify-e4275c83baf9c2fe53a034b6a73bf34238428fc1/Makefile.am	2022-01-08 06:39:14.000000000 +0100
-+++ libcnotify-e4275c83baf9c2fe53a034b6a73bf34238428fc1.new/Makefile.am	2023-06-28 12:35:17.433720818 +0200
+diff -ru libcnotify-d1bd4e920356ecd29c66f4d21bb36fa2834dbf31.old/Makefile.am libcnotify-d1bd4e920356ecd29c66f4d21bb36fa2834dbf31.new/Makefile.am
+--- libcnotify-d1bd4e920356ecd29c66f4d21bb36fa2834dbf31.old/Makefile.am	2024-04-14 07:29:46.000000000 +0200
++++ libcnotify-d1bd4e920356ecd29c66f4d21bb36fa2834dbf31.new/Makefile.am	2024-05-13 16:09:22.875620061 +0200
 @@ -3,7 +3,6 @@
  SUBDIRS = \
  	include \
@@ -20,7 +20,7 @@ diff -ru libcnotify-e4275c83baf9c2fe53a034b6a73bf34238428fc1/Makefile.am libcnot
  	libcnotify \
  	po \
  	manuals \
-@@ -53,7 +52,6 @@
+@@ -60,7 +59,6 @@
  
  library:
  	cd $(srcdir)/common && $(MAKE) $(AM_MAKEFLAGS)
@@ -28,11 +28,3 @@ diff -ru libcnotify-e4275c83baf9c2fe53a034b6a73bf34238428fc1/Makefile.am libcnot
  	cd $(srcdir)/libcnotify && $(MAKE) $(AM_MAKEFLAGS)
  	cd $(srcdir)/po && $(MAKE) $(AM_MAKEFLAGS)
  
-@@ -70,7 +68,6 @@
- 	done && test -z "$$fail"
- 
- splint:
--	(cd $(srcdir)/libcerror && $(MAKE) splint $(AM_MAKEFLAGS))
- 	(cd $(srcdir)/libcnotify && $(MAKE) splint $(AM_MAKEFLAGS))
- 	(cd $(srcdir)/po && $(MAKE) splint $(AM_MAKEFLAGS))
- 	(cd $(srcdir)/tests && $(MAKE) splint $(AM_MAKEFLAGS))
