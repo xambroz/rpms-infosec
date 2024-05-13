@@ -1,11 +1,10 @@
-diff -ru libbfio-00a9e6e0644147d4ad44466ac9e2d58a8c6a8476.orig/configure.ac libbfio-00a9e6e0644147d4ad44466ac9e2d58a8c6a8476.new/configure.ac
---- libbfio-00a9e6e0644147d4ad44466ac9e2d58a8c6a8476.orig/configure.ac	2015-01-02 20:21:24.000000000 +0100
-+++ libbfio-00a9e6e0644147d4ad44466ac9e2d58a8c6a8476.new/configure.ac	2015-06-08 04:46:13.722785017 +0200
-@@ -148,16 +148,6 @@
+diff -ru libbfio-2bde498a8fbe0155fc7fbcd9c56de7cadc2dcb8d/configure.ac libbfio-2bde498a8fbe0155fc7fbcd9c56de7cadc2dcb8d.new/configure.ac
+--- libbfio-2bde498a8fbe0155fc7fbcd9c56de7cadc2dcb8d/configure.ac	2024-04-14 10:29:21.000000000 +0200
++++ libbfio-2bde498a8fbe0155fc7fbcd9c56de7cadc2dcb8d.new/configure.ac	2024-04-21 00:05:36.950982789 +0200
+@@ -124,15 +124,6 @@
  AC_CONFIG_FILES([Makefile])
  AC_CONFIG_FILES([include/Makefile])
  AC_CONFIG_FILES([common/Makefile])
--AC_CONFIG_FILES([libcstring/Makefile])
 -AC_CONFIG_FILES([libcerror/Makefile])
 -AC_CONFIG_FILES([libcthreads/Makefile])
 -AC_CONFIG_FILES([libcdata/Makefile])
@@ -18,14 +17,13 @@ diff -ru libbfio-00a9e6e0644147d4ad44466ac9e2d58a8c6a8476.orig/configure.ac libb
  AC_CONFIG_FILES([libbfio/Makefile])
  AC_CONFIG_FILES([po/Makefile.in])
  AC_CONFIG_FILES([po/Makevars])
-diff -ru libbfio-00a9e6e0644147d4ad44466ac9e2d58a8c6a8476.orig/Makefile.am libbfio-00a9e6e0644147d4ad44466ac9e2d58a8c6a8476.new/Makefile.am
---- libbfio-00a9e6e0644147d4ad44466ac9e2d58a8c6a8476.orig/Makefile.am	2015-01-02 20:21:24.000000000 +0100
-+++ libbfio-00a9e6e0644147d4ad44466ac9e2d58a8c6a8476.new/Makefile.am	2015-06-08 04:45:54.497087825 +0200
-@@ -3,16 +3,6 @@
+diff -ru libbfio-2bde498a8fbe0155fc7fbcd9c56de7cadc2dcb8d/Makefile.am libbfio-2bde498a8fbe0155fc7fbcd9c56de7cadc2dcb8d.new/Makefile.am
+--- libbfio-2bde498a8fbe0155fc7fbcd9c56de7cadc2dcb8d/Makefile.am	2024-04-14 10:29:21.000000000 +0200
++++ libbfio-2bde498a8fbe0155fc7fbcd9c56de7cadc2dcb8d.new/Makefile.am	2024-04-21 00:05:18.532871260 +0200
+@@ -3,15 +3,6 @@
  SUBDIRS = \
  	include \
  	common \
--	libcstring \
 -	libcerror \
 -	libcthreads \
 -	libcdata \
@@ -38,11 +36,10 @@ diff -ru libbfio-00a9e6e0644147d4ad44466ac9e2d58a8c6a8476.orig/Makefile.am libbf
  	libbfio \
  	po \
  	manuals \
-@@ -63,16 +53,6 @@
+@@ -68,15 +59,6 @@
  
  library:
  	(cd $(srcdir)/common && $(MAKE) $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libcstring && $(MAKE) $(AM_MAKEFLAGS))
 -	(cd $(srcdir)/libcerror && $(MAKE) $(AM_MAKEFLAGS))
 -	(cd $(srcdir)/libcthreads && $(MAKE) $(AM_MAKEFLAGS))
 -	(cd $(srcdir)/libcdata && $(MAKE) $(AM_MAKEFLAGS))
@@ -55,20 +52,3 @@ diff -ru libbfio-00a9e6e0644147d4ad44466ac9e2d58a8c6a8476.orig/Makefile.am libbf
  	(cd $(srcdir)/libbfio && $(MAKE) $(AM_MAKEFLAGS))
  	(cd $(srcdir)/po && $(MAKE) $(AM_MAKEFLAGS))
  
-@@ -89,16 +69,6 @@
- 	done && test -z "$$fail"
- 
- splint:
--	(cd $(srcdir)/libcstring && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libcerror && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libcthreads && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libcdata && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libclocale && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libcnotify && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libcsplit && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libuna && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libcfile && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libcpath && $(MAKE) splint $(AM_MAKEFLAGS))
- 	(cd $(srcdir)/libbfio && $(MAKE) splint $(AM_MAKEFLAGS))
- 	(cd $(srcdir)/po && $(MAKE) splint $(AM_MAKEFLAGS))
- 	(cd $(srcdir)/tests && $(MAKE) splint $(AM_MAKEFLAGS))

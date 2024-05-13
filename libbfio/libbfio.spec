@@ -1,21 +1,18 @@
+Name:           libbfio
+Version:        20240414
+Release:        1%{?dist}
+Summary:        Library to provide basic file input/output abstraction
+Group:          System Environment/Libraries
+License:        LGPL-3.0-or-later
+URL:            https://github.com/libyal/libbfio
+
 %global         gituser         libyal
 %global         gitname         libbfio
-#20150102
-#%global        commit          00a9e6e0644147d4ad44466ac9e2d58a8c6a8476
-#20160528
-%global         commit          26abccb427951b4da00f99fd46774863582b53e5
+%global         gitdate         20240414
+%global         commit          2bde498a8fbe0155fc7fbcd9c56de7cadc2dcb8d
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
-Name:           libbfio
-Version:        20160528
-Release:        1%{?dist}
-Summary:        Library to provide basic file input/output abstraction
-
-Group:          System Environment/Libraries
-License:        LGPL-3.0-or-later
-#URL:           https://github.com/libyal/libbfio
-URL:            https://github.com/%{gituser}/%{gitname}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 #Patch build to use the shared system libraries rather than using embedded ones
 Patch0:         %{name}-libs.patch
@@ -85,6 +82,9 @@ make check
 %{_mandir}/man3/%{name}.3*
 
 %changelog
+* Sat Apr 20 2024 Michal Ambroz <rebus AT seznam.cz> - 20240414-1
+- bump to 20240414
+
 * Mon Aug 01 2016 Michal Ambroz <rebus AT seznam.cz> - 20160528-1
 - bump to 20160528
 
