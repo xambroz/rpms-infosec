@@ -76,7 +76,18 @@ Patch3:         dionaea-03_in6_pktinfo.patch
 # Fix hardcoded lib dir
 # https://github.com/DinoTools/dionaea/pull/181
 # https://github.com/DinoTools/dionaea/pull/209
-# Patch8:         dionaea-08_modules_libdir.patch
+# Patch8:       dionaea-08_modules_libdir.patch
+
+
+# Patch to explicitly state the python module version to the setup.py
+# Patch12:        dionaea-12_py_module_version.patch
+
+# Replace deprecated PyUnicode_GetSize with PyUnicode_GetLength
+# Patch13:        dionaea-13_GetSize_deprecated.patch
+
+# Trying to identify the mole
+# Patch14:        dionaea-14_safe_load.patch
+
 
 
 %if 0%{?fedora} || 0%{?rhel} >= 8

@@ -1,0 +1,12 @@
+diff -ru dionaea-0.7.0/modules/python/module.c dionaea-0.7.0.new/modules/python/module.c
+--- dionaea-0.7.0/modules/python/module.c	2023-10-05 02:34:45.932378106 +0200
++++ dionaea-0.7.0.new/modules/python/module.c	2023-10-05 02:36:19.072753468 +0200
+@@ -985,7 +985,7 @@
+ 	} else
+ 		return g_strdup("<!repr>");
+ 
+-	Py_ssize_t pysize = PyUnicode_GetSize(pyobjectstr);
++	Py_ssize_t pysize = PyUnicode_GetLength(pyobjectstr);
+ 	wchar_t * str = (wchar_t *) malloc((pysize + 1) * sizeof(wchar_t));
+ 	PyUnicode_AsWideChar(pyobjectstr, str, pysize);
+ 	str[pysize] = '\0';

@@ -1,0 +1,14 @@
+diff -ru dionaea-0.7.0/modules/python/dionaea/__init__.py dionaea-0.7.0.new/modules/python/dionaea/__init__.py
+--- dionaea-0.7.0/modules/python/dionaea/__init__.py	2018-05-01 22:22:13.000000000 +0200
++++ dionaea-0.7.0.new/modules/python/dionaea/__init__.py	2023-10-05 04:01:50.852135935 +0200
+@@ -70,7 +70,7 @@
+     for filename_pattern in filename_patterns:
+         for filename in glob.glob(filename_pattern):
+             fp = open(filename)
+-            file_configs = yaml.load(fp)
++            file_configs = yaml.safe_load(fp)
+             if isinstance(file_configs, (tuple, list)):
+                 configs += file_configs
+-    return configs
+\ No newline at end of file
++    return configs

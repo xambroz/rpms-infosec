@@ -1,0 +1,11 @@
+diff -ru dionaea-0.7.0/modules/python/setup.py.in dionaea-0.7.0.new/modules/python/setup.py.in
+--- dionaea-0.7.0/modules/python/setup.py.in	2023-10-05 00:42:27.965474398 +0200
++++ dionaea-0.7.0.new/modules/python/setup.py.in	2023-10-05 01:00:14.217496327 +0200
+@@ -100,6 +100,7 @@
+ 
+ setup(
+ 	name = 'dionaea',
++        version = '@VERSION@',
+ 	cmdclass = {'build_ext': build_ext},
+ 	ext_modules = ext_modules,
+ ) 
