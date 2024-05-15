@@ -1,7 +1,7 @@
 Name:           libdasm
 Version:        1.6
 Summary:        Simple x86 disassembly library
-%global         baserelease     12
+%global         baserelease     19
 %if 0%{?rhel}
 # Group needed for EPEL
 Group:          Applications/System
@@ -20,7 +20,7 @@ non-Intel but Intel-compatible CPU extensions, like AMD 3DNow! are
 not supported).}
 
 
-# Do not build  python3 by default for now
+# Do not build with python3 by default for now
 # Module can be compiled but it doesn't load properly to python3
 %bcond_with  python3
 
@@ -36,7 +36,7 @@ not supported).}
 # TODO - add ruby subpackage
 
 # Current code being maintained on github by Joshua Pereyda
-# version 1.6 was released  the BSD license
+# version 1.6 was released with the BSD license
 # Original author Jarkko Turkulainen <jt () klake org> put the code into public domain
 # http://www.klake.org/~jt/misc/libdasm-1.4.tar.gz -> https://web.archive.org/web/20060718012748/http://www.klake.org/~jt/misc/libdasm-1.4.tar.gz
 # http://www.klake.org/~jt/misc/libdasm-1.5.tar.gz -> https://web.archive.org/web/20120119123445/http://www.klake.org/~jt/misc/libdasm-1.5.tar.gz
@@ -71,7 +71,7 @@ Patch1:         libdasm-01_readonly.patch
 # Build the oython only explicitly
 Patch2:         libdasm-02_explicit_python.patch
 
-# Make das.py example compatible  both pytho2 and python3
+# Make das.py example compatible with both pytho2 and python3
 Patch3:         libdasm-03_das_futurize.patch
 
 %if 0%{?rhel} && 0%{?rhel} <= 6
@@ -82,6 +82,7 @@ Patch3:         libdasm-03_das_futurize.patch
 
 
 # we don't want to provide private python extension libs
+# TODO: this causes warning "Deprecated external dependency generator is used!"
 %{?filter_setup:
 %filter_provides_in %{python2_sitearch}/.*\.so$
 %filter_setup
@@ -96,7 +97,7 @@ Patch3:         libdasm-03_das_futurize.patch
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
-# Build source is release tarball
+# Build source is tarball release=1 or git commit=0
 # to build from git snapshot try rpmbuild libdasm-*.src.rpm --without releasetag
 %bcond_without  releasetag
 
@@ -107,10 +108,9 @@ Source0:        https://github.com/%{gituser}/%{gitname}/archive/v%{version}.tar
 
 %else
 # Build from the git commit snapshot
-# Release is not starting  0 as usual, because the next release will be 1.6
+# Release is not starting with 0 as usual, because the next release will be 1.6
 Release:        %{baserelease}.%{gitdate}git%{shortcommit}%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
-# releasetag
 %endif
 
 
@@ -306,8 +306,29 @@ find %{buildroot} -name '*.a' -exec rm -f {} ';'
 
 
 %changelog
-* Wed May 19 2021 Michal Ambroz <rebus at, seznam.cz> - 1.6-12
+* Wed May 15 2024 Michal Ambroz <rebus at, seznam.cz> - 1.6-19
 - modernize the specfile
+
+* Thu Jan 25 2024 Fedora Release Engineering <releng@fedoraproject.org> - 1.6-18
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_40_Mass_Rebuild
+
+* Sun Jan 21 2024 Fedora Release Engineering <releng@fedoraproject.org> - 1.6-17
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_40_Mass_Rebuild
+
+* Thu Jul 20 2023 Fedora Release Engineering <releng@fedoraproject.org> - 1.6-16
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_39_Mass_Rebuild
+
+* Thu Jan 19 2023 Fedora Release Engineering <releng@fedoraproject.org> - 1.6-15
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_38_Mass_Rebuild
+
+* Thu Jul 21 2022 Fedora Release Engineering <releng@fedoraproject.org> - 1.6-14
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_37_Mass_Rebuild
+
+* Thu Jan 20 2022 Fedora Release Engineering <releng@fedoraproject.org> - 1.6-13
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
+
+* Thu Jul 22 2021 Fedora Release Engineering <releng@fedoraproject.org> - 1.6-12
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
 
 * Tue Jan 26 2021 Fedora Release Engineering <releng@fedoraproject.org> - 1.6-11
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
