@@ -1,13 +1,13 @@
 Name:           nwipe
-Version:        0.36
-Release:        2%{?dist}
+Version:        0.37
+Release:        1%{?dist}
 Summary:        Securely erase disks using a variety of recognized methods
 
 
 %global         gituser         martijnvanbrummelen
 %global         gitname         nwipe
-%global         commit          ab6c4c0014af7e423a4d90ca4e6f201cb30a1f98
-%global         gitdate         20201209
+%global         commit          28271712db2609eee7f842fc67a6654b5a87140b
+%global         gitdate         20240510
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
@@ -36,6 +36,12 @@ Source0:        https://github.com/%{gituser}/%{gitname}/archive/v%{version}.tar
 # Move the time.h include in front od the _POSIX_SOURCE definition to fix build on rhel7
 # time.h must be loaded before stdio.h
 # Patch3:         nwipe-timespec.patch
+
+# Mitigate the type error on the i686 platform
+# https://kojipkgs.fedoraproject.org//work/tasks/7452/117727452/build.log
+# https://github.com/martijnvanbrummelen/nwipe/issues/578
+Patch4:         nwipe-long-unsigned-int.patch
+
 
 
 BuildRequires:  make
@@ -105,10 +111,16 @@ autoreconf -vif
 %license COPYING
 %doc CHANGELOG.md README.md
 %{_bindir}/%{name}
-%{_mandir}/man1/%{name}.1.gz
+%{_mandir}/man8/%{name}.8.gz
 
 
 %changelog
+* Wed May 15 2024 Michal Ambroz <rebus at, seznam.cz> 0.37-2
+- fix type mismatch in prng
+
+* Wed May 15 2024 Michal Ambroz <rebus at, seznam.cz> 0.37-1
+- bump to 0.37
+
 * Sun May 05 2024 Michal Ambroz <rebus at, seznam.cz> 0.36-2
 - add runtime dependencies to system tools - #2265944
 
