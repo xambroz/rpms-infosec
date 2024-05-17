@@ -12,7 +12,6 @@ URL:            https://github.com/libyal/libcstring
 %global         commit          9a6461ffcdaaa0cda5dd4736b0298de7b1e99aaa
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
-Version:        %{gitdate}
 Release:        1%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 
