@@ -1,21 +1,21 @@
-%global         gituser         libyal
-%global         gitname         libcsystem
-#20150629
-%global         commit          749d980f5f706d04897d2ae08b77594933a5f7f1
-#20160425
-%global         commit          c37249de9a16e4988042f96a93868d97e34568bd
-%global         shortcommit     %(c=%{commit}; echo ${c:0:7})
-
+# ===== Deprecated =====
 
 Name:           libcsystem
 Version:        20160425
 Release:        1%{?dist}
 Summary:        Libyal library for cross-platform C system functions
-
 Group:          System Environment/Libraries
 License:        LGPL-3.0-or-later
-#URL:           https://github.com/libyal/libcsystem
-URL:            https://github.com/%{gituser}/%{gitname}
+URL:            https://github.com/libyal/libcsystem
+# Releases      https://github.com/libyal/libcsystem/releases
+
+%global         gituser         libyal
+%global         gitname         libcsystem
+%global         gitdate         %{version}
+%global         commit          c37249de9a16e4988042f96a93868d97e34568bd
+%global         shortcommit     %(c=%{commit}; echo ${c:0:7})
+
+
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 #Patch build to use the shared system libraries rather than using embedded ones
 Patch0:         %{name}-libs.patch
