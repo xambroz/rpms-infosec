@@ -1,34 +1,31 @@
-%global         gituser         libyal
-%global         gitname         libewf
-#20160802
-%global         commit          716431f3c33a649598c2d333e8430c13a7c18ea7
-%global         shortcommit     %(c=%{commit}; echo ${c:0:7})
-
-%global         pythonopts      -enable-python2
-
-%if 0%{?fedora}
-%global         with_python3    1
-%global         pythonopts      -enable-python2 --enable-python3
-%endif
-
-
-
-
 Name:           libewf
-Version:        20160802
-Release:        2%{?dist}
+Version:        20240506
+Release:        1%{?dist}
 Summary:        Libyal library for the Expert Witness Compression Format (EWF)
 
 Group:          System Environment/Libraries
 License:        LGPL-3.0-or-later
-#URL:           https://github.com/libyal/libewf
-#URL:           http://sourceforge.net/projects/libewf/
-URL:            https://github.com/%{gituser}/%{gitname}
-#Source0:       http://libewf.googlecode.com/files/libewf-%{version}.tar.gz
-#Source0:       https://53efc0a7187d0baa489ee347026b8278fe4020f6.googledrive.com/host/0B3fBvzttpiiSMTdoaVExWWNsRjg/%{name}-%{version}.tar.gz
-Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
+URL:            https://github.com/libyal/libewf
+# was URL:      http://sourceforge.net/projects/libewf/
+# Releases      https://github.com/libyal/libewf/releases
+
+%global         gituser         libyal
+%global         gitname         libewf
+%global         commit          817797ca167b1ca43e1f2eace0d74b7eb2388f49
+%global         shortcommit     %(c=%{commit}; echo ${c:0:7})
+
+
+%bcond_with     python2
+%bcond_without  python3
+
+
+#Source0:       http://libewf.googlecode.com/files/libewf-%%{version}.tar.gz
+#Source0:       https://53efc0a7187d0baa489ee347026b8278fe4020f6.googledrive.com/host/0B3fBvzttpiiSMTdoaVExWWNsRjg/%%{name}-%%{version}.tar.gz
+Source0:        %{url}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
+
 #Patch build to use the shared system libraries rather than using embedded ones
 Patch0:         %{name}-libs.patch
+
 #./libewf/.libs/libewf.so: undefined reference to `libcstring_narrow_string_compare'
 #https://github.com/libyal/libewf/issues/51
 Patch1:         %{name}-libcstring.patch
@@ -69,13 +66,16 @@ BuildRequires:  libsmdev-devel
 BuildRequires:  libsmraw-devel
 BuildRequires:  libcsystem-devel
 
-BuildRequires:  python-devel
-BuildRequires:  python-setuptools
+%if %{with python2}
+BuildRequires:  python2-devel
+BuildRequires:  python2-setuptools
+%endif
 
-%if 0%{?with_python3}
+%if %{with python3}
 BuildRequires:  python3-devel
 BuildRequires:  python3-setuptools
-%endif # if with_python3
+# if with_python3
+%endif
 
 
 %description
@@ -90,8 +90,8 @@ Group:          Applications/System
 Requires:       %{name}%{?_isa} = %{version}-%{release}
 Provides:       %{name}-tools = %{version}-%{release}
 Obsoletes:      %{name}-tools <= %{version}-%{release}
-Requires:       fuse-python >= 0.2
 #Requires:       disktype
+Requires:       fuse-python3 >= 0.2
 
 %description -n ewftools
 Several tools for reading and writing EWF files.
@@ -109,7 +109,7 @@ The %{name}-devel package contains libraries and header files for
 developing applications that use %{name}.
 
 
-
+%if %{with python2}
 %package python2
 Summary:        Python2 extension that gives access to %{name} library
 Group:          Development/Libraries
@@ -120,10 +120,11 @@ Requires:       %{name}%{?_isa} = %{version}-%{release}
 %description python2
 This is a Python module that gives access to %{name} library
 from Python scripts.
+%endif
 
 
 
-%if 0%{?with_python3}
+%if %{with python3}
 %package python3
 Summary:        Python3 extension that gives access to %{name} library
 Group:          Development/Libraries
@@ -135,7 +136,8 @@ Requires:       %{name}%{?_isa} = %{version}-%{release}
 %description python3
 This is a Python3 module that gives access to %{name} library
 from Python scripts.
-%endif # with_python3
+# with_python3
+%endif
 
 
 
@@ -144,17 +146,23 @@ from Python scripts.
 %autosetup -n %{gitname}-%{commit}
 #exit 1
 #%%patch0 -p 1 -b .libs
-#%patch1 -p 1 -b .libcstrings
+#%%patch1 -p 1 -b .libcstrings
 ./autogen.sh
 
 
 %build
-%configure --disable-static --enable-wide-character-type \
-  --enable-multi-threading-support --enable-verbose-output \
-  %{pythonopts}
+%configure \
+%if %{with python2}
+  --enable-python2 \
+%endif
+%if %{with python3}
+  --enable-python3
+%endif
+  --disable-static --enable-wide-character-type \
+  --enable-multi-threading-support --enable-verbose-output
 
 
-# Remove rpath from libtool
+# Remove rpath from libtool
 sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
 sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
 
@@ -182,7 +190,6 @@ make check
 %files -n ewftools
 %{_bindir}/ewf*
 %{_mandir}/man1/*.gz
-%{python_sitearch}/pyewf.so
 
 %files devel
 %{_includedir}/libewf.h
@@ -191,17 +198,23 @@ make check
 %{_libdir}/pkgconfig/libewf.pc
 %{_mandir}/man3/%{name}.3*
 
+%if %{with python2}
 %files python2
 %{python2_sitearch}/pyewf*
+%{python2_sitearch}/pyewf.so
+%endif
 
-%if 0%{?with_python3}
+%if %{with python3}
 %files python3
 %{python3_sitearch}/pyewf*
-%endif # with_python3
-
+%{python3_sitearch}/pyewf.so
+%endif
 
 
 %changelog
+* Sat May 18 2024 Michal Ambroz <rebus _AT seznam.cz>
+- bump to 20240506
+
 * Mon Aug 01 2016 Michal Ambroz <rebus AT seznam.cz> - 20160802-2
 - bugfix
 
