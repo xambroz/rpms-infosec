@@ -43,8 +43,8 @@ if [ $? -ne 0 ] ; then
 fi
 
 
-GITVERSION=$( echo "$RELEASES" | jq '.[0].tag_name' | sed -e 's/^"//; s/"$//; s/^v//; '  )
-SPECVERSION=$( echo "$SPEC" |grep -e '^Version:' | awk '{print $2};' ) 
+GITVERSION=$( echo "$RELEASES" | jq '.[0].tag_name' | sed -e 's/^"//; s/"$//; s/^v//; ' | head -n 1 )
+SPECVERSION=$( echo "$SPEC" |grep -e '^Version:' | awk '{print $2};' )
 
 HTML_URL=$( echo "$RELEASES" | jq '.[0].html_url' | sed -e 's/^"//; s/"$//;' )
 
@@ -62,8 +62,8 @@ if [ $? -ne 0 ] ; then
 fi
 
 
-GITCOMMIT=$( echo "$HTML_RELEASE" | grep -o -P '(?<=\/commit\/)[a-f0-9]{40}(?=/hover)' )
-SPECCOMMIT=$( echo "$SPEC" | grep -E '^%global.*commit[ \t]*[a-f0-9]{40}'| awk '{print $3}' )
+GITCOMMIT=$( echo "$HTML_RELEASE" | grep -o -P '(?<=\/commit\/)[a-f0-9]{40}(?=/hover)' | head -n 1 )
+SPECCOMMIT=$( echo "$SPEC" | grep -E '^%global.*commit[ \t]*[a-f0-9]{40}'| awk '{print $3}' | tail -n 1 )
 
 if [ "$GITVERSION" == "$SPECVERSION" -a "$GITCOMMIT" == "$SPECCOMMIT" ] ; then
 	echo "=== Package $PACKAGE is up to date: $GITVERSION , commit: $GITCOMMIT"
