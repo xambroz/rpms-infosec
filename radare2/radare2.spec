@@ -28,10 +28,10 @@ VCS:            https://github.com/radareorg/radare2
 
 %if %{with releasetag}
 Release:        %{baserelease}%{?dist}
-Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
+Source0:        %{vcs}/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
 %else
 Release:        0.%{baserelease}.%{gitdate}git%{shortcommit}%{?dist}
-Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{commit}.tar.gz#/%{name}-%{version}-git%{gitdate}-%{shortcommit}.tar.gz
+Source0:        %{vcs}/archive/%{commit}/%{name}-%{commit}.tar.gz#/%{name}-%{version}-git%{gitdate}-%{shortcommit}.tar.gz
 %endif
 
 # Specific to Fedora - build with system libraries
