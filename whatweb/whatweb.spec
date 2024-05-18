@@ -1,7 +1,11 @@
 Name:           whatweb
 Version:        0.5.5
-Release:        4%{?dist}
+Release:        6%{?dist}
 Summary:        Web scanner to identify what are the websites running
+License:        GPL-2.0-or-later
+URL:            http://www.morningstarsecurity.com/research/whatweb
+VCS:            https://github.com/urbanadventurer/WhatWeb
+#               https://github.com/urbanadventurer/WhatWeb/releases
 
 
 # The tests are normally disabled in the build phase as whatweb is networking
@@ -13,18 +17,15 @@ Summary:        Web scanner to identify what are the websites running
 
 %global         gituser         urbanadventurer
 %global         gitname         WhatWeb
-
+%global         gitdate         20210115
+%global         commit          1b3516975571c3f59d686f82a6d2dbf6f1011029
 
 %if 0%{?rhel}
 Group:          Applications/Internet
 %endif
 
-License:        GPL-2.0-or-later
-URL:            http://www.morningstarsecurity.com/research/whatweb
-VCS:            https://github.com/urbanadventurer/WhatWeb
-#               https://github.com/urbanadventurer/WhatWeb/releases/
 
-Source0:        https://github.com/%{gituser}/%{gitname}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
+Source0:        %{vcs}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
 BuildArch:      noarch
 
@@ -115,6 +116,12 @@ ruby test/integration.rb
 
 
 %changelog
+* Sat Jan 27 2024 Fedora Release Engineering <releng@fedoraproject.org> - 0.5.5-6
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_40_Mass_Rebuild
+
+* Sat Jul 22 2023 Fedora Release Engineering <releng@fedoraproject.org> - 0.5.5-5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_39_Mass_Rebuild
+
 * Wed Mar 01 2023 Michal Ambroz <rebus at, seznam.cz> - 0.5.5-4
 - fix license tag and reference to ruby for runtime requirements
 
