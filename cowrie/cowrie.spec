@@ -1,20 +1,21 @@
 Name:		cowrie
-Version:	2.3.0
+Version:	2.5.0
 Release:	1%{?dist}
 Summary:	Medium interaction SSH honeypot
 License:	BSD
+# was           http://www.micheloosterhof.com/cowrie/
+# was URL:      https://github.com/micheloosterhof/cowrie/
+URL:            https://github.com/cowrie/cowrie/
+# Releases      https://github.com/cowrie/cowrie/releases
 
 
 %global         gituser         cowrie
 %global         gitname         cowrie
-%global         commit          555ff10d95f6239d9d6efee8a2d05def316ab144
+%global         commit          000116838246ce522b1f6953c6f108a3a4f0611c
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
-# was           http://www.micheloosterhof.com/cowrie/
-# was URL:      https://github.com/micheloosterhof/cowrie/
-URL:            https://github.com/cowrie/cowrie/
-#Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
-Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
+#Source0:        https://github.com/%%{gituser}/%%{gitname}/archive/%%{commit}/%%{name}-%%{version}-%%{shortcommit}.tar.gz
+Source0:        https://github.com/%{gituser}/%{gitname}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
 BuildArch:	noarch
 BuildRequires:	python3-devel python-setuptools openssl-devel libffi-devel
@@ -22,7 +23,7 @@ BuildRequires:  python3-cffi
 Requires:       python3-twisted
 Requires:       python3-cryptography
 Requires:       python3-virtualenv
-Requires:       python3-configparser
+# configparser is the built-in feature of python3
 Requires:       python3-pyOpenSSL
 Requires:       python3-pyparsing
 Requires:       python3-packaging
@@ -43,10 +44,8 @@ and, most importantly, the entire shell interaction performed by the attacker.
 
 #Change implicit "env python" to explicit versioned python shebang
 #https://fedoraproject.org/wiki/Features/SystemPythonExecutablesUseSystemPython
-for I in setup.py bin/playlog bin/fsctl bin/createfs bin/asciinema ; do
-	sed -e 's|^#!/usr/bin/env python|#!%{__python2}|' "$I" > "${I}.new"
-	touch -r "$I" "${I}.new"
-	mv "${I}.new" "$I"
+for I in setup.py bin/* ; do
+	sed -i -e 's|^#!/usr/bin/env python|#!%{__python3}|' "$I"
 done
 
 
@@ -57,7 +56,7 @@ echo "Nothing to build"
 mkdir -p %{buildroot}/opt/cowrie
 cp -rp * %{buildroot}/opt/cowrie/
 mkdir -p %{buildroot}/etc/cowrie
-ln -s /opt/cowrie/cowrie.cfg %{buildroot}/etc/cowrie/cowrie.cfg
+ln -s ../../opt/cowrie/cowrie.cfg %{buildroot}/etc/cowrie/cowrie.cfg
 mkdir -p %{buildroot}/etc/cowrie
 
 %pre
@@ -69,12 +68,12 @@ getent passwd cowrie >/dev/null || \
 
 
 %files
-%license LICENSE.md
+%license LICENSE.rst
 /opt/cowrie/
 /etc/cowrie/
 
 
-%doc README.md CHANGELOG.md doc/
+%doc README.rst CHANGELOG.rst docs/
 
 
 %changelog
