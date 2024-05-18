@@ -14,8 +14,13 @@ Version:        20240415
 Release:        1%{?dist}
 
 Source0:        %{url}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
-#Patch build to use the shared system libraries rather than using embedded ones
+
+# Patch build to use the shared system libraries rather than using embedded ones
 Patch0:         %{name}-libs.patch
+
+#
+Patch1:         %{name}-configure.ac.patch
+
 
 BuildRequires:  gcc
 BuildRequires:  make
