@@ -3,12 +3,12 @@
 #20150104
 #%global         commit         b25ce6fd691e744dd090cd2ec754766b42a620e5
 #20160707
-%global         commit          091bfb251a54016c6b6e2e368984a8838c289f09
+%global         commit          a35168bc8695fac44d5dc665926848bfc8d58ca6
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
 Name:           libfmapi
-Version:        20160707
+Version:        20240415
 Release:        1%{?dist}
 Summary:        Libyal library for cross-platform C generic data functions
 
@@ -16,7 +16,7 @@ Group:          System Environment/Libraries
 License:        LGPL-3.0-or-later
 #URL:           https://github.com/libyal/libfmapi
 URL:            https://github.com/%{gituser}/%{gitname}
-Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
+Source0:        %{url}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 #Patch build to use the shared system libraries rather than using embedded ones
 Patch0:         %{name}-libs.patch
 
@@ -84,6 +84,9 @@ make check
 %{_mandir}/man3/%{name}.3*
 
 %changelog
+* Sat May 18 2024 Michal Ambroz <rebus _AT seznam.cz> - 20240415-1
+- bump to 20240415
+
 * Wed Aug 03 2016 Michal Ambroz <rebus AT seznam.cz> - 20160707-1
 - bump to 20160707
 
