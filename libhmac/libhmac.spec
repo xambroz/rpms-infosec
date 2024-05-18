@@ -1,28 +1,18 @@
-%global         gituser         libyal
-%global         gitname         libhmac
-%global         gitdate         20200104
-%global         commit          5ca9bd3b4ec99c998b629600115e51a4d8bc0082
-
-# Previous builds
-#20160802
-#%%global       commit          91b621fd9df85a0d20cb83a283ffc4e0171e6305
-#20160731
-#%%global       commit          a9762ac45955a37b9e9f6bd7d14c11ffadd9d9d8
-#20150703
-#%%global       commit          a95f04ccab1c8c23def380e19814855a7a6a05d0
-
-%global         shortcommit     %(c=%{commit}; echo ${c:0:7})
-
-
 Name:           libhmac
-Version:        %{gitdate}
-Release:        1%{?dist}
+Version:        20240417
 Summary:        Libyal library to support various Hash-based Message Authentication Codes (HMAC)
-
 Group:          System Environment/Libraries
 License:        LGPL-3.0-or-later
 #URL:           https://github.com/libyal/libhmac
 URL:            https://github.com/%{gituser}/%{gitname}
+
+%global         gituser         libyal
+%global         gitname         libhmac
+%global         gitdate         %{version}
+%global         commit          7ce99ac975e27be8e19eea9accf5ffce0304fe8a
+%global         shortcommit     %(c=%{commit}; echo ${c:0:7})
+
+Release:        1%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 #Patch build to use the shared system libraries rather than using embedded ones
 Patch0:         %{name}-libs.patch
@@ -33,7 +23,6 @@ BuildRequires:  pkgconfig
 BuildRequires:  automake
 BuildRequires:  libtool
 BuildRequires:  gettext-devel
-BuildRequires:  libcstring-devel
 BuildRequires:  libcerror-devel
 BuildRequires:  libclocale-devel
 BuildRequires:  libcnotify-devel
@@ -41,7 +30,6 @@ BuildRequires:  libcsplit-devel
 BuildRequires:  libuna-devel
 BuildRequires:  libcfile-devel
 BuildRequires:  libcpath-devel
-BuildRequires:  libcsystem-devel
 
 %description
 Library to support various Hash-based Message Authentication Codes (HMAC).
@@ -64,7 +52,7 @@ developing applications that use %{name}.
 
 
 %build
-%configure --disable-static --enable-wide-character-type
+%configure --disable-static --enable-wide-character-type --enable-python
 %make_build
 
 
@@ -93,6 +81,9 @@ make check
 %{_mandir}/man3/%{name}.3*
 
 %changelog
+* Sat May 18 2024 Michal Ambroz <rebus AT seznam.cz> - 20240417-1
+- bump to 20240417
+
 * Fri Feb 18 2022 Michal Ambroz <rebus AT seznam.cz> - 20200104-1
 - bump to 20200104
 

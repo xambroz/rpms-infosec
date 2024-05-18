@@ -1,13 +1,16 @@
-diff -ru libhmac-5ca9bd3b4ec99c998b629600115e51a4d8bc0082/configure.ac libhmac-5ca9bd3b4ec99c998b629600115e51a4d8bc0082.new/configure.ac
---- libhmac-5ca9bd3b4ec99c998b629600115e51a4d8bc0082/configure.ac	2020-01-04 14:32:16.000000000 +0100
-+++ libhmac-5ca9bd3b4ec99c998b629600115e51a4d8bc0082.new/configure.ac	2022-02-19 01:22:51.429836726 +0100
-@@ -146,14 +146,14 @@
+diff -ru libhmac-7ce99ac975e27be8e19eea9accf5ffce0304fe8a.old/configure.ac libhmac-7ce99ac975e27be8e19eea9accf5ffce0304fe8a.new/configure.ac
+--- libhmac-7ce99ac975e27be8e19eea9accf5ffce0304fe8a.old/configure.ac	2024-04-17 20:55:59.000000000 +0200
++++ libhmac-7ce99ac975e27be8e19eea9accf5ffce0304fe8a.new/configure.ac	2024-05-18 17:28:15.795157910 +0200
+@@ -149,16 +149,16 @@
  AC_CONFIG_FILES([Makefile])
  AC_CONFIG_FILES([include/Makefile])
  AC_CONFIG_FILES([common/Makefile])
 -AC_CONFIG_FILES([libcerror/Makefile])
+-AC_CONFIG_FILES([libcthreads/Makefile])
 +dnl AC_CONFIG_FILES([libcerror/Makefile])
++dnl AC_CONFIG_FILES([libcthreads/Makefile])
  AC_CONFIG_FILES([libhmac/Makefile])
+ AC_CONFIG_FILES([pyhmac/Makefile])
 -AC_CONFIG_FILES([libclocale/Makefile])
 -AC_CONFIG_FILES([libcnotify/Makefile])
 -AC_CONFIG_FILES([libcsplit/Makefile])
@@ -23,15 +26,17 @@ diff -ru libhmac-5ca9bd3b4ec99c998b629600115e51a4d8bc0082/configure.ac libhmac-5
  AC_CONFIG_FILES([hmactools/Makefile])
  AC_CONFIG_FILES([po/Makefile.in])
  AC_CONFIG_FILES([po/Makevars])
-diff -ru libhmac-5ca9bd3b4ec99c998b629600115e51a4d8bc0082/Makefile.am libhmac-5ca9bd3b4ec99c998b629600115e51a4d8bc0082.new/Makefile.am
---- libhmac-5ca9bd3b4ec99c998b629600115e51a4d8bc0082/Makefile.am	2020-01-04 14:32:16.000000000 +0100
-+++ libhmac-5ca9bd3b4ec99c998b629600115e51a4d8bc0082.new/Makefile.am	2022-02-19 01:24:05.401384808 +0100
-@@ -3,14 +3,14 @@
+diff -ru libhmac-7ce99ac975e27be8e19eea9accf5ffce0304fe8a.old/Makefile.am libhmac-7ce99ac975e27be8e19eea9accf5ffce0304fe8a.new/Makefile.am
+--- libhmac-7ce99ac975e27be8e19eea9accf5ffce0304fe8a.old/Makefile.am	2024-04-17 20:55:59.000000000 +0200
++++ libhmac-7ce99ac975e27be8e19eea9accf5ffce0304fe8a.new/Makefile.am	2024-05-18 17:27:37.102963460 +0200
+@@ -3,15 +3,15 @@
  SUBDIRS = \
  	include \
  	common \
 -	libcerror \
+-	libcthreads \
 +#	libcerror \
++#	libcthreads \
  	libhmac \
 -	libclocale \
 -	libcnotify \
@@ -46,36 +51,16 @@ diff -ru libhmac-5ca9bd3b4ec99c998b629600115e51a4d8bc0082/Makefile.am libhmac-5c
 +#	libcfile \
 +#	libcpath \
  	hmactools \
+ 	pyhmac \
  	po \
- 	manuals \
-@@ -61,7 +61,7 @@
+@@ -79,8 +79,8 @@
  
  library:
  	(cd $(srcdir)/common && $(MAKE) $(AM_MAKEFLAGS))
 -	(cd $(srcdir)/libcerror && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcthreads && $(MAKE) $(AM_MAKEFLAGS))
 +#	(cd $(srcdir)/libcerror && $(MAKE) $(AM_MAKEFLAGS))
++#	(cd $(srcdir)/libcthreads && $(MAKE) $(AM_MAKEFLAGS))
  	(cd $(srcdir)/libhmac && $(MAKE) $(AM_MAKEFLAGS))
  	(cd $(srcdir)/po && $(MAKE) $(AM_MAKEFLAGS))
  
-@@ -78,14 +78,14 @@
- 	done && test -z "$$fail"
- 
- splint:
--	(cd $(srcdir)/libcerror && $(MAKE) splint $(AM_MAKEFLAGS))
-+#	(cd $(srcdir)/libcerror && $(MAKE) splint $(AM_MAKEFLAGS))
- 	(cd $(srcdir)/libhmac && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libclocale && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libcnotify && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libcsplit && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libuna && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libcfile && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libcpath && $(MAKE) splint $(AM_MAKEFLAGS))
-+#	(cd $(srcdir)/libclocale && $(MAKE) splint $(AM_MAKEFLAGS))
-+#	(cd $(srcdir)/libcnotify && $(MAKE) splint $(AM_MAKEFLAGS))
-+#	(cd $(srcdir)/libcsplit && $(MAKE) splint $(AM_MAKEFLAGS))
-+#	(cd $(srcdir)/libuna && $(MAKE) splint $(AM_MAKEFLAGS))
-+#	(cd $(srcdir)/libcfile && $(MAKE) splint $(AM_MAKEFLAGS))
-+#	(cd $(srcdir)/libcpath && $(MAKE) splint $(AM_MAKEFLAGS))
- 	(cd $(srcdir)/hmactools && $(MAKE) splint $(AM_MAKEFLAGS))
- 	(cd $(srcdir)/po && $(MAKE) splint $(AM_MAKEFLAGS))
- 	(cd $(srcdir)/tests && $(MAKE) splint $(AM_MAKEFLAGS))
