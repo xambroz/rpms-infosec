@@ -2,6 +2,10 @@ Name:           afflib
 Version:        3.7.20
 Release:        1%{?dist}
 Summary:        Library to support the Advanced Forensic Format
+License:        BSD with advertising
+URL:            https://github.com/sshock/AFFLIBv3
+# Releases      https://github.com/sshock/AFFLIBv3/releases
+
 
 # Build also the python2 package
 %global         with_python2    0
@@ -9,8 +13,11 @@ Summary:        Library to support the Advanced Forensic Format
 %global         with_python3    1
 
 
-License:        BSD with advertising
-URL:            https://github.com/sshock/AFFLIBv3
+%global         gituser      sshock
+%global         gitname      AFFLIBv3
+%global         gitdate      20221228
+%global         gitcommit    bbc271c43cbff40835244d61a1f256327c8cc798
+
 Source0:        %{url}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
 BuildRequires:  gcc-c++
