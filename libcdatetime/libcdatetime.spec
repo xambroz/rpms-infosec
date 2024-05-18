@@ -9,7 +9,7 @@ URL:            https://github.com/libyal/libcdatetime
 %global         gituser         libyal
 %global         gitname         libcdatetime
 %global         gitdate         %{version}
-%global         commit          a65c5494daf193f5a1ff14ffa1c40291069b0829
+%global         commit          fba481205729a88982764c16f46d9d66cf1fd8c4
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 Release:        1%{?dist}
