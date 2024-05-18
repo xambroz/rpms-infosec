@@ -1,4 +1,5 @@
 Name:           libcsplit
+Version:        20240414
 Summary:        Libyal library for cross-platform C split string functions
 Group:          System Environment/Libraries
 License:        LGPL-3.0-or-later
@@ -6,12 +7,11 @@ URL:            https://github.com/libyal/libcsplit
 
 %global         gituser         libyal
 %global         gitname         libcsplit
-%global         gitdate         20230612
-%global         commit          349a780930fafa808c461769bf8a7a607110143c
+%global         gitdate         %{version}
+%global         commit          b4baf41a06421aaf725b11ebed8c040ad34e8761
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
-Version:        %{gitdate}
 Release:        1%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 #Patch build to use the shared system libraries rather than using embedded ones
@@ -73,6 +73,9 @@ make check
 %{_mandir}/man3/%{name}.3*
 
 %changelog
+* Sat May 18 2024 Michal Ambroz <rebus AT seznam.cz> - 20240414-1
+- bump to 20240414
+
 * Sat Oct 28 2023 Michal Ambroz <rebus AT seznam.cz> - 20230612-1
 - bump to 20230612
 

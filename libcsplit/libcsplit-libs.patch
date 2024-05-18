@@ -28,11 +28,3 @@ diff -ru libcsplit-a23f3a673fe9a8b0b4737d1f661e59f63b024305/Makefile.am libcspli
  	cd $(srcdir)/libcsplit && $(MAKE) $(AM_MAKEFLAGS)
  	cd $(srcdir)/po && $(MAKE) $(AM_MAKEFLAGS)
  
-@@ -70,7 +68,6 @@
- 	done && test -z "$$fail"
- 
- splint:
--	(cd $(srcdir)/libcerror && $(MAKE) splint $(AM_MAKEFLAGS))
- 	(cd $(srcdir)/libcsplit && $(MAKE) splint $(AM_MAKEFLAGS))
- 	(cd $(srcdir)/po && $(MAKE) splint $(AM_MAKEFLAGS))
- 	(cd $(srcdir)/tests && $(MAKE) splint $(AM_MAKEFLAGS))
