@@ -1,21 +1,19 @@
-%global         gituser         libyal
-%global         gitname         libfdata
-#20150412
-#%global        commit          1d2e7f0edff9d676ccc3e96d40926d83d63af1e5
-#20160427
-%global         commit          8c27dc70272dec0c28d47fea8603c4f4aacdada7
-%global         shortcommit     %(c=%{commit}; echo ${c:0:7})
-
-
 Name:           libfdata
-Version:        20160427
-Release:        1%{?dist}
+Version:        20240415
 Summary:        Libyal library to provide generic file data functions
-
 Group:          System Environment/Libraries
 License:        LGPL-3.0-or-later
-#URL:           https://github.com/libyal/libfdata
-URL:            https://github.com/%{gituser}/%{gitname}
+URL:            https://github.com/libyal/libfdata
+# Releases      https://github.com/libyal/libfdata/releases
+
+
+%global         gituser         libyal
+%global         gitname         libfdata
+%global         commit          c7d92a0ab2dd665fb328e0aa637ca7d04cfcf46c
+%global         shortcommit     %(c=%{commit}; echo ${c:0:7})
+
+Release:        1%{?dist}
+
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 #Patch build to use the shared system libraries rather than using embedded ones
 Patch0:         %{name}-libs.patch
