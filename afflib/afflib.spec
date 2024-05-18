@@ -16,7 +16,7 @@ URL:            https://github.com/sshock/AFFLIBv3
 %global         gituser      sshock
 %global         gitname      AFFLIBv3
 %global         gitdate      20221228
-%global         gitcommit    bbc271c43cbff40835244d61a1f256327c8cc798
+%global         commit    bbc271c43cbff40835244d61a1f256327c8cc798
 
 Source0:        %{url}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
