@@ -63,7 +63,7 @@ fi
 
 
 GITCOMMIT=$( echo "$HTML_RELEASE" | grep -o -P '(?<=\/commit\/)[a-f0-9]{40}(?=/hover)' | head -n 1 )
-SPECCOMMIT=$( echo "$SPEC" | grep -E '^%global.*commit[ \t]*[a-f0-9]{40}'| awk '{print $3}' | tail -n 1 )
+SPECCOMMIT=$( echo "$SPEC" | grep -E '^%global[ \t]*commit[ \t]*[a-f0-9]{40}'| awk '{print $3}' | tail -n 1 )
 
 if [ "$GITVERSION" == "$SPECVERSION" -a "$GITCOMMIT" == "$SPECCOMMIT" ] ; then
 	echo "=== Package $PACKAGE is up to date: $GITVERSION , commit: $GITCOMMIT"
