@@ -1,22 +1,19 @@
+Name:           libodraw
+Version:        20240505
+Release:        1%{?dist}
+Summary:        Libyal library to access to optical disc (split) RAW image files (bin/cue, iso/cue)
+Group:          System Environment/Libraries
+License:        LGPL-3.0-or-later
+URL:            https://github.com/libyal/libodraw
+# Releases      https://github.com/libyal/libodraw/releases
+
 %global         gituser         libyal
 %global         gitname         libodraw
-#20150629
-%global         commit          4dfb027dc608dc871bdf3a66c63193c24b189243
-#20160522
-%global         commit          e2750dd19836b7f1a603e55d1f64eb087401f87a
+%global         commit          9460a81cb2d7ce7b9a221cab8f97885d001801fb
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
-Name:           libodraw
-Version:        20160522
-Release:        1%{?dist}
-Summary:        Libyal library to access to optical disc (split) RAW image files (bin/cue, iso/cue)
-
-Group:          System Environment/Libraries
-License:        LGPL-3.0-or-later
-#URL:           https://github.com/libyal/libodraw
-URL:            https://github.com/%{gituser}/%{gitname}
-Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
+Source0:        %{url}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 #Patch build to use the shared system libraries rather than using embedded ones
 Patch0:         %{name}-libs.patch
 
@@ -28,7 +25,6 @@ BuildRequires:  libtool
 BuildRequires:  gettext-devel
 BuildRequires:  byacc
 BuildRequires:  flex
-BuildRequires:  libcstring-devel
 BuildRequires:  libcerror-devel
 BuildRequires:  libcthreads-devel
 BuildRequires:  libcdata-devel
@@ -39,7 +35,6 @@ BuildRequires:  libuna-devel
 BuildRequires:  libcfile-devel
 BuildRequires:  libcpath-devel
 BuildRequires:  libbfio-devel
-BuildRequires:  libcsystem-devel
 BuildRequires:  libhmac-devel
 
 %description
@@ -94,6 +89,9 @@ make check
 %{_mandir}/man3/%{name}.3*
 
 %changelog
+* Sat May 18 2024 Michal Ambroz <rebus _AT seznam.cz> - 20240505-1
+- bump to 20240505
+
 * Mon Aug 01 2016 Michal Ambroz <rebus AT seznam.cz> - 20160522-1
 - bump to 20160522
 

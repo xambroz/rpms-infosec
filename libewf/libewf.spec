@@ -43,7 +43,6 @@ BuildRequires:  openssl-devel
 BuildRequires:  zlib-devel
 BuildRequires:  bzip2-devel
 #Needed for mount.ewf(.py) support
-BuildRequires:  libcstring-devel
 BuildRequires:  libcerror-devel
 BuildRequires:  libcthreads-devel
 BuildRequires:  libcdata-devel
@@ -64,7 +63,6 @@ BuildRequires:  libcaes-devel
 BuildRequires:  libodraw-devel
 BuildRequires:  libsmdev-devel
 BuildRequires:  libsmraw-devel
-BuildRequires:  libcsystem-devel
 
 %if %{with python2}
 BuildRequires:  python2-devel

@@ -15,7 +15,7 @@ URL:            https://github.com/libyal/libcerror
 
 Release:        1%{?dist}
 
-Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
+Source0:        %{url}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 
 # https://github.com/libyal/libcerror/pull/10
 # there are older versions of gettext and autoconf, but still builds well

@@ -104,13 +104,13 @@ Patch3:         libdasm-03_das_futurize.patch
 %if %{with releasetag}
 # Build from the targball release
 Release:        %{baserelease}%{?dist}
-Source0:        https://github.com/%{gituser}/%{gitname}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
+Source0:        %{url}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
 %else
 # Build from the git commit snapshot
 # Release is not starting with 0 as usual, because the next release will be 1.6
 Release:        %{baserelease}.%{gitdate}git%{shortcommit}%{?dist}
-Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
+Source0:        %{url}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 %endif
 
 

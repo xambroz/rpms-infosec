@@ -1,5 +1,5 @@
 Name:           libevtx
-Version:        20221101
+Version:        20240504
 Summary:        Library to access the Windows XML Event Log (EVTX) format
 Group:          System Environment/Libraries
 License:        LGPL-3.0-or-later
@@ -13,8 +13,8 @@ Part of Joachim Metz's libyal set of forensics tools and libraries.
 
 %global         gituser         libyal
 %global         gitname         libevtx
-%global         gitdate         20221101
-%global         commit          58e44893ceeaca57dff7380d0f7110caf660b92d
+%global         gitdate         %{version}
+%global         commit          d028b4f90886d467b2960b69084aa2485d7e218b
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 # Build with python2 support for RHEL7
@@ -26,11 +26,11 @@ Part of Joachim Metz's libyal set of forensics tools and libraries.
 
 %if 0%{?fedora}
 %bcond_without  python3
-%global         pythonopts      -enable-python3
+%global         pythonopts      -enable-python
 %endif
 
 %if %{with python2} && %{with python3}
-%global         pythonopts      -enable-python2 -enable-python3
+%global         pythonopts      -enable-python2 -enable-python
 %endif
 
 

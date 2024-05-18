@@ -3,12 +3,12 @@
 #20150105
 #%global        commit          4db7d4fed43b960f5fa60b47987cdc4d8e59df40
 #20160508
-%global         commit          0ce0464f45bddb81effaa845abd639dbfbd1264d
+%global         commit          79f64a6dce94de6b2e73220ebfa548e3fa0f8a01
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
 Name:           libmapidb
-Version:        20160508
+Version:        20240420
 Release:        1%{?dist}
 Summary:        Libyal library for cross-platform C generic data functions
 
@@ -16,7 +16,7 @@ Group:          System Environment/Libraries
 License:        LGPL-3.0-or-later
 #URL:           https://github.com/libyal/libmapidb
 URL:            https://github.com/%{gituser}/%{gitname}
-Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
+Source0:        %{url}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 #Patch build to use the shared system libraries rather than using embedded ones
 Patch0:         %{name}-libs.patch
 
@@ -79,6 +79,9 @@ make check
 %{_mandir}/man3/%{name}.3*
 
 %changelog
+* Sat May 18 2024 Michal Ambroz <rebus _AT seznam.cz> - 20240420-1
+- bump to 20240420
+
 * Wed Aug 03 2016 Michal Ambroz <rebus AT seznam.cz> - 20160508-1
 - bump to 20160508
 

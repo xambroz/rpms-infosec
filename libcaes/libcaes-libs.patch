@@ -1,33 +1,30 @@
-diff -ru libcaes-c36c49b2b2f330d2769b8a896c4f2539a757162e.old/configure.ac libcaes-c36c49b2b2f330d2769b8a896c4f2539a757162e.new/configure.ac
---- libcaes-c36c49b2b2f330d2769b8a896c4f2539a757162e.old/configure.ac	2016-07-26 06:32:26.000000000 +0200
-+++ libcaes-c36c49b2b2f330d2769b8a896c4f2539a757162e.new/configure.ac	2016-08-02 02:01:33.231576790 +0200
-@@ -133,8 +133,6 @@
+diff -ru libcaes-a119ec92769277c63f3e54a8f6ec07c8c21ac3e8.old/configure.ac libcaes-a119ec92769277c63f3e54a8f6ec07c8c21ac3e8.new/configure.ac
+--- libcaes-a119ec92769277c63f3e54a8f6ec07c8c21ac3e8.old/configure.ac	2024-04-13 14:46:21.000000000 +0200
++++ libcaes-a119ec92769277c63f3e54a8f6ec07c8c21ac3e8.new/configure.ac	2024-05-18 16:52:36.092480002 +0200
+@@ -109,7 +109,6 @@
  AC_CONFIG_FILES([Makefile])
  AC_CONFIG_FILES([include/Makefile])
  AC_CONFIG_FILES([common/Makefile])
--AC_CONFIG_FILES([libcstring/Makefile])
 -AC_CONFIG_FILES([libcerror/Makefile])
  AC_CONFIG_FILES([libcaes/Makefile])
  AC_CONFIG_FILES([pycaes/Makefile])
- AC_CONFIG_FILES([pycaes-python2/Makefile])
-diff -ru libcaes-c36c49b2b2f330d2769b8a896c4f2539a757162e.old/Makefile.am libcaes-c36c49b2b2f330d2769b8a896c4f2539a757162e.new/Makefile.am
---- libcaes-c36c49b2b2f330d2769b8a896c4f2539a757162e.old/Makefile.am	2016-07-26 06:32:26.000000000 +0200
-+++ libcaes-c36c49b2b2f330d2769b8a896c4f2539a757162e.new/Makefile.am	2016-08-02 02:02:39.855600904 +0200
-@@ -3,8 +3,6 @@
+ AC_CONFIG_FILES([po/Makefile.in])
+diff -ru libcaes-a119ec92769277c63f3e54a8f6ec07c8c21ac3e8.old/Makefile.am libcaes-a119ec92769277c63f3e54a8f6ec07c8c21ac3e8.new/Makefile.am
+--- libcaes-a119ec92769277c63f3e54a8f6ec07c8c21ac3e8.old/Makefile.am	2024-04-13 14:46:21.000000000 +0200
++++ libcaes-a119ec92769277c63f3e54a8f6ec07c8c21ac3e8.new/Makefile.am	2024-05-18 16:52:12.421354297 +0200
+@@ -3,7 +3,6 @@
  SUBDIRS = \
  	include \
  	common \
--	libcstring \
 -	libcerror \
  	libcaes \
  	pycaes \
- 	pycaes-python2 \
-@@ -82,8 +80,6 @@
- 	done && test -z "$$fail"
+ 	po \
+@@ -70,7 +69,6 @@
  
- splint:
--	(cd $(srcdir)/libcstring && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libcerror && $(MAKE) splint $(AM_MAKEFLAGS))
- 	(cd $(srcdir)/libcaes && $(MAKE) splint $(AM_MAKEFLAGS))
- 	(cd $(srcdir)/pycaes && $(MAKE) splint $(AM_MAKEFLAGS))
- 	(cd $(srcdir)/po && $(MAKE) splint $(AM_MAKEFLAGS))
+ library:
+ 	(cd $(srcdir)/common && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcerror && $(MAKE) $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/libcaes && $(MAKE) $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/po && $(MAKE) $(AM_MAKEFLAGS))
+ 

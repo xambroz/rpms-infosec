@@ -1,22 +1,17 @@
-%global         gituser         libyal
-%global         gitname         libfcache
-#20150104
-#%global        commit          dff19b41ae29ac1b858dfac48a8524063f488544
-#20160426
-%global         commit          a4c70e89321c40468a450b77445f8975341f6fca
-%global         shortcommit     %(c=%{commit}; echo ${c:0:7})
-
-
 Name:           libfcache
-Version:        20160426
+Version:        20240414
 Release:        1%{?dist}
 Summary:        Libyal library to provide generic file data cache functions
-
 Group:          System Environment/Libraries
 License:        LGPL-3.0-or-later
-#URL:           https://github.com/libyal/libfcache
-URL:            https://github.com/%{gituser}/%{gitname}
-Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
+URL:            https://github.com/libyal/libfcache
+
+%global         gituser         libyal
+%global         gitname         libfcache
+%global         commit          4a4743abe3dd4b71ab1e456ee52e2c25a3320fe1
+%global         shortcommit     %(c=%{commit}; echo ${c:0:7})
+
+Source0:        %{url}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 #Patch build to use the shared system libraries rather than using embedded ones
 Patch0:         %{name}-libs.patch
 
@@ -80,6 +75,9 @@ make check
 %{_mandir}/man3/%{name}.3*
 
 %changelog
+* Sat May 18 2024 Michal Ambroz <rebus _AT seznam.cz> - 20240414-1
+- bump to 20240414
+
 * Mon Aug 01 2016 Michal Ambroz <rebus AT seznam.cz> - 20160426-1
 - bump to 20160426
 

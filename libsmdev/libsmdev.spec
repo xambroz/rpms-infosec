@@ -1,22 +1,21 @@
+Name:           libsmdev
+Version:        20240505
+Release:        1%{?dist}
+Summary:        Libyal library to access to storage media devices
+Group:          System Environment/Libraries
+License:        LGPL-3.0-or-later
+URL:            https://github.com/libyal/libsmdev
+VCS:            https://github.com/libyal/libsmdev
+# Releases      https://github.com/libyal/libsmdev/releases
+
+
 %global         gituser         libyal
 %global         gitname         libsmdev
-#20150105
-%global         commit          a747d84ac719669f10da783fd704adc8f2dadf6e
-#20160524
-%global         commit          d0e71d9e5e8a1a3fff07cc945f65fb7c1b50d4d4
+%global         commit          9b9c94244a9d0df752fbb0cbee20207a2ee0c7e1
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
-Name:           libsmdev
-Version:        20160524
-Release:        1%{?dist}
-Summary:        Libyal library to access to storage media devices
-
-Group:          System Environment/Libraries
-License:        LGPL-3.0-or-later
-#URL:           https://github.com/libyal/libsmdev
-URL:            https://github.com/%{gituser}/%{gitname}
-Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
+Source0:        %{url}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 #Patch build to use the shared system libraries rather than using embedded ones
 Patch0:         %{name}-libs.patch
 

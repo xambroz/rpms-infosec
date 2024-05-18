@@ -101,14 +101,14 @@ URL:            https://github.com/DinoTools/libemu/
 %if 0%{?build_release}  > 0
 # Build from the targball release
 Release:        %{baserelease}%{?dist}
-Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
+Source0:        %{url}/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
 %else
 # Build from the git commit snapshot
 # Not using the 0. on the beginning of release version as these are patches past version 0.2.0
 # Next release should be probably 0.3.0
 Release:        %{baserelease}.%{gitdate}git%{shortcommit}%{?dist}
-Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
+Source0:        %{url}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 # build_release
 %endif
 

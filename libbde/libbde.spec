@@ -1,19 +1,20 @@
 Name:           libbde
+Version:        20240502
 Summary:        Library to access the BitLocker Drive Encryption (BDE) format
 Group:          System Environment/Libraries
 License:        LGPL-3.0-or-later
 URL:            https://github.com/libyal/libbde
+# Releases      https://github.com/libyal/libbde/releases
 
 %global         gituser         libyal
 %global         gitname         libbde
-%global         gitdate         20221031
-%global         commit          4f69d1a9e3c18967ce59a810fe8a3f742d59fe24
+%global         gitdate         %{version}
+%global         commit          a7bf86d0907b84dfb551fdd3f6f548bd687fdcac
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
-Version:        %{gitdate}
 Release:        1%{?dist}
 
-Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
+Source0:        %{url}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 #Patch build to use the shared system libraries rather than using embedded ones
 Patch0:         %{name}-libs.patch
 

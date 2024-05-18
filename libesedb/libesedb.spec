@@ -1,7 +1,9 @@
 Name:           libesedb
-Version:        20181229
-Release:        1%{?dist}
+Version:        20240420
 Summary:        Library to access the Extensible Storage Engine (ESE) Database File (EDB) format
+License:        LGPL-3.0-or-later
+URL:            https://github.com/libyal/libesedb
+#               https://github.com/libyal/libesedb/releases
 
 %global         common_description %{expand:
 Library and tools to access the Extensible Storage Engine (ESE) Database File
@@ -11,31 +13,32 @@ Windows Mail, Exchange, Active Directory, etc.}
 
 %global         gituser         libyal
 %global         gitname         libesedb
-%global         commit          6b02d5d3d1ed9f3e9853aad0c33d64da2315b863
+%global         gitdate         %{version}
+%global         commit          24ae2ff47365adb5f1dcdce315ac7dd16b972836
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
+
+Release:        1%{?dist}
 
 # Build with python3 package by default
 %bcond_without  python3
 
 
-License:        LGPL-3.0-or-later
-URL:            https://github.com/libyal/libesedb
-#               https://github.com/libyal/libesedb/releases
-# Source0:      https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
-Source0:        https://github.com/%{gituser}/%{gitname}/releases/download/%{version}/%{gitname}-experimental-%{version}.tar.gz
+# Source0:      https://github.com/%%{gituser}/%%{gitname}/archive/%%{commit}/%%{name}-%%{version}-%%{shortcommit}.tar.gz
+Source0:        %{url}/releases/download/%{version}/%{gitname}-experimental-%{version}.tar.gz
 
 # Patch build to use the shared system libraries rather than using embedded ones
-# Patch0:         %{name}-libs.patch
+# Patch0:         %%{name}-libs.patch
 
 BuildRequires:  autoconf
 BuildRequires:  automake
 BuildRequires:  gcc
 BuildRequires:  make
 
-%if 0%{?with_python3}
+%if %{with python3}
 BuildRequires:  python%{python3_pkgversion}-devel
 BuildRequires:  python%{python3_pkgversion}-setuptools
-%endif # if with_python3
+# if with_python3
+%endif
 
 Provides: bundled(libbfio)      = 20180910
 Provides: bundled(libcdata)     = 20181228
@@ -72,8 +75,8 @@ developing applications that use %{name}.
 
 %if 0%{?with_python3}
 %package -n python%{python3_pkgversion}-pyesedb
-Summary:        Python3 binding for the librarye reading of esedb format
-%{?python_provide:%python_provide python%{python3_pkgversion}-%{srcname}}
+Summary:        Python3 binding for the library reading of esedb format
+%{?python_provide:%python_provide python%{python3_pkgversion}-pyesedb}
 
 %description -n python%{python3_pkgversion}-pyesedb
 Python3 binding for the librarye reading of esedb format
@@ -131,6 +134,12 @@ make check
 
 
 %changelog
+* Sat May 18 2024 Michal Ambroz <rebus AT seznam.cz> - 20240420-1
+- bump to 20240420
+
+* Sat Oct 19 2019 Michal Ambroz <rebus at, seznam.cz> - 20181229-1
+- update to 20181229, provide python3 binding
+
 * Sat Oct 19 2019 Michal Ambroz <rebus at, seznam.cz> - 20181229-1
 - update to 20181229, provide python3 binding
 

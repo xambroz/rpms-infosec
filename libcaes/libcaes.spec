@@ -1,19 +1,20 @@
-%global         gituser         libyal
-%global         gitname         libcaes
-%global         commit          c36c49b2b2f330d2769b8a896c4f2539a757162e
-%global         shortcommit     %(c=%{commit}; echo ${c:0:7})
-
-
 Name:           libcaes
-Version:        20160425
-Release:        1%{?dist}
+Version:        20240413
 Summary:        Libyal library to support cross-platform AES encryption 
-
 Group:          System Environment/Libraries
 License:        LGPL-3.0-or-later
-#URL:           https://github.com/libyal/libcaes
-URL:            https://github.com/%{gituser}/%{gitname}
-Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
+URL:            https://github.com/libyal/libcaes
+# Releases      https://github.com/libyal/libcaes/releases
+
+
+%global         gituser         libyal
+%global         gitname         libcaes
+%global         commit          a119ec92769277c63f3e54a8f6ec07c8c21ac3e8
+%global         shortcommit     %(c=%{commit}; echo ${c:0:7})
+
+Release:        1%{?dist}
+
+Source0:        %{url}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 #Patch build to use the shared system libraries rather than using embedded ones
 Patch0:         %{name}-libs.patch
 

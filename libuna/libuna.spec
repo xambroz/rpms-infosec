@@ -16,7 +16,7 @@ URL:            https://github.com/libyal/libuna
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 Release:        1%{?dist}
-Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
+Source0:        %{url}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 
 # dynamically loaded libraries
 Patch0:         %{name}-libs.patch

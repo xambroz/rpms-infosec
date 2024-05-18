@@ -1,11 +1,10 @@
 diff -ru libewf-93751847e334ea033a0871a65f5aa901782a2276.orig/configure.ac libewf-93751847e334ea033a0871a65f5aa901782a2276.new/configure.ac
 --- libewf-93751847e334ea033a0871a65f5aa901782a2276.orig/configure.ac	2016-04-25 20:08:38.000000000 +0200
 +++ libewf-93751847e334ea033a0871a65f5aa901782a2276.new/configure.ac	2016-06-20 19:54:27.683857542 +0200
-@@ -229,29 +229,29 @@
+@@ -229,27 +229,29 @@
  AC_CONFIG_FILES([Makefile])
  AC_CONFIG_FILES([include/Makefile])
  AC_CONFIG_FILES([common/Makefile])
--AC_CONFIG_FILES([libcstring/Makefile])
 -AC_CONFIG_FILES([libcerror/Makefile])
 -AC_CONFIG_FILES([libcthreads/Makefile])
 -AC_CONFIG_FILES([libcdata/Makefile])
@@ -23,7 +22,6 @@ diff -ru libewf-93751847e334ea033a0871a65f5aa901782a2276.orig/configure.ac libew
 -AC_CONFIG_FILES([libfvalue/Makefile])
 -AC_CONFIG_FILES([libhmac/Makefile])
 -AC_CONFIG_FILES([libcaes/Makefile])
-+dnl AC_CONFIG_FILES([libcstring/Makefile])
 +dnl AC_CONFIG_FILES([libcerror/Makefile])
 +dnl AC_CONFIG_FILES([libcthreads/Makefile])
 +dnl AC_CONFIG_FILES([libcdata/Makefile])
@@ -45,22 +43,19 @@ diff -ru libewf-93751847e334ea033a0871a65f5aa901782a2276.orig/configure.ac libew
 -AC_CONFIG_FILES([libodraw/Makefile])
 -AC_CONFIG_FILES([libsmdev/Makefile])
 -AC_CONFIG_FILES([libsmraw/Makefile])
--AC_CONFIG_FILES([libcsystem/Makefile])
 +dnl AC_CONFIG_FILES([libodraw/Makefile])
 +dnl AC_CONFIG_FILES([libsmdev/Makefile])
 +dnl AC_CONFIG_FILES([libsmraw/Makefile])
-+dnl AC_CONFIG_FILES([libcsystem/Makefile])
  AC_CONFIG_FILES([ewftools/Makefile])
  AC_CONFIG_FILES([ewf.net/Makefile])
  AC_CONFIG_FILES([pyewf/Makefile])
 diff -ru libewf-93751847e334ea033a0871a65f5aa901782a2276.orig/Makefile.am libewf-93751847e334ea033a0871a65f5aa901782a2276.new/Makefile.am
 --- libewf-93751847e334ea033a0871a65f5aa901782a2276.orig/Makefile.am	2016-04-25 20:08:38.000000000 +0200
 +++ libewf-93751847e334ea033a0871a65f5aa901782a2276.new/Makefile.am	2016-06-20 19:55:57.780537011 +0200
-@@ -3,29 +3,7 @@
+@@ -3,27 +3,7 @@
  SUBDIRS = \
  	include \
  	common \
--	libcstring \
 -	libcerror \
 -	libcthreads \
 -	libcdata \
@@ -82,15 +77,13 @@ diff -ru libewf-93751847e334ea033a0871a65f5aa901782a2276.orig/Makefile.am libewf
 -	libodraw \
 -	libsmdev \
 -	libsmraw \
--	libcsystem \
  	ewftools \
  	ewf.net \
  	pyewf \
-@@ -87,23 +65,6 @@
+@@ -87,22 +65,6 @@
  
  library:
  	(cd $(srcdir)/common && $(MAKE) $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libcstring && $(MAKE) $(AM_MAKEFLAGS))
 -	(cd $(srcdir)/libcerror && $(MAKE) $(AM_MAKEFLAGS))
 -	(cd $(srcdir)/libcthreads && $(MAKE) $(AM_MAKEFLAGS))
 -	(cd $(srcdir)/libcdata && $(MAKE) $(AM_MAKEFLAGS))
@@ -110,33 +103,3 @@ diff -ru libewf-93751847e334ea033a0871a65f5aa901782a2276.orig/Makefile.am libewf
  	(cd $(srcdir)/libewf && $(MAKE) $(AM_MAKEFLAGS))
  	(cd $(srcdir)/po && $(MAKE) $(AM_MAKEFLAGS))
  
-@@ -122,29 +83,7 @@
- 	done && test -z "$$fail"
- 
- splint:
--	(cd $(srcdir)/libcstring && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libcerror && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libcthreads && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libcdata && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libcdatetime && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libclocale && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libcnotify && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libcsplit && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libuna && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libcfile && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libcpath && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libbfio && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libfcache && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libfdata && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libfguid && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libfvalue && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libhmac && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libcaes && $(MAKE) splint $(AM_MAKEFLAGS))
- 	(cd $(srcdir)/libewf && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libodraw && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libsmdev && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libsmraw && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libcsystem && $(MAKE) splint $(AM_MAKEFLAGS))
- 	(cd $(srcdir)/ewftools && $(MAKE) splint $(AM_MAKEFLAGS))
- 	(cd $(srcdir)/pyewf && $(MAKE) splint $(AM_MAKEFLAGS))
- 	(cd $(srcdir)/po && $(MAKE) $(AM_MAKEFLAGS))
