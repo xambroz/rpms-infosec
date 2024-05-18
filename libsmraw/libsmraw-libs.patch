@@ -1,11 +1,10 @@
 diff -ru libsmraw-a54ab68e1d63a7bc3c91b400311fd9c9e4089e94.orig/configure.ac libsmraw-a54ab68e1d63a7bc3c91b400311fd9c9e4089e94.new/configure.ac
 --- libsmraw-a54ab68e1d63a7bc3c91b400311fd9c9e4089e94.orig/configure.ac	2015-01-05 18:43:45.000000000 +0100
 +++ libsmraw-a54ab68e1d63a7bc3c91b400311fd9c9e4089e94.new/configure.ac	2015-06-30 19:02:20.165344474 +0200
-@@ -318,23 +318,23 @@
+@@ -318,21 +318,23 @@
  AC_CONFIG_FILES([Makefile])
  AC_CONFIG_FILES([include/Makefile])
  AC_CONFIG_FILES([common/Makefile])
--AC_CONFIG_FILES([libcstring/Makefile])
 -AC_CONFIG_FILES([libcerror/Makefile])
 -AC_CONFIG_FILES([libcthreads/Makefile])
 -AC_CONFIG_FILES([libcdata/Makefile])
@@ -19,7 +18,6 @@ diff -ru libsmraw-a54ab68e1d63a7bc3c91b400311fd9c9e4089e94.orig/configure.ac lib
 -AC_CONFIG_FILES([libfcache/Makefile])
 -AC_CONFIG_FILES([libfdata/Makefile])
 -AC_CONFIG_FILES([libfvalue/Makefile])
-+dnl AC_CONFIG_FILES([libcstring/Makefile])
 +dnl AC_CONFIG_FILES([libcerror/Makefile])
 +dnl AC_CONFIG_FILES([libcthreads/Makefile])
 +dnl AC_CONFIG_FILES([libcdata/Makefile])
@@ -34,9 +32,7 @@ diff -ru libsmraw-a54ab68e1d63a7bc3c91b400311fd9c9e4089e94.orig/configure.ac lib
 +dnl AC_CONFIG_FILES([libfdata/Makefile])
 +dnl AC_CONFIG_FILES([libfvalue/Makefile])
  AC_CONFIG_FILES([libsmraw/Makefile])
--AC_CONFIG_FILES([libcsystem/Makefile])
 -AC_CONFIG_FILES([libhmac/Makefile])
-+dnl AC_CONFIG_FILES([libcsystem/Makefile])
 +dnl AC_CONFIG_FILES([libhmac/Makefile])
  AC_CONFIG_FILES([smrawtools/Makefile])
  AC_CONFIG_FILES([smraw.net/Makefile])
@@ -44,11 +40,10 @@ diff -ru libsmraw-a54ab68e1d63a7bc3c91b400311fd9c9e4089e94.orig/configure.ac lib
 diff -ru libsmraw-a54ab68e1d63a7bc3c91b400311fd9c9e4089e94.orig/Makefile.am libsmraw-a54ab68e1d63a7bc3c91b400311fd9c9e4089e94.new/Makefile.am
 --- libsmraw-a54ab68e1d63a7bc3c91b400311fd9c9e4089e94.orig/Makefile.am	2015-01-05 18:43:45.000000000 +0100
 +++ libsmraw-a54ab68e1d63a7bc3c91b400311fd9c9e4089e94.new/Makefile.am	2015-06-30 19:01:48.660831142 +0200
-@@ -3,23 +3,7 @@
+@@ -3,21 +3,7 @@
  SUBDIRS = \
  	include \
  	common \
--	libcstring \
 -	libcerror \
 -	libcthreads \
 -	libcdata \
@@ -63,16 +58,14 @@ diff -ru libsmraw-a54ab68e1d63a7bc3c91b400311fd9c9e4089e94.orig/Makefile.am libs
 -	libfdata \
 -	libfvalue \
  	libsmraw \
--	libcsystem \
 -	libhmac \
  	smrawtools \
  	smraw.net \
  	pysmraw \
-@@ -73,20 +57,6 @@
+@@ -73,19 +57,6 @@
  
  library:
  	(cd $(srcdir)/common && $(MAKE) $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libcstring && $(MAKE) $(AM_MAKEFLAGS))
 -	(cd $(srcdir)/libcerror && $(MAKE) $(AM_MAKEFLAGS))
 -	(cd $(srcdir)/libcthreads && $(MAKE) $(AM_MAKEFLAGS))
 -	(cd $(srcdir)/libcdata && $(MAKE) $(AM_MAKEFLAGS))
@@ -89,26 +82,3 @@ diff -ru libsmraw-a54ab68e1d63a7bc3c91b400311fd9c9e4089e94.orig/Makefile.am libs
  	(cd $(srcdir)/libsmraw && $(MAKE) $(AM_MAKEFLAGS))
  	(cd $(srcdir)/po && $(MAKE) $(AM_MAKEFLAGS))
  
-@@ -103,22 +73,7 @@
- 	done && test -z "$$fail"
- 
- splint:
--	(cd $(srcdir)/libcstring && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libcerror && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libcthreads && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libcdata && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libclocale && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libcnotify && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libcsplit && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libuna && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libcfile && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libcpath && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libbfio && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libfcache && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libfdata && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libfvalue && $(MAKE) splint $(AM_MAKEFLAGS))
- 	(cd $(srcdir)/libsmraw && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libcsystem && $(MAKE) splint $(AM_MAKEFLAGS))
- 	(cd $(srcdir)/smrawtools && $(MAKE) splint $(AM_MAKEFLAGS))
- 	(cd $(srcdir)/smraw.net && $(MAKE) splint $(AM_MAKEFLAGS))
- 	(cd $(srcdir)/pysmraw && $(MAKE) splint $(AM_MAKEFLAGS))

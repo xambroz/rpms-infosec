@@ -1,9 +1,17 @@
+Name:           libsmraw
+Version:        20240506
+Release:        1%{?dist}
+Summary:        Libyal library and tools to access the (split) RAW image format
+Group:          System Environment/Libraries
+License:        LGPL-3.0-or-later
+URL:            https://github.com/libyal/libsmraw
+VCS:            https://github.com/libyal/libsmraw
+# Releases      https://github.com/libyal/libsmraw/releases
+
+
 %global         gituser         libyal
 %global         gitname         libsmraw
-#20150105
-%global         commit          a54ab68e1d63a7bc3c91b400311fd9c9e4089e94
-#20160524
-%global         commit          a9c8140455abcd7a77a1f4b7fb6e13d42ac49491
+%global         commit          995b9e200ae8c836439f14741253143803fecb0c
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 %global         pythonopts      -enable-python2
@@ -14,16 +22,7 @@
 %endif
 
 
-Name:           libsmraw
-Version:        20160524
-Release:        1%{?dist}
-Summary:        Libyal library and tools to access the (split) RAW image format
-
-Group:          System Environment/Libraries
-License:        LGPL-3.0-or-later
-#URL:           https://github.com/libyal/libsmraw
-URL:            https://github.com/%{gituser}/%{gitname}
-Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
+Source0:        %{url}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 Patch0:         %{name}-libs.patch
 
 BuildRequires:  gcc
@@ -33,7 +32,6 @@ BuildRequires:  automake
 BuildRequires:  libtool
 BuildRequires:  gettext-devel
 BuildRequires:  fuse-devel
-BuildRequires:  libcstring-devel
 BuildRequires:  libcerror-devel
 BuildRequires:  libcthreads-devel
 BuildRequires:  libcdata-devel
@@ -47,7 +45,6 @@ BuildRequires:  libbfio-devel
 BuildRequires:  libfcache-devel
 BuildRequires:  libfdata-devel
 BuildRequires:  libfvalue-devel
-BuildRequires:  libcsystem-devel
 BuildRequires:  libhmac-devel
 
 BuildRequires:  python-devel
@@ -56,7 +53,8 @@ BuildRequires:  python-setuptools
 %if 0%{?with_python3}
 BuildRequires:  python3-devel
 BuildRequires:  python3-setuptools
-%endif # if with_python3
+# if with_python3
+%endif
 
 %description
 Library and tools to access the (split) RAW image format.
@@ -99,7 +97,8 @@ Requires:       %{name}%{?_isa} = %{version}-%{release}
 %description python3
 This is a Python3 module that gives access to %{name} library
 from Python scripts.
-%endif # with_python3
+# with_python3
+%endif
 
 
 
@@ -112,7 +111,8 @@ from Python scripts.
 %build
 %if 0%{?with_python3}
 
-%endif # with_python3
+# with_python3
+%endif
 %configure --disable-static --enable-wide-character-type \
 	--enable-multi-threading-support --enable-verbose-output \
 	%{pythonopts}
@@ -150,7 +150,8 @@ make check
 %if 0%{?with_python3}
 %files python3
 %{python3_sitearch}/pysmraw*
-%endif # with_python3
+# with_python3
+%endif
 
 
 %changelog
