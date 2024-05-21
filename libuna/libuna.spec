@@ -67,7 +67,7 @@ Unatools from the libuna package.
 %setup -n %{gitname}-%{commit}
 %autopatch -M 99
 %if %{with bootstrap}
-%autopatch 100
+%autopatch -m 100
 %endif
 ./autogen.sh
 
