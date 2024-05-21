@@ -1,6 +1,6 @@
-diff -ru libuna-0bec9356d6c9fd2684defa2807752e39c5d34014/configure.ac libuna-0bec9356d6c9fd2684defa2807752e39c5d34014.new/configure.ac
---- libuna-0bec9356d6c9fd2684defa2807752e39c5d34014/configure.ac	2022-06-11 06:05:12.000000000 +0200
-+++ libuna-0bec9356d6c9fd2684defa2807752e39c5d34014.new/configure.ac	2023-06-28 12:51:21.830007907 +0200
+diff -ru libuna-ee21db63eed2820396cff0a7442e408c028535f2/configure.ac libuna-ee21db63eed2820396cff0a7442e408c028535f2.new/configure.ac
+--- libuna-ee21db63eed2820396cff0a7442e408c028535f2/configure.ac	2024-04-14 08:37:27.000000000 +0200
++++ libuna-ee21db63eed2820396cff0a7442e408c028535f2.new/configure.ac	2024-05-22 00:58:51.259289488 +0200
 @@ -119,12 +119,7 @@
  AC_CONFIG_FILES([Makefile])
  AC_CONFIG_FILES([include/Makefile])
@@ -14,9 +14,9 @@ diff -ru libuna-0bec9356d6c9fd2684defa2807752e39c5d34014/configure.ac libuna-0be
  AC_CONFIG_FILES([unatools/Makefile])
  AC_CONFIG_FILES([po/Makefile.in])
  AC_CONFIG_FILES([po/Makevars])
-diff -ru libuna-0bec9356d6c9fd2684defa2807752e39c5d34014/Makefile.am libuna-0bec9356d6c9fd2684defa2807752e39c5d34014.new/Makefile.am
---- libuna-0bec9356d6c9fd2684defa2807752e39c5d34014/Makefile.am	2022-06-11 06:05:12.000000000 +0200
-+++ libuna-0bec9356d6c9fd2684defa2807752e39c5d34014.new/Makefile.am	2023-06-28 12:51:00.356199872 +0200
+diff -ru libuna-ee21db63eed2820396cff0a7442e408c028535f2/Makefile.am libuna-ee21db63eed2820396cff0a7442e408c028535f2.new/Makefile.am
+--- libuna-ee21db63eed2820396cff0a7442e408c028535f2/Makefile.am	2024-04-14 08:37:27.000000000 +0200
++++ libuna-ee21db63eed2820396cff0a7442e408c028535f2.new/Makefile.am	2024-05-22 00:58:51.260289496 +0200
 @@ -3,12 +3,7 @@
  SUBDIRS = \
  	include \
@@ -30,7 +30,7 @@ diff -ru libuna-0bec9356d6c9fd2684defa2807752e39c5d34014/Makefile.am libuna-0bec
  	unatools \
  	po \
  	documents \
-@@ -60,7 +55,6 @@
+@@ -67,7 +62,6 @@
  
  library:
  	cd $(srcdir)/common && $(MAKE) $(AM_MAKEFLAGS)

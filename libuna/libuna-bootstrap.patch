@@ -1,6 +1,6 @@
-diff -ru libuna-0bec9356d6c9fd2684defa2807752e39c5d34014.new/configure.ac libuna-0bec9356d6c9fd2684defa2807752e39c5d34014.bootstrap/configure.ac
---- libuna-0bec9356d6c9fd2684defa2807752e39c5d34014.new/configure.ac	2023-06-28 12:51:21.830007907 +0200
-+++ libuna-0bec9356d6c9fd2684defa2807752e39c5d34014.bootstrap/configure.ac	2023-06-28 13:18:41.898461872 +0200
+diff -ru libuna-ee21db63eed2820396cff0a7442e408c028535f2.old/configure.ac libuna-ee21db63eed2820396cff0a7442e408c028535f2.new/configure.ac
+--- libuna-ee21db63eed2820396cff0a7442e408c028535f2.old/configure.ac	2024-05-22 00:58:51.259289488 +0200
++++ libuna-ee21db63eed2820396cff0a7442e408c028535f2.new/configure.ac	2024-05-22 01:01:16.721186299 +0200
 @@ -120,7 +120,6 @@
  AC_CONFIG_FILES([include/Makefile])
  AC_CONFIG_FILES([common/Makefile])
@@ -9,9 +9,9 @@ diff -ru libuna-0bec9356d6c9fd2684defa2807752e39c5d34014.new/configure.ac libuna
  AC_CONFIG_FILES([po/Makefile.in])
  AC_CONFIG_FILES([po/Makevars])
  AC_CONFIG_FILES([documents/Makefile])
-diff -ru libuna-0bec9356d6c9fd2684defa2807752e39c5d34014.new/Makefile.am libuna-0bec9356d6c9fd2684defa2807752e39c5d34014.bootstrap/Makefile.am
---- libuna-0bec9356d6c9fd2684defa2807752e39c5d34014.new/Makefile.am	2023-06-28 12:51:00.356199872 +0200
-+++ libuna-0bec9356d6c9fd2684defa2807752e39c5d34014.bootstrap/Makefile.am	2023-06-28 13:18:15.357465089 +0200
+diff -ru libuna-ee21db63eed2820396cff0a7442e408c028535f2.old/Makefile.am libuna-ee21db63eed2820396cff0a7442e408c028535f2.new/Makefile.am
+--- libuna-ee21db63eed2820396cff0a7442e408c028535f2.old/Makefile.am	2024-05-22 00:58:51.260289496 +0200
++++ libuna-ee21db63eed2820396cff0a7442e408c028535f2.new/Makefile.am	2024-05-22 01:01:16.722186305 +0200
 @@ -4,7 +4,6 @@
  	include \
  	common \
@@ -20,11 +20,3 @@ diff -ru libuna-0bec9356d6c9fd2684defa2807752e39c5d34014.new/Makefile.am libuna-
  	po \
  	documents \
  	manuals \
-@@ -72,7 +71,6 @@
- 
- splint:
- 	(cd $(srcdir)/libuna && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/unatools && $(MAKE) splint $(AM_MAKEFLAGS))
- 	(cd $(srcdir)/po && $(MAKE) splint $(AM_MAKEFLAGS))
- 	(cd $(srcdir)/tests && $(MAKE) splint $(AM_MAKEFLAGS))
- 
