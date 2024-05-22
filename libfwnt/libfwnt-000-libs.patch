@@ -1,0 +1,39 @@
+diff -ru libfwnt-24d81387a2c8bbabad5e787e75967039e8bfae29.orig/configure.ac libfwnt-24d81387a2c8bbabad5e787e75967039e8bfae29.new/configure.ac
+--- libfwnt-24d81387a2c8bbabad5e787e75967039e8bfae29.orig/configure.ac	2024-04-15 16:56:10.000000000 +0200
++++ libfwnt-24d81387a2c8bbabad5e787e75967039e8bfae29.new/configure.ac	2024-05-17 10:53:12.758790496 +0200
+@@ -124,10 +124,6 @@
+ AC_CONFIG_FILES([Makefile])
+ AC_CONFIG_FILES([include/Makefile])
+ AC_CONFIG_FILES([common/Makefile])
+-AC_CONFIG_FILES([libcerror/Makefile])
+-AC_CONFIG_FILES([libcthreads/Makefile])
+-AC_CONFIG_FILES([libcdata/Makefile])
+-AC_CONFIG_FILES([libcnotify/Makefile])
+ AC_CONFIG_FILES([libfwnt/Makefile])
+ AC_CONFIG_FILES([pyfwnt/Makefile])
+ AC_CONFIG_FILES([po/Makefile.in])
+diff -ru libfwnt-24d81387a2c8bbabad5e787e75967039e8bfae29.orig/Makefile.am libfwnt-24d81387a2c8bbabad5e787e75967039e8bfae29.new/Makefile.am
+--- libfwnt-24d81387a2c8bbabad5e787e75967039e8bfae29.orig/Makefile.am	2024-04-15 16:56:10.000000000 +0200
++++ libfwnt-24d81387a2c8bbabad5e787e75967039e8bfae29.new/Makefile.am	2024-05-17 10:50:42.263994458 +0200
+@@ -3,10 +3,6 @@
+ SUBDIRS = \
+ 	include \
+ 	common \
+-	libcerror \
+-	libcthreads \
+-	libcdata \
+-	libcnotify \
+ 	libfwnt \
+ 	pyfwnt \
+ 	po \
+@@ -73,10 +69,6 @@
+ 
+ library:
+ 	(cd $(srcdir)/common && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcerror && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcthreads && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcdata && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcnotify && $(MAKE) $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/libfwnt && $(MAKE) $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/po && $(MAKE) $(AM_MAKEFLAGS))
+ 
