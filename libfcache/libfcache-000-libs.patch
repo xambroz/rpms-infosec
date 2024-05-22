@@ -1,0 +1,50 @@
+diff -ru libfcache-dff19b41ae29ac1b858dfac48a8524063f488544.orig/configure.ac libfcache-dff19b41ae29ac1b858dfac48a8524063f488544.new/configure.ac
+--- libfcache-dff19b41ae29ac1b858dfac48a8524063f488544.orig/configure.ac	2015-01-04 12:07:25.000000000 +0100
++++ libfcache-dff19b41ae29ac1b858dfac48a8524063f488544.new/configure.ac	2015-06-08 01:40:27.735127762 +0200
+@@ -127,10 +127,6 @@
+ AC_CONFIG_FILES([Makefile])
+ AC_CONFIG_FILES([include/Makefile])
+ AC_CONFIG_FILES([common/Makefile])
+-AC_CONFIG_FILES([libcstring/Makefile])
+-AC_CONFIG_FILES([libcerror/Makefile])
+-AC_CONFIG_FILES([libcthreads/Makefile])
+-AC_CONFIG_FILES([libcdata/Makefile])
+ AC_CONFIG_FILES([libfcache/Makefile])
+ AC_CONFIG_FILES([po/Makefile.in])
+ AC_CONFIG_FILES([po/Makevars])
+diff -ru libfcache-dff19b41ae29ac1b858dfac48a8524063f488544.orig/Makefile.am libfcache-dff19b41ae29ac1b858dfac48a8524063f488544.new/Makefile.am
+--- libfcache-dff19b41ae29ac1b858dfac48a8524063f488544.orig/Makefile.am	2015-01-04 12:07:25.000000000 +0100
++++ libfcache-dff19b41ae29ac1b858dfac48a8524063f488544.new/Makefile.am	2015-06-08 01:40:06.172471465 +0200
+@@ -3,10 +3,6 @@
+ SUBDIRS = \
+ 	include \
+ 	common \
+-	libcstring \
+-	libcerror \
+-	libcthreads \
+-	libcdata \
+ 	libfcache \
+ 	po \
+ 	manuals \
+@@ -57,10 +53,6 @@
+ 
+ library:
+ 	(cd $(srcdir)/common && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcstring && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcerror && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcthreads && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcdata && $(MAKE) $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/libfcache && $(MAKE) $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/po && $(MAKE) $(AM_MAKEFLAGS))
+ 
+@@ -77,10 +69,6 @@
+ 	done && test -z "$$fail"
+ 
+ splint:
+-	(cd $(srcdir)/libcstring && $(MAKE) splint $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcerror && $(MAKE) splint $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcthreads && $(MAKE) splint $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcdata && $(MAKE) splint $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/libfcache && $(MAKE) splint $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/po && $(MAKE) splint $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/tests && $(MAKE) splint $(AM_MAKEFLAGS))

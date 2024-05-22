@@ -13,7 +13,11 @@ URL:            https://github.com/libyal/libfcache
 
 Source0:        %{url}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 #Patch build to use the shared system libraries rather than using embedded ones
-Patch0:         %{name}-libs.patch
+Patch0:         %{name}-000-libs.patch
+
+# Allow older autotools for EPEL builds
+Patch1:         %{name}-001-configure.ac.patch
+
 
 BuildRequires:  gcc
 BuildRequires:  make
