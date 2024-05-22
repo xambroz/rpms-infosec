@@ -1,0 +1,39 @@
+diff -ru libcfile-ef3bf71af478386946e4cfcdb7280d9c10284cdb/configure.ac libcfile-ef3bf71af478386946e4cfcdb7280d9c10284cdb.new/configure.ac
+--- libcfile-ef3bf71af478386946e4cfcdb7280d9c10284cdb/configure.ac	2021-06-16 06:11:28.000000000 +0200
++++ libcfile-ef3bf71af478386946e4cfcdb7280d9c10284cdb.new/configure.ac	2023-06-28 13:00:14.899066689 +0200
+@@ -109,10 +109,6 @@
+ AC_CONFIG_FILES([Makefile])
+ AC_CONFIG_FILES([include/Makefile])
+ AC_CONFIG_FILES([common/Makefile])
+-AC_CONFIG_FILES([libcerror/Makefile])
+-AC_CONFIG_FILES([libclocale/Makefile])
+-AC_CONFIG_FILES([libcnotify/Makefile])
+-AC_CONFIG_FILES([libuna/Makefile])
+ AC_CONFIG_FILES([libcfile/Makefile])
+ AC_CONFIG_FILES([po/Makefile.in])
+ AC_CONFIG_FILES([po/Makevars])
+diff -ru libcfile-ef3bf71af478386946e4cfcdb7280d9c10284cdb/Makefile.am libcfile-ef3bf71af478386946e4cfcdb7280d9c10284cdb.new/Makefile.am
+--- libcfile-ef3bf71af478386946e4cfcdb7280d9c10284cdb/Makefile.am	2021-06-16 06:11:28.000000000 +0200
++++ libcfile-ef3bf71af478386946e4cfcdb7280d9c10284cdb.new/Makefile.am	2023-06-28 12:59:40.253763021 +0200
+@@ -3,10 +3,6 @@
+ SUBDIRS = \
+ 	include \
+ 	common \
+-	libcerror \
+-	libclocale \
+-	libcnotify \
+-	libuna \
+ 	libcfile \
+ 	po \
+ 	manuals \
+@@ -56,10 +52,6 @@
+ 
+ library:
+ 	cd $(srcdir)/common && $(MAKE) $(AM_MAKEFLAGS)
+-	cd $(srcdir)/libcerror && $(MAKE) $(AM_MAKEFLAGS)
+-	cd $(srcdir)/libclocale && $(MAKE) $(AM_MAKEFLAGS)
+-	cd $(srcdir)/libcnotify && $(MAKE) $(AM_MAKEFLAGS)
+-	cd $(srcdir)/libuna && $(MAKE) $(AM_MAKEFLAGS)
+ 	cd $(srcdir)/libcfile && $(MAKE) $(AM_MAKEFLAGS)
+ 	cd $(srcdir)/po && $(MAKE) $(AM_MAKEFLAGS)
+ 
