@@ -22,10 +22,6 @@ Patch0:         %{name}-000-libs.patch
 Patch1:         %{name}-001-configure.ac.patch
 
 
-#
-Patch1:         %{name}-configure.ac.patch
-
-
 BuildRequires:  gcc
 BuildRequires:  make
 BuildRequires:  pkgconfig
