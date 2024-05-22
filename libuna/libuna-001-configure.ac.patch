@@ -1,0 +1,18 @@
+diff -ru libuna-ee21db63eed2820396cff0a7442e408c028535f2.old/configure.ac libuna-ee21db63eed2820396cff0a7442e408c028535f2.new/configure.ac
+--- libuna-ee21db63eed2820396cff0a7442e408c028535f2.old/configure.ac	2024-05-22 11:19:55.411072275 +0200
++++ libuna-ee21db63eed2820396cff0a7442e408c028535f2.new/configure.ac	2024-05-22 11:20:57.716423907 +0200
+@@ -1,4 +1,4 @@
+-AC_PREREQ([2.71])
++AC_PREREQ([2.69])
+ 
+ AC_INIT(
+  [libuna],
+@@ -33,7 +33,7 @@
+ 
+ dnl Support of internationalization (i18n)
+ AM_GNU_GETTEXT([external])
+-AM_GNU_GETTEXT_VERSION([0.21])
++AM_GNU_GETTEXT_VERSION([0.19])
+ 
+ dnl Check for compiler language support
+ AC_C_CONST

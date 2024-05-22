@@ -1,0 +1,22 @@
+diff -ru libuna-ee21db63eed2820396cff0a7442e408c028535f2.old/configure.ac libuna-ee21db63eed2820396cff0a7442e408c028535f2.new/configure.ac
+--- libuna-ee21db63eed2820396cff0a7442e408c028535f2.old/configure.ac	2024-05-22 00:58:51.259289488 +0200
++++ libuna-ee21db63eed2820396cff0a7442e408c028535f2.new/configure.ac	2024-05-22 01:01:16.721186299 +0200
+@@ -120,7 +120,6 @@
+ AC_CONFIG_FILES([include/Makefile])
+ AC_CONFIG_FILES([common/Makefile])
+ AC_CONFIG_FILES([libuna/Makefile])
+-AC_CONFIG_FILES([unatools/Makefile])
+ AC_CONFIG_FILES([po/Makefile.in])
+ AC_CONFIG_FILES([po/Makevars])
+ AC_CONFIG_FILES([documents/Makefile])
+diff -ru libuna-ee21db63eed2820396cff0a7442e408c028535f2.old/Makefile.am libuna-ee21db63eed2820396cff0a7442e408c028535f2.new/Makefile.am
+--- libuna-ee21db63eed2820396cff0a7442e408c028535f2.old/Makefile.am	2024-05-22 00:58:51.260289496 +0200
++++ libuna-ee21db63eed2820396cff0a7442e408c028535f2.new/Makefile.am	2024-05-22 01:01:16.722186305 +0200
+@@ -4,7 +4,6 @@
+ 	include \
+ 	common \
+ 	libuna \
+-	unatools \
+ 	po \
+ 	documents \
+ 	manuals \

@@ -19,10 +19,14 @@ Release:        1%{?dist}
 Source0:        %{url}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 
 # dynamically loaded libraries
-Patch0:         %{name}-libs.patch
+Patch0:         %{name}-000-libs.patch
 
+# Allow older autotools for EPEL builds
+Patch1:         %{name}-001-configure.ac.patch
+
+# ======= Only used with Bootstrap
 # Allow bootstrapping to break the circular dependency
-Patch100:         %{name}-bootstrap.patch
+Patch100:         %{name}-100-bootstrap.patch
 
 BuildRequires:  gcc
 BuildRequires:  make
