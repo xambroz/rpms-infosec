@@ -23,6 +23,10 @@ Patch0:         %{name}-000-libs.patch
 Patch1:         %{name}-001-configure.ac.patch
 
 
+# Allow older autotools for EPEL builds
+Patch1:         %{name}-001-configure.ac.patch
+
+
 BuildRequires:  gcc
 BuildRequires:  make
 BuildRequires:  pkgconfig
