@@ -1,0 +1,30 @@
+diff -ru libfguid-c79feddbafec7d24df8c661e8c9be1417d4dedf4/configure.ac libfguid-c79feddbafec7d24df8c661e8c9be1417d4dedf4.new/configure.ac
+--- libfguid-c79feddbafec7d24df8c661e8c9be1417d4dedf4/configure.ac	2024-04-15 07:25:11.000000000 +0200
++++ libfguid-c79feddbafec7d24df8c661e8c9be1417d4dedf4.new/configure.ac	2024-05-13 14:38:22.789520428 +0200
+@@ -91,7 +91,6 @@
+ AC_CONFIG_FILES([Makefile])
+ AC_CONFIG_FILES([include/Makefile])
+ AC_CONFIG_FILES([common/Makefile])
+-AC_CONFIG_FILES([libcerror/Makefile])
+ AC_CONFIG_FILES([libfguid/Makefile])
+ AC_CONFIG_FILES([po/Makefile.in])
+ AC_CONFIG_FILES([po/Makevars])
+diff -ru libfguid-c79feddbafec7d24df8c661e8c9be1417d4dedf4/Makefile.am libfguid-c79feddbafec7d24df8c661e8c9be1417d4dedf4.new/Makefile.am
+--- libfguid-c79feddbafec7d24df8c661e8c9be1417d4dedf4/Makefile.am	2024-04-15 07:25:11.000000000 +0200
++++ libfguid-c79feddbafec7d24df8c661e8c9be1417d4dedf4.new/Makefile.am	2024-05-13 14:38:05.070451271 +0200
+@@ -3,7 +3,6 @@
+ SUBDIRS = \
+ 	include \
+ 	common \
+-	libcerror \
+ 	libfguid \
+ 	po \
+ 	manuals \
+@@ -60,7 +59,6 @@
+ 
+ library:
+ 	(cd $(srcdir)/common && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcerror && $(MAKE) $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/libfguid && $(MAKE) $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/po && $(MAKE) $(AM_MAKEFLAGS))
+ 
