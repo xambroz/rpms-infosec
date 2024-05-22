@@ -5,6 +5,8 @@ After=multi-user.target
 
 [Service]
 Type=forking
+Restart=on-abort
+RestartSec=1s
 PIDFile=/var/run/dionaea.pid
 EnvironmentFile=-/etc/sysconfig/dionaea
 ExecStart=/usr/sbin/dionaea -D $DUSER $DGROUP $DWORKDIR $LOGLEVELS $LOGDOMAINS $PIDFILE $MISC
