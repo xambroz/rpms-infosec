@@ -1,0 +1,30 @@
+diff -ru libfdatetime-133ca426176073d54f4e5eb1f7f61a39e0050fe2.old/configure.ac libfdatetime-133ca426176073d54f4e5eb1f7f61a39e0050fe2.new/configure.ac
+--- libfdatetime-133ca426176073d54f4e5eb1f7f61a39e0050fe2.old/configure.ac	2024-04-15 07:03:22.000000000 +0200
++++ libfdatetime-133ca426176073d54f4e5eb1f7f61a39e0050fe2.new/configure.ac	2024-05-13 17:01:32.971332041 +0200
+@@ -91,7 +91,6 @@
+ AC_CONFIG_FILES([Makefile])
+ AC_CONFIG_FILES([include/Makefile])
+ AC_CONFIG_FILES([common/Makefile])
+-AC_CONFIG_FILES([libcerror/Makefile])
+ AC_CONFIG_FILES([libfdatetime/Makefile])
+ AC_CONFIG_FILES([po/Makefile.in])
+ AC_CONFIG_FILES([po/Makevars])
+diff -ru libfdatetime-133ca426176073d54f4e5eb1f7f61a39e0050fe2.old/Makefile.am libfdatetime-133ca426176073d54f4e5eb1f7f61a39e0050fe2.new/Makefile.am
+--- libfdatetime-133ca426176073d54f4e5eb1f7f61a39e0050fe2.old/Makefile.am	2024-04-15 07:03:22.000000000 +0200
++++ libfdatetime-133ca426176073d54f4e5eb1f7f61a39e0050fe2.new/Makefile.am	2024-05-13 17:01:19.033258900 +0200
+@@ -3,7 +3,6 @@
+ SUBDIRS = \
+ 	include \
+ 	common \
+-	libcerror \
+ 	libfdatetime \
+ 	po \
+ 	tests \
+@@ -60,7 +59,6 @@
+ 
+ library:
+ 	(cd $(srcdir)/common && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcerror && $(MAKE) $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/libfdatetime && $(MAKE) $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/po && $(MAKE) $(AM_MAKEFLAGS))
+ 
