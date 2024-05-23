@@ -1,6 +1,6 @@
 Name:           radare2
 Summary:        The reverse engineering framework
-Version:        5.9.0
+Version:        5.9.2
 %global         baserelease     1
 URL:            https://radare.org/
 VCS:            https://github.com/radareorg/radare2
@@ -22,7 +22,7 @@ VCS:            https://github.com/radareorg/radare2
 %global         gitname         radare2
 
 %global         gitdate         20240331
-%global         commit          4a07098809c71c21515d0f862ac4ca044ae95e95
+%global         commit          aea5c93a8f5a6ed360ea21d6a4e36f00accb8b7d
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
@@ -377,6 +377,9 @@ mkdir -p %{buildroot}%{_libdir}/%{name}/%{version}
 
 
 %changelog
+* Wed May 22 2024 Michal Ambroz <rebus _AT seznam.cz> - 5.9.2-1
+- bump to 5.9.2
+
 * Sat Apr 20 2024 Michal Ambroz <rebus at, seznam.cz> 5.9.0-1
 - bump to 5.9.0
 
