@@ -1,7 +1,21 @@
 Name:           python-oletools
-Version:        0.60.1
-Release:        1%{?dist}
+Version:        0.60.2
+%global         baserelease     1
 Summary:        Tools to analyze Microsoft OLE2 files
+URL:            https://www.decalage.info/python/oletools
+VCS:            https://github.com/decalage2/oletools/
+#               https://github.com/decalage2/oletools/releases
+#               https://github.com/nolze/msoffcrypto-tool/tags
+
+%global         common_description %{expand:
+The python-oletools is a package of python tools from Philippe Lagadec
+to analyze Microsoft OLE2 files (also called Structured Storage,
+Compound File Binary Format or Compound Document File Format),
+such as Microsoft Office documents or Outlook messages, mainly for
+malware analysis, forensics and debugging.
+It is based on the olefile parser.
+See http://www.decalage.info/python/oletools for more info.
+}
 
 # oletools/*.py: BSD
 # oletools/olevba*.py: BSD and MIT
@@ -11,13 +25,20 @@ Summary:        Tools to analyze Microsoft OLE2 files
 # oletools/thirdparty/zipfile27/*.py: Python
 # oletools/thirdparty/msoffcrypto/*.py: MIT
 License:        BSD and MIT and Python
-URL:            https://www.decalage.info/python/oletools
-VCS:            https://github.com/decalage2/oletools/
-#               https://github.com/decalage2/oletools/releases
-#               https://github.com/nolze/msoffcrypto-tool/tags
 
 %global         srcname oletools
 
+# without = By default build from a release tarball.
+# with = By default build from git snapshot.
+# If you want to rebuild from a unversioned commit from git do that with
+# rpmbuild --rebuild python-oletools.src.rpm --without release
+%bcond_with  release
+
+%global         gituser         decalage2
+%global         gitname         oletools
+%global         gitdate         20240425
+%global         commit          78b2d459a33df378a4f69ffc6c33313509cecfe4
+%global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 # Bootstrap may be needed to break circular dependencies between
 # python-oletools and python-pcodedmp
@@ -43,28 +64,29 @@ Provides:       bundled(tablestream) = 0.09 \
 Provides:       bundled(xglob) = 0.07 \
 Provides:       bundled(xxxswf) = 0.1
 
-
-%global         _description %{expand:
-The python-oletools is a package of python tools from Philippe Lagadec
-to analyze Microsoft OLE2 files (also called Structured Storage,
-Compound File Binary Format or Compound Document File Format),
-such as Microsoft Office documents or Outlook messages, mainly for
-malware analysis, forensics and debugging.
-It is based on the olefile parser.
-See http://www.decalage.info/python/oletools for more info.
-}
-
+%if 0%{?with_release}
+Release:        %{baserelease}%{?dist}
 Source0:        https://github.com/decalage2/oletools/archive/v%{version}/%{srcname}-%{version}.tar.gz
+%else
+Release:        0.%{baserelease}.%{gitdate}git%{shortcommit}%{?dist}
+Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz#/%{name}-%{version}-git%{gitdate}-%{shortcommit}.tar.gz
+%endif
 
 # For now bundle the msoffcrypto-tool for python2 - new requirement for the oletools not used by anything else
 # but in Fedora we have only the python3 package for it
-Source1:        https://github.com/nolze/msoffcrypto-tool/archive/v5.1.1/msoffcrypto-tool-5.1.1.tar.gz
+Source1:        https://github.com/nolze/msoffcrypto-tool/archive/v5.4.0/msoffcrypto-tool-5.4.0.tar.gz
 
 # Remove the bundled libraries from the build. Use the system libraries instead
 Patch0:         %{name}-01-thirdparty.patch
 
 # with python2 Bundle the msoffcrypto instead of using one from pip
 Patch1:         %{name}-02-msoffcrypto.patch
+
+# Fix escaping in regexps, reported as syntax error in python 3.12
+# https://github.com/decalage2/oletools/pull/854
+# https://github.com/decalage2/oletools/pull/855
+Patch2:         %{name}-03-python12.patch
+
 
 BuildArch:      noarch
 
@@ -118,7 +140,7 @@ BuildRequires:  python-prettytable
 BuildRequires:  python-pymilter
 %endif
 
-%description    %{_description}
+%description    %{common_description}
 
 
 
@@ -150,7 +172,7 @@ Requires:       python2-pcodedmp
 Requires:       python2-cryptography
 Provides:       bundled(msoffcrypto-tool) = 5.1.1
 
-%description -n python2-%{srcname} %{_description}
+%description -n python2-%{srcname} %{common_description}
 
 Python2 version.
 %endif
@@ -174,7 +196,7 @@ Requires:       python%{python3_pkgversion}-xlmmacrodeobfuscator
 Requires:       python%{python3_pkgversion}-pcodedmp
 %endif
 
-%description -n python%{python3_pkgversion}-%{srcname} %{_description}
+%description -n python%{python3_pkgversion}-%{srcname} %{common_description}
 Python3 version.
 
 %endif
@@ -189,17 +211,29 @@ Summary:        Documentation files for %{name}
 %{?python_provide:%python_provide python%{python3_pkgversion}-%{srcname}-doc}
 %endif
 
-%description -n python-%{srcname}-doc %{_description}
+%description -n python-%{srcname}-doc %{common_description}
 
 
 %prep
+%if 0%{?with_release}
+# Build from git release version
 %autosetup -N -n %{srcname}-%{version}
+
+%else
+# Build from git commit
+%autosetup -N -n %{srcname}-%{commit}
+%endif
+
 %autopatch -m 0 -M 0
 
 # Embed msoffcrypto only when building python2
 %if %{with python2}
 %autopatch -m 1 -M 1
 %endif
+
+%autopatch -m 2 -p 1
+
+
 
 # Use globally installed python modules instead of bundled ones
 for i in colorclass easygui olefile prettytable pyparsing; do
@@ -219,8 +253,9 @@ sed -i -e '
 %if %{with python2}
 # for now bundle msoffcrypto-tool for python2
 tar xvf %{SOURCE1}
-mv msoffcrypto-tool-4.11.0/msoffcrypto oletools/thirdparty/
-cp msoffcrypto-tool-4.11.0/LICENSE.txt oletools/thirdparty/msoffcrypto/LICENSE.txt
+mv msoffcrypto-tool-5.4.0/msoffcrypto oletools/thirdparty/
+cp msoffcrypto-tool-5.4.0/LICENSE.txt oletools/thirdparty/msoffcrypto/LICENSE.txt
+cp msoffcrypto-tool-5.4.0/NOTE.txt oletools/thirdparty/msoffcrypto/NOTE.txt
 sed -i -e 's|import msoffcrypto| from oletools.thirdparty import msoffcrypto|;' oletools/crypto.py
 %endif
 
