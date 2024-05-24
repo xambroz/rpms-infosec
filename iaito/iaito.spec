@@ -1,7 +1,7 @@
 Name:           iaito
 Summary:        GUI for radare2 reverse engineering framework
-Version:        5.9.0
-%global         baserelease     2
+Version:        5.9.2
+%global         baserelease     1
 %global         upversion       %{version}-beta
 URL:            https://radare.org/n/iaito.html
 VCS:            https://github.com/radareorg/iaito/
@@ -24,7 +24,7 @@ VCS:            https://github.com/radareorg/iaito/
 %global         gitname         iaito
 
 %global         gitdate         20240331
-%global         commit          eaba7bbdad9cf4c4152657160df55c176a8607aa
+%global         commit          7656eed6d2c799f2bbc8fc2ddfd4bccbd01bf0dd
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 %global         iaito_translations_gitdate      20221114
@@ -36,7 +36,7 @@ VCS:            https://github.com/radareorg/iaito/
 Release:        %{baserelease}%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
 %else
-Release:        0.%{baserelease}.%{gitdate}git%{shortcommit}%{?dist}.1
+Release:        0.%{baserelease}.%{gitdate}git%{shortcommit}%{?dist}
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 %endif
 
@@ -192,6 +192,9 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
 
 
 %changelog
+* Fri May 24 2024 Michal Ambroz <rebus _AT seznam.cz> - 5.9.2-1
+- bump to 5.9.2
+
 * Thu May 23 2024 Michal Ambroz <rebus _AT seznam.cz> - 5.9.0-2
 - rebuild with radare2 5.9.2
 
