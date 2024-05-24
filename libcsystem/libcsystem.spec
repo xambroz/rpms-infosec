@@ -26,7 +26,6 @@ BuildRequires:  pkgconfig
 BuildRequires:  automake
 BuildRequires:  libtool
 BuildRequires:  gettext-devel
-BuildRequires:  libcstring-devel
 BuildRequires:  libcerror-devel
 BuildRequires:  libclocale-devel
 BuildRequires:  libcnotify-devel

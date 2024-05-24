@@ -25,7 +25,6 @@ BuildRequires:  automake
 BuildRequires:  libtool
 BuildRequires:  gettext-devel
 BuildRequires:  openssl-devel
-BuildRequires:  libcstring-devel
 BuildRequires:  libcerror-devel
 BuildRequires:  libcthreads-devel
 BuildRequires:  libcdata-devel

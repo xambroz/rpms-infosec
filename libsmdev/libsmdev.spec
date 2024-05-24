@@ -29,7 +29,6 @@ BuildRequires:  pkgconfig
 BuildRequires:  automake
 BuildRequires:  libtool
 BuildRequires:  gettext-devel
-BuildRequires:  libcstring-devel
 BuildRequires:  libcerror-devel
 BuildRequires:  libcthreads-devel
 BuildRequires:  libcdata-devel
@@ -37,7 +36,6 @@ BuildRequires:  libclocale-devel
 BuildRequires:  libcnotify-devel
 BuildRequires:  libuna-devel
 BuildRequires:  libcfile-devel
-BuildRequires:  libcsystem-devel
 
 %description
 Library to access to storage media devices

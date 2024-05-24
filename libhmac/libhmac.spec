@@ -12,6 +12,9 @@ URL:            https://github.com/%{gituser}/%{gitname}
 %global         commit          7ce99ac975e27be8e19eea9accf5ffce0304fe8a
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
+%bcond_without  python3
+
+
 Release:        1%{?dist}
 Source0:        %{url}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 #Patch build to use the shared system libraries rather than using embedded ones
@@ -35,6 +38,11 @@ BuildRequires:  libuna-devel
 BuildRequires:  libcfile-devel
 BuildRequires:  libcpath-devel
 
+%if %{with python3}
+BuildRequires:  python3-devel
+%endif
+
+
 %description
 Library to support various Hash-based Message Authentication Codes (HMAC).
 
@@ -56,7 +64,10 @@ developing applications that use %{name}.
 
 
 %build
-%configure --disable-static --enable-wide-character-type --enable-python
+%configure --disable-static --enable-wide-character-type
+ --enable-python
+
+
 %make_build
 
 
