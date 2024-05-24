@@ -28,9 +28,7 @@ BuildRequires:  pkgconfig
 BuildRequires:  automake
 BuildRequires:  libtool
 BuildRequires:  gettext-devel
-BuildRequires:  libcstring-devel
 BuildRequires:  libcerror-devel
-BuildRequires:  libcthreads-devel
 
 %description
 Library to support cross-platform AES encryption.
