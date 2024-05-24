@@ -1,0 +1,26 @@
+From 76f81f4cfc926d7c9753c7ae94bf6de3628d637d Mon Sep 17 00:00:00 2001
+From: Michal Ambroz <723625+xambroz@users.noreply.github.com>
+Date: Fri, 24 May 2024 03:28:40 +0200
+Subject: [PATCH] fix filling of the array
+
+fixes #7
+---
+ tests/test_library.sh | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/tests/test_library.sh b/tests/test_library.sh
+index eafbaba..87afb4c 100755
+--- a/tests/test_library.sh
++++ b/tests/test_library.sh
+@@ -80,9 +80,9 @@ run_test_with_input()
+ 
+ 		if test -f "${TEST_SET_DIRECTORY}/files";
+ 		then
+-			IFS="" read -a INPUT_FILES <<< $(cat ${TEST_SET_DIRECTORY}/files | sed "s?^?${TEST_SET_INPUT_DIRECTORY}/?");
++			readarray -t INPUT_FILES < <( cat ${TEST_SET_DIRECTORY}/files | sed -e "s?^?${TEST_SET_INPUT_DIRECTORY}/?" );
+ 		else
+-			IFS="" read -a INPUT_FILES <<< $(ls -1d ${TEST_SET_INPUT_DIRECTORY}/${INPUT_GLOB});
++   			readarray -t INPUT_FILES < <( ls -1d ${TEST_SET_INPUT_DIRECTORY}/${INPUT_GLOB} ) ;
+ 		fi
+ 		for INPUT_FILE in "${INPUT_FILES[@]}";
+ 		do

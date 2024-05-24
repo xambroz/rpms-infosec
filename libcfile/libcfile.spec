@@ -20,6 +20,10 @@ Patch0:         %{name}-000-libs.patch
 # Allow older autotools for EPEL builds
 Patch1:         %{name}-001-configure.ac.patch
 
+# Fix the tests
+Patch2:         https://github.com/libyal/libcfile/pull/8.patch#/%{name}-002-tests.patch
+
+
 
 BuildRequires:  gcc
 BuildRequires:  make
@@ -48,7 +52,7 @@ The %{name}-devel package contains libraries and header files for
 developing applications that use %{name}.
 
 %prep
-%autosetup -n %{gitname}-%{commit}
+%autosetup -n %{gitname}-%{commit} -p 1
 ./autogen.sh
 
 
