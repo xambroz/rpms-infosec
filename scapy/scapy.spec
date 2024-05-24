@@ -1,11 +1,11 @@
 Name:           scapy
 Version:        2.5.0
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Interactive packet manipulation tool and network scanner
 
 %global         gituser         secdev
 %global         gitname         scapy
-%global         commit          95ba5b8504152a1f820bbe679ccf03668cb5118f
+%global         commit          9473f77d8b548c8e478e52838bdd4c12f5d4f4ff
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 License:        GPL-2.0-only
@@ -15,7 +15,7 @@ VCS:            https://github.com/secdev/scapy
 #               https://github.com/secdev/scapy/releases
 #               https://bitbucket.org/secdev/scapy/pull-request/80
 #               https://scapy.readthedocs.io/en/latest/introduction.html
-Source0:        https://github.com/%{gituser}/%{gitname}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
+Source0:        %{vcs}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
 %global         common_desc %{expand:
 Scapy is a powerful interactive packet manipulation program built on top
@@ -228,6 +228,9 @@ ln -s %{_bindir}/scapy3   %{buildroot}%{_bindir}/scapy
 
 
 %changelog
+* Sat Jan 27 2024 Fedora Release Engineering <releng@fedoraproject.org> - 2.5.0-6
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_40_Mass_Rebuild
+
 * Sat Jul 22 2023 Fedora Release Engineering <releng@fedoraproject.org> - 2.5.0-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_39_Mass_Rebuild
 
