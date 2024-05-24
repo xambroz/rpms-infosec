@@ -91,6 +91,9 @@ make check
 %files
 %doc AUTHORS COPYING NEWS README
 %{_libdir}/*.so.*
+%{_bindir}/sccainfo
+%{_mandir}/man1/sccainfo.1*
+
 
 %files devel
 %{_includedir}/%{name}.h
