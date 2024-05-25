@@ -41,6 +41,7 @@ BuildRequires:  libcpath-devel
 %if %{with python3}
 BuildRequires:  python%{python3_pkgversion}-devel
 BuildRequires:  python%{python3_pkgversion}-setuptools
+BuildRequires:  python%{python3_pkgversion}-libs
 %endif
 
 
