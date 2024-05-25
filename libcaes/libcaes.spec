@@ -9,6 +9,7 @@ URL:            https://github.com/libyal/libcaes
 
 %global         gituser         libyal
 %global         gitname         libcaes
+%global         gitdate         20240413
 %global         commit          a119ec92769277c63f3e54a8f6ec07c8c21ac3e8
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
@@ -78,6 +79,9 @@ make check
 %{_mandir}/man3/%{name}.3*
 
 %changelog
+* Sat May 25 2024 Michal Ambroz <rebus _AT seznam.cz> - 20240413-1
+- bump to 20240413
+
 * Fri Jun 24 2016 Michal Ambroz <rebus AT seznam.cz> - 20160425-1
 - bump to 20160425
 
