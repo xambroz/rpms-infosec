@@ -6,6 +6,11 @@ License:        LGPL-3.0-or-later
 URL:            https://github.com/libyal/libuna
 #               https://github.com/libyal/libuna/releases
 
+%global         common_description %{expand:
+Library to support Unicode and ASCII (byte string) conversions.
+}
+
+
 # Bootstrap round dependency to libcfile
 %bcond_with     bootstrap
 
@@ -43,7 +48,8 @@ BuildRequires:  libcfile-devel
 %endif
 
 %description
-Library to support Unicode and ASCII (byte string) conversions.
+%{common_description}
+
 
 %package        devel
 Summary:        Development files for %{name}
@@ -55,6 +61,7 @@ Requires:       pkgconfig
 %description    devel
 The %{name}-devel package contains libraries and header files for
 developing applications that use %{name}.
+%{common_description}
 
 %if %{without bootstrap}
 %package        tools
@@ -64,11 +71,12 @@ Requires:       %{name}%{?_isa} = %{version}-%{release}
 
 %description    tools
 Unatools from the libuna package.
+%{common_description}
 %endif
 
 
 %prep
-%setup -n %{gitname}-%{commit}
+%setup -q -n %{gitname}-%{commit}
 # autopatch missing -m -M options in RHEL7
 # %%autopatch -M 99
 %patch0 -p 1
@@ -119,9 +127,6 @@ make check
 
 
 %changelog
-libuna -f CHDATE Michal Ambroz <rebus _AT seznam.cz> - 20240414-1
-- bump to 20240414
-
 * Mon May 13 2024 Michal Ambroz <rebus AT seznam.cz> - 20240414-1
 - bump to 20240414
 
