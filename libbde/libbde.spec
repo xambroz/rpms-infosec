@@ -8,7 +8,7 @@ URL:            https://github.com/libyal/libbde
 
 %global         gituser         libyal
 %global         gitname         libbde
-%global         gitdate         %{version}
+%global         gitdate         20240502
 %global         commit          a7bf86d0907b84dfb551fdd3f6f548bd687fdcac
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
@@ -110,6 +110,9 @@ make check
 
 
 %changelog
+* Sat May 25 2024 Michal Ambroz <rebus _AT seznam.cz> - 20240502-1
+- bump to 20240502
+
 * Tue Jun 27 2023 Michal Ambroz <rebus AT seznam.cz> - 20221031-1
 - bump to 20221031
 
