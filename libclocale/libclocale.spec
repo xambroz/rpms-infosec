@@ -7,7 +7,7 @@ URL:            https://github.com/libyal/libclocale
 
 %global         gituser         libyal
 %global         gitname         libclocale
-%global         gitdate         %{version}
+%global         gitdate         20240414
 %global         commit          45b989bec6c5578b762f5b13dbce03aa2e999426
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
