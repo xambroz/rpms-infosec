@@ -11,7 +11,7 @@ URL:            https://github.com/libyal/libuna
 
 %global         gituser         libyal
 %global         gitname         libuna
-%global         gitdate         %{version}
+%global         gitdate         20240414
 %global         commit          ee21db63eed2820396cff0a7442e408c028535f2
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
@@ -119,6 +119,9 @@ make check
 
 
 %changelog
+libuna -f CHDATE Michal Ambroz <rebus _AT seznam.cz> - 20240414-1
+- bump to 20240414
+
 * Mon May 13 2024 Michal Ambroz <rebus AT seznam.cz> - 20240414-1
 - bump to 20240414
 
