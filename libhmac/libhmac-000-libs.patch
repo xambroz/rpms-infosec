@@ -29,14 +29,12 @@ diff -ru libhmac-7ce99ac975e27be8e19eea9accf5ffce0304fe8a.old/configure.ac libhm
 diff -ru libhmac-7ce99ac975e27be8e19eea9accf5ffce0304fe8a.old/Makefile.am libhmac-7ce99ac975e27be8e19eea9accf5ffce0304fe8a.new/Makefile.am
 --- libhmac-7ce99ac975e27be8e19eea9accf5ffce0304fe8a.old/Makefile.am	2024-04-17 20:55:59.000000000 +0200
 +++ libhmac-7ce99ac975e27be8e19eea9accf5ffce0304fe8a.new/Makefile.am	2024-05-18 17:27:37.102963460 +0200
-@@ -3,15 +3,15 @@
+@@ -3,15 +3,7 @@
  SUBDIRS = \
  	include \
  	common \
 -	libcerror \
 -	libcthreads \
-+#	libcerror \
-+#	libcthreads \
  	libhmac \
 -	libclocale \
 -	libcnotify \
@@ -44,12 +42,6 @@ diff -ru libhmac-7ce99ac975e27be8e19eea9accf5ffce0304fe8a.old/Makefile.am libhma
 -	libuna \
 -	libcfile \
 -	libcpath \
-+#	libclocale \
-+#	libcnotify \
-+#	libcsplit \
-+#	libuna \
-+#	libcfile \
-+#	libcpath \
  	hmactools \
  	pyhmac \
  	po \

@@ -39,7 +39,8 @@ BuildRequires:  libcfile-devel
 BuildRequires:  libcpath-devel
 
 %if %{with python3}
-BuildRequires:  python3-devel
+BuildRequires:  python%{python3_pkgversion}-devel
+BuildRequires:  python%{python3_pkgversion}-setuptools
 %endif
 
 
@@ -57,6 +58,20 @@ Requires:       pkgconfig
 The %{name}-devel package contains libraries and header files for
 developing applications that use %{name}.
 
+%if %{with python3}
+%package        -n python%{python3_pkgversion}-%{name}
+Summary:        Python3 binding for %{name}
+%{?python_provide:%python_provide python%{python3_pkgversion}-%{name}}
+
+# Runtime dependencies
+# Requires:       python%%{python3_pkgversion}-???
+
+%description -n python%{python3_pkgversion}-%{name}
+This is a Python3 library that gives access to dionaea honeypot functionality.
+%endif
+
+
+
 %prep
 %autosetup -n %{gitname}-%{commit}
 #%%patch0 -p 1 -b .libs
@@ -64,8 +79,12 @@ developing applications that use %{name}.
 
 
 %build
-%configure --disable-static --enable-wide-character-type
- --enable-python
+%configure \
+%if %{with python3}
+ --enable-python \
+%endif
+--enable-wide-character-type \
+--disable-static
 
 
 %make_build
@@ -83,7 +102,8 @@ make check
 
 
 %files
-%doc AUTHORS COPYING NEWS README
+%doc AUTHORS NEWS README
+%license COPYING
 %{_libdir}/*.so.*
 %{_bindir}/hmacsum
 %{_mandir}/man1/hmacsum.1.gz
@@ -94,6 +114,13 @@ make check
 %{_libdir}/*.so
 %{_libdir}/pkgconfig/%{name}.pc
 %{_mandir}/man3/%{name}.3*
+
+%if %{with python3}
+%files -n python%{python3_pkgversion}-%{gitname}
+%license COPYING
+%{python3_sitearch}/pyhmac.so
+%endif
+
 
 %changelog
 * Sat May 18 2024 Michal Ambroz <rebus AT seznam.cz> - 20240417-1
