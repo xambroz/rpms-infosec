@@ -8,6 +8,7 @@ URL:            https://github.com/libyal/libfcache
 
 %global         gituser         libyal
 %global         gitname         libfcache
+%global         gitdate         20240414
 %global         commit          4a4743abe3dd4b71ab1e456ee52e2c25a3320fe1
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 

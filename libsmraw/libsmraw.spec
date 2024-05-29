@@ -11,6 +11,7 @@ VCS:            https://github.com/libyal/libsmraw
 
 %global         gituser         libyal
 %global         gitname         libsmraw
+%global         gitdate         20240506
 %global         commit          995b9e200ae8c836439f14741253143803fecb0c
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 

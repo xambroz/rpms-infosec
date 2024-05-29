@@ -8,7 +8,7 @@ URL:            https://github.com/libyal/libcdata
 
 %global         gituser         libyal
 %global         gitname         libcdata
-%global         gitdate         %{version}
+%global         gitdate         20240414
 %global         commit          ed66801e97c516c405486508d280fda3e8114e9d
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 

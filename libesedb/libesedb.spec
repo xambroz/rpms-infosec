@@ -13,7 +13,7 @@ Windows Mail, Exchange, Active Directory, etc.}
 
 %global         gituser         libyal
 %global         gitname         libesedb
-%global         gitdate         %{version}
+%global         gitdate         20240420
 %global         commit          24ae2ff47365adb5f1dcdce315ac7dd16b972836
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 

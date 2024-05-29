@@ -1,17 +1,17 @@
 Name:           libfguid
+Version:        20240415
+Release:        1%{?dist}
 Summary:        Libyal library for GUID/UUID data types
 Group:          System Environment/Libraries
 License:        LGPL-3.0-or-later
 URL:            https://github.com/libyal/libfguid
-Version:        20240415
 
 %global         gituser         libyal
 %global         gitname         libfguid
-%global         gitdate         %{version}
+%global         gitdate         20240415
 %global         commit          c79feddbafec7d24df8c661e8c9be1417d4dedf4
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
-Release:        1%{?dist}
 
 Source0:        %{url}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 

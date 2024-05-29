@@ -8,7 +8,7 @@ URL:            https://github.com/%{gituser}/%{gitname}
 
 %global         gituser         libyal
 %global         gitname         libhmac
-%global         gitdate         %{version}
+%global         gitdate         20240417
 %global         commit          7ce99ac975e27be8e19eea9accf5ffce0304fe8a
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 

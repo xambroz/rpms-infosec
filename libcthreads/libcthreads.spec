@@ -8,7 +8,7 @@ URL:            https://github.com/libyal/libcthreads
 
 %global         gituser         libyal
 %global         gitname         libcthreads
-%global         gitdate         %{version}
+%global         gitdate         20240413
 %global         commit          b80e4921334bfe06eb3ac3a9ea0912e06c6ad31e
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 

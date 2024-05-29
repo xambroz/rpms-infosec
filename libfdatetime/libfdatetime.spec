@@ -7,7 +7,7 @@ URL:            https://github.com/libyal/libfdatetime
 
 %global         gituser         libyal
 %global         gitname         libfdatetime
-%global         gitdate         %{version}
+%global         gitdate         20240415
 %global         commit          133ca426176073d54f4e5eb1f7f61a39e0050fe2
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 

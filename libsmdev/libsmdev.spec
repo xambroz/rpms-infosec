@@ -11,6 +11,7 @@ VCS:            https://github.com/libyal/libsmdev
 
 %global         gituser         libyal
 %global         gitname         libsmdev
+%global         gitdate         20240505
 %global         commit          9b9c94244a9d0df752fbb0cbee20207a2ee0c7e1
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 

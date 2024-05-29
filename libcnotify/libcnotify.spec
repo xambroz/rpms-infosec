@@ -8,7 +8,7 @@ Summary:        Libyal library for cross-platform C generic data functions
 
 %global         gituser         libyal
 %global         gitname         libcnotify
-%global         gitdate         %{version}
+%global         gitdate         20240414
 %global         commit          d1bd4e920356ecd29c66f4d21bb36fa2834dbf31
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 

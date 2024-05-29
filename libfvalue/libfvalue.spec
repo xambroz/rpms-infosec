@@ -10,7 +10,7 @@ VCS:            https://github.com/libyal/libfvalue
 
 %global         gituser         libyal
 %global         gitname         libfvalue
-%global         gitdate         %{version}
+%global         gitdate         20240415
 %global         commit          7357315fa55d5a30273aa78d98ca8e9c62d2cd8a
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 

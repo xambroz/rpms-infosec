@@ -1,21 +1,21 @@
-%global         gituser         libyal
-%global         gitname         libmapidb
-#20150105
-#%global        commit          4db7d4fed43b960f5fa60b47987cdc4d8e59df40
-#20160508
-%global         commit          79f64a6dce94de6b2e73220ebfa548e3fa0f8a01
-%global         shortcommit     %(c=%{commit}; echo ${c:0:7})
-
-
 Name:           libmapidb
 Version:        20240420
 Release:        1%{?dist}
 Summary:        Libyal library for cross-platform C generic data functions
-
 Group:          System Environment/Libraries
 License:        LGPL-3.0-or-later
-#URL:           https://github.com/libyal/libmapidb
-URL:            https://github.com/%{gituser}/%{gitname}
+URL:            https://github.com/libyal/libmapidb
+VCS:            https://github.com/libyal/libmapidb
+# Releases      https://github.com/libyal/libmapidb/releases
+
+
+%global         gituser         libyal
+%global         gitname         libmapidb
+%global         gitdate         20240420
+%global         commit          79f64a6dce94de6b2e73220ebfa548e3fa0f8a01
+%global         shortcommit     %(c=%{commit}; echo ${c:0:7})
+
+
 Source0:        %{url}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 #Patch build to use the shared system libraries rather than using embedded ones
 Patch0:         %{name}-000-libs.patch

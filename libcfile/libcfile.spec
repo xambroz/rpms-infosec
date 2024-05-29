@@ -8,7 +8,7 @@ URL:            https://github.com/libyal/libcfile
 
 %global         gituser         libyal
 %global         gitname         libcfile
-%global         gitdate         %{version}
+%global         gitdate         20240414
 %global         commit          538ec50e581a3b7e136ab0d1a3731b0475680450
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 

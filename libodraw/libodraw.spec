@@ -9,6 +9,7 @@ URL:            https://github.com/libyal/libodraw
 
 %global         gituser         libyal
 %global         gitname         libodraw
+%global         gitdate         20240505
 %global         commit          9460a81cb2d7ce7b9a221cab8f97885d001801fb
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 

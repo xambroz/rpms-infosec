@@ -13,7 +13,7 @@ Part of Joachim Metz's libyal set of forensics tools and libraries.
 
 %global         gituser         libyal
 %global         gitname         libevtx
-%global         gitdate         %{version}
+%global         gitdate         20240504
 %global         commit          d028b4f90886d467b2960b69084aa2485d7e218b
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 

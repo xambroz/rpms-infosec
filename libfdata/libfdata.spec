@@ -9,6 +9,7 @@ URL:            https://github.com/libyal/libfdata
 
 %global         gituser         libyal
 %global         gitname         libfdata
+%global         gitdate         20240415
 %global         commit          c7d92a0ab2dd665fb328e0aa637ca7d04cfcf46c
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 

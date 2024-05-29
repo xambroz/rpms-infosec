@@ -7,7 +7,7 @@ URL:            https://github.com/libyal/libcsplit
 
 %global         gituser         libyal
 %global         gitname         libcsplit
-%global         gitdate         %{version}
+%global         gitdate         20240414
 %global         commit          b4baf41a06421aaf725b11ebed8c040ad34e8761
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 

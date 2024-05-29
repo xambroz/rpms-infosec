@@ -11,6 +11,7 @@ URL:            https://github.com/libyal/libewf
 
 %global         gituser         libyal
 %global         gitname         libewf
+%global         gitdate         20240506
 %global         commit          817797ca167b1ca43e1f2eace0d74b7eb2388f49
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 

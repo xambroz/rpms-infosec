@@ -8,7 +8,7 @@ URL:            https://github.com/libyal/libcstring
 
 %global         gituser         libyal
 %global         gitname         libcstring
-%global         gitdate         %{version}
+%global         gitdate         20180218
 %global         commit          9a6461ffcdaaa0cda5dd4736b0298de7b1e99aaa
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 

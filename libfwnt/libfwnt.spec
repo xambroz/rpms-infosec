@@ -9,7 +9,7 @@ URL:            https://github.com/libyal/libfwnt
 
 %global         gituser         libyal
 %global         gitname         libfwnt
-%global         gitdate         %{version}
+%global         gitdate         20240415
 %global         commit          24d81387a2c8bbabad5e787e75967039e8bfae29
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 

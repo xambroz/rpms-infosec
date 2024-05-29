@@ -1,21 +1,21 @@
-%global         gituser         libyal
-%global         gitname         libfmapi
-#20150104
-#%global         commit         b25ce6fd691e744dd090cd2ec754766b42a620e5
-#20160707
-%global         commit          a35168bc8695fac44d5dc665926848bfc8d58ca6
-%global         shortcommit     %(c=%{commit}; echo ${c:0:7})
-
-
 Name:           libfmapi
 Version:        20240415
 Release:        1%{?dist}
 Summary:        Libyal library for cross-platform C generic data functions
-
 Group:          System Environment/Libraries
 License:        LGPL-3.0-or-later
-#URL:           https://github.com/libyal/libfmapi
-URL:            https://github.com/%{gituser}/%{gitname}
+URL:            https://github.com/libyal/libfmapi
+VCS:            https://github.com/libyal/libfmapi
+# Releases      https://github.com/libyal/libfmapi/releases
+
+
+%global         gituser         libyal
+%global         gitname         libfmapi
+%global         gitdate         20240415
+%global         commit          a35168bc8695fac44d5dc665926848bfc8d58ca6
+%global         shortcommit     %(c=%{commit}; echo ${c:0:7})
+
+
 Source0:        %{url}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 #Patch build to use the shared system libraries rather than using embedded ones
 Patch0:         %{name}-000-libs.patch
