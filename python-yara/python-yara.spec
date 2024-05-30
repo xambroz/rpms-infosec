@@ -1,5 +1,5 @@
 Name:           python-yara
-Version:        4.5.0
+Version:        4.5.1
 %global         baserelease     1
 Summary:        Python binding for the YARA pattern matching tool
 License:        Apache-2.0
@@ -15,8 +15,8 @@ VCS:            https://github.com/VirusTotal/yara-python/
 
 %global         gituser         VirusTotal
 %global         gitname         yara-python
-%global         gitdate         20240214
-%global         commit          3d5674a30808b26b44fc896dd059e94e704e4d63
+%global         gitdate         20240525
+%global         commit          2880de0358e1ec871093759d74309f4dc080d726
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
@@ -151,7 +151,10 @@ pytest-3 -k "$EXCLUDE" tests.py -v
 
 #====================================================================
 %changelog
-* Wed Feb 14 2024 Michal Ambroz <rebus at, seznam.cz> - 4.5.0-1
+* Wed May 29 2024 Michal Ambroz <rebus _AT seznam.cz> - 4.5.1-1
+- bump to 4.5.1
+
+* Wed Feb 14 2024 Michal Ambroz <rebus _AT seznam.cz> - 4.5.0-1
 - bump to 4.5.0
 
 * Fri Jan 26 2024 Fedora Release Engineering <releng@fedoraproject.org> - 4.4.0-3
@@ -172,16 +175,16 @@ pytest-3 -k "$EXCLUDE" tests.py -v
 * Wed Jun 14 2023 Python Maint <python-maint@redhat.com> - 4.3.1-2
 - Rebuilt for Python 3.12
 
-* Wed Apr 26 2023 Michal Ambroz <rebus at, seznam.cz> - 4.3.1-1
+* Wed Apr 26 2023 Michal Ambroz <rebus _AT seznam.cz> - 4.3.1-1
 - bump to 4.3.1
 
-* Thu Mar 30 2023 Michal Ambroz <rebus at, seznam.cz> - 4.3.0-1
+* Thu Mar 30 2023 Michal Ambroz <rebus _AT seznam.cz> - 4.3.0-1
 - bump to 4.3.0
 
 * Fri Jan 20 2023 Fedora Release Engineering <releng@fedoraproject.org> - 4.2.3-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_38_Mass_Rebuild
 
-* Tue Nov 01 2022 Michal Ambroz <rebus at, seznam.cz> - 4.2.3-1
+* Tue Nov 01 2022 Michal Ambroz <rebus _AT seznam.cz> - 4.2.3-1
 - Rebuilt for yara-4.2.3 - second service :)
 
 * Tue Aug 09 2022 Mikel Olasagasti Uranga <mikel@olasagasti.info> - 4.2.0-5
@@ -204,10 +207,10 @@ pytest-3 -k "$EXCLUDE" tests.py -v
 * Fri Jan 21 2022 Fedora Release Engineering <releng@fedoraproject.org> - 4.1.3-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
 
-* Wed Nov 10 2021 Michal Ambroz <rebus at, seznam.cz> - 4.1.3-2
+* Wed Nov 10 2021 Michal Ambroz <rebus _AT seznam.cz> - 4.1.3-2
 - rebuild due to koji hickup
 
-* Wed Nov 10 2021 Michal Ambroz <rebus at, seznam.cz> - 4.1.3-1
+* Wed Nov 10 2021 Michal Ambroz <rebus _AT seznam.cz> - 4.1.3-1
 - bump the python-yara as well to 4.1.3
 
 * Fri Jul 23 2021 Fedora Release Engineering <releng@fedoraproject.org> - 4.1.0-3
@@ -216,22 +219,22 @@ pytest-3 -k "$EXCLUDE" tests.py -v
 * Fri Jun 04 2021 Python Maint <python-maint@redhat.com> - 4.1.0-2
 - Rebuilt for Python 3.10
 
-* Tue Apr 27 2021 Michal Ambroz <rebus at, seznam.cz> - 4.1.0-1
+* Tue Apr 27 2021 Michal Ambroz <rebus _AT seznam.cz> - 4.1.0-1
 - bump the python-yara as well to 4.1.0
 
-* Tue Apr 27 2021 Michal Ambroz <rebus at, seznam.cz> - 4.0.5-3
+* Tue Apr 27 2021 Michal Ambroz <rebus _AT seznam.cz> - 4.0.5-3
 - rebuild for new version of yara 4.1.0
 
-* Sun Apr 25 2021 Michal Ambroz <rebus at, seznam.cz> - 4.0.5-2
+* Sun Apr 25 2021 Michal Ambroz <rebus _AT seznam.cz> - 4.0.5-2
 - rebuild for epel
 
-* Sat Mar 13 2021 Michal Ambroz <rebus at, seznam.cz> - 4.0.5-1
+* Sat Mar 13 2021 Michal Ambroz <rebus _AT seznam.cz> - 4.0.5-1
 - bump to version 4.0.5
 
-* Wed Feb 10 2021 Michal Ambroz <rebus at, seznam.cz> - 4.0.4-1
+* Wed Feb 10 2021 Michal Ambroz <rebus _AT seznam.cz> - 4.0.4-1
 - bump to version 4.0.4
 
-* Thu Feb 04 2021 Michal Ambroz <rebus at, seznam.cz> - 4.0.3-1
+* Thu Feb 04 2021 Michal Ambroz <rebus _AT seznam.cz> - 4.0.3-1
 - bump to version 4.0.3
 
 * Wed Jan 27 2021 Fedora Release Engineering <releng@fedoraproject.org> - 4.0.2-3
@@ -240,25 +243,25 @@ pytest-3 -k "$EXCLUDE" tests.py -v
 * Wed Jul 29 2020 Fedora Release Engineering <releng@fedoraproject.org> - 4.0.2-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
 
-* Thu Jul 16 2020 Michal Ambroz <rebus at, seznam.cz> - 4.0.2-1
+* Thu Jul 16 2020 Michal Ambroz <rebus _AT seznam.cz> - 4.0.2-1
 - bump to version 4.0.2
 
-* Sat Jun 06 2020 Michal Ambroz <rebus at, seznam.cz> - 4.0.1-1
+* Sat Jun 06 2020 Michal Ambroz <rebus _AT seznam.cz> - 4.0.1-1
 - bump to version 4.0.1
 
 * Tue May 26 2020 Miro Hrončok <mhroncok@redhat.com> - 4.0.0-2
 - Rebuilt for Python 3.9
 
-* Tue May 12 2020 Michal Ambroz <rebus at, seznam.cz> - 4.0.0-1
+* Tue May 12 2020 Michal Ambroz <rebus _AT seznam.cz> - 4.0.0-1
 - bump to version 4.0.0
 
 * Thu Jan 30 2020 Fedora Release Engineering <releng@fedoraproject.org> - 3.11.0-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
 
-* Mon Oct 14 2019 Michal Ambroz <rebus at, seznam.cz> - 3.11.0-2
+* Mon Oct 14 2019 Michal Ambroz <rebus _AT seznam.cz> - 3.11.0-2
 - fix the release number
 
-* Mon Oct 14 2019 Michal Ambroz <rebus at, seznam.cz> - 3.11.0-1
+* Mon Oct 14 2019 Michal Ambroz <rebus _AT seznam.cz> - 3.11.0-1
 - bump to 3.11.0, omit py2 for f30+ and epel8+
 
 * Mon Aug 19 2019 Miro Hrončok <mhroncok@redhat.com> - 3.9.0-2.2
@@ -267,10 +270,10 @@ pytest-3 -k "$EXCLUDE" tests.py -v
 * Fri Jul 26 2019 Fedora Release Engineering <releng@fedoraproject.org> - 3.9.0-2.1
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
 
-* Fri Mar 22 2019 Michal Ambroz <rebus at, seznam.cz> - 3.9.0-2
+* Fri Mar 22 2019 Michal Ambroz <rebus _AT seznam.cz> - 3.9.0-2
 - change dependency to sphinx based on the /usr/bin/sphinx-build
 
-* Mon Mar 18 2019 Michal Ambroz <rebus at, seznam.cz> - 3.9.0-1
+* Mon Mar 18 2019 Michal Ambroz <rebus _AT seznam.cz> - 3.9.0-1
 - bump to 3.9.0
 
 * Sat Feb 02 2019 Fedora Release Engineering <releng@fedoraproject.org> - 3.8.1-3.2
@@ -280,10 +283,10 @@ pytest-3 -k "$EXCLUDE" tests.py -v
 - Python2 binary package has been removed
   See https://fedoraproject.org/wiki/Changes/Mass_Python_2_Package_Removal
 
-* Mon Aug 27 2018 Michal Ambroz <rebus at, seznam.cz> - 3.8.1-2
+* Mon Aug 27 2018 Michal Ambroz <rebus _AT seznam.cz> - 3.8.1-2
 - rebuild with yara 3.8.1 override
 
-* Mon Aug 27 2018 Michal Ambroz <rebus at, seznam.cz> - 3.8.1-1
+* Mon Aug 27 2018 Michal Ambroz <rebus _AT seznam.cz> - 3.8.1-1
 - bump to 3.8.1
 
 * Sat Jul 14 2018 Fedora Release Engineering <releng@fedoraproject.org> - 3.7.0-7
@@ -292,10 +295,10 @@ pytest-3 -k "$EXCLUDE" tests.py -v
 * Tue Jun 19 2018 Miro Hrončok <mhroncok@redhat.com> - 3.7.0-6
 - Rebuilt for Python 3.7
 
-* Fri Mar 16 2018 Michal Ambroz <rebus at, seznam.cz> - 3.7.0-5
+* Fri Mar 16 2018 Michal Ambroz <rebus _AT seznam.cz> - 3.7.0-5
 - fix dependencies for building the epel7/epel6 packages
 
-* Thu Mar 15 2018 Michal Ambroz <rebus at, seznam.cz> - 3.7.0-4
+* Thu Mar 15 2018 Michal Ambroz <rebus _AT seznam.cz> - 3.7.0-4
 - rebuild with yara 3.7.1 for supported platforms
 - fix dependencies for building the epel packages
 
@@ -306,7 +309,7 @@ pytest-3 -k "$EXCLUDE" tests.py -v
 * Fri Feb 09 2018 Fedora Release Engineering <releng@fedoraproject.org> - 3.7.0-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
 
-* Wed Nov 15 2017 Michal Ambroz <rebus at, seznam.cz> - 3.7.0-1
+* Wed Nov 15 2017 Michal Ambroz <rebus _AT seznam.cz> - 3.7.0-1
 - bump to yara 3.7.0 release version (#1511921)
 
 * Thu Aug 03 2017 Fedora Release Engineering <releng@fedoraproject.org> - 3.6.3-4
@@ -315,11 +318,11 @@ pytest-3 -k "$EXCLUDE" tests.py -v
 * Thu Jul 27 2017 Fedora Release Engineering <releng@fedoraproject.org> - 3.6.3-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Mass_Rebuild
 
-* Mon Jul 17 2017 Michal Ambroz <rebus at, seznam.cz> - 3.6.3-2
+* Mon Jul 17 2017 Michal Ambroz <rebus _AT seznam.cz> - 3.6.3-2
 - fix bogus dates in the changelog
 - omit failing testCompileFile test for s390/ppc64
 
-* Mon Jul 17 2017 Michal Ambroz <rebus at, seznam.cz> - 3.6.3-1
+* Mon Jul 17 2017 Michal Ambroz <rebus _AT seznam.cz> - 3.6.3-1
 - bump to upstream 3.6.3 release version
 
 * Sat Feb 11 2017 Fedora Release Engineering <releng@fedoraproject.org> - 3.5.0-10
@@ -331,26 +334,26 @@ pytest-3 -k "$EXCLUDE" tests.py -v
 * Wed Nov 23 2016 Dan Horák <dan[at]danny.cz> - 3.5.0-8
 - fix the arch lists
 
-* Tue Aug 16 2016 Michal Ambroz <rebus at, seznam.cz> - 3.5.0-7
+* Tue Aug 16 2016 Michal Ambroz <rebus _AT seznam.cz> - 3.5.0-7
 - adding test exclusions also for armv7hl and ppc64le
 
-* Tue Aug 16 2016 Michal Ambroz <rebus at, seznam.cz> - 3.5.0-6
+* Tue Aug 16 2016 Michal Ambroz <rebus _AT seznam.cz> - 3.5.0-6
 - additionally testEntrypoint testIn testIntegerFunctions failing on s390/ppc64
 - exclude those tests for build of s390/ppc64
 
-* Tue Aug 16 2016 Michal Ambroz <rebus at, seznam.cz> - 3.5.0-5
+* Tue Aug 16 2016 Michal Ambroz <rebus _AT seznam.cz> - 3.5.0-5
 - testModuleData is failing on arm platform even for python 2.7
 - exclude this test for build of arm
 
-* Fri Aug 12 2016 Michal Ambroz <rebus at, seznam.cz> - 3.5.0-4
+* Fri Aug 12 2016 Michal Ambroz <rebus _AT seznam.cz> - 3.5.0-4
 - remove unnecessary ldconfig
 - count with the python3 test values except the 2 known for failing
 
-* Thu Aug 11 2016 Michal Ambroz <rebus at, seznam.cz> - 3.5.0-3
+* Thu Aug 11 2016 Michal Ambroz <rebus _AT seznam.cz> - 3.5.0-3
 - change python3 naming to allow epel7 python34 packages
 
-* Thu Aug 04 2016 Michal Ambroz <rebus at, seznam.cz> - 3.5.0-2
+* Thu Aug 04 2016 Michal Ambroz <rebus _AT seznam.cz> - 3.5.0-2
 - cosmetics
 
-* Thu Aug 04 2016 Michal Ambroz <rebus at, seznam.cz> - 3.5.0-1
+* Thu Aug 04 2016 Michal Ambroz <rebus _AT seznam.cz> - 3.5.0-1
 - with yara 3.5.0 the python yara binding is separate library
