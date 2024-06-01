@@ -99,6 +99,9 @@ find %{buildroot} -name '*.la' -exec rm -f {} ';'
 
 
 %check
+%if %{with python3}
+export PYTHON=python3
+%endif
 make check
 
 
@@ -109,12 +112,14 @@ make check
 %{_bindir}/hmacsum
 %{_mandir}/man1/hmacsum.1.gz
 
+
 %files devel
 %{_includedir}/%{name}.h
 %{_includedir}/%{name}/
 %{_libdir}/*.so
 %{_libdir}/pkgconfig/%{name}.pc
 %{_mandir}/man3/%{name}.3*
+
 
 %if %{with python3}
 %files -n python%{python3_pkgversion}-%{gitname}
