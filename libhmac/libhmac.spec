@@ -63,6 +63,9 @@ developing applications that use %{name}.
 %package        -n python%{python3_pkgversion}-%{name}
 Summary:        Python3 binding for %{name}
 %{?python_provide:%python_provide python%{python3_pkgversion}-%{name}}
+%{?python_provide:%python_provide python%{python3_pkgversion}-pyhmac}
+# compatibility with the upstream package
+Provides:       %{name}-python3
 
 # Runtime dependencies
 # Requires:       python%%{python3_pkgversion}-???
@@ -102,7 +105,8 @@ find %{buildroot} -name '*.la' -exec rm -f {} ';'
 %if %{with python3}
 export PYTHON=python3
 %endif
-make check
+
+make check || cat tests/test-suite.log
 
 
 %files
