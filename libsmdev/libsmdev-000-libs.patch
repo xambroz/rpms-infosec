@@ -1,11 +1,10 @@
-diff -ru libsmdev-d0e71d9e5e8a1a3fff07cc945f65fb7c1b50d4d4.old/configure.ac libsmdev-d0e71d9e5e8a1a3fff07cc945f65fb7c1b50d4d4.new/configure.ac
---- libsmdev-d0e71d9e5e8a1a3fff07cc945f65fb7c1b50d4d4.old/configure.ac	2016-08-02 08:19:09.146380789 +0200
-+++ libsmdev-d0e71d9e5e8a1a3fff07cc945f65fb7c1b50d4d4.new/configure.ac	2016-08-02 08:21:13.361525773 +0200
-@@ -172,16 +172,7 @@
+diff -ru libsmdev-9b9c94244a9d0df752fbb0cbee20207a2ee0c7e1.old/configure.ac libsmdev-9b9c94244a9d0df752fbb0cbee20207a2ee0c7e1.new/configure.ac
+--- libsmdev-9b9c94244a9d0df752fbb0cbee20207a2ee0c7e1.old/configure.ac	2024-05-05 10:52:36.000000000 +0200
++++ libsmdev-9b9c94244a9d0df752fbb0cbee20207a2ee0c7e1.new/configure.ac	2024-06-03 01:12:18.501594098 +0200
+@@ -140,13 +140,6 @@
  AC_CONFIG_FILES([Makefile])
  AC_CONFIG_FILES([include/Makefile])
  AC_CONFIG_FILES([common/Makefile])
--AC_CONFIG_FILES([libcstring/Makefile])
 -AC_CONFIG_FILES([libcerror/Makefile])
 -AC_CONFIG_FILES([libcthreads/Makefile])
 -AC_CONFIG_FILES([libcdata/Makefile])
@@ -14,18 +13,15 @@ diff -ru libsmdev-d0e71d9e5e8a1a3fff07cc945f65fb7c1b50d4d4.old/configure.ac libs
 -AC_CONFIG_FILES([libuna/Makefile])
 -AC_CONFIG_FILES([libcfile/Makefile])
  AC_CONFIG_FILES([libsmdev/Makefile])
--AC_CONFIG_FILES([libcsystem/Makefile])
- AC_CONFIG_FILES([smdevtools/Makefile])
  AC_CONFIG_FILES([pysmdev/Makefile])
- AC_CONFIG_FILES([pysmdev-python2/Makefile])
-diff -ru libsmdev-d0e71d9e5e8a1a3fff07cc945f65fb7c1b50d4d4.old/Makefile.am libsmdev-d0e71d9e5e8a1a3fff07cc945f65fb7c1b50d4d4.new/Makefile.am
---- libsmdev-d0e71d9e5e8a1a3fff07cc945f65fb7c1b50d4d4.old/Makefile.am	2016-05-24 07:33:09.000000000 +0200
-+++ libsmdev-d0e71d9e5e8a1a3fff07cc945f65fb7c1b50d4d4.new/Makefile.am	2016-08-02 08:20:47.936905461 +0200
-@@ -3,16 +3,7 @@
+ AC_CONFIG_FILES([smdevtools/Makefile])
+diff -ru libsmdev-9b9c94244a9d0df752fbb0cbee20207a2ee0c7e1.old/Makefile.am libsmdev-9b9c94244a9d0df752fbb0cbee20207a2ee0c7e1.new/Makefile.am
+--- libsmdev-9b9c94244a9d0df752fbb0cbee20207a2ee0c7e1.old/Makefile.am	2024-05-05 10:52:36.000000000 +0200
++++ libsmdev-9b9c94244a9d0df752fbb0cbee20207a2ee0c7e1.new/Makefile.am	2024-06-03 01:11:45.630509689 +0200
+@@ -3,13 +3,6 @@
  SUBDIRS = \
  	include \
  	common \
--	libcstring \
 -	libcerror \
 -	libcthreads \
 -	libcdata \
@@ -34,15 +30,12 @@ diff -ru libsmdev-d0e71d9e5e8a1a3fff07cc945f65fb7c1b50d4d4.old/Makefile.am libsm
 -	libuna \
 -	libcfile \
  	libsmdev \
--	libcsystem \
  	smdevtools \
  	pysmdev \
- 	pysmdev-python2 \
-@@ -73,14 +64,6 @@
+@@ -77,13 +70,6 @@
  
  library:
  	(cd $(srcdir)/common && $(MAKE) $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libcstring && $(MAKE) $(AM_MAKEFLAGS))
 -	(cd $(srcdir)/libcerror && $(MAKE) $(AM_MAKEFLAGS))
 -	(cd $(srcdir)/libcthreads && $(MAKE) $(AM_MAKEFLAGS))
 -	(cd $(srcdir)/libcdata && $(MAKE) $(AM_MAKEFLAGS))
@@ -53,18 +46,3 @@ diff -ru libsmdev-d0e71d9e5e8a1a3fff07cc945f65fb7c1b50d4d4.old/Makefile.am libsm
  	(cd $(srcdir)/libsmdev && $(MAKE) $(AM_MAKEFLAGS))
  	(cd $(srcdir)/po && $(MAKE) $(AM_MAKEFLAGS))
  
-@@ -97,14 +80,6 @@
- 	done && test -z "$$fail"
- 
- splint:
--	(cd $(srcdir)/libcstring && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libcerror && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libcthreads && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libclocale && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libcdata && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libcnotify && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libuna && $(MAKE) splint $(AM_MAKEFLAGS))
--	(cd $(srcdir)/libcfile && $(MAKE) splint $(AM_MAKEFLAGS))
- 	(cd $(srcdir)/libsmdev && $(MAKE) splint $(AM_MAKEFLAGS))
- 	(cd $(srcdir)/smdevtools && $(MAKE) splint $(AM_MAKEFLAGS))
- 	(cd $(srcdir)/pysmdev && $(MAKE) splint $(AM_MAKEFLAGS))
