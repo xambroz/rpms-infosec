@@ -83,6 +83,10 @@ This is a Python3 library that gives access to dionaea honeypot functionality.
 
 
 %build
+%if %{with python3}
+export PYTHON=python3
+%endif
+
 %configure \
 %if %{with python3}
  --enable-python \
