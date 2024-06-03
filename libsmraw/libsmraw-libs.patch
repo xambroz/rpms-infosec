@@ -1,7 +1,7 @@
-diff -ru libsmraw-a54ab68e1d63a7bc3c91b400311fd9c9e4089e94.orig/configure.ac libsmraw-a54ab68e1d63a7bc3c91b400311fd9c9e4089e94.new/configure.ac
---- libsmraw-a54ab68e1d63a7bc3c91b400311fd9c9e4089e94.orig/configure.ac	2015-01-05 18:43:45.000000000 +0100
-+++ libsmraw-a54ab68e1d63a7bc3c91b400311fd9c9e4089e94.new/configure.ac	2015-06-30 19:02:20.165344474 +0200
-@@ -318,21 +318,23 @@
+diff -ru libsmraw-995b9e200ae8c836439f14741253143803fecb0c.old/configure.ac libsmraw-995b9e200ae8c836439f14741253143803fecb0c.new/configure.ac
+--- libsmraw-995b9e200ae8c836439f14741253143803fecb0c.old/configure.ac	2024-06-03 13:58:01.861751218 +0200
++++ libsmraw-995b9e200ae8c836439f14741253143803fecb0c.new/configure.ac	2024-06-03 14:02:14.821039215 +0200
+@@ -173,23 +173,9 @@
  AC_CONFIG_FILES([Makefile])
  AC_CONFIG_FILES([include/Makefile])
  AC_CONFIG_FILES([common/Makefile])
@@ -18,28 +18,16 @@ diff -ru libsmraw-a54ab68e1d63a7bc3c91b400311fd9c9e4089e94.orig/configure.ac lib
 -AC_CONFIG_FILES([libfcache/Makefile])
 -AC_CONFIG_FILES([libfdata/Makefile])
 -AC_CONFIG_FILES([libfvalue/Makefile])
-+dnl AC_CONFIG_FILES([libcerror/Makefile])
-+dnl AC_CONFIG_FILES([libcthreads/Makefile])
-+dnl AC_CONFIG_FILES([libcdata/Makefile])
-+dnl AC_CONFIG_FILES([libclocale/Makefile])
-+dnl AC_CONFIG_FILES([libcnotify/Makefile])
-+dnl AC_CONFIG_FILES([libcsplit/Makefile])
-+dnl AC_CONFIG_FILES([libuna/Makefile])
-+dnl AC_CONFIG_FILES([libcfile/Makefile])
-+dnl AC_CONFIG_FILES([libcpath/Makefile])
-+dnl AC_CONFIG_FILES([libbfio/Makefile])
-+dnl AC_CONFIG_FILES([libfcache/Makefile])
-+dnl AC_CONFIG_FILES([libfdata/Makefile])
-+dnl AC_CONFIG_FILES([libfvalue/Makefile])
  AC_CONFIG_FILES([libsmraw/Makefile])
--AC_CONFIG_FILES([libhmac/Makefile])
-+dnl AC_CONFIG_FILES([libhmac/Makefile])
- AC_CONFIG_FILES([smrawtools/Makefile])
- AC_CONFIG_FILES([smraw.net/Makefile])
  AC_CONFIG_FILES([pysmraw/Makefile])
-diff -ru libsmraw-a54ab68e1d63a7bc3c91b400311fd9c9e4089e94.orig/Makefile.am libsmraw-a54ab68e1d63a7bc3c91b400311fd9c9e4089e94.new/Makefile.am
---- libsmraw-a54ab68e1d63a7bc3c91b400311fd9c9e4089e94.orig/Makefile.am	2015-01-05 18:43:45.000000000 +0100
-+++ libsmraw-a54ab68e1d63a7bc3c91b400311fd9c9e4089e94.new/Makefile.am	2015-06-30 19:01:48.660831142 +0200
+ AC_CONFIG_FILES([smraw.net/Makefile])
+-AC_CONFIG_FILES([libhmac/Makefile])
+ AC_CONFIG_FILES([smrawtools/Makefile])
+ AC_CONFIG_FILES([po/Makefile.in])
+ AC_CONFIG_FILES([po/Makevars])
+diff -ru libsmraw-995b9e200ae8c836439f14741253143803fecb0c.old/Makefile.am libsmraw-995b9e200ae8c836439f14741253143803fecb0c.new/Makefile.am
+--- libsmraw-995b9e200ae8c836439f14741253143803fecb0c.old/Makefile.am	2024-06-03 13:57:19.088533416 +0200
++++ libsmraw-995b9e200ae8c836439f14741253143803fecb0c.new/Makefile.am	2024-06-03 14:01:38.901856331 +0200
 @@ -3,21 +3,7 @@
  SUBDIRS = \
  	include \
@@ -62,7 +50,7 @@ diff -ru libsmraw-a54ab68e1d63a7bc3c91b400311fd9c9e4089e94.orig/Makefile.am libs
  	smrawtools \
  	smraw.net \
  	pysmraw \
-@@ -73,19 +57,6 @@
+@@ -86,19 +72,6 @@
  
  library:
  	(cd $(srcdir)/common && $(MAKE) $(AM_MAKEFLAGS))
