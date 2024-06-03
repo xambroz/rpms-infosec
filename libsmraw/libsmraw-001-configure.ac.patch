@@ -1,0 +1,18 @@
+diff -ru libsmraw-995b9e200ae8c836439f14741253143803fecb0c.old/configure.ac libsmraw-995b9e200ae8c836439f14741253143803fecb0c.new/configure.ac
+--- libsmraw-995b9e200ae8c836439f14741253143803fecb0c.old/configure.ac	2024-05-06 05:26:25.000000000 +0200
++++ libsmraw-995b9e200ae8c836439f14741253143803fecb0c.new/configure.ac	2024-06-03 13:58:01.861751218 +0200
+@@ -1,4 +1,4 @@
+-AC_PREREQ([2.71])
++AC_PREREQ([2.69])
+ 
+ AC_INIT(
+  [libsmraw],
+@@ -34,7 +34,7 @@
+ 
+ dnl Support of internationalization (i18n)
+ AM_GNU_GETTEXT([external])
+-AM_GNU_GETTEXT_VERSION([0.21])
++AM_GNU_GETTEXT_VERSION([0.19])
+ 
+ dnl Check for compiler language support
+ AC_C_CONST

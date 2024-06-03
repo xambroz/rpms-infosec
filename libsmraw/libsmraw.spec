@@ -17,21 +17,15 @@ VCS:            https://github.com/libyal/libsmraw
 
 %bcond_without  python3
 
-%global         pythonopts      -enable-python2
-
-%if 0%{?fedora}
-%global         with_python3    1
-%global         pythonopts      -enable-python2 --enable-python3
-%endif
-
 
 Source0:        %{url}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 
-# Allow older autotools for EPEL builds
-Patch0:         %{name}-configure.ac.patch
-
 #Patch build to use the shared system libraries rather than using embedded ones
-Patch1:         %{name}-libs.patch
+Patch0:         %{name}-000-libs.patch
+
+# Allow older autotools for EPEL builds
+Patch1:         %{name}-001-configure.ac.patch
+
 
 BuildRequires:  gcc
 BuildRequires:  make
