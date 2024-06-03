@@ -67,7 +67,7 @@ Summary:        Python3 binding for %{name}
 %{?python_provide:%python_provide python%{python3_pkgversion}-%{name}}
 %{?python_provide:%python_provide python%{python3_pkgversion}-pysmdev}
 # compatibility with the upstream package
-Provides:       %{name}-python3
+Provides:        %{name}-python3 = %{version}-%{release}
 
 # Runtime dependencies
 # Requires:       python%%{python3_pkgversion}-???
@@ -85,7 +85,13 @@ This is a Python3 library that gives access to %{name}dionaea honeypot functiona
 
 
 %build
-%configure --disable-static --enable-wide-character-type
+%configure \
+%if %{with python3}
+        --enable-python \
+%endif
+        --disable-static \
+        --enable-wide-character-type
+
 %make_build
 
 
