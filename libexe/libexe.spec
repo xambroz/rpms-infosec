@@ -28,6 +28,20 @@ BuildRequires:  automake
 BuildRequires:  libtool
 BuildRequires:  gettext-devel
 
+BuildRequires:  libcerror-devel
+BuildRequires:  libcthreads-devel
+BuildRequires:  libcdata-devel
+BuildRequires:  libclocale-devel
+BuildRequires:  libcnotify-devel
+BuildRequires:  libcsplit-devel
+BuildRequires:  libuna-devel
+BuildRequires:  libcfile-devel
+BuildRequires:  libcpath-devel
+BuildRequires:  libbfio-devel
+BuildRequires:  libfcache-devel
+BuildRequires:  libfdata-devel
+BuildRequires:  libfdatetime-devel
+
 %description
 Library for cross-platform C error functions.
 
