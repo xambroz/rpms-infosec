@@ -1,0 +1,68 @@
+diff -ru libregf-51edeb225ffcaf6f9f3b27248eafc67f6d07ba84.old/configure.ac libregf-51edeb225ffcaf6f9f3b27248eafc67f6d07ba84.new/configure.ac
+--- libregf-51edeb225ffcaf6f9f3b27248eafc67f6d07ba84.old/configure.ac	2024-06-03 02:33:10.094052528 +0200
++++ libregf-51edeb225ffcaf6f9f3b27248eafc67f6d07ba84.new/configure.ac	2024-06-03 02:34:28.413253645 +0200
+@@ -173,20 +173,6 @@
+ AC_CONFIG_FILES([Makefile])
+ AC_CONFIG_FILES([include/Makefile])
+ AC_CONFIG_FILES([common/Makefile])
+-AC_CONFIG_FILES([libcerror/Makefile])
+-AC_CONFIG_FILES([libcthreads/Makefile])
+-AC_CONFIG_FILES([libcdata/Makefile])
+-AC_CONFIG_FILES([libclocale/Makefile])
+-AC_CONFIG_FILES([libcnotify/Makefile])
+-AC_CONFIG_FILES([libcsplit/Makefile])
+-AC_CONFIG_FILES([libuna/Makefile])
+-AC_CONFIG_FILES([libcfile/Makefile])
+-AC_CONFIG_FILES([libcpath/Makefile])
+-AC_CONFIG_FILES([libbfio/Makefile])
+-AC_CONFIG_FILES([libfcache/Makefile])
+-AC_CONFIG_FILES([libfdata/Makefile])
+-AC_CONFIG_FILES([libfdatetime/Makefile])
+-AC_CONFIG_FILES([libfwnt/Makefile])
+ AC_CONFIG_FILES([libregf/Makefile])
+ AC_CONFIG_FILES([pyregf/Makefile])
+ AC_CONFIG_FILES([regftools/Makefile])
+diff -ru libregf-51edeb225ffcaf6f9f3b27248eafc67f6d07ba84.old/Makefile.am libregf-51edeb225ffcaf6f9f3b27248eafc67f6d07ba84.new/Makefile.am
+--- libregf-51edeb225ffcaf6f9f3b27248eafc67f6d07ba84.old/Makefile.am	2024-06-03 02:33:10.091052521 +0200
++++ libregf-51edeb225ffcaf6f9f3b27248eafc67f6d07ba84.new/Makefile.am	2024-06-03 02:33:39.253127406 +0200
+@@ -3,20 +3,6 @@
+ SUBDIRS = \
+ 	include \
+ 	common \
+-	libcerror \
+-	libcthreads \
+-	libcdata \
+-	libclocale \
+-	libcnotify \
+-	libcsplit \
+-	libuna \
+-	libcfile \
+-	libcpath \
+-	libbfio \
+-	libfcache \
+-	libfdata \
+-	libfdatetime \
+-	libfwnt \
+ 	libregf \
+ 	regftools \
+ 	pyregf \
+@@ -85,19 +71,6 @@
+ 
+ library:
+ 	(cd $(srcdir)/common && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcerror && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcdata && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libclocale && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcnotify && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcsplit && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libuna && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcfile && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcpath && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libbfio && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libfcache && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libfdata && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libfdatetime && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libfwnt && $(MAKE) $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/libregf && $(MAKE) $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/po && $(MAKE) $(AM_MAKEFLAGS))
+ 

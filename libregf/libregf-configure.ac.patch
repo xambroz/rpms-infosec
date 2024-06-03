@@ -1,0 +1,18 @@
+diff -ru libregf-51edeb225ffcaf6f9f3b27248eafc67f6d07ba84.old/configure.ac libregf-51edeb225ffcaf6f9f3b27248eafc67f6d07ba84.new/configure.ac
+--- libregf-51edeb225ffcaf6f9f3b27248eafc67f6d07ba84.old/configure.ac	2024-06-03 02:33:10.094052528 +0200
++++ libregf-51edeb225ffcaf6f9f3b27248eafc67f6d07ba84.new/configure.ac	2024-06-03 02:34:28.413253645 +0200
+@@ -1,4 +1,4 @@
+-AC_PREREQ([2.71])
++AC_PREREQ([2.69])
+ 
+ AC_INIT(
+  [libregf],
+@@ -34,7 +34,7 @@
+ 
+ dnl Support of internationalization (i18n)
+ AM_GNU_GETTEXT([external])
+-AM_GNU_GETTEXT_VERSION([0.21])
++AM_GNU_GETTEXT_VERSION([0.19])
+ 
+ dnl Check for compiler language support
+ AC_C_CONST
