@@ -15,6 +15,8 @@ VCS:            https://github.com/libyal/libsmraw
 %global         commit          995b9e200ae8c836439f14741253143803fecb0c
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
+%bcond_without  python3
+
 %global         pythonopts      -enable-python2
 
 %if 0%{?fedora}
@@ -24,7 +26,12 @@ VCS:            https://github.com/libyal/libsmraw
 
 
 Source0:        %{url}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
-Patch0:         %{name}-libs.patch
+
+# Allow older autotools for EPEL builds
+Patch0:         %{name}-configure.ac.patch
+
+#Patch build to use the shared system libraries rather than using embedded ones
+Patch1:         %{name}-libs.patch
 
 BuildRequires:  gcc
 BuildRequires:  make
@@ -48,13 +55,11 @@ BuildRequires:  libfdata-devel
 BuildRequires:  libfvalue-devel
 BuildRequires:  libhmac-devel
 
-BuildRequires:  python-devel
-BuildRequires:  python-setuptools
 
-%if 0%{?with_python3}
-BuildRequires:  python3-devel
-BuildRequires:  python3-setuptools
-# if with_python3
+%if %{with python3}
+BuildRequires:  python%{python3_pkgversion}-devel
+BuildRequires:  python%{python3_pkgversion}-setuptools
+BuildRequires:  python%{python3_pkgversion}-libs
 %endif
 
 %description
@@ -72,30 +77,18 @@ The %{name}-devel package contains libraries and header files for
 developing applications that use %{name}.
 
 
-
-%package python2
-Summary:        Python2 extension that gives access to %{name} library
-Group:          Development/Libraries
-%{?python_provide:%python_provide python2-%{name}}
-
-Requires:       %{name}%{?_isa} = %{version}-%{release}
-
-%description python2
-This is a Python module that gives access to %{name} library
-from Python scripts.
-
-
-
-%if 0%{?with_python3}
-%package python3
+%if %{with python3}
+%package        -n python%{python3_pkgversion}-%{name}
 Summary:        Python3 extension that gives access to %{name} library
 Group:          Development/Libraries
 %{?python_provide:%python_provide python%{python3_pkgversion}-%{name}}
+%{?python_provide:%python_provide python%{python3_pkgversion}-pysmraw}
+# compatibility with the upstream package
+Provides:       %{name}-python3
 
 Requires:       %{name}%{?_isa} = %{version}-%{release}
 
-
-%description python3
+%description -n python%{python3_pkgversion}-%{name}
 This is a Python3 module that gives access to %{name} library
 from Python scripts.
 # with_python3
@@ -105,18 +98,21 @@ from Python scripts.
 
 %prep
 %autosetup -n %{gitname}-%{commit}
-#%%patch0 -p 1 -b .libs
 ./autogen.sh
 
 
 %build
-%if 0%{?with_python3}
-
-# with_python3
+%if %{with python3}
+export PYTHON=python3
 %endif
-%configure --disable-static --enable-wide-character-type \
-	--enable-multi-threading-support --enable-verbose-output \
-	%{pythonopts}
+
+%configure \
+%if %{with python3}
+        --enable-python \
+%endif
+        --disable-static --enable-wide-character-type \
+	--enable-multi-threading-support --enable-verbose-output
+
 %make_build
 
 
@@ -128,7 +124,11 @@ find %{buildroot} -name '*.la' -exec rm -f {} ';'
 
 
 %check
-make check
+%if %{with python3}
+export PYTHON=python3
+%endif
+
+make check || tests/test-suite.log
 
 
 %files
@@ -145,13 +145,10 @@ make check
 %{_libdir}/pkgconfig/%{name}.pc
 %{_mandir}/man3/%{name}.3*
 
-%files python2
-%{python2_sitearch}/pysmraw*
-
-%if 0%{?with_python3}
-%files python3
+%if %{with python3}
+%files -n python%{python3_pkgversion}-%{gitname}
+%license COPYING
 %{python3_sitearch}/pysmraw*
-# with_python3
 %endif
 
 

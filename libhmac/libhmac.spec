@@ -1,10 +1,13 @@
 Name:           libhmac
 Version:        20240417
+Release:        1%{?dist}
 Summary:        Libyal library to support various Hash-based Message Authentication Codes (HMAC)
 Group:          System Environment/Libraries
 License:        LGPL-3.0-or-later
-#URL:           https://github.com/libyal/libhmac
-URL:            https://github.com/%{gituser}/%{gitname}
+URL:            https://github.com/libyal/libhmac
+VCS:            https://github.com/libyal/libhmac
+# Releases      https://github.com/libyal/libhmac/releases
+
 
 %global         gituser         libyal
 %global         gitname         libhmac
@@ -15,7 +18,6 @@ URL:            https://github.com/%{gituser}/%{gitname}
 %bcond_without  python3
 
 
-Release:        1%{?dist}
 Source0:        %{url}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 #Patch build to use the shared system libraries rather than using embedded ones
 Patch0:         %{name}-000-libs.patch
@@ -71,14 +73,13 @@ Provides:       %{name}-python3
 # Requires:       python%%{python3_pkgversion}-???
 
 %description -n python%{python3_pkgversion}-%{name}
-This is a Python3 library that gives access to dionaea honeypot functionality.
+This is a Python3 library that gives access to functionality of %{name} library.
 %endif
 
 
 
 %prep
 %autosetup -n %{gitname}-%{commit}
-#%%patch0 -p 1 -b .libs
 ./autogen.sh
 
 
@@ -89,11 +90,10 @@ export PYTHON=python3
 
 %configure \
 %if %{with python3}
- --enable-python \
+        --enable-python \
 %endif
---enable-wide-character-type \
---disable-static
-
+        --enable-wide-character-type \
+        --disable-static
 
 %make_build
 

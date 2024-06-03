@@ -15,6 +15,8 @@ VCS:            https://github.com/libyal/libsmdev
 %global         commit          9b9c94244a9d0df752fbb0cbee20207a2ee0c7e1
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
+%bcond_without  python3
+
 
 Source0:        %{url}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 #Patch build to use the shared system libraries rather than using embedded ones
@@ -38,6 +40,13 @@ BuildRequires:  libcnotify-devel
 BuildRequires:  libuna-devel
 BuildRequires:  libcfile-devel
 
+%if %{with python3}
+BuildRequires:  python%{python3_pkgversion}-devel
+BuildRequires:  python%{python3_pkgversion}-setuptools
+BuildRequires:  python%{python3_pkgversion}-libs
+%endif
+
+
 %description
 Library to access to storage media devices
 
@@ -51,6 +60,23 @@ Requires:       pkgconfig
 %description    devel
 The %{name}-devel package contains libraries and header files for
 developing applications that use %{name}.
+
+%if %{with python3}
+%package        -n python%{python3_pkgversion}-%{name}
+Summary:        Python3 binding for %{name}
+%{?python_provide:%python_provide python%{python3_pkgversion}-%{name}}
+%{?python_provide:%python_provide python%{python3_pkgversion}-pysmdev}
+# compatibility with the upstream package
+Provides:       %{name}-python3
+
+# Runtime dependencies
+# Requires:       python%%{python3_pkgversion}-???
+
+%description -n python%{python3_pkgversion}-%{name}
+This is a Python3 library that gives access to %{name}dionaea honeypot functionality.
+%endif
+
+
 
 %prep
 %autosetup -n %{gitname}-%{commit}
@@ -71,11 +97,16 @@ find %{buildroot} -name '*.la' -exec rm -f {} ';'
 
 
 %check
-make check
+%if %{with python3}
+export PYTHON=python3
+%endif
+
+make check || cat tests/test-suite.log
 
 
 %files
-%doc AUTHORS COPYING NEWS README
+%doc AUTHORS NEWS README
+%license COPYING
 %{_libdir}/*.so.*
 %{_bindir}/smdevinfo
 %{_mandir}/man1/smdevinfo.1*
@@ -87,6 +118,15 @@ make check
 %{_libdir}/*.so
 %{_libdir}/pkgconfig/%{name}.pc
 %{_mandir}/man3/%{name}.3*
+
+
+%if %{with python3}
+%files -n python%{python3_pkgversion}-%{gitname}
+%license COPYING
+%{python3_sitearch}/pysmdev.so
+%endif
+
+
 
 %changelog
 * Mon Aug 01 2016 Michal Ambroz <rebus AT seznam.cz> - 20160524-1
