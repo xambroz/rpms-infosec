@@ -7,40 +7,59 @@ URL:            https://github.com/vanhauser-thc/thc-hydra
 VCS:            https://github.com/vanhauser-thc/thc-hydra
 # Old URL       https://www.thc.org/thc-hydra/
 
+# New versions of Fedora (40+) are having new version of freerdp3,
+# while maintaining the legacy freerdp2 version
+%bcond_without  freerdp_legacy
+
+# On older release branches use unversioned freerdp
+%if (0%{?fedora}) && 0%{?fedora} < 40) || ( 0%{?rhel} )
+%bcond_with     freerdp_legacy
+%endif    
+
+
+
 Source0:        %{vcs}/archive/v%{version}/%{name}-%{version}.tar.gz
 # Sent upstream via email 20120518
 Patch0:         hydra-use-system-libpq-fe.patch
 Patch1:         hydra-fix-dpl4hydra-dir.patch
 
+BuildRequires:  gcc
+BuildRequires:  make
+BuildRequires:  pkgconfig
+BuildRequires:  desktop-file-utils
+
 BuildRequires:  afpfs-ng-devel
 BuildRequires:  apr-devel
-BuildRequires:  desktop-file-utils
 BuildRequires:  firebird-devel
+BuildRequires:  libfbclient2-devel
+
+%if %{with freerdp_legacy}
 BuildRequires:  freerdp2-devel
-BuildRequires:  gcc
-BuildRequires:  gtk2-devel
+BuildRequires:  libwinpr2-devel
+%else
+BuildRequires:  freerdp-devel
+BuildRequires:  libwinpr-devel
+%endif
+
+%if (0%{?fedora})
+BuildRequires:  memcached-devel
+%endif
+
 BuildRequires:  gtk2-devel
 BuildRequires:  libbson-devel
-BuildRequires:  libfbclient2-devel
 BuildRequires:  libgcrypt-devel
 BuildRequires:  libidn-devel
 BuildRequires:  libmemcached-devel
 BuildRequires:  libpq-devel
 BuildRequires:  libsmbclient-devel
 BuildRequires:  libssh-devel
-BuildRequires:  libwinpr2-devel
-BuildRequires:  make
 BuildRequires:  mariadb-connector-c-devel
-BuildRequires:  memcached-devel
 BuildRequires:  mongo-c-driver-devel
 BuildRequires:  ncurses-devel
 BuildRequires:  openssl-devel
 BuildRequires:  pcre2-devel
-BuildRequires:  pkgconfig
 BuildRequires:  subversion-devel
 
-%if (0%{?fedora})
-%endif
 
 
 %description
