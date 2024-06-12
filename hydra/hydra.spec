@@ -12,9 +12,9 @@ VCS:            https://github.com/vanhauser-thc/thc-hydra
 %bcond_without  freerdp_legacy
 
 # On older release branches use unversioned freerdp
-%if (0%{?fedora}) && 0%{?fedora} < 40) || ( 0%{?rhel} )
+%if ( 0%{?fedora} && 0%{?fedora} < 40 ) || ( 0%{?rhel} )
 %bcond_with     freerdp_legacy
-%endif    
+%endif
 
 
 
