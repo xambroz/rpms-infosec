@@ -1,7 +1,7 @@
 Summary:        Very fast network log-on cracker
 Name:           hydra
 Version:        9.5
-Release:        6%{?dist}
+Release:        7%{?dist}
 License:        AGPLv3 with exceptions
 URL:            https://github.com/vanhauser-thc/thc-hydra
 VCS:            https://github.com/vanhauser-thc/thc-hydra
@@ -115,6 +115,9 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/xhydra.desktop
 %{_mandir}/man1/xhydra.1*
 
 %changelog
+* Wed Jun 12 2024 Michal Ambroz <rebus _at seznam.cz>  9.5-7
+- build for epel
+
 * Fri Feb 09 2024 Simone Caronni <negativo17@gmail.com> - 9.5-6
 - Clean up SPEC file.
 - Adjust build requirements:
