@@ -1,12 +1,20 @@
 Name:           openscap
-Version:        1.3.9
-Release:        8%{?dist}
+Version:        1.3.10
+Release:        3%{?dist}
 Epoch:          1
 Summary:        Set of open source libraries enabling integration of the SCAP line of standards
 License:        LGPL-2.1-or-later
 URL:            http://www.open-scap.org/
 VCS:            https://github.com/OpenSCAP/openscap
-Source0:        https://github.com/OpenSCAP/%{name}/releases/download/%{version}/%{name}-%{version}.tar.gz
+Source0:        %{vcs}/releases/download/%{version}/%{name}-%{version}.tar.gz
+
+# https://bugzilla.redhat.com/show_bug.cgi?id=2260316
+# https://github.com/OpenSCAP/openscap/issues/2077
+# Should be part of the 1.3.11 release
+Patch0:         %{vcs}/pull/2114/commits/976b0cd9439a5e77c4526164461adcc28f0d7534.patch#/openscap-00-pyeval_initthreads.patch
+
+Patch1:         openscap-01-pyeval_pyobject.patch
+
 
 %global         common_description %{expand:
 OpenSCAP is a set of open source libraries providing an easier path
@@ -34,31 +42,6 @@ for the expression of Computer Network Defense related information.}
 # conditional allows for example rebuild in COPR + EPEL
 %bcond_with  opendbx
 %endif
-
-# Fedora arched lib directories
-# originally https://github.com/OpenSCAP/openscap/pull/2056
-# accepted was https://github.com/OpenSCAP/openscap/pull/2054
-Patch1:         https://github.com/OpenSCAP/openscap/pull/2054.patch#/openscap-1.3.9-perlpath.patch
-
-
-# Implicit declarations due to missing includes
-# reported in #PR2060, #PR2061, #PR2062
-# https://github.com/OpenSCAP/openscap/pull/2060
-# https://github.com/OpenSCAP/openscap/pull/2061
-# https://github.com/OpenSCAP/openscap/pull/2062
-Patch2:         openscap-1.3.9-includes.patch
-
-# Fix test test_sysctl_probe_all.sh
-# https://github.com/OpenSCAP/openscap/commit/f8366b395b977392d724c6cc84c7295590c39ee8
-Patch3: openscap-1.3.10-fix_sysctl_probe_tests-PR-2050.patch
-
-# Fix type of libxml2 error callback function
-# https://github.com/OpenSCAP/openscap/pull/2069
-Patch4:         openscap-1.3.9-c99-libxml2.patch
-
-# Python bindings: Do not reuse $result for pointer conversion result
-# https://github.com/OpenSCAP/openscap/pull/2069
-Patch5:         openscap-1.3.9-c99-python.patch
 
 BuildRequires:  systemd-rpm-macros
 
@@ -298,8 +281,8 @@ pathfix.py -i %{__python3} -p -n %{buildroot}%{_bindir}/scap-as-rpm
 
 
 %files perl
-%{perl_vendorarch}/openscap_pm.pm
-%{perl_vendorarch}/auto/openscap_pm/openscap_pm.so
+%{perl_vendorlib}/openscap_pm.pm
+%{perl_vendorarch}/openscap_pm.so
 
 
 %files devel
@@ -344,6 +327,15 @@ pathfix.py -i %{__python3} -p -n %{buildroot}%{_bindir}/scap-as-rpm
 %{_mandir}/man8/oscap-podman.8*
 
 %changelog
+* Wed Jun 12 2024 Jitka Plesnikova <jplesnik@redhat.com> - 1:1.3.10-3
+- Perl 5.40 rebuild
+
+* Fri Jun 07 2024 Python Maint <python-maint@redhat.com> - 1:1.3.10-2
+- Rebuilt for Python 3.13
+
+* Thu Apr 25 2024 Jan Černý <jcerny@redhat.com> - 1:1.3.10-1
+- Rebase to the latest upstream version
+
 * Mon Feb 19 2024 Yaakov Selkowitz <yselkowi@redhat.com> - 1:1.3.9-8
 - preparations for RHEL10 fork
 

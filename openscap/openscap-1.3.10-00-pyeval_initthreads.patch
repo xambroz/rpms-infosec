@@ -1,0 +1,38 @@
+From 976b0cd9439a5e77c4526164461adcc28f0d7534 Mon Sep 17 00:00:00 2001
+From: Matthew Burket <mburket@redhat.com>
+Date: Wed, 29 May 2024 16:33:24 -0500
+Subject: [PATCH] Remove PyEval_InitThreads() from the project.
+
+Since 3.7 it has done nothing so it can removed easily
+---
+ swig/openscap.i | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/swig/openscap.i b/swig/openscap.i
+index 6f29fc23c8..3854e8ecb4 100644
+--- a/swig/openscap.i
++++ b/swig/openscap.i
+@@ -509,7 +509,6 @@ char * sub_callback_wrapper(xccdf_subst_type_t type, const char *id, void *arg)
+ 
+ bool xccdf_policy_model_register_output_callback_py(struct xccdf_policy_model *model, PyObject *func, PyObject *usr) {
+     struct internal_usr *new_usrdata;
+-    PyEval_InitThreads();
+     Py_INCREF(func);
+     Py_INCREF(usr);
+     new_usrdata = malloc(sizeof(struct internal_usr));
+@@ -523,7 +522,6 @@ bool xccdf_policy_model_register_output_callback_py(struct xccdf_policy_model *m
+ 
+ bool xccdf_policy_model_register_start_callback_py(struct xccdf_policy_model *model, PyObject *func, PyObject *usr) {
+     struct internal_usr *new_usrdata;
+-    PyEval_InitThreads();
+     Py_INCREF(func);
+     Py_INCREF(usr);
+     new_usrdata = malloc(sizeof(struct internal_usr));
+@@ -537,7 +535,6 @@ bool xccdf_policy_model_register_start_callback_py(struct xccdf_policy_model *mo
+ 
+ int oval_agent_eval_system_py(oval_agent_session_t * asess, PyObject * func, PyObject *usr) {
+     struct internal_usr *new_usrdata;
+-    PyEval_InitThreads();
+     Py_INCREF(func);
+     Py_INCREF(usr);
+     new_usrdata = malloc(sizeof(struct internal_usr));
