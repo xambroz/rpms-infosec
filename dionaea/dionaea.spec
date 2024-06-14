@@ -1,8 +1,8 @@
 Name:           dionaea
-Version:        0.11.0
+Version:        0.7.0
 Summary:        Low interaction honeypot
 # Show as the RPM release number (keep same number line for tarball and git builds)
-%global         baserelease     1
+%global         baserelease     28
 
 %if 0%{?rhel}
 # Group needed for EPEL
@@ -15,7 +15,7 @@ Group:          Applications/System
 License:        GPLv2 with exceptions
 URL:            https://dionaea.readthedocs.io/
 #    Current source:
-VCS:            https://github.com/DinoTools/dionaea
+#               https://github.com/DinoTools/dionaea
 #    Original site (dissappeared in 2013, but still available from archives):
 #               https://dionaea.carnivore.it -> https://web.archive.org/web/20150820080019/https://dionaea.carnivore.it
 #    Another forks:
@@ -34,8 +34,8 @@ VCS:            https://github.com/DinoTools/dionaea
 # Specification of the used GIT commit
 %global         gituser         DinoTools
 %global         gitname         dionaea
-%global         commit          fc5d86b7c7456281ec7c0877d3cb80fa58a09283
-%global         gitdate         20201130
+%global         commit          079d014f47a71cc85a86bd836a9a4533e98d7385
+%global         gitdate         20180501
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
@@ -67,37 +67,80 @@ Source4:        %{name}.logrotate
 
 
 
+# Use the glib CFLAGS and LDFLAGS during build where necessary
+# https://github.com/DinoTools/dionaea/issues/161
+# https://github.com/DinoTools/dionaea/pull/160
+# Merged in in https://github.com/DinoTools/dionaea/commit/1748f3b3936aa1da2d92500251ae8010fe181dfc
+# Patch1:         dionaea-01_glib.patch
+
+# Get rid of the warning about not used return value from chdir.
+# https://github.com/DinoTools/dionaea/issues/162
+# https://github.com/DinoTools/dionaea/pull/163
+# Merged in in https://github.com/DinoTools/dionaea/commit/ea5d54060af53250abfe3dde9f36af399fa30524
+# Patch2:         dionaea-02_warnerror.patch
+
 # ipv6 structures in <netinet/in.h> are used by the <sys/socket.h>
 # ipv6 structures needs explicit CFLAGS " -D_GNU_SOURCE" to compile on linux
 # just cosmetics - not reported yet to upstream
 Patch3:         dionaea-03_in6_pktinfo.patch
 
+# Unbundle the pyev library and use the system one
+# https://github.com/DinoTools/dionaea/issues/166
+Patch4:         dionaea-04_pyev.patch
+
+# Have a dedicated variable for the python sitelib, so it can be easily changed externally when building the system package.
+# https://github.com/DinoTools/dionaea/issues/164
+# https://github.com/DinoTools/dionaea/pull/165
+# Merged in in https://github.com/DinoTools/dionaea/commit/890ae5e85f55130be928b03b751b5f7cd1032f21
+# Patch5:         dionaea-05_sitelib.patch
+
+# Fix warnings during the generation of documentation
+# https://github.com/DinoTools/dionaea/issues/170
+# https://github.com/DinoTools/dionaea/pull/179
+Patch6:         dionaea-06_docswarn.patch
+
+# Fix configure not finding the cython on RHEL7/Centos7
+# https://github.com/DinoTools/dionaea/pull/180
+# Merged to upstream with 0.7.0
+# Patch7:         dionaea-07_cython_el7.patch
 
 # Fix hardcoded lib dir
 # https://github.com/DinoTools/dionaea/pull/181
-# https://github.com/DinoTools/dionaea/pull/209
-# Patch8:       dionaea-08_modules_libdir.patch
+Patch8:         dionaea-08_modules_libdir.patch
 
+# Call setgroups before setresuid
+# https://github.com/DinoTools/dionaea/issues/177
+# https://github.com/DinoTools/dionaea/pull/178
+Patch9:         dionaea-09_setgroups_before_setresuid.patch
+
+# Call chdir before chroot
+# https://github.com/DinoTools/dionaea/issues/176
+# https://github.com/DinoTools/dionaea/pull/175
+# Merged upstream in 0.7.0
+# Patch10:        dionaea-10_chdir_before_chroot.patch
+
+# Not use obsolete m4 macros
+# https://github.com/DinoTools/dionaea/pull/182
+# Merged upstream in 0.7.0
+# Patch11:        dionaea-11_obsolete_m4.patch
 
 # Patch to explicitly state the python module version to the setup.py
-# Patch12:        dionaea-12_py_module_version.patch
+Patch12:        dionaea-12_py_module_version.patch
 
 # Replace deprecated PyUnicode_GetSize with PyUnicode_GetLength
-# Patch13:        dionaea-13_GetSize_deprecated.patch
+Patch13:        dionaea-13_GetSize_deprecated.patch
 
 # Trying to identify the mole
-# Patch14:        dionaea-14_safe_load.patch
+Patch14:        dionaea-14_safe_load.patch
+
+# Python 3.13 compatibility
+# Change PyEval_CallObject to PyObject_CallObject
+Patch15:        dionaea-15_pyeval_callobject.patch
 
 
 
-%if 0%{?fedora} || 0%{?rhel} >= 8
-BuildRequires:  cmake
-BuildRequires:  cmake-rpm-macros
-%else
-BuildRequires:  cmake3
-%endif
-
-BuildRequires:  make
+BuildRequires:  autoconf
+BuildRequires:  automake
 BuildRequires:  libtool
 BuildRequires:  flex
 BuildRequires:  bison
@@ -118,6 +161,7 @@ BuildRequires:  sqlite
 BuildRequires:  openssl-devel
 
 BuildRequires:  python%{python3_pkgversion}-devel
+BuildRequires:  python%{python3_pkgversion}-setuptools
 BuildRequires:  python%{python3_pkgversion}-Cython
 
 %if 0%{?with_systemd}
@@ -159,9 +203,10 @@ Requires(postun): initscripts
 Requires(pre): shadow-utils
 
 %description
-Dionaea is low interaction honeypot. It is meant to be a nepenthes successor,
-embedding python as scripting language, using libemu to detect shell-codes,
-supporting ipv6 and TLS.
+Dionaea honeypot is meant to be a nepenthes successor, embedding python
+as scripting language, using libemu to detect shell-codes, supporting
+ipv6 and TLS.
+
 
 
 # ============= documentation package ==========================================
@@ -172,9 +217,9 @@ BuildArch:      noarch
 
 %description doc
 This is documentation for the dionaea honeypot package.
-Dionaea is low interaction honeypot. It is meant to be a nepenthes successor,
-embedding python as scripting language, using libemu to detect shell-codes,
-supporting ipv6 and TLS.
+Dionaea honeypot is meant to be a nepenthes successor, embedding python
+as scripting language, using libemu to detect shell-codes, supporting
+ipv6 and TLS.
 
 
 
@@ -184,6 +229,7 @@ Summary:        Python3 binding for the dionaea honeypot
 %{?python_provide:%python_provide python%{python3_pkgversion}-%{gitname}}
 
 # Runtime dependencies
+Requires:       python%{python3_pkgversion}-pyev
 Requires:       python%{python3_pkgversion}-bson
 Requires:       python%{python3_pkgversion}-PyYAML
 Requires:       python%{python3_pkgversion}-scapy
@@ -216,32 +262,78 @@ git commit -a -m "base"
 
 %autopatch -p 1
 
-# Fix paths:
-# - remove the hardcoded prefix /opt/dionaea
-# - move /var/dionaea to /var/lib/dionaea according to Linux FHS
-# https://github.com/DinoTools/dionaea/issues/168
-# https://github.com/DinoTools/dionaea/issues/256
-sed -i -e "s|/opt/dionaea[/]*|/|g; s|/var/dionaea|/var/lib/dionaea|g;" \
-    modules/python/util/gnuplotsql.py \
-    modules/python/util/readlogsqltree.py \
-    doc/source/tips_and_tricks.rst \
-    doc/html/index.html \
-    doc/source/old/configuration.rst \
-    doc/source/old/seagfaults.rst \
-    doc/source/old/utils.rst \
-    doc/source/run.rst \
-    doc/source/tips_and_tricks.rst
+# Unbundle the pyev library and use the system one
+# https://github.com/DinoTools/dionaea/issues/169
+rm -rf modules/python/pyev
 
+
+# Fix paths - remove the hardcoded prefix /opt/dionaea
+# https://github.com/DinoTools/dionaea/issues/168
+sed -i -e "s|/opt/dionaea[/]*|/|g;" \
+    modules/python/util/readlogsqltree.py \
+    modules/python/util/logsql2postgres.py \
+    modules/python/util/gnuplotsql.py \
+    modules/python/util/updateccs.py \
+    src/dionaea.c \
+    vagrant/build.sh
+
+
+# replace in documentation the prefix/destdir /opt/dionaea with variable ${DESTDIR}
+# https://github.com/DinoTools/dionaea/issues/168
+sed -i -e "s|/opt/dionaea/var/dionaea|${DESTDIR}/var/lib/dionaea|g;" \
+    doc/html/index.html \
+    doc/source/tips_and_tricks.rst \
+    doc/source/old/configuration.rst \
+    doc/source/old/utils.rst \
+    modules/python/util/readlogsqltree.py
+
+
+# move /var/dionaea to /var/lib/dionaea according to Linux FHS
+# Fedora specific - not reported upstream
+sed -i -e "s|/var/dionaea|/var/lib/dionaea|g;" \
+    modules/python/util/readlogsqltree.py \
+    modules/python/util/gnuplotsql.py
 
 # Change var/dionaea to var/lib/dionaea for the location of sip user database
 sed -i -e "s|var/dionaea|var/lib/dionaea|g;" \
     modules/python/dionaea/sip/extras.py
 
 
-
-# Scripts should run with /usr/bin/python3 shabang and not /usr/bin/env python3 or /bin/python3
+# move /var/dionaea to /var/lib/dionaea according to Linux FHS
 # Fedora specific - not reported upstream
-sed -i -e 's|#!/bin/python3|#!/usr/bin/python3|g; s|#!/usr/bin/env python3|#!/usr/bin/python3|g;' \
+sed -i -e 's|\$(localstatedir)/dionaea/|\$(localstatedir)/lib/dionaea/|g;' \
+    Makefile.am
+
+# move /var/dionaea to /var/lib/dionaea according to Linux FHS
+# Fedora specific - not reported upstream
+sed -i -e 's|@LOCALESTATEDIR@/dionaea/|@LOCALESTATEDIR@/lib/dionaea/|g;' \
+    conf/dionaea.cfg.in \
+    conf/ihandlers/fail2ban.yaml.in \
+    conf/ihandlers/log_db_sql.yaml.in \
+    conf/ihandlers/log_incident.yaml.in \
+    conf/ihandlers/log_json.yaml.in \
+    conf/ihandlers/log_sqlite.yaml.in \
+    conf/ihandlers/virustotal.yaml.in \
+    conf/services/sip.yaml.in \
+    conf/services/http.yaml.in \
+    conf/services/ftp.yaml.in \
+    conf/services/tftp.yaml.in \
+    conf/services/upnp.yaml.in
+
+# move the logs from /var/lib/dionaea to /var/log/dionaea
+sed -i -e 's|@LOCALESTATEDIR@/lib/dionaea/dionaea.log|@LOCALESTATEDIR@/log/dionaea/dionaea.log|g;
+    s|@LOCALESTATEDIR@/lib/dionaea/dionaea-errors.log|@LOCALESTATEDIR@/log/dionaea/dionaea-errors.log|g;
+'   conf/dionaea.cfg.in
+
+# Change the hardoced minor python3.2 version especially in shabang to python3
+# https://github.com/DinoTools/dionaea/issues/169
+sed -i -e 's|python3.2|python3|g;' \
+    m4/az_python.m4 \
+    doc/html/index.html \
+    modules/python/util/readlogsqltree.py
+
+# Scripts should run with /usr/bin/python3 shabang and not /bin/python3
+sed -i -e 's|#!/bin/python3|#!/usr/bin/python3|;' \
     modules/python/util/readlogsqltree.py \
     modules/python/util/logsql2postgres.py \
     modules/python/util/gnuplotsql.py \
@@ -253,12 +345,12 @@ git commit -a -m "finished prep"
 
 # ============= Build ==========================================================
 %build
-%cmake3
-%cmake3_build
-
-#%%configure --enable-python --with-python=`which python3` --with-glib=glib --with-nl-include=/usr/include/libnl3 --disable-werror
-#%%make_build CFLAGS="%{optflags} -Wno-error -D_GNU_SOURCE -std=c99"
-cd ../doc
+autoreconf -vif
+# --disable-werror because of https://github.com/DinoTools/dionaea/issues/225
+export SETUPTOOLS_SCM_PRETEND_VERSION=%{version}
+%configure --enable-python --with-python=`which python3` --with-glib=glib --with-nl-include=/usr/include/libnl3 --disable-werror
+make %{?_smp_mflags} CFLAGS="%{optflags} -Wno-error -D_GNU_SOURCE -std=c99"
+cd doc
 make html
 make man
 rm -rf build/html/.{doctrees,buildinfo}
@@ -268,12 +360,9 @@ cd ..
 
 # ============= Install ========================================================
 %install
-cd build
-%cmake3_install
-
 # Use only the sitearch directory, otherwise python will be confused
 # by not having native and python modules in the same directory
-#%%make_install PYTHON_SITELIB=%{python3_sitearch} PYTHON_SITEARCH=%{python3_sitearch}
+%make_install PYTHON_SITELIB=%{python3_sitearch} PYTHON_SITEARCH=%{python3_sitearch}
 
 # *.a *.la files not allowed for fedora
 find %{buildroot} '(' -name '*.a' -o -name '*.la' ')' -delete
@@ -420,8 +509,53 @@ getent passwd dionaea >/dev/null || \
 
 
 %changelog
-* Tue Jun 22 2021 Michal Ambroz <rebus at, seznam.cz> 0.11.0-1
-- bump to 0.11.0
+* Mon Mar 25 2024 Nils Philippsen <nils@tiptoe.de> - 0.7.0-28
+- Revert constraining SQLAlchemy version
+
+* Tue Mar 19 2024 Nils Philippsen <nils@tiptoe.de> - 0.7.0-27
+- Add dependency on setuptools Python package
+
+* Tue Mar 19 2024 Nils Philippsen <nils@tiptoe.de> - 0.7.0-26
+- Depend on SQLAlchemy < 2
+
+* Wed Jan 24 2024 Fedora Release Engineering <releng@fedoraproject.org> - 0.7.0-25
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_40_Mass_Rebuild
+
+* Fri Jan 19 2024 Fedora Release Engineering <releng@fedoraproject.org> - 0.7.0-24
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_40_Mass_Rebuild
+
+* Thu Oct 05 2023 Michal Ambroz <rebus at, seznam.cz> 0.7.0-22
+- add version metadata to the python module to fix FTBFS
+
+* Sun Jul 23 2023 Python Maint <python-maint@redhat.com> - 0.7.0-21
+- Rebuilt for Python 3.12
+
+* Wed Jul 19 2023 Fedora Release Engineering <releng@fedoraproject.org> - 0.7.0-20
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_39_Mass_Rebuild
+
+* Wed Jun 14 2023 Python Maint <python-maint@redhat.com> - 0.7.0-19
+- Rebuilt for Python 3.12
+
+* Thu Jan 19 2023 Fedora Release Engineering <releng@fedoraproject.org> - 0.7.0-18
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_38_Mass_Rebuild
+
+* Thu Jul 21 2022 Fedora Release Engineering <releng@fedoraproject.org> - 0.7.0-17
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_37_Mass_Rebuild
+
+* Mon Jun 13 2022 Python Maint <python-maint@redhat.com> - 0.7.0-16
+- Rebuilt for Python 3.11
+
+* Thu Jan 20 2022 Fedora Release Engineering <releng@fedoraproject.org> - 0.7.0-15
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
+
+* Tue Sep 14 2021 Sahana Prasad <sahana@redhat.com> - 0.7.0-14
+- Rebuilt with OpenSSL 3.0.0
+
+* Wed Jul 21 2021 Fedora Release Engineering <releng@fedoraproject.org> - 0.7.0-13
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
+
+* Fri Jun 04 2021 Python Maint <python-maint@redhat.com> - 0.7.0-12
+- Rebuilt for Python 3.10
 
 * Tue Jan 26 2021 Fedora Release Engineering <releng@fedoraproject.org> - 0.7.0-11
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
