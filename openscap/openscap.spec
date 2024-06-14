@@ -11,9 +11,9 @@ Source0:        %{vcs}/releases/download/%{version}/%{name}-%{version}.tar.gz
 # https://bugzilla.redhat.com/show_bug.cgi?id=2260316
 # https://github.com/OpenSCAP/openscap/issues/2077
 # Should be part of the 1.3.11 release
-Patch0:         %{vcs}/pull/2114/commits/976b0cd9439a5e77c4526164461adcc28f0d7534.patch#/openscap-00-pyeval_initthreads.patch
+Patch0:         %{vcs}/pull/2114.patch#/openscap-1.3.10-00-pyeval_initthreads.patch
 
-Patch1:         openscap-01-pyeval_pyobject.patch
+Patch1:         %{vcs}/pull/2126.patch#/openscap-1.3.10-01-pyeval_pyobject.patch
 
 
 %global         common_description %{expand:
@@ -327,6 +327,9 @@ pathfix.py -i %{__python3} -p -n %{buildroot}%{_bindir}/scap-as-rpm
 %{_mandir}/man8/oscap-podman.8*
 
 %changelog
+* Fri Jun 14 2024 Michal Ambroz <rebus _AT seznam.cz> - 1:1.3.10-4
+- compatibility to Python 3.13
+
 * Wed Jun 12 2024 Jitka Plesnikova <jplesnik@redhat.com> - 1:1.3.10-3
 - Perl 5.40 rebuild
 
