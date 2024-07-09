@@ -1,0 +1,24 @@
+diff -ru oletools-78b2d459a33df378a4f69ffc6c33313509cecfe4/oletools/oleobj.py oletools-78b2d459a33df378a4f69ffc6c33313509cecfe4.new/oletools/oleobj.py
+--- oletools-78b2d459a33df378a4f69ffc6c33313509cecfe4/oletools/oleobj.py	2024-05-04 16:55:59.397401517 +0200
++++ oletools-78b2d459a33df378a4f69ffc6c33313509cecfe4.new/oletools/oleobj.py	2024-05-04 17:07:35.020227440 +0200
+@@ -534,7 +534,7 @@
+     Might return empty string
+     """
+     basepath = os.path.basename(filename).strip()
+-    sane_fname = re.sub(u'[^a-zA-Z0-9.\-_ ]', replacement, basepath)
++    sane_fname = re.sub(u'[^a-zA-Z0-9._ -]', replacement, basepath)
+     sane_fname = str(sane_fname)    # py3: does nothing;   py2: unicode --> str
+ 
+     while ".." in sane_fname:
+diff -ru oletools-78b2d459a33df378a4f69ffc6c33313509cecfe4/oletools/rtfobj.py oletools-78b2d459a33df378a4f69ffc6c33313509cecfe4.new/oletools/rtfobj.py
+--- oletools-78b2d459a33df378a4f69ffc6c33313509cecfe4/oletools/rtfobj.py	2024-05-04 16:55:59.434401721 +0200
++++ oletools-78b2d459a33df378a4f69ffc6c33313509cecfe4.new/oletools/rtfobj.py	2024-05-04 16:49:17.676185141 +0200
+@@ -269,7 +269,7 @@
+ DELIMITERS_ZeroOrMore = b'[ \\t\\r\\n\\f\\v]*'
+ BACKSLASH_BIN = b'\\\\bin'
+ # According to my tests, Word accepts up to 250 digits (leading zeroes)
+-DECIMAL_GROUP = b'(\d{1,250})'
++DECIMAL_GROUP = b'(\\d{1,250})'
+ 
+ re_delims_bin_decimal = re.compile(DELIMITERS_ZeroOrMore + BACKSLASH_BIN
+                                    + DECIMAL_GROUP + DELIMITER)
