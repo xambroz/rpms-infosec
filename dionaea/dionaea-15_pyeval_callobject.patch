@@ -1,7 +1,10 @@
-diff -ru dionaea-0.7.0/modules/python/module.c dionaea-0.7.0.new/modules/python/module.c
---- dionaea-0.7.0/modules/python/module.c	2024-06-14 11:45:44.206540637 +0200
-+++ dionaea-0.7.0.new/modules/python/module.c	2024-06-14 11:47:32.103089823 +0200
-@@ -157,7 +157,7 @@
+Only in dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new: .git
+Only in dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig: .gitignore
+Only in dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/include: connection.h.orig
+diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/modules/python/module.c dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/module.c
+--- dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/modules/python/module.c	2021-02-08 06:48:52.000000000 +0100
++++ dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/module.c	2024-07-04 15:38:00.956643590 +0200
+@@ -138,7 +138,7 @@
  		Py_DECREF(module);
  		PyObject *func = PyObject_GetAttrString(module, "remoteshell");
  		PyObject *arglist = Py_BuildValue("()");
@@ -9,8 +12,8 @@ diff -ru dionaea-0.7.0/modules/python/module.c dionaea-0.7.0.new/modules/python/
 +		PyObject *r = PyObject_CallObject(func, arglist);
  		Py_DECREF(arglist);
  		g_debug("r %p", r);
- 		struct head 
-@@ -200,7 +200,7 @@
+ 		struct head
+@@ -181,7 +181,7 @@
  			PyObject *func = PyObject_GetAttrString(i->module, "stop");
  			if ( func != NULL ) {
  				PyObject *arglist = Py_BuildValue("()");
@@ -19,7 +22,7 @@ diff -ru dionaea-0.7.0/modules/python/module.c dionaea-0.7.0.new/modules/python/
  				traceback();
  				// PyErr_Print();
  				Py_DECREF(arglist);
-@@ -222,7 +222,7 @@
+@@ -203,7 +203,7 @@
  			func = PyObject_GetAttrString(module, "new");
  			if( func != NULL ) {
  				PyObject *arglist = Py_BuildValue("()");
@@ -28,7 +31,7 @@ diff -ru dionaea-0.7.0/modules/python/module.c dionaea-0.7.0.new/modules/python/
  				traceback();
  				Py_DECREF(arglist);
  				Py_XDECREF(r);
-@@ -233,7 +233,7 @@
+@@ -214,7 +214,7 @@
  			func = PyObject_GetAttrString(module, "start");
  			if( func != NULL ) {
  				PyObject *arglist = Py_BuildValue("()");
@@ -37,7 +40,7 @@ diff -ru dionaea-0.7.0/modules/python/module.c dionaea-0.7.0.new/modules/python/
  				traceback();
  				Py_DECREF(arglist);
  				Py_XDECREF(r);
-@@ -258,7 +258,7 @@
+@@ -239,7 +239,7 @@
  			PyObject *func = PyObject_GetAttrString(module, "new");
  			if( func != NULL ) {
  				PyObject *arglist = Py_BuildValue("()");
@@ -46,7 +49,7 @@ diff -ru dionaea-0.7.0/modules/python/module.c dionaea-0.7.0.new/modules/python/
  				Py_DECREF(arglist);
  				Py_XDECREF(r);
  				Py_DECREF(func);
-@@ -292,7 +292,7 @@
+@@ -273,7 +273,7 @@
  		if( func != NULL )
  		{
  			PyObject *arglist = Py_BuildValue("()");
@@ -55,7 +58,7 @@ diff -ru dionaea-0.7.0/modules/python/module.c dionaea-0.7.0.new/modules/python/
  			Py_DECREF(arglist);
  			Py_XDECREF(r);
  			Py_DECREF(func);
-@@ -323,7 +323,7 @@
+@@ -306,7 +306,7 @@
  		if( func != NULL )
  		{
  			PyObject *arglist = Py_BuildValue("()");
@@ -64,7 +67,7 @@ diff -ru dionaea-0.7.0/modules/python/module.c dionaea-0.7.0.new/modules/python/
  			Py_DECREF(arglist);
  			Py_XDECREF(r);
  			Py_DECREF(func);
-@@ -401,7 +401,7 @@
+@@ -389,7 +389,7 @@
  		PyObject *func = PyObject_GetAttrString(module, "new");
  		if( func != NULL ) {
  			PyObject *arglist = Py_BuildValue("()");

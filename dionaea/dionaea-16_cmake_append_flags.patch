@@ -1,0 +1,12 @@
+diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/CMakeLists.txt dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/CMakeLists.txt
+--- dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/CMakeLists.txt	2024-07-04 21:10:43.604959260 +0200
++++ dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/CMakeLists.txt	2024-07-04 21:10:14.986830427 +0200
+@@ -31,7 +31,7 @@
+ set(CMAKE_C_STANDARD 11)
+ set(CMAKE_C_STANDARD_REQUIRED ON)
+ # ToDo: move to source file?
+-list(APPEND CMAKE_C_FLAGS "-D_GNU_SOURCE")
++set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D_GNU_SOURCE")
+ 
+ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+ 

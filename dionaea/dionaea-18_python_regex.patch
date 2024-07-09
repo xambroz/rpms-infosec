@@ -1,0 +1,285 @@
+diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/doc/source/conf.py dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.pyregex/doc/source/conf.py
+--- dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/doc/source/conf.py	2024-07-07 13:02:22.081414103 +0200
++++ dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.pyregex/doc/source/conf.py	2024-07-07 22:43:17.578887493 +0200
+@@ -62,7 +62,7 @@
+ # The short X.Y version.
+ version = "undefined"
+ regex_version = re.compile(
+-    "^project\s*\([^)]+?\s+VERSION\s+(?P<version>[0-9]+\.[0-9]+\.[0-9]+)$",
++    r"^project\s*\([^)]+?\s+VERSION\s+(?P<version>[0-9]+\.[0-9]+\.[0-9]+)$",
+     re.MULTILINE|re.DOTALL
+ )
+ data = open("../../CMakeLists.txt", "r").read()
+diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/cmd.py dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.pyregex/modules/python/dionaea/cmd.py
+--- dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/cmd.py	2024-07-07 13:02:22.099414172 +0200
++++ dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.pyregex/modules/python/dionaea/cmd.py	2024-07-07 22:32:02.125035093 +0200
+@@ -29,7 +29,7 @@
+         else:
+             self.send = self.void
+         self.files = {}
+-        self.cwd = 'C:\WINDOWS\System32'
++        self.cwd = 'C:\\WINDOWS\\System32'
+ 
+ 
+     def handle_io_in(self, data):
+diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/emu_scripts/handler.py dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.pyregex/modules/python/dionaea/emu_scripts/handler.py
+--- dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/emu_scripts/handler.py	2024-07-07 13:02:22.099414172 +0200
++++ dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.pyregex/modules/python/dionaea/emu_scripts/handler.py	2024-07-07 22:35:49.467336981 +0200
+@@ -22,7 +22,7 @@
+         self._regex_detect = []
+ 
+         self._regex_url = re.compile(
+-            b"(?P<url>(http|ftp|https)://([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?)"
++            r"(?P<url>(http|ftp|https)://([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?)"
+         )
+ 
+     def run(self, data):
+@@ -52,7 +52,7 @@
+             self._config = config
+ 
+         self._regex_url = re.compile(
+-            b"(?P<url>(http|ftp|https)://([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?)"
++            r"(?P<url>(http|ftp|https)://([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?)"
+         )
+ 
+     def run(self, data):
+@@ -76,7 +76,7 @@
+         ]
+ 
+         self._regex_url = re.compile(
+-            b"\w+\s*=\s*\"\s*(?P<url>(http|ftp|https)://([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?)\s*\""
++            r"\w+\s*=\s*\"\s*(?P<url>(http|ftp|https)://([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?)\s*\""
+         )
+ 
+ 
+@@ -88,9 +88,9 @@
+ 
+         self.min_match_count = 1
+         self._regex_detect = [
+-            re.compile(b"Set\s+\w+\s+=\s+CreateObject\(.*?(Msxml2.XMLHTTP|Wscript.Shell).*?\)")
++            re.compile(r"Set\s+\w+\s+=\s+CreateObject\(.*?(Msxml2.XMLHTTP|Wscript.Shell).*?\)")
+         ]
+ 
+         self._regex_url = re.compile(
+-            b"\.Open\s+\"GET\"\s*,\s*\"(?P<url>(http|ftp|https)://([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?)\""
++            r"\.Open\s+\"GET\"\s*,\s*\"(?P<url>(http|ftp|https)://([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?)\""
+         )
+diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/memcache/command.py dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.pyregex/modules/python/dionaea/memcache/command.py
+--- dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/memcache/command.py	2024-07-07 13:02:22.102414184 +0200
++++ dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.pyregex/modules/python/dionaea/memcache/command.py	2024-07-07 22:36:55.507716806 +0200
+@@ -18,7 +18,7 @@
+ 
+ class Decrement(Command):
+     name = "decr"
+-    regex_cmd = re.compile(b"^decr (?P<key>\w+) (?P<value>\d+)( (?P<noreply>noreply))?$")
++    regex_cmd = re.compile(r"^decr (?P<key>\w+) (?P<value>\d+)( (?P<noreply>noreply))?$")
+ 
+     def __init__(self, key=None, value=0, no_reply=False):
+         self.key = key
+@@ -37,7 +37,7 @@
+ 
+ class Delete(Command):
+     name = "delete"
+-    regex_cmd = re.compile(b"^(?P<command>\w+) (?P<key>\w+)( (?P<noreply>noreply))?$")
++    regex_cmd = re.compile(r"^(?P<command>\w+) (?P<key>\w+)( (?P<noreply>noreply))?$")
+ 
+     def __init__(self, key=None, no_reply=None):
+         self.key = key
+@@ -73,7 +73,7 @@
+ 
+ class Increment(Command):
+     name = "incr"
+-    regex_cmd = re.compile(b"^incr (?P<key>\w+) (?P<value>\d+)( (?P<noreply>noreply))?$")
++    regex_cmd = re.compile(r"^incr (?P<key>\w+) (?P<value>\d+)( (?P<noreply>noreply))?$")
+ 
+     def __init__(self, key=None, value=0, no_reply=False):
+         self.key = key
+@@ -91,7 +91,7 @@
+ 
+ 
+ class StorageCommand(Command):
+-    regex_cmd = re.compile(b"^(?P<command>\w+) (?P<key>\w+) (?P<flags>\d+) (?P<exptime>\d+) (?P<byte_count>\d+)( (?P<noreply>noreply))?")
++    regex_cmd = re.compile(r"^(?P<command>\w+) (?P<key>\w+) (?P<flags>\d+) (?P<exptime>\d+) (?P<byte_count>\d+)( (?P<noreply>noreply))?")
+ 
+     def __init__(self, key=None, flags=None, exptime=None, byte_count=None, noreply=None):
+         self.key = key
+@@ -171,7 +171,7 @@
+ 
+ class Touch(Command):
+     name = "touch"
+-    regex_cmd = re.compile(b"^touch (?P<key>\w+) (?P<exptime>\d+)( (?P<noreply>noreply))?$")
++    regex_cmd = re.compile(r"^touch (?P<key>\w+) (?P<exptime>\d+)( (?P<noreply>noreply))?$")
+ 
+     def __init__(self, key=None, exptime=None, no_reply=None):
+         self.key = key
+diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/mysql/mysql.py dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.pyregex/modules/python/dionaea/mysql/mysql.py
+--- dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/mysql/mysql.py	2024-07-07 13:02:22.105414195 +0200
++++ dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.pyregex/modules/python/dionaea/mysql/mysql.py	2024-07-07 22:38:02.180100282 +0200
+@@ -19,12 +19,12 @@
+ logger = logging.getLogger('mysqld')
+ 
+ re_show_var = re.compile(
+-    b"show\s+((?P<global>global)\s+)?variables(\s+like\s+(?P<sep>\"|')(?P<like>.*?)(?P=sep))?",
++    r"show\s+((?P<global>global)\s+)?variables(\s+like\s+(?P<sep>\"|')(?P<like>.*?)(?P=sep))?",
+     re.I
+ )
+ 
+ re_select_var = re.compile(
+-    b"select\s+(?P<full_name>@(?P<global>@)?(?P<name>\w+))(\s+limit\s+\d+)?",
++    r"select\s+(?P<full_name>@(?P<global>@)?(?P<name>\w+))(\s+limit\s+\d+)?",
+     re.I
+ )
+ 
+@@ -42,7 +42,7 @@
+         self.config = None
+         self.state = ""
+         self.regex_statement = re.compile(
+-            b"""([A-Za-z0-9_.]+\(.*?\)+|\(.*?\)+|"(?:[^"]|\"|"")*"+|'[^'](?:|\'|'')*'+|`(?:[^`]|``)*`+|[^ ,]+|,)"""
++            r"""([A-Za-z0-9_.]+\(.*?\)+|\(.*?\)+|"(?:[^"]|\"|"")*"+|'[^'](?:|\'|'')*'+|`(?:[^`]|``)*`+|[^ ,]+|,)"""
+         )
+         self.download_dir = None
+         self.download_suffix = ".tmp"
+@@ -273,8 +273,8 @@
+         if len(query) == 0:
+             return False
+ 
+-        regex_function = re.compile(b"(?P<name>[A-Za-z0-9_.]+)\((?P<args>.*?)\)+")
+-        regex_url = re.compile(b"(?P<url>(http|ftp|https)://([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?)")
++        regex_function = re.compile(r"(?P<name>[A-Za-z0-9_.]+)\((?P<args>.*?)\)+")
++        regex_url = re.compile(r"(?P<url>(http|ftp|https)://([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?)")
+ 
+         m = re_select_var.match(p.Query)
+         if m:
+diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/sip/extras.py dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.pyregex/modules/python/dionaea/sip/extras.py
+--- dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/sip/extras.py	2024-07-07 13:02:22.107414203 +0200
++++ dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.pyregex/modules/python/dionaea/sip/extras.py	2024-07-07 22:45:44.931721310 +0200
+@@ -261,7 +261,7 @@
+         sdp = data[0]
+         for n,v in media_ports.items():
+             if v is None:
+-                sdp = re.sub("\[" + n +"\].*\[\/" + n + "\]", "", sdp, 0, re.DOTALL)
++                sdp = re.sub("\\[" + n +"\\].*\\[\\/" + n + "\\]", "", sdp, 0, re.DOTALL)
+             else:
+                 params[n] = v
+ 
+diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/sip/rfc2396.py dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.pyregex/modules/python/dionaea/sip/rfc2396.py
+--- dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/sip/rfc2396.py	2024-07-07 13:02:22.108414207 +0200
++++ dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.pyregex/modules/python/dionaea/sip/rfc2396.py	2024-07-07 22:39:28.573591939 +0200
+@@ -28,9 +28,9 @@
+     b'"John Doe" <sip:john@example.org>'
+     """
+     _syntax = [
+-        re.compile(b'^(?P<name>[a-zA-Z0-9\-\.\_\+\~\ \t]*)<(?P<uri>[^>]+)>( *; *(?P<params>.*))?'),
+-        re.compile(b'^(?:"(?P<name>[a-zA-Z0-9\-\.\_\+\~\ \t]+)")[\ \t]*<(?P<uri>[^>]+)>( *; *(?P<params>.*))?'),
+-        re.compile(b'^[\ \t]*(?P<name>)(?P<uri>[^;]+)( *; *(?P<params>.*))?')
++        re.compile(r'^(?P<name>[a-zA-Z0-9\-\.\_\+\~\ \t]*)<(?P<uri>[^>]+)>( *; *(?P<params>.*))?'),
++        re.compile(r'^(?:"(?P<name>[a-zA-Z0-9\-\.\_\+\~\ \t]+)")[\ \t]*<(?P<uri>[^>]+)>( *; *(?P<params>.*))?'),
++        re.compile(r'^[\ \t]*(?P<name>)(?P<uri>[^;]+)( *; *(?P<params>.*))?')
+     ]
+ 
+     def __init__(self, display_name = None, uri = None, must_quote = None, params = None):
+@@ -128,12 +128,12 @@
+     True
+     """
+ 
+-    _syntax = re.compile(b"^(?P<scheme>[a-zA-Z][a-zA-Z0-9\+\-\.]*):"  # scheme
+-        + b"(?:(?:(?P<user>[a-zA-Z0-9\-\_\.\!\~\*\'\(\)&=\+\$,;\?\/\%]+)" # user
+-        + b"(?::(?P<password>[^:@;\?]+))?)@)?" # password
+-        + b"(?:(?:(?P<host>[^;\?:]*)(?::(?P<port>[\d]+))?))"  # host, port
+-        + b"(?:;(?P<params>[^\?]*))?" # parameters
+-        + b"(?:\?(?P<headers>.*))?$" # headers
++    _syntax = re.compile(r"^(?P<scheme>[a-zA-Z][a-zA-Z0-9\+\-\.]*):"  # scheme
++        + r"(?:(?:(?P<user>[a-zA-Z0-9\-\_\.\!\~\*\'\(\)&=\+\$,;\?\/\%]+)" # user
++        + r"(?::(?P<password>[^:@;\?]+))?)@)?" # password
++        + r"(?:(?:(?P<host>[^;\?:]*)(?::(?P<port>[\d]+))?))"  # host, port
++        + r"(?:;(?P<params>[^\?]*))?" # parameters
++        + r"(?:\?(?P<headers>.*))?$" # headers
+     )
+ 
+     def __init__(self, scheme = None, user = None, password = None, host = None, port = None, params = None, headers = None):
+diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/sip/rfc3261.py dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.pyregex/modules/python/dionaea/sip/rfc3261.py
+--- dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/sip/rfc3261.py	2024-07-07 13:02:22.108414207 +0200
++++ dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.pyregex/modules/python/dionaea/sip/rfc3261.py	2024-07-07 22:44:12.036195626 +0200
+@@ -678,7 +678,7 @@
+     b'z9hG4bK77asjd' b'192.0.2.207'
+     """
+ 
+-    _syntax = re.compile(b"SIP */ *2\.0 */ *(?P<protocol>[a-zA-Z]+) *(?P<address>[^ :;]*) *(:(?P<port>[0-9]+))?( *; *(?P<params>.*))?")
++    _syntax = re.compile(r"SIP */ *2\.0 */ *(?P<protocol>[a-zA-Z]+) *(?P<address>[^ :;]*) *(:(?P<port>[0-9]+))?( *; *(?P<params>.*))?")
+ 
+     def __init__(self, protocol = None, address = None, port = None, params = None):
+         if params is None:
+diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/smb/include/asn1/mib.py dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.pyregex/modules/python/dionaea/smb/include/asn1/mib.py
+--- dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/smb/include/asn1/mib.py	2024-07-07 13:02:22.109414211 +0200
++++ dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.pyregex/modules/python/dionaea/smb/include/asn1/mib.py	2024-07-07 22:54:19.294414833 +0200
+@@ -19,12 +19,12 @@
+ ## MIB parsing ##
+ #################
+ 
+-_mib_re_integer = re.compile("^[0-9]+$")
+-_mib_re_both = re.compile("^([a-zA-Z_][a-zA-Z0-9_-]*)\(([0-9]+)\)$")
++_mib_re_integer = re.compile(r"^[0-9]+$")
++_mib_re_both = re.compile(r"^([a-zA-Z_][a-zA-Z0-9_-]*)\(([0-9]+)\)$")
+ _mib_re_oiddecl = re.compile(
+-    "$\s*([a-zA-Z0-9_-]+)\s+OBJECT([^:\{\}]|\{[^:]+\})+::=\s*\{([^\}]+)\}",re.M)
+-_mib_re_strings = re.compile('"[^"]*"')
+-_mib_re_comments = re.compile('--.*(\r|\n)')
++    r"$\s*([a-zA-Z0-9_-]+)\s+OBJECT([^:\{\}]|\{[^:]+\})+::=\s*\{([^\}]+)\}",re.M)
++_mib_re_strings = re.compile(r'"[^"]*"')
++_mib_re_comments = re.compile(r'--.*(\r|\n)')
+ 
+ class MIBDict(DADict):
+     def _findroot(self, x):
+diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/smb/include/fieldtypes.py dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.pyregex/modules/python/dionaea/smb/include/fieldtypes.py
+--- dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/smb/include/fieldtypes.py	2024-07-07 13:02:22.110414215 +0200
++++ dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.pyregex/modules/python/dionaea/smb/include/fieldtypes.py	2024-07-07 22:49:55.990143690 +0200
+@@ -188,7 +188,7 @@
+     def m2i(self, pkt, x):
+         return str2mac(x)
+     def any2i(self, pkt, x):
+-        if type(x) is str and len(x) is 6:
++        if type(x) is str and len(x) == 6:
+             x = self.m2i(pkt, x)
+         return x
+     def i2repr(self, pkt, x):
+diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/smb/rpcservices.py dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.pyregex/modules/python/dionaea/smb/rpcservices.py
+--- dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/smb/rpcservices.py	2024-07-07 13:02:22.111414219 +0200
++++ dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.pyregex/modules/python/dionaea/smb/rpcservices.py	2024-07-07 22:46:56.501126285 +0200
+@@ -2802,7 +2802,7 @@
+ 
+         rpclog.debug("docname {} outputfile {}".format(DocName, OutputFile))
+ 
+-        if OutputFile.startswith('\\') and OutputFile.endswith('\PIPE\ATSVC'):
++        if OutputFile.startswith('\\\\') and OutputFile.endswith('\\PIPE\\ATSVC'):
+             # FIXME PIPE ATSVC COMMAND
+             pass
+         else:
+diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/util.py dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.pyregex/modules/python/dionaea/util.py
+--- dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/util.py	2024-07-07 13:02:22.112414222 +0200
++++ dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.pyregex/modules/python/dionaea/util.py	2024-07-07 22:33:58.158697406 +0200
+@@ -74,14 +74,14 @@
+     :return: List of urls or None
+     """
+     from dionaea.core import incident
+-    regex = re.compile(b"\(\)\s*\t*\{.*;\s*\}\s*;")
++    regex = re.compile(r"\(\)\s*\t*\{.*;\s*\}\s*;")
+     if not regex.search(data):
+         return None
+     logger.debug("Shellshock attack found")
+ 
+     urls = []
+     regex = re.compile(
+-        b"(wget|curl).+(?P<url>(http|ftp|https)://([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?)"
++        r"(wget|curl).+(?P<url>(http|ftp|https)://([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?)"
+     )
+     for m in regex.finditer(data):
+         logger.debug("Found download command with url %s", m.group("url"))
+@@ -107,7 +107,7 @@
+     from dionaea.core import incident
+     urls = []
+     regex = re.compile(
+-        b"(wget|curl).+(?P<url>(http|ftp|https)://([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?)"
++        r"(wget|curl).+(?P<url>(http|ftp|https)://([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?)"
+     )
+     for m in regex.finditer(data):
+         logger.debug("Found download command with url %s", m.group("url"))
