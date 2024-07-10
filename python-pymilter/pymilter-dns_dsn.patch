@@ -1,0 +1,36 @@
+diff --git a/Milter/dns.py b/Milter/dns.py
+index 67bed03..e4a9751 100644
+--- a/Milter/dns.py
++++ b/Milter/dns.py
+@@ -26,8 +26,8 @@ def DNSLookup(name, qtype):
+         # A RR as dotted quad.  For consistency, this driver should
+         # return both as binary string.
+         return [((a['name'], a['typename']), a['data']) for a in resp.answers]
+-    except IOError, x:
+-        raise DNSError, str(x)
++    except IOError as x:
++        raise DNSError(str(x))
+ 
+ class Session(object):
+   """A Session object has a simple cache with no TTL that is valid
+diff --git a/Milter/dsn.py b/Milter/dsn.py
+index 021d9d2..b27f749 100644
+--- a/Milter/dsn.py
++++ b/Milter/dsn.py
+@@ -142,13 +142,13 @@ def send_dsn(mailfrom,receiver,msg=None,timeout=600,session=None,ourfrom=''):
+         if badrcpts:
+           return badrcpts
+       return None			# success
+-    except smtplib.SMTPRecipientsRefused,x:
++    except smtplib.SMTPRecipientsRefused as x:
+       if len(x.recipients) == 1:
+         return x.recipients.values()[0]	# permanent error
+       return x.recipients
+-    except smtplib.SMTPSenderRefused,x:
++    except smtplib.SMTPSenderRefused as x:
+       return x.args[:2]			# does not accept DSN
+-    except smtplib.SMTPDataError,x:
++    except smtplib.SMTPDataError as x:
+       return x.args			# permanent error
+     except smtplib.SMTPException:
+       pass		# any other error, try next MX
