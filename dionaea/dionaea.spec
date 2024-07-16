@@ -102,6 +102,9 @@ Patch17:        dionaea-17_cmake_dirs.patch
 # python3 tries to resolve the escape sequences
 Patch18:        dionaea-18_python_regex.patch
 
+# Switch from distutils to setuptools
+# do not install to egg directory
+Patch19:        dionaea-19_setuptools.patch
 
 
 %if 0%{?fedora} || 0%{?rhel} >= 8

@@ -1,6 +1,7 @@
-diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/doc/source/conf.py dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.pyregex/doc/source/conf.py
---- dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/doc/source/conf.py	2024-07-07 13:02:22.081414103 +0200
-+++ dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.pyregex/doc/source/conf.py	2024-07-07 22:43:17.578887493 +0200
+Only in dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig: 1.orig
+diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/doc/source/conf.py dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/doc/source/conf.py
+--- dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/doc/source/conf.py	2024-07-16 02:09:42.459377247 +0200
++++ dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/doc/source/conf.py	2024-07-16 02:08:40.881028357 +0200
 @@ -62,7 +62,7 @@
  # The short X.Y version.
  version = "undefined"
@@ -10,9 +11,9 @@ diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/doc/source/conf.py
      re.MULTILINE|re.DOTALL
  )
  data = open("../../CMakeLists.txt", "r").read()
-diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/cmd.py dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.pyregex/modules/python/dionaea/cmd.py
---- dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/cmd.py	2024-07-07 13:02:22.099414172 +0200
-+++ dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.pyregex/modules/python/dionaea/cmd.py	2024-07-07 22:32:02.125035093 +0200
+diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/modules/python/dionaea/cmd.py dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/cmd.py
+--- dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/modules/python/dionaea/cmd.py	2024-07-16 02:09:42.462377264 +0200
++++ dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/cmd.py	2024-07-16 02:08:40.918028567 +0200
 @@ -29,7 +29,7 @@
          else:
              self.send = self.void
@@ -22,9 +23,9 @@ diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dio
  
  
      def handle_io_in(self, data):
-diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/emu_scripts/handler.py dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.pyregex/modules/python/dionaea/emu_scripts/handler.py
---- dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/emu_scripts/handler.py	2024-07-07 13:02:22.099414172 +0200
-+++ dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.pyregex/modules/python/dionaea/emu_scripts/handler.py	2024-07-07 22:35:49.467336981 +0200
+diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/modules/python/dionaea/emu_scripts/handler.py dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/emu_scripts/handler.py
+--- dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/modules/python/dionaea/emu_scripts/handler.py	2024-07-16 02:09:42.464377275 +0200
++++ dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/emu_scripts/handler.py	2024-07-16 02:11:23.762951218 +0200
 @@ -22,7 +22,7 @@
          self._regex_detect = []
  
@@ -43,7 +44,16 @@ diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dio
          )
  
      def run(self, data):
-@@ -76,7 +76,7 @@
+@@ -70,13 +70,13 @@
+ 
+         self.min_match_count = 2
+         self._regex_detect = [
+-            re.compile(b"New-Object\s+System\.Net\.WebClient"),
+-            re.compile(b"DownloadFile([^,]+?,[^,]+?)"),
+-            re.compile(b"Invoke-Expression([^)]+?)")
++            re.compile(r"New-Object\s+System\.Net\.WebClient"),
++            re.compile(r"DownloadFile([^,]+?,[^,]+?)"),
++            re.compile(r"Invoke-Expression([^)]+?)")
          ]
  
          self._regex_url = re.compile(
@@ -64,9 +74,9 @@ diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dio
 -            b"\.Open\s+\"GET\"\s*,\s*\"(?P<url>(http|ftp|https)://([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?)\""
 +            r"\.Open\s+\"GET\"\s*,\s*\"(?P<url>(http|ftp|https)://([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?)\""
          )
-diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/memcache/command.py dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.pyregex/modules/python/dionaea/memcache/command.py
---- dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/memcache/command.py	2024-07-07 13:02:22.102414184 +0200
-+++ dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.pyregex/modules/python/dionaea/memcache/command.py	2024-07-07 22:36:55.507716806 +0200
+diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/modules/python/dionaea/memcache/command.py dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/memcache/command.py
+--- dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/modules/python/dionaea/memcache/command.py	2024-07-16 02:09:42.466377287 +0200
++++ dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/memcache/command.py	2024-07-16 02:08:40.902028476 +0200
 @@ -18,7 +18,7 @@
  
  class Decrement(Command):
@@ -112,9 +122,9 @@ diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dio
  
      def __init__(self, key=None, exptime=None, no_reply=None):
          self.key = key
-diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/mysql/mysql.py dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.pyregex/modules/python/dionaea/mysql/mysql.py
---- dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/mysql/mysql.py	2024-07-07 13:02:22.105414195 +0200
-+++ dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.pyregex/modules/python/dionaea/mysql/mysql.py	2024-07-07 22:38:02.180100282 +0200
+diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/modules/python/dionaea/mysql/mysql.py dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/mysql/mysql.py
+--- dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/modules/python/dionaea/mysql/mysql.py	2024-07-16 02:09:42.468377298 +0200
++++ dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/mysql/mysql.py	2024-07-16 02:13:32.901682889 +0200
 @@ -19,12 +19,12 @@
  logger = logging.getLogger('mysqld')
  
@@ -139,6 +149,33 @@ diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dio
          )
          self.download_dir = None
          self.download_suffix = ".tmp"
+@@ -146,7 +146,7 @@
+         if re.match(b'set ', p.Query, re.I):
+             r = MySQL_Result_OK(Message="#2")
+ 
+-        elif re.match(b'select\s+database\s*\(\s*\)$', p.Query, re.I):
++        elif re.match(r'select\s+database\s*\(\s*\)$', p.Query, re.I):
+             r = [
+                 MySQL_Result_Header(FieldCount=1),
+                 MySQL_Result_Field(
+@@ -167,7 +167,7 @@
+                 MySQL_Result_EOF(ServerStatus=0x002)
+             ]
+ 
+-        elif re.match(b"show\s+databases$", p.Query, re.I):
++        elif re.match(r"show\s+databases$", p.Query, re.I):
+             r = [
+                 MySQL_Result_Header(FieldCount=1),
+                 MySQL_Result_Field(
+@@ -192,7 +192,7 @@
+             # r.append(MySQL_Result_Row_Data(ColumnValues=['information_schema']))
+             r.append(MySQL_Result_EOF(ServerStatus=0x002))
+ 
+-        elif re.match(b'show\s+tables$', p.Query, re.I):
++        elif re.match(r'show\s+tables$', p.Query, re.I):
+             r = [
+                 MySQL_Result_Header(FieldCount=1),
+                 MySQL_Result_Field(
 @@ -273,8 +273,8 @@
          if len(query) == 0:
              return False
@@ -150,9 +187,9 @@ diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dio
  
          m = re_select_var.match(p.Query)
          if m:
-diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/sip/extras.py dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.pyregex/modules/python/dionaea/sip/extras.py
---- dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/sip/extras.py	2024-07-07 13:02:22.107414203 +0200
-+++ dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.pyregex/modules/python/dionaea/sip/extras.py	2024-07-07 22:45:44.931721310 +0200
+diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/modules/python/dionaea/sip/extras.py dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/sip/extras.py
+--- dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/modules/python/dionaea/sip/extras.py	2024-07-16 02:09:42.471377315 +0200
++++ dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/sip/extras.py	2024-07-16 02:08:40.911028527 +0200
 @@ -261,7 +261,7 @@
          sdp = data[0]
          for n,v in media_ports.items():
@@ -162,9 +199,9 @@ diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dio
              else:
                  params[n] = v
  
-diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/sip/rfc2396.py dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.pyregex/modules/python/dionaea/sip/rfc2396.py
---- dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/sip/rfc2396.py	2024-07-07 13:02:22.108414207 +0200
-+++ dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.pyregex/modules/python/dionaea/sip/rfc2396.py	2024-07-07 22:39:28.573591939 +0200
+diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/modules/python/dionaea/sip/rfc2396.py dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/sip/rfc2396.py
+--- dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/modules/python/dionaea/sip/rfc2396.py	2024-07-16 02:09:42.473377327 +0200
++++ dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/sip/rfc2396.py	2024-07-16 02:08:40.911028527 +0200
 @@ -28,9 +28,9 @@
      b'"John Doe" <sip:john@example.org>'
      """
@@ -197,9 +234,9 @@ diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dio
      )
  
      def __init__(self, scheme = None, user = None, password = None, host = None, port = None, params = None, headers = None):
-diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/sip/rfc3261.py dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.pyregex/modules/python/dionaea/sip/rfc3261.py
---- dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/sip/rfc3261.py	2024-07-07 13:02:22.108414207 +0200
-+++ dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.pyregex/modules/python/dionaea/sip/rfc3261.py	2024-07-07 22:44:12.036195626 +0200
+diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/modules/python/dionaea/sip/rfc3261.py dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/sip/rfc3261.py
+--- dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/modules/python/dionaea/sip/rfc3261.py	2024-07-16 02:09:42.475377338 +0200
++++ dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/sip/rfc3261.py	2024-07-16 02:08:40.911028527 +0200
 @@ -678,7 +678,7 @@
      b'z9hG4bK77asjd' b'192.0.2.207'
      """
@@ -209,9 +246,9 @@ diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dio
  
      def __init__(self, protocol = None, address = None, port = None, params = None):
          if params is None:
-diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/smb/include/asn1/mib.py dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.pyregex/modules/python/dionaea/smb/include/asn1/mib.py
---- dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/smb/include/asn1/mib.py	2024-07-07 13:02:22.109414211 +0200
-+++ dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.pyregex/modules/python/dionaea/smb/include/asn1/mib.py	2024-07-07 22:54:19.294414833 +0200
+diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/modules/python/dionaea/smb/include/asn1/mib.py dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/smb/include/asn1/mib.py
+--- dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/modules/python/dionaea/smb/include/asn1/mib.py	2024-07-16 02:09:42.478377355 +0200
++++ dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/smb/include/asn1/mib.py	2024-07-16 02:08:40.913028539 +0200
 @@ -19,12 +19,12 @@
  ## MIB parsing ##
  #################
@@ -230,9 +267,9 @@ diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dio
  
  class MIBDict(DADict):
      def _findroot(self, x):
-diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/smb/include/fieldtypes.py dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.pyregex/modules/python/dionaea/smb/include/fieldtypes.py
---- dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/smb/include/fieldtypes.py	2024-07-07 13:02:22.110414215 +0200
-+++ dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.pyregex/modules/python/dionaea/smb/include/fieldtypes.py	2024-07-07 22:49:55.990143690 +0200
+diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/modules/python/dionaea/smb/include/fieldtypes.py dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/smb/include/fieldtypes.py
+--- dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/modules/python/dionaea/smb/include/fieldtypes.py	2024-07-16 02:09:42.480377366 +0200
++++ dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/smb/include/fieldtypes.py	2024-07-16 02:08:40.915028550 +0200
 @@ -188,7 +188,7 @@
      def m2i(self, pkt, x):
          return str2mac(x)
@@ -242,9 +279,9 @@ diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dio
              x = self.m2i(pkt, x)
          return x
      def i2repr(self, pkt, x):
-diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/smb/rpcservices.py dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.pyregex/modules/python/dionaea/smb/rpcservices.py
---- dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/smb/rpcservices.py	2024-07-07 13:02:22.111414219 +0200
-+++ dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.pyregex/modules/python/dionaea/smb/rpcservices.py	2024-07-07 22:46:56.501126285 +0200
+diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/modules/python/dionaea/smb/rpcservices.py dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/smb/rpcservices.py
+--- dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/modules/python/dionaea/smb/rpcservices.py	2024-07-16 02:09:42.484377389 +0200
++++ dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/smb/rpcservices.py	2024-07-16 02:08:40.916028556 +0200
 @@ -2802,7 +2802,7 @@
  
          rpclog.debug("docname {} outputfile {}".format(DocName, OutputFile))
@@ -254,9 +291,9 @@ diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dio
              # FIXME PIPE ATSVC COMMAND
              pass
          else:
-diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/util.py dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.pyregex/modules/python/dionaea/util.py
---- dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/util.py	2024-07-07 13:02:22.112414222 +0200
-+++ dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.pyregex/modules/python/dionaea/util.py	2024-07-07 22:33:58.158697406 +0200
+diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/modules/python/dionaea/util.py dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/util.py
+--- dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/modules/python/dionaea/util.py	2024-07-16 02:09:42.489377417 +0200
++++ dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/dionaea/util.py	2024-07-16 02:08:40.918028567 +0200
 @@ -74,14 +74,14 @@
      :return: List of urls or None
      """
