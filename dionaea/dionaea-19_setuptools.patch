@@ -1,7 +1,9 @@
-diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/setup.py.in2 dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.pysetup/modules/python/setup.py.in2
---- dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/setup.py.in2	2024-07-07 13:02:22.112414222 +0200
-+++ dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.pysetup/modules/python/setup.py.in2	2024-07-16 01:10:38.186996790 +0200
-@@ -5,15 +5,26 @@
+Only in dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python: binding.c
+Only in dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python: dionaea.egg-info
+diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/modules/python/setup.py.in2 dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/setup.py.in2
+--- dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/modules/python/setup.py.in2	2024-07-17 16:08:59.696655429 +0200
++++ dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/setup.py.in2	2024-07-26 19:55:26.698209490 +0200
+@@ -5,15 +5,30 @@
  #
  # SPDX-License-Identifier: GPL-2.0-or-later
  
@@ -16,24 +18,28 @@ diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/set
 -from Cython.Distutils import build_ext
 +# from Cython.Distutils import build_ext
 +
- 
++
 +# Helper function to get absolute path relative to this file
 +def get_abs_path(rel_path):
 +    return os.path.abspath(os.path.join(os.path.dirname(__file__), rel_path))
 +
++def get_rel_path(abs_path):
++    return os.path.relpath(os.path.join(os.path.dirname(__file__), abs_path))
+ 
+ 
 +# Function to process CMake-style paths
 +def process_cmake_path(path):
 +    if path.startswith('${CMAKE_CURRENT_SOURCE_DIR}'):
-+        return path.replace('${CMAKE_CURRENT_SOURCE_DIR}', '../../../modules/python')
++        return get_rel_path(get_abs_path(path))
 +    return path
- 
++
  def find_packages(base_path):
 -    base_path = convert_path(base_path)
 +    base_path = os.path.abspath(base_path)
      found = []
      for root, dirs, files in os.walk(base_path, followlinks=True):
          dirs[:] = [d for d in dirs if d[0] != '.' and d not in ('ez_setup', '__pycache__')]
-@@ -39,7 +50,7 @@
+@@ -39,7 +54,7 @@
      if i == '':
          continue
      elif i.startswith('-I'):
@@ -42,7 +48,7 @@ diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/set
      else:
          core_extra_compile_flags.add(i)
  
-@@ -53,15 +64,18 @@
+@@ -53,15 +68,28 @@
      elif i.startswith('-l'):
          core_libraries.add(i[2:])
      elif i.startswith('-L'):
@@ -50,23 +56,6 @@ diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/set
 +        core_library_dirs.add(process_cmake_path(i[2:]))
      else:
          core_library_other_flags.add(i)
- 
- ext_modules=[
-     Extension("dionaea.core",
--        ['${CMAKE_CURRENT_SOURCE_DIR}/binding.pyx'],
-+        [get_abs_path(process_cmake_path('${CMAKE_CURRENT_SOURCE_DIR}/binding.pyx'))],
-         language="c",
--        include_dirs=['${CMAKE_CURRENT_SOURCE_DIR}/../../include', '${CMAKE_CURRENT_SOURCE_DIR}/../../'] + list(core_include_dirs),
-+        include_dirs=[
-+            get_abs_path(process_cmake_path('${CMAKE_CURRENT_SOURCE_DIR}/../../include')),
-+            get_abs_path(process_cmake_path('${CMAKE_CURRENT_SOURCE_DIR}/../../'))
-+        ] + list(core_include_dirs),
-         extra_compile_args=list(core_extra_compile_flags),
-         libraries=list(core_libraries),
-         library_dirs=list(core_library_dirs),
-@@ -71,11 +85,28 @@
-     ),
- ]
  
 +class CustomBuildExt(_build_ext):
 +    def build_extensions(self):
@@ -77,6 +66,24 @@ diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/set
 +class CustomInstall(install):
 +    def run(self):
 +        install.run(self)
++
+ ext_modules=[
+     Extension("dionaea.core",
+-        ['${CMAKE_CURRENT_SOURCE_DIR}/binding.pyx'],
++        [get_abs_path(process_cmake_path('${CMAKE_CURRENT_SOURCE_DIR}/binding.pyx'))],
+         language="c",
+-        include_dirs=['${CMAKE_CURRENT_SOURCE_DIR}/../../include', '${CMAKE_CURRENT_SOURCE_DIR}/../../'] + list(core_include_dirs),
++        include_dirs=[
++            process_cmake_path('${CMAKE_CURRENT_SOURCE_DIR}/../../include'),
++            process_cmake_path('${CMAKE_CURRENT_SOURCE_DIR}/../../')
++        ] + list(core_include_dirs),
+         extra_compile_args=list(core_extra_compile_flags),
+         libraries=list(core_libraries),
+         library_dirs=list(core_library_dirs),
+@@ -71,11 +99,18 @@
+     ),
+ ]
+ 
 +
  setup(
 -    name = 'dionaea',
@@ -94,7 +101,6 @@ diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/set
 +    packages=find_packages(base_path=process_cmake_path('${CMAKE_CURRENT_SOURCE_DIR}')),
 +    package_dir={'': process_cmake_path('${CMAKE_CURRENT_SOURCE_DIR}')},
 +    zip_safe=False,
-+    include_package_data=True,
-+    python_requires='>=3.6',
++    include_package_data=True
  )
 +
