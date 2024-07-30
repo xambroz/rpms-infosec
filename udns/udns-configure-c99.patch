@@ -1,0 +1,15 @@
+Avoid incorrect pointer types and a pointer-to-int conversion with inet_pton and inet_ntop.
+diff -ru udns-0.6.orig/configure udns-0.6.new/configure
+--- udns-0.6.orig/configure	2024-07-26 06:54:06.000000000 +0200
++++ udns-0.6.new/configure	2024-07-30 15:14:16.142462741 +0200
+@@ -94,8 +94,8 @@
+ int main() {
+   char buf[64];
+   long x = 0;
+-  inet_ntop(AF_INET, &x, buf, sizeof(buf));
+-  inet_pton(AF_INET, buf, &x);
++  inet_ntop(AF_INET, (void *) &x, buf, sizeof(buf));
++  inet_pton(AF_INET, buf, (void *) &x);
+   return x;
+ } 
+ EOF
