@@ -1,6 +1,6 @@
 Name:           capstone
 Version:        5.0.1
-Release:        1%{?dist}
+Release:        6%{?dist}
 Summary:        A lightweight multi-platform, multi-architecture disassembly framework
 License:        BSD-3-Clause AND BSD-4-Clause AND APSL-2.0 AND NCSA AND MIT
 URL:            http://www.capstone-engine.org/
@@ -101,6 +101,15 @@ Requires:       %{name}%{?_isa} = %{version}-%{release}
 %{common_desc}
 The %{name}-devel package contains libraries and header files for
 developing applications that use %{name}.
+
+
+%package        static
+Summary:        Static linking of %{name} library
+
+%description    static
+%{common_desc}
+The %{name}-static package contains files needed for static linking
+of %{name} library into static binaries.
 
 
 
@@ -228,7 +237,7 @@ INCDIR="%{_includedir}" make install
 
 # cleanup static libraries
 find %{buildroot} -name '*.la' -exec rm -f {} ';'
-find %{buildroot} -name '*.a' -exec rm -f {} ';'
+# find %%{buildroot} -name '*.a' -exec rm -f {} ';'
 
 # add the manpage
 install -d -D %{buildroot}%{_mandir}/man1
@@ -306,6 +315,11 @@ popd
 %{_libdir}/pkgconfig/*
 
 
+%files static
+%license LICENSE.TXT LICENSE_LLVM.TXT
+%{_libdir}/libcapstone.a
+
+
 %if %{with python2}
 %files -n python2-capstone
 %{python2_sitelib}/*egg-info
@@ -334,6 +348,21 @@ popd
 
 
 %changelog
+* Wed Jul 31 2024 Michal Ambroz <rebus AT_ seznam.cz> - 5.0.1-6
+- add static subpackage for static building with capstone
+
+* Wed Jul 17 2024 Fedora Release Engineering <releng@fedoraproject.org> - 5.0.1-5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_41_Mass_Rebuild
+
+* Fri Jun 07 2024 Python Maint <python-maint@redhat.com> - 5.0.1-4
+- Rebuilt for Python 3.13
+
+* Tue Jan 23 2024 Fedora Release Engineering <releng@fedoraproject.org> - 5.0.1-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_40_Mass_Rebuild
+
+* Fri Jan 19 2024 Fedora Release Engineering <releng@fedoraproject.org> - 5.0.1-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_40_Mass_Rebuild
+
 * Fri Sep 15 2023 Jonathan Wright <jonathan@almalinux.org> - 5.0.1-1
 - Update to 5.0.1
 
