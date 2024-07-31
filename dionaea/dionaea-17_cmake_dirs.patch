@@ -1,0 +1,178 @@
+diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/cmake/InstallConfig.cmake dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/cmake/InstallConfig.cmake
+--- dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/cmake/InstallConfig.cmake	2021-02-08 06:48:52.000000000 +0100
++++ dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/cmake/InstallConfig.cmake	2024-07-07 16:40:50.457869174 +0200
+@@ -12,17 +12,17 @@
+   get_filename_component(src_name "${src}" NAME)
+   get_filename_component(basename_dest "${src}" NAME)
+   install(CODE "
+-    if(\${CMAKE_INSTALL_FULL_PREFIX} MATCHES .*/_CPack_Packages/.* OR NOT EXISTS \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${dest}/${src_name}\")
+-      message(STATUS \"Installing: \$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${dest}/${src_name}\")
++    if(\${CMAKE_INSTALL_FULL_PREFIX} MATCHES .*/_CPack_Packages/.* OR NOT EXISTS \"\$ENV{DESTDIR}/${dest}/${src_name}\")
++      message(STATUS \"Installing: \$ENV{DESTDIR}/${dest}/${src_name}\")
+       execute_process(COMMAND \${CMAKE_COMMAND} -E copy \"${src}\"
+-                      \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${dest}/${src_name}\"
++                      \"\$ENV{DESTDIR}/${dest}/${src_name}\"
+                       RESULT_VARIABLE copy_result
+                       ERROR_VARIABLE error_output)
+       if(copy_result)
+         message(FATAL_ERROR \${error_output})
+       endif()
+     else()
+-      message(STATUS \"Skipping  : \$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${dest}/${src_name}\")
++      message(STATUS \"Skipping  : \$ENV{DESTDIR}/${dest}/${src_name}\")
+     endif()
+   ")
+ endfunction()
+diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/cmake/InstallPythonConfig.cmake dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/cmake/InstallPythonConfig.cmake
+--- dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/cmake/InstallPythonConfig.cmake	2021-02-08 06:48:52.000000000 +0100
++++ dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/cmake/InstallPythonConfig.cmake	2024-07-07 13:16:38.947125822 +0200
+@@ -43,13 +43,13 @@
+         if(NOT EXISTS "${_conf_dst}")
+             install(DIRECTORY DESTINATION "${_conf_dst}")
+             foreach(filename ${MY_FUNC_FILES})
+-                install(CODE "message(STATUS \"Enabling Service: ${filename} in \$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${_conf_dst}\")")
++                install(CODE "message(STATUS \"Enabling Service: ${filename} in \$ENV{DESTDIR}/${_conf_dst}\")")
+                 install(CODE "
+                 EXECUTE_PROCESS(
+                     COMMAND \"${CMAKE_COMMAND}\" -E create_symlink
+                         ${MY_FUNC_SOURCE_REL_DIR}/${filename}
+                         ${filename}
+-                    WORKING_DIRECTORY \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${_conf_dst}\"
++                    WORKING_DIRECTORY \"\$ENV{DESTDIR}/${_conf_dst}\"
+                 )
+             ")
+             endforeach()
+diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/modules/curl/CMakeLists.txt dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/curl/CMakeLists.txt
+--- dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/modules/curl/CMakeLists.txt	2021-02-08 06:48:52.000000000 +0100
++++ dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/curl/CMakeLists.txt	2024-07-07 21:51:47.636592554 +0200
+@@ -40,5 +40,5 @@
+ 
+ install(
+   TARGETS module_curl
+-  LIBRARY DESTINATION lib/dionaea
++  LIBRARY DESTINATION ${DIONAEA_MODDIR}
+ )
+diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/modules/emu/CMakeLists.txt dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/emu/CMakeLists.txt
+--- dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/modules/emu/CMakeLists.txt	2021-02-08 06:48:52.000000000 +0100
++++ dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/emu/CMakeLists.txt	2024-07-07 21:52:01.819707360 +0200
+@@ -41,5 +41,5 @@
+ 
+ install(
+   TARGETS module_emu
+-  LIBRARY DESTINATION lib/dionaea
++  LIBRARY DESTINATION ${DIONAEA_MODDIR}
+ )
+diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/modules/nfq/CMakeLists.txt dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/nfq/CMakeLists.txt
+--- dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/modules/nfq/CMakeLists.txt	2021-02-08 06:48:52.000000000 +0100
++++ dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/nfq/CMakeLists.txt	2024-07-07 21:52:50.925104849 +0200
+@@ -41,5 +41,5 @@
+ 
+ install(
+   TARGETS module_nfq
+-  LIBRARY DESTINATION lib/dionaea
++  LIBRARY DESTINATION ${DIONAEA_MODDIR}
+ )
+diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/modules/nl/CMakeLists.txt dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/nl/CMakeLists.txt
+--- dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/modules/nl/CMakeLists.txt	2021-02-08 06:48:52.000000000 +0100
++++ dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/nl/CMakeLists.txt	2024-07-07 21:52:58.748168174 +0200
+@@ -42,5 +42,5 @@
+ 
+ install(
+   TARGETS module_nl
+-  LIBRARY DESTINATION lib/dionaea
++  LIBRARY DESTINATION ${DIONAEA_MODDIR}
+ )
+diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/modules/pcap/CMakeLists.txt dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/pcap/CMakeLists.txt
+--- dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/modules/pcap/CMakeLists.txt	2021-02-08 06:48:52.000000000 +0100
++++ dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/pcap/CMakeLists.txt	2024-07-07 21:53:08.484246984 +0200
+@@ -39,5 +39,5 @@
+ 
+ install(
+   TARGETS module_pcap
+-  LIBRARY DESTINATION lib/dionaea
++  LIBRARY DESTINATION ${DIONAEA_MODDIR}
+ )
+diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/modules/xmatch/CMakeLists.txt dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/xmatch/CMakeLists.txt
+--- dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/modules/xmatch/CMakeLists.txt	2021-02-08 06:48:52.000000000 +0100
++++ dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/xmatch/CMakeLists.txt	2024-07-07 21:54:00.053664426 +0200
+@@ -27,5 +27,5 @@
+ 
+ install(
+   TARGETS xmatch
+-  LIBRARY DESTINATION lib
++  LIBRARY DESTINATION ${DIONAEA_MODDIR}
+ )
+diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/src/CMakeLists.txt dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/src/CMakeLists.txt
+--- dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/src/CMakeLists.txt	2021-02-08 06:48:52.000000000 +0100
++++ dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/src/CMakeLists.txt	2024-07-07 23:02:13.808986562 +0200
+@@ -59,7 +59,7 @@
+ 
+ install (
+     TARGETS dionaea
+-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
++    RUNTIME DESTINATION ${CMAKE_INSTALL_SBINDIR}
+ )
+ 
+ configure_file(
+diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/modules/python/CMakeLists.txt dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/CMakeLists.txt
+--- dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/modules/python/CMakeLists.txt	2021-02-08 06:48:52.000000000 +0100
++++ dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/CMakeLists.txt	2024-07-07 16:39:03.665446438 +0200
+@@ -31,7 +31,7 @@
+     )
+ 
+     #install(CODE "execute_process(COMMAND ${PYTHON_EXECUTABLE} ${SETUP_PY} install --prefix=${CMAKE_INSTALL_PREFIX})")
+-    install(CODE "execute_process(COMMAND ${PYTHON_EXECUTABLE} ${SETUP_PY} install --install-lib=\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${DIONAEA_PYTHON_SITELIBDIR})")
++    install(CODE "execute_process(COMMAND ${PYTHON_EXECUTABLE} ${SETUP_PY} install --install-lib=\$ENV{DESTDIR}/${DIONAEA_PYTHON_SITELIBDIR})")
+ endif()
+ 
+ add_library(
+diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/CMakeLists.txt dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/CMakeLists.txt
+--- dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/CMakeLists.txt	2021-02-08 06:48:52.000000000 +0100
++++ dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/CMakeLists.txt	2024-07-08 04:14:55.578867606 +0200
+@@ -66,7 +66,27 @@
+ 
+ option(RELEASE_BUILD "Remove Git revision from program version (use for stable releases)" OFF)
+ 
++# Default install prefix for Dionaea
++if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
++    message(STATUS "INFO: Setting the CMAKE_INSTALL_PREFIX to default - /opt/dionaea")
++    set_property(CACHE CMAKE_INSTALL_PREFIX PROPERTY VALUE "/opt/dionaea")
++endif()
++
++message(STATUS "Before GNUInstallDirs: CMAKE_INSTALL_FULL_LOCALSTATEDIR = ${CMAKE_INSTALL_FULL_LOCALSTATEDIR}")
+ include(GNUInstallDirs)
++message(STATUS "After GNUInstallDirs: CMAKE_INSTALL_FULL_LOCALSTATEDIR = ${CMAKE_INSTALL_FULL_LOCALSTATEDIR}")
++
++### Dionaea non-FHS compliant defaults /opt/dionaea
++# Dionaea defaults are different from FHS as used in GNUInstallDirs
++# for example the default when prefix is set to /opt/dionaea, the configuration
++# is expected in /opt/dionaea/etc and not in /etc/opt/dionaea, same for the state dirs
++# expected to be in /opt/dionaea/var/lib and not in /var/opt/dionaea/lib
++if(CMAKE_INSTALL_PREFIX STREQUAL "/opt/dionaea")
++    set(CMAKE_INSTALL_FULL_SYSCONFDIR "${CMAKE_INSTALL_PREFIX}/etc" CACHE PATH "Configuration")
++    set(CMAKE_INSTALL_FULL_LOCALSTATEDIR "${CMAKE_INSTALL_PREFIX}/var" CACHE PATH "Modifiable single-machine data (var)" FORCE)
++    set(CMAKE_INSTALL_FULL_RUNSTATEDIR "${CMAKE_INSTALL_FULL_LOCALSTATEDIR}/run" CACHE PATH "Run-time variable data (LOCALSTATEDIR/run)")
++endif()
++
+ include(InstallConfig)
+ include(Packaging)
+ 
+@@ -90,12 +110,12 @@
+ 
+ set(DIONAEA_USER "dionaea" CACHE STRING "Dionaea user")
+ set(DIONAEA_GROUP "dionaea" CACHE STRING "Dionaea group")
+-set(DIONAEA_MODDIR ${CMAKE_INSTALL_LIBDIR}/dionaea)
+-set(DIONAEA_CONFDIR ${CMAKE_INSTALL_SYSCONFDIR}/dionaea)
+-set(DIONAEA_RUNDIR "${CMAKE_INSTALL_LOCALSTATEDIR}/run" CACHE STRING "/run directory")
+-set(DIONAEA_STATEDIR ${CMAKE_INSTALL_LOCALSTATEDIR}/lib/dionaea)
+-set(DIONAEA_LOGDIR ${CMAKE_INSTALL_LOCALSTATEDIR}/log/dionaea)
+-set(DIONAEA_PYTHON_SITELIBDIR ${CMAKE_INSTALL_LIBDIR}/dionaea/python)
++set(DIONAEA_MODDIR ${CMAKE_INSTALL_FULL_LIBDIR}/dionaea CACHE PATH "Dionaea directory for plugin modules")
++set(DIONAEA_CONFDIR ${CMAKE_INSTALL_FULL_SYSCONFDIR}/dionaea CACHE PATH "Dionaea configuration directory")
++set(DIONAEA_RUNDIR "${CMAKE_INSTALL_FULL_LOCALSTATEDIR}/run" CACHE PATH "Dionaea /run directory")
++set(DIONAEA_STATEDIR ${CMAKE_INSTALL_FULL_LOCALSTATEDIR}/lib/dionaea CACHE PATH "Dionaea directory for storing the status")
++set(DIONAEA_LOGDIR ${CMAKE_INSTALL_FULL_LOCALSTATEDIR}/log/dionaea CACHE PATH "Dionaea log directory")
++set(DIONAEA_PYTHON_SITELIBDIR ${CMAKE_INSTALL_FULL_LIBDIR}/dionaea/python CACHE PATH "Dionaea location of python modules")
+ 
+ ########### requirements ###############
+ 
