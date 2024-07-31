@@ -1,0 +1,889 @@
+diff -Naur sipcalc-1.1.5.orig/include/sub.h sipcalc-1.1.5/include/sub.h
+--- sipcalc-1.1.5.orig/include/sub.h	2005-11-02 10:27:04.000000000 +0100
++++ sipcalc-1.1.5/include/sub.h	2012-01-24 18:42:05.979999552 +0100
+@@ -75,6 +75,12 @@
+ #define V6ADDR_VAL "0123456789ABCDEFabcdef:"
+ #define NETMASK_VAL "0123456789"
+ 
++#define TERMINATE(x) (x[sizeof(x)-1]='\0')
++#define safe_strncpy(dest,src) strncpy(dest,src,sizeof(dest)-1+TERMINATE(dest)*0)
++#define safe_strncat(dest,src) strncat(dest,src,sizeof(dest)-1+TERMINATE(dest)*0)
++#define safe_snprintf(dest,whatever...) snprintf(dest,sizeof(dest),## whatever)
++#define safe_bzero(dest) bzero((char *)dest,sizeof(dest))
++
+ /*
+  * Easier to define this ourselves then to use all the different
+  * versions from different platforms.
+diff -Naur sipcalc-1.1.5.orig/src/interface.c sipcalc-1.1.5/src/interface.c
+--- sipcalc-1.1.5.orig/src/interface.c	2003-03-19 13:28:15.000000000 +0100
++++ sipcalc-1.1.5/src/interface.c	2012-01-24 19:05:01.453000525 +0100
+@@ -60,10 +60,10 @@
+ 	n_if = ifarg_cur->next;
+ 	n_if->next = NULL;
+ 	bzero ((char *) n_if->name, IFNAMSIZ + 1);
+-	bzero ((char *) n_if->p_v4addr, 19);
+-	bzero ((char *) n_if->p_v4nmask, 16);
+-	bzero ((char *) n_if->errorstr, 64);
+-	bzero ((char *) n_if->cmdstr, 128);
++	safe_bzero (n_if->p_v4addr);
++	safe_bzero (n_if->p_v4nmask);
++	safe_bzero (n_if->errorstr);
++	safe_bzero (n_if->cmdstr);
+ 	n_if->type = 0;
+ 
+ 	return n_if;
+diff -Naur sipcalc-1.1.5.orig/src/sub.c sipcalc-1.1.5/src/sub.c
+--- sipcalc-1.1.5.orig/src/sub.c	2009-07-20 22:33:18.000000000 +0200
++++ sipcalc-1.1.5/src/sub.c	2012-01-24 19:09:15.453000027 +0100
+@@ -194,26 +194,26 @@
+ 	char buf[2], sbuf[128], dbuf[128], *arg1, *arg2;
+ 	int x, y, z, argmax;
+ 
+-	bzero ((char *) buf, 2);
++	safe_bzero (buf);
+ 
+ 	argmax = (IFNAMSIZ + 1 > 19) ? IFNAMSIZ + 1 : 19;
+ 	arg1 = (char *) malloc (argmax);
+ 	arg2 = (char *) malloc (16);
+ 	bzero ((char *) arg1, argmax);
+ 	bzero ((char *) arg2, 16);
+-	bzero ((char *) sbuf, 128);
+-	bzero ((char *) dbuf, 128);
++	safe_bzero (sbuf);
++	safe_bzero (dbuf);
+ 
+ 	while (!sbuf[0]) {
+ 		x = 0;
+ 		y = 0;
+-		bzero ((char *) sbuf, 128);
++		safe_bzero (sbuf);
+ 		do {
+ 			x = read (0, buf, 1);
+ 			if (x == 1)
+ 				sbuf[y] = buf[0];
+ 			y++;
+-		} while (x > 0 && buf[0] != '\n' && y < 127);
++		} while (x > 0 && buf[0] != '\n' && y < (sizeof(sbuf)-1));
+ 		if (x < 0) {
+ 			free (arg1);
+ 			free (arg2);
+@@ -272,7 +272,7 @@
+ {
+ 	abox->next = (struct argbox *) malloc (sizeof (struct argbox));
+ 	abox = abox->next;
+-	bzero ((char *) abox, 128);
++	safe_bzero (abox->str);
+ 	abox->type = 0;
+ 	abox->resolv = 0;
+ 	abox->next = NULL;
+@@ -313,14 +313,13 @@
+ 	 * We use goto's here *gasp*.
+ 	 */
+ 	while (argv[argcount]) {
+-		bzero ((char *) expaddr, 128);
+-
+-		strncpy (expaddr, argv[argcount], 127);
++		safe_bzero (expaddr);
+ 
++		safe_strncpy (expaddr, argv[argcount]);
+ 		/*
+ 		 * Baaad argument.
+ 		 */
+-		if (strlen (argv[argcount]) > 127) {
++		if (strlen (argv[argcount]) > sizeof(expaddr)-1) {
+ 			printf ("-[ERR : INVALID ARG - %s]\n", expaddr);
+ 			error = 1;
+ 			goto complete;
+@@ -331,7 +330,7 @@
+ 		 */
+ 		x = validate_v6addr (expaddr);
+ 		if (x) {
+-			strncpy (abox_cur->str, expaddr, 127);
++			safe_strncpy (abox_cur->str, expaddr);
+ 			abox_cur->type = AT_V6;
+ 			abox_cur->resolv = 0;
+ 			abox_cur = new_arg (abox_cur);
+@@ -347,7 +346,7 @@
+ 		 */
+ 		x = validate_netmask (expaddr);
+ 		if (x == 2) {
+-			strncpy (abox_cur->str, expaddr, 127);
++			safe_strncpy (abox_cur->str, expaddr);
+ 			abox_cur->type = AT_V4;
+ 			abox_cur->resolv = 0;
+ 			abox_cur = new_arg (abox_cur);
+@@ -386,17 +385,17 @@
+ 		if (argcount + 1 < argc)
+ 			y = validate_netmask (argv[argcount + 1]);
+ 		if (y == 1 || y == 3) {
+-			snprintf (abox_cur->str, 127, "%s %s", expaddr, argv[argcount + 1]);
++			safe_snprintf (abox_cur->str, "%s %s", expaddr, argv[argcount + 1]);
+ 			argcount++;
+ 		}
+ 		else
+-			strncpy (abox_cur->str, expaddr, 127);
++			safe_strncpy (abox_cur->str, expaddr);
+ 		abox_cur->type = AT_UNKWN;
+ 		abox_cur->resolv = 1;
+ 		abox_cur = new_arg (abox_cur);
+ 
+ complete:
+-		bzero ((char *) expaddr, 128);
++		safe_bzero (expaddr);
+ 		argcount++;
+ 	}
+ 
+@@ -428,8 +427,8 @@
+ 	    (struct if_info *) malloc (sizeof (struct if_info));
+ 	ifarg_cur->next = NULL;
+ 	bzero ((char *) ifarg_cur->name, IFNAMSIZ);
+-	bzero ((char *) ifarg_cur->p_v4addr, 19);
+-	bzero ((char *) ifarg_cur->p_v4nmask, 16);
++	safe_bzero (ifarg_cur->p_v4addr);
++	safe_bzero (ifarg_cur->p_v4nmask);
+ 
+ 	while (abox) {
+ 		if (abox->type == AT_V4 && !abox->resolv) {
+@@ -449,19 +448,19 @@
+ 				x++;
+ 			}
+ 			ifarg_cur->type = IFT_V4;
+-			strncpy (ifarg_cur->cmdstr, abox->str, 127);
++			safe_strncpy (ifarg_cur->cmdstr, abox->str);
+ 		}
+ 
+ 		if (abox->type == AT_V4 && abox->resolv) {
+ 			d_resp_start = d_resp_cur = (struct dnsresp *) malloc (sizeof (struct dnsresp));
+ 			d_resp_start->next = NULL;
+-			bzero((char *) d_resp_start->str, 128);
++			safe_bzero(d_resp_start->str);
+ 			d_resp_start->type = 0;
+ 			tmpstr = resolve_addr (abox->str, PF_INET, d_resp_cur);
+ 			if (tmpstr) {
+ 				d_resp_cur = d_resp_start;
+ 				while (d_resp_cur) {
+-					strncpy (ifarg_cur->cmdstr, abox->str, 127);
++					safe_strncpy (ifarg_cur->cmdstr, abox->str);
+ 					tmpstr = strstr (d_resp_cur->str, " ");
+ 					if (tmpstr != NULL && (strlen (tmpstr) > 0)) {
+ 						tmpstr++;
+@@ -484,8 +483,8 @@
+ 				}
+ 			}
+ 			else {
+-				strncpy (ifarg_cur->p_v4addr, abox->str, 18);
+-				strncpy (ifarg_cur->cmdstr, abox->str, 127);
++				safe_strncpy (ifarg_cur->p_v4addr, abox->str);
++				safe_strncpy (ifarg_cur->cmdstr, abox->str);
+ 				ifarg_cur->type = IFT_V4;
+ 			}
+ 
+@@ -493,8 +492,8 @@
+ 		}
+ 
+ 		if (abox->type == AT_V6 && !abox->resolv) {
+-			strncpy (ifarg_cur->p_v6addr, abox->str, 43);
+-			strncpy (ifarg_cur->cmdstr, abox->str, 127);
++			safe_strncpy (ifarg_cur->p_v6addr, abox->str);
++			safe_strncpy (ifarg_cur->cmdstr, abox->str);
+ 
+ 			mk_ipv6addr (&ifarg_cur->v6ad, ifarg_cur->p_v6addr);
+ 			ifarg_cur->type = IFT_V6;
+@@ -503,14 +502,14 @@
+ 		if (abox->type == AT_V6 && abox->resolv) {
+ 			d_resp_start = d_resp_cur = (struct dnsresp *) malloc (sizeof (struct dnsresp));
+ 			d_resp_start->next = NULL;
+-			bzero((char *) d_resp_start->str, 128);
++			safe_bzero(d_resp_start->str);
+ 			d_resp_start->type = 0;
+ 			tmpstr = resolve_addr (abox->str, PF_INET6, d_resp_cur);
+ 			if (tmpstr) {
+ 				d_resp_cur = d_resp_start;
+ 				while (d_resp_cur) {
+-					strncpy (ifarg_cur->cmdstr, abox->str, 127);
+-					strncpy (ifarg_cur->p_v6addr, d_resp_cur->str, 43);
++					safe_strncpy (ifarg_cur->cmdstr, abox->str);
++					safe_strncpy (ifarg_cur->p_v6addr, d_resp_cur->str);
+ 					ifarg_cur->type = IFT_V6;
+ 
+ 					mk_ipv6addr (&ifarg_cur->v6ad, ifarg_cur->p_v6addr);
+@@ -521,8 +520,8 @@
+ 				}
+ 			}
+ 			else {
+-				strncpy (ifarg_cur->cmdstr, abox->str, 127);
+-				strncpy (ifarg_cur->p_v6addr, abox->str, 43);
++				safe_strncpy (ifarg_cur->cmdstr, abox->str);
++				safe_strncpy (ifarg_cur->p_v6addr, abox->str);
+ 				ifarg_cur->type = IFT_V6;
+ 
+ 				mk_ipv6addr (&ifarg_cur->v6ad, ifarg_cur->p_v6addr);
+@@ -542,15 +541,15 @@
+ 					}
+ 					memcpy ((struct if_info *) ifarg_cur, (struct if_info *) if_cur, sizeof (struct if_info));
+ 					ifarg_cur->type = IFT_INTV4;
+-					strncpy (ifarg_cur->cmdstr, abox->str, 127);
++					safe_strncpy (ifarg_cur->cmdstr, abox->str);
+ 					if_found = 1;
+ 				}
+ 				if_cur = if_cur->next;
+ 			}
+ 			if (!if_found) {
+ 				strncpy (ifarg_cur->name, abox->str, IFNAMSIZ);
+-				strncpy (ifarg_cur->cmdstr, abox->str, 127);
+-				snprintf(ifarg_cur->errorstr, sizeof(ifarg_cur->errorstr), "Unable to retrieve interface information");
++				safe_strncpy (ifarg_cur->cmdstr, abox->str);
++				safe_snprintf(ifarg_cur->errorstr, "Unable to retrieve interface information");
+ 				ifarg_cur->type = IFT_INTV4;
+ 			}
+ 		}
+@@ -566,15 +565,15 @@
+ 					}
+ 					memcpy ((struct if_info *) ifarg_cur, (struct if_info *) if_cur, sizeof (struct if_info));
+ 					ifarg_cur->type = IFT_INTV4;
+-					strncpy (ifarg_cur->cmdstr, abox->str, 127);
++					safe_strncpy (ifarg_cur->cmdstr, abox->str);
+ 					if_found = 1;
+ 				}
+ 				if_cur = if_cur->next;
+ 			}
+ 			if (!if_found) {
+ 				strncpy (ifarg_cur->name, abox->str, IFNAMSIZ);
+-				strncpy (ifarg_cur->cmdstr, abox->str, 127);
+-				snprintf(ifarg_cur->errorstr, sizeof(ifarg_cur->errorstr), "Unable to retrieve interface information");
++				safe_strncpy (ifarg_cur->cmdstr, abox->str);
++				safe_snprintf(ifarg_cur->errorstr, "Unable to retrieve interface information");
+ 				ifarg_cur->type = IFT_INTV4;
+ 			}
+ 		}
+@@ -582,15 +581,15 @@
+ 		if (abox->type == AT_UNKWN && abox->resolv) {
+ 			d_resp_start = d_resp_cur = (struct dnsresp *) malloc (sizeof (struct dnsresp));
+ 			d_resp_start->next = NULL;
+-			bzero((char *) d_resp_start->str, 128);
++			safe_bzero(d_resp_start->str);
+ 			d_resp_start->type = 0;
+ 			tmpstr = resolve_addr (abox->str, PF_UNSPEC, d_resp_cur);
+ 			if (tmpstr) {
+ 				d_resp_cur = d_resp_start;
+ 				while (d_resp_cur) {
+-					strncpy (ifarg_cur->cmdstr, abox->str, 127);
++					safe_strncpy (ifarg_cur->cmdstr, abox->str);
+ 					if (d_resp_cur->type == AF_INET6) {
+-						strncpy (ifarg_cur->p_v6addr, d_resp_cur->str, 43);
++						safe_strncpy (ifarg_cur->p_v6addr, d_resp_cur->str);
+ 						ifarg_cur->type = IFT_V6;
+ 
+ 						mk_ipv6addr (&ifarg_cur->v6ad, ifarg_cur->p_v6addr);
+@@ -631,14 +630,14 @@
+ 						}
+ 						memcpy ((struct if_info *) ifarg_cur, (struct if_info *) if_cur, sizeof (struct if_info));
+ 						ifarg_cur->type = IFT_INTV4;
+-						strncpy (ifarg_cur->cmdstr, abox->str, 127);
++						safe_strncpy (ifarg_cur->cmdstr, abox->str);
+ 						if_found = 1;
+ 					}
+ 					if_cur = if_cur->next;
+ 				}
+ 				if (!if_found) {
+-					strncpy (ifarg_cur->cmdstr, abox->str, 127);
+-					snprintf(ifarg_cur->errorstr, sizeof(ifarg_cur->errorstr), "Unparsable argument.");
++					safe_strncpy (ifarg_cur->cmdstr, abox->str);
++					safe_snprintf(ifarg_cur->errorstr, "Unparsable argument.");
+ 					ifarg_cur->type = IFT_UNKWN;
+ 				}
+ 
+@@ -728,7 +727,7 @@
+ 	 * v[4,6]args.
+ 	 */
+ 	abox_start = abox_cur = (struct argbox *) malloc (sizeof (struct argbox));
+-	bzero ((char *) abox_cur, 128);
++	safe_bzero (abox_cur->str);
+ 	abox_cur->type = 0;
+ 	abox_cur->resolv = 0;
+ 	abox_cur->next = NULL;
+@@ -822,7 +821,7 @@
+ 			printf ("Try '%s -h' for more information.\n", NAME);
+ 			return 0;
+ 		case '4':
+-			strncpy (abox_cur->str, optarg, 127);
++			safe_strncpy (abox_cur->str, optarg);
+ 			abox_cur->type = AT_V4;
+ 			abox_cur->resolv = 1;
+ 			if (validate_netmask (optarg) == 2)
+@@ -833,7 +832,7 @@
+ 
+ 			break;
+ 		case '6':
+-			strncpy (abox_cur->str, optarg, 127);
++			safe_strncpy (abox_cur->str, optarg);
+ 			abox_cur->type = AT_V6;
+ 			abox_cur->resolv = 1;
+ 			if (validate_v6addr (expaddr) == 1)
+@@ -842,7 +841,7 @@
+ 
+ 			break;
+ 		case 'I':
+-			strncpy (abox_cur->str, optarg, 127);
++			safe_strncpy (abox_cur->str, optarg);
+ 			abox_cur->type = AT_INT;
+ 			abox_cur->resolv = 0;
+ 			abox_cur = new_arg (abox_cur);
+@@ -936,7 +935,7 @@
+ 	iffound = 0;
+ 	index = 0;
+ 	ifarg_cur = ifarg_start;
+-	bzero ((char *) oldcmdstr, 128);
++	safe_bzero (oldcmdstr);
+ 	while (ifarg_cur && !parse_stdin) {
+ 		if (strlen (ifarg_cur->cmdstr) > 0) {
+ 			if (!strcmp (ifarg_cur->cmdstr, oldcmdstr))
+@@ -948,7 +947,7 @@
+ 			index = 0;
+ 		}
+ 		iffound += out_cmdline (ifarg_cur, v4args, m_argv4, v6args, m_argv6, 0, index);
+-		strcpy (oldcmdstr, ifarg_cur->cmdstr);
++		safe_strncpy (oldcmdstr, ifarg_cur->cmdstr);
+ 		ifarg_cur = ifarg_cur->next;
+ 	}
+ 
+@@ -991,7 +990,7 @@
+ 				iffound = 0;
+ 				index = 0;
+ 				ifarg_cur = ifarg_start;
+-				bzero ((char *) oldcmdstr, 128);
++				safe_bzero (oldcmdstr);
+ 				while (ifarg_cur) {
+ 					if (strlen (ifarg_cur->cmdstr) > 0) {
+ 						if (!strcmp (ifarg_cur->cmdstr, oldcmdstr))
+@@ -1003,7 +1002,7 @@
+ 						index = 0;
+ 					}
+ 					iffound += out_cmdline (ifarg_cur, v4args, m_argv4, v6args, m_argv6, 0, index);
+-					strcpy (oldcmdstr, ifarg_cur->cmdstr);
++					safe_strncpy (oldcmdstr, ifarg_cur->cmdstr);
+ 					ifarg_cur = ifarg_cur->next;
+ 				}
+ 			}
+@@ -1012,7 +1011,7 @@
+ 			free_if (ifarg_start);
+ 			free_boxargs (abox_start);
+ 			abox_start = abox_cur = (struct argbox *) malloc (sizeof (struct argbox));
+-			bzero ((char *) abox_cur, 128);
++			safe_bzero (abox_cur->str);
+ 			abox_cur->type = 0;
+ 			abox_cur->resolv = 0;
+ 			abox_cur->next = NULL;
+diff -Naur sipcalc-1.1.5.orig/src/sub-func.c sipcalc-1.1.5/src/sub-func.c
+--- sipcalc-1.1.5.orig/src/sub-func.c	2006-11-10 10:46:45.000000000 +0100
++++ sipcalc-1.1.5/src/sub-func.c	2012-01-24 19:02:51.245000309 +0100
+@@ -115,7 +115,7 @@
+ 	y = 0;
+ 	for (x = 0; x < 4; x++) {
+ 		z = 0;
+-		bzero ((char *) buf, 16);
++		safe_bzero (buf);
+ 		while (addr[y] != '.' && y < strlen (addr)) {
+ 			buf[z] = addr[y];
+ 			y++;
+@@ -177,7 +177,7 @@
+ 	if (x == 1)
+ 		return 3;
+ 
+-	bzero ((char *) addr, 16);
++	safe_bzero (addr);
+ 	if (strstr (in_addr, "/")) {
+ 		x = 0;
+ 		while (in_addr[x] != '/' && x < 15) {
+@@ -185,7 +185,7 @@
+ 			x++;
+ 		}
+ 	} else {
+-		strncpy (addr, in_addr, 16);
++		safe_strncpy (addr, in_addr);
+ 	}
+ 
+ 	/*
+@@ -311,7 +311,7 @@
+ 	if (!validate_v4addr (quad))
+ 		return -1;
+ 
+-	bzero ((char *) buf, 128);
++	safe_bzero (buf);
+ 	x = 0;
+ 	while (quad[x] != '.') {
+ 		buf[x] = quad[x];
+@@ -324,7 +324,7 @@
+ 		if (z > 255 || z < 0)
+ 			return -1;
+ 		*num = *num | (z << (8 * (3 - y)));
+-		bzero ((char *) buf, 128);
++		safe_bzero (buf);
+ 		z = 0;
+ 		while (quad[x] != '.' && quad[x] != '\0' && x < strlen (quad)) {
+ 			buf[z] = quad[x];
+@@ -345,8 +345,8 @@
+ 
+ 	for (x = 0; x < 4; x++)
+ 		a[x] = num >> (8 * (3 - x)) & 0xff;
+-	bzero ((char *) quad, 17);
+-	snprintf (quad, 16, "%d.%d.%d.%d", a[0], a[1], a[2], a[3]);
++	safe_bzero (quad);
++	safe_snprintf (quad, "%d.%d.%d.%d", a[0], a[1], a[2], a[3]);
+ 
+ 	return quad;
+ }
+@@ -357,7 +357,7 @@
+ 	static char bitmap[36];
+ 	int x, y, z;
+ 
+-	bzero ((char *) bitmap, 36);
++	safe_bzero (bitmap);
+ 	y = 1;
+ 	z = 0;
+ 	for (x = 0; x < 32; x++) {
+@@ -384,8 +384,8 @@
+ 	char *s_find;
+ 	int x, y, z;
+ 
+-	bzero ((char *) buf, 128);
+-	bzero ((char *) buf2, 128);
++	safe_bzero (buf);
++	safe_bzero (buf2);
+ 	ifi->v4ad.n_nmaskbits = 0;
+ 
+ 	/*
+@@ -509,7 +509,7 @@
+ 	/*
+ 	 * network class, class remark and classfull netmask
+ 	 */
+-	bzero ((char *) ifi->v4ad.class_remark, 64);
++	safe_bzero (ifi->v4ad.class_remark);
+ 	x = ifi->v4ad.n_haddr >> 24;
+ 	ifi->v4ad.n_cnaddr = 0;
+ 	if (!(x & 0x80)) {
+@@ -526,18 +526,18 @@
+ 	}
+ 	if ((x & 0xf0) == 0xe0) {
+ 		ifi->v4ad.class = 'D';
+-		snprintf (ifi->v4ad.class_remark, 64, " (multicast network)");
++		safe_snprintf (ifi->v4ad.class_remark, " (multicast network)");
+ 		ifi->v4ad.n_cnmask = ifi->v4ad.n_nmask;
+ 	}
+ 	if ((x & 0xf8) == 0xf0) {
+ 		ifi->v4ad.class = 'E';
+-		snprintf (ifi->v4ad.class_remark, 64,
++		safe_snprintf (ifi->v4ad.class_remark,
+ 			  " (reserved for future use)");
+ 		ifi->v4ad.n_cnmask = ifi->v4ad.n_nmask;
+ 	}
+ 	if (ifi->v4ad.class == '\0') {
+ 		ifi->v4ad.n_cnmask = ifi->v4ad.n_nmask;
+-		snprintf (ifi->v4ad.class_remark, 64, "Nonexistant");
++		safe_snprintf (ifi->v4ad.class_remark, "Nonexistant");
+ 	}
+ 
+ 	/*
+@@ -583,7 +583,7 @@
+ 	if (split && (count (addr, '/') == 1)) {
+ 		if (strlen (split) > 1 && strlen (split) < 5) {
+ 			split++;
+-			strncpy (spstr->nmask, split, 3);
++			safe_strncpy (spstr->nmask, split);
+ 		}
+ 	}
+ 
+@@ -776,7 +776,7 @@
+ 			y++;
+ 		}
+ 
+-		bzero ((char *) str, 5);
++		safe_bzero (str);
+ 		x = 0;
+ 		while (y < strlen (addr) && addr[y] != ':') {
+ 			str[x] = addr[y];
+@@ -786,7 +786,7 @@
+ 	}
+ 
+ 	if (compressed) {
+-		bzero ((char *) str, 5);
++		safe_bzero (str);
+ 		if (pos <= cstart) {
+ 			x = 0;
+ 			y = 0;
+@@ -824,7 +824,7 @@
+ 				y++;
+ 			}
+ 
+-			bzero ((char *) str, 5);
++			safe_bzero (str);
+ 			x = 0;
+ 			while (y < strlen (addr) && addr[y] != ':') {
+ 				str[x] = addr[y];
+@@ -865,7 +865,7 @@
+ 	}
+ 
+ 	if (type == V6TYPE_V4INV6) {
+-		bzero ((char *) buf, 128);
++		safe_bzero (buf);
+ 		x = 0;
+ 		while (spstr.ipv4addr[x] != '.') {
+ 			buf[x] = spstr.ipv4addr[x];
+@@ -883,7 +883,7 @@
+ 			}
+ 			n = atoi (buf);
+ 
+-			bzero ((char *) buf, 128);
++			safe_bzero (buf);
+ 			z = 0;
+ 			while (spstr.ipv4addr[x] != '.'
+ 			       && spstr.ipv4addr[x] != '\0'
+@@ -937,9 +937,9 @@
+ 	int x;
+ 	struct ipv6_split spstr;
+ 
+-	bzero ((char *) spstr.ipv6addr, 40);
+-	bzero ((char *) spstr.ipv4addr, 16);
+-	bzero ((char *) spstr.nmask, 4);
++	safe_bzero (spstr.ipv6addr);
++	safe_bzero (spstr.ipv4addr);
++	safe_bzero (spstr.nmask);
+ 
+ 	split_ipv6addr (addr, &spstr);
+ 
+@@ -1011,29 +1011,29 @@
+ 	a = in6_addr->haddr.sip6_addr16[0];
+ 
+ 	if (a == 0)
+-		snprintf (in6_addr->class_remark, 63, "Reserved");
++		safe_snprintf (in6_addr->class_remark, "Reserved");
+ 	if (a == 2 || a == 3)
+-		snprintf (in6_addr->class_remark, 63,
++		safe_snprintf (in6_addr->class_remark,
+ 			  "Reserved for NSAP Allocation");
+ 	if (a == 4 || a == 5)
+-		snprintf (in6_addr->class_remark, 63,
++		safe_snprintf (in6_addr->class_remark,
+ 			  "Reserved for IPX Allocation");
+ 	if ((a & 0xe000) == 0x2000)
+-		snprintf (in6_addr->class_remark, 63,
++		safe_snprintf (in6_addr->class_remark,
+ 			  "Aggregatable Global Unicast Addresses");
+ 	if ((a | 0x00ff) == 0x00ff)
+-		snprintf (in6_addr->class_remark, 63, "Reserved");
++		safe_snprintf (in6_addr->class_remark, "Reserved");
+ 	if ((a & 0xff00) == 0xff00)
+-		snprintf (in6_addr->class_remark, 63, "Multicast Addresses");
++		safe_snprintf (in6_addr->class_remark, "Multicast Addresses");
+ 	if ((a & 0xff80) == 0xfe80)
+-		snprintf (in6_addr->class_remark, 63,
++		safe_snprintf (in6_addr->class_remark,
+ 			  "Link-Local Unicast Addresses");
+ 	if ((a & 0xffc0) == 0xfec0)
+-		snprintf (in6_addr->class_remark, 63,
++		safe_snprintf (in6_addr->class_remark,
+ 			  "Site-Local Unicast Addresses");
+ 
+ 	if (in6_addr->class_remark[0] == '\0')
+-		snprintf (in6_addr->class_remark, 63, "Unassigned");
++		safe_snprintf (in6_addr->class_remark, "Unassigned");
+ 
+ 	return;
+ }
+@@ -1049,7 +1049,7 @@
+ 			y = 1;
+ 	}
+ 	if (!y)
+-		snprintf (in6_addr->comment, 63, "Unspecified");
++		safe_snprintf (in6_addr->comment, "Unspecified");
+ 
+ 	y = 0;
+ 	for (x = 0; x < 7; x++) {
+@@ -1058,7 +1058,7 @@
+ 	}
+ 	if (!y)
+ 		if (in6_addr->haddr.sip6_addr16[7] == 1)
+-			snprintf (in6_addr->comment, 63, "Loopback");
++			safe_snprintf (in6_addr->comment, "Loopback");
+ 
+ 	return;
+ }
+@@ -1092,7 +1092,7 @@
+ 	int x, y, z;
+ 	int start, num;
+ 
+-	bzero ((char *) outad, 44);
++	safe_bzero (outad);
+ 
+ 	start = -1;
+ 	num = 0;
+@@ -1121,15 +1121,15 @@
+ 	for (x = 0; x < 8; x++) {
+ 		if (x == start) {
+ 			if (!x)
+-				strcat (outad, ":");
+-			strcat (outad, ":");
++				safe_strncat (outad, ":");
++			safe_strncat (outad, ":");
+ 			x += num - 1;
+ 		} else {
+-			bzero ((char *) tmpad, 5);
+-			sprintf (tmpad, "%x", addr.sip6_addr16[x]);
+-			strcat (outad, tmpad);
++			safe_bzero (tmpad);
++			safe_snprintf (tmpad, "%x", addr.sip6_addr16[x]);
++			safe_strncat (outad, tmpad);
+ 			if (x != 7)
+-				strcat (outad, ":");
++				safe_strncat (outad, ":");
+ 		}
+ 	}
+ 
+@@ -1142,9 +1142,9 @@
+ 	int x, y, z;
+ 	struct ipv6_split spstr;
+ 
+-	bzero ((char *) spstr.ipv6addr, 40);
+-	bzero ((char *) spstr.ipv4addr, 16);
+-	bzero ((char *) spstr.nmask, 4);
++	safe_bzero (spstr.ipv6addr);
++	safe_bzero (spstr.ipv4addr);
++	safe_bzero (spstr.nmask);
+ 
+ 	split_ipv6addr (addr, &spstr);
+ 
+@@ -1195,9 +1195,9 @@
+ 	v6addrtobroadcast (in6_addr);
+ 	in6_addr->real_v4 = v6verifyv4 (in6_addr->haddr);
+ 
+-	bzero ((char *) in6_addr->class_remark, 64);
++	safe_bzero (in6_addr->class_remark);
+ 	v6_type (in6_addr);
+-	bzero ((char *) in6_addr->comment, 64);
++	safe_bzero (in6_addr->comment);
+ 	v6_comment (in6_addr);
+ 
+ 	return 0;
+@@ -1209,7 +1209,7 @@
+ 	d_resp->next = (struct dnsresp *) malloc (sizeof (struct dnsresp));
+ 	d_resp = d_resp->next;
+ 	d_resp->next = NULL;
+-	bzero((char *) d_resp->str, 128);
++	safe_bzero(d_resp->str);
+ 	d_resp->type = 0;
+ 
+ 	return d_resp;
+@@ -1235,17 +1235,17 @@
+ 	static char retaddr[1024];
+ 	int x;
+ 
+-	bzero ((char *) retaddr, 1024);
++	safe_bzero (retaddr);
+ 
+ 	he = gethostbyname (raddr);
+ 	if (!he)
+ 		return NULL;
+ 
+ 	if (he->h_addrtype == AF_INET) {
+-		snprintf (retaddr, 1023, "%s%s", inet_ntoa (*(struct in_addr *) he->h_addr_list[0]), extra);
++		safe_snprintf (retaddr, "%s%s", inet_ntoa (*(struct in_addr *) he->h_addr_list[0]), extra);
+ 		x = 0;
+ 		while (he->h_addr_list[x]) {
+-			snprintf (d_resp->str, 127, "%s%s", inet_ntoa (*(struct in_addr *) he->h_addr_list[x]), extra);
++			safe_snprintf (d_resp->str, "%s%s", inet_ntoa (*(struct in_addr *) he->h_addr_list[x]), extra);
+ 			d_resp->type = AF_INET;
+ 			x++;
+ 			if (he->h_addr_list[x])
+@@ -1275,18 +1275,18 @@
+ 	char ip6addr[128];
+ 	int x;
+ 
+-	bzero ((char *) retaddr, 1024);
++	safe_bzero (retaddr);
+ 
+ 	he = gethostbyname2 (raddr, AF_INET6);
+ 	if (!he)
+ 		return NULL;
+ 
+ 	if (he->h_addrtype == AF_INET6) {
+-		bzero ((char *) ip6addr, 128);
+-		snprintf (retaddr, 1023, "%s%s", inet_ntop (AF_INET6, he->h_addr_list[0], ip6addr, 128), extra);
++		safe_bzero (ip6addr);
++		safe_snprintf (retaddr, "%s%s", inet_ntop (AF_INET6, he->h_addr_list[0], ip6addr, 128), extra);
+ 		x = 0;
+ 		while (he->h_addr_list[x]) {
+-			snprintf (d_resp->str, 127, "%s%s", inet_ntop (AF_INET6, he->h_addr_list[x], ip6addr, 128), extra);
++			safe_snprintf (d_resp->str, "%s%s", inet_ntop (AF_INET6, he->h_addr_list[x], ip6addr, 128), extra);
+ 			d_resp->type = AF_INET6;
+ 			x++;
+ 			if (he->h_addr_list[x])
+@@ -1331,11 +1331,11 @@
+ 
+ 	res_orig = res;
+ 	while (res) {
+-		bzero ((char *) ip6addr, 128);
++		safe_bzero (ip6addr);
+ 		if (res->ai_family == PF_INET6) {
+ 			sin6 = (struct sockaddr_in6 *) res->ai_addr;
+-			snprintf (retaddr, 1023, "%s%s", inet_ntop (AF_INET6, &sin6->sin6_addr, ip6addr, 128), extra);
+-			snprintf (d_resp->str, 127, "%s%s", inet_ntop (AF_INET6, &sin6->sin6_addr, ip6addr, 128), extra);
++			safe_snprintf (retaddr, "%s%s", inet_ntop (AF_INET6, &sin6->sin6_addr, ip6addr, 128), extra);
++			safe_snprintf (d_resp->str, "%s%s", inet_ntop (AF_INET6, &sin6->sin6_addr, ip6addr, 128), extra);
+ 			d_resp->type = AF_INET6;
+ 		}
+ 		if (res->ai_next && (res->ai_family == PF_INET || res->ai_family == PF_INET6))
+@@ -1384,17 +1384,17 @@
+ 	res_orig = res;
+ 
+ 	while (res) {
+-		bzero ((char *) ip6addr, 128);
++		safe_bzero (ip6addr);
+ 		if (res->ai_family == PF_INET) {
+ 			sin = (struct sockaddr_in *) res->ai_addr;
+-			snprintf (retaddr, 1023, "%s%s", inet_ntoa (sin->sin_addr), extra);
+-			snprintf(d_resp->str, 127, "%s%s", inet_ntoa (sin->sin_addr), extra);
++			safe_snprintf (retaddr, "%s%s", inet_ntoa (sin->sin_addr), extra);
++			safe_snprintf(d_resp->str, "%s%s", inet_ntoa (sin->sin_addr), extra);
+ 			d_resp->type = AF_INET;
+ 		}
+ 		if (res->ai_family == PF_INET6) {
+ 			sin6 = (struct sockaddr_in6 *) res->ai_addr;
+-			snprintf (retaddr, 1023, "%s%s", inet_ntop (AF_INET6, &sin6->sin6_addr, ip6addr, 128), extra);
+-			snprintf (d_resp->str, 127, "%s%s", inet_ntop (AF_INET6, &sin6->sin6_addr, ip6addr, 128), extra);
++			safe_snprintf (retaddr, "%s%s", inet_ntop (AF_INET6, &sin6->sin6_addr, ip6addr, 128), extra);
++			safe_snprintf (d_resp->str, "%s%s", inet_ntop (AF_INET6, &sin6->sin6_addr, ip6addr, 128), extra);
+ 			d_resp->type = AF_INET6;
+ 		}
+ 		if (res->ai_next && (res->ai_family == PF_INET || res->ai_family == PF_INET6))
+@@ -1479,30 +1479,30 @@
+ 	if (family == PF_UNSPEC && !ipv6_cap)
+ 		family = PF_INET;
+ 
+-	bzero ((char *) extra, 32);
+-	bzero ((char *) raddr, 1024);
++	safe_bzero (extra);
++	safe_bzero (raddr);
+ 	tmpstr = strstr (addr, "/");
+ 	if (tmpstr) {
+-		strncpy (extra, tmpstr, 31);
++		safe_strncpy (extra, tmpstr);
+ 		strncpy (raddr, addr, strlen (addr) - strlen (tmpstr));
+ 	}
+ 	else {
+ 		tmpstr = strstr (addr, " ");
+ 		if (tmpstr) {
+-			strncpy (extra, tmpstr, 31);
++			safe_strncpy (extra, tmpstr);
+ 			strncpy (raddr, addr, strlen (addr) - strlen (tmpstr));
+ 		}
+ 		else
+-			strncpy (raddr, addr, 1023);
++			safe_strncpy (raddr, addr);
+ 	}
+ 
+-	bzero ((char *) retaddr, 1024);
++	safe_bzero (retaddr);
+ 
+ 	if (family == PF_INET) {
+ 		tmpstr = _resolv_v4_ghbn (raddr, d_resp, extra);
+ 		if (!tmpstr)
+ 			return NULL;
+-		strncpy (retaddr, tmpstr, 1024);
++		safe_strncpy (retaddr, tmpstr);
+ 		return retaddr;
+ 	}
+ 
+@@ -1511,7 +1511,7 @@
+ 			tmpstr = _resolv_v6_gai (raddr, d_resp, extra);
+ 			if (!tmpstr)
+ 				return NULL;
+-			strncpy (retaddr, tmpstr, 1024);
++			safe_strncpy (retaddr, tmpstr);
+ 			return retaddr;
+ 		}
+ 
+@@ -1519,7 +1519,7 @@
+ 			tmpstr = _resolv_v6_ghbn2 (raddr, d_resp, extra);
+ 			if (!tmpstr)
+ 				return NULL;
+-			strncpy (retaddr, tmpstr, 1024);
++			safe_strncpy (retaddr, tmpstr);
+ 			return retaddr;
+ 		}
+ 	}
+@@ -1529,13 +1529,13 @@
+ 			tmpstr = _resolv_unspec_gai (raddr, d_resp, extra);
+ 			if (!tmpstr)
+ 				return NULL;
+-			strncpy (retaddr, tmpstr, 1024);
++			safe_strncpy (retaddr, tmpstr);
+ 			return retaddr;
+ 		}
+ 		if (f_gethostbyname && f_gethostbyname2) {
+ 			tmpstr = _resolv_v4_ghbn (raddr, d_resp, extra);
+ 			if (tmpstr) {
+-				strncpy (retaddr, tmpstr, 1024);
++				safe_strncpy (retaddr, tmpstr);
+ 				d_resp_tmp = d_resp;
+ 				d_resp = new_dnsresp (d_resp);
+ 			}
+diff -Naur sipcalc-1.1.5.orig/src/sub-output.c sipcalc-1.1.5/src/sub-output.c
+--- sipcalc-1.1.5.orig/src/sub-output.c	2009-07-20 22:31:59.000000000 +0200
++++ sipcalc-1.1.5/src/sub-output.c	2012-01-24 18:44:29.468999531 +0100
+@@ -135,11 +135,11 @@
+ 			printf ("%s\n", numtoquad (end));
+ 		}
+ 		if ((v4args & V4VERBSPLIT) == V4VERBSPLIT) {
+-			bzero ((char *) ifi_tmp.p_v4addr, 19);
+-			bzero ((char *) ifi_tmp.p_v4nmask, 16);
+-			bzero ((char *) ifi_tmp.p_v6addr, 44);
+-			snprintf (ifi_tmp.p_v4addr, 19, "%s", numtoquad (start));
+-			snprintf (ifi_tmp.p_v4nmask, 16, "%s", numtoquad (splitmask));
++			safe_bzero (ifi_tmp.p_v4addr);
++			safe_bzero (ifi_tmp.p_v4nmask);
++			safe_bzero (ifi_tmp.p_v6addr);
++			safe_snprintf (ifi_tmp.p_v4addr, "%s", numtoquad (start));
++			safe_snprintf (ifi_tmp.p_v4nmask, "%s", numtoquad (splitmask));
+ 		}
+ 		start += diff;
+ 		if (end == 0xffffffff || end >= ifi->v4ad.n_broadcast)
+@@ -447,11 +447,11 @@
+ 	char inbuf[40], outbuf[256];
+ 	int x, y;
+ 
+-	bzero ((char *) inbuf, 40);
+-	bzero ((char *) outbuf, 256);
++	safe_bzero (inbuf);
++	safe_bzero (outbuf);
+ 
+-	snprintf
+-	(inbuf, 39, "%04x%04x%04x%04x%04x%04x%04x%04x",
++	safe_snprintf
++	(inbuf, "%04x%04x%04x%04x%04x%04x%04x%04x",
+ 	 addr.sip6_addr16[0],
+ 	 addr.sip6_addr16[1],
+ 	 addr.sip6_addr16[2],
+@@ -467,7 +467,7 @@
+ 		y += 2;
+ 	}
+ 
+-	strcat (outbuf, "ip6.arpa.");
++	safe_strncat (outbuf, "ip6.arpa.");
+ 
+ 	printf("%s", outbuf);
+ }
+@@ -642,10 +642,10 @@
+ 		}
+ 
+ 		if ((v6args & V6VERBSPLIT) == V6VERBSPLIT) {
+-			bzero ((char *) ifi_tmp.p_v4addr, 19);
+-			bzero ((char *) ifi_tmp.p_v4nmask, 16);
+-			bzero ((char *) ifi_tmp.p_v6addr, 44);
+-			snprintf (ifi_tmp.p_v6addr, 44, "%s/%d", get_comp_v6 (start), m_argv6.v6splitnum);
++			safe_bzero (ifi_tmp.p_v4addr);
++			safe_bzero (ifi_tmp.p_v4nmask);
++			safe_bzero (ifi_tmp.p_v6addr);
++			safe_snprintf (ifi_tmp.p_v6addr, "%s/%d", get_comp_v6 (start), m_argv6.v6splitnum);
+ 		}
+ 
+ 		v6plus (&start, &sdiff);
