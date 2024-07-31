@@ -1,10 +1,9 @@
-
 Name: sipcalc
 Version: 1.1.6
 Release: 26%{?dist}
 Summary: An "advanced" console based ip subnet calculator
 
-License: BSD
+License: BSD-3-Clause
 URL: http://www.routemeister.net/projects/sipcalc
 #URL2 : http://freecode.com/projects/sipcalc
 Source0: http://www.routemeister.net/projects/%{name}/files/%{name}-%{version}.tar.gz
@@ -16,7 +15,9 @@ BuildRequires: gcc
 Sipcalc is an "advanced" console based ip subnet calculator.
 
 %prep
-%setup0 -q
+%autosetup -p 1
+autoreconf --verbose --force --install
+
 
 # convert ChangeLog to UTF-8
 iconv -f ISO-8859-1 -t UTF-8 ChangeLog > ChangeLog.utf8 && \
@@ -25,10 +26,10 @@ mv -f ChangeLog{.utf8,}
 
 %build
 %configure
-make %{?_smp_mflags}
+%make_build
 
 %install
-make DESTDIR=%{buildroot} INSTALL="install -p" install
+%make_install DESTDIR=%{buildroot} INSTALL="install -p"
 
 %files
 %doc AUTHORS COPYING ChangeLog NEWS README TODO
@@ -37,6 +38,9 @@ make DESTDIR=%{buildroot} INSTALL="install -p" install
 %{_mandir}/man1/sipcalc.1.*
 
 %changelog
+* Wed Jul 31 2024 Michal Ambroz <rebus _AT seznam.cz> - 1.1.6-27
+- use current macros, spdx license
+
 * Sat Jul 20 2024 Fedora Release Engineering <releng@fedoraproject.org> - 1.1.6-26
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_41_Mass_Rebuild
 
