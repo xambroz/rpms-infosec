@@ -1,6 +1,7 @@
---- oletools-0.56.1/setup.py	2021-04-02 23:45:58.000000000 +0200
-+++ oletools-0.56.1/setup.py	2021-04-03 14:52:16.581587726 +0200
-@@ -96,6 +96,9 @@
+diff -ru oletools-0.60.2.orig/setup.py oletools-0.60.2.new/setup.py
+--- oletools-0.60.2.orig/setup.py	2024-07-02 15:41:31.000000000 +0200
++++ oletools-0.60.2.new/setup.py	2024-07-10 01:16:47.709412477 +0200
+@@ -103,6 +103,9 @@
      'oletools.thirdparty.xglob',
      'oletools.thirdparty.tablestream',
      'oletools.thirdparty.oledump',
@@ -10,7 +11,7 @@
  ]
  ##setupdir = '.'
  ##package_dir={'': setupdir}
-@@ -183,6 +186,9 @@
+@@ -190,6 +193,9 @@
      'oletools.thirdparty.DridexUrlDecoder': [
          'LICENSE.txt',
          ],
@@ -20,12 +21,12 @@
      # 'oletools.thirdparty.tablestream': [
      #     'LICENSE', 'README',
      #     ],
-@@ -323,7 +329,7 @@
+@@ -329,7 +335,7 @@
              'colorclass',
              # msoffcrypto-tool is not installable on PyPy+Windows (see issue #473),
              # so we only require it if the platform is not Windows or not PyPy:
 -            'msoffcrypto-tool; platform_python_implementation!="PyPy" or (python_version>="3" and platform_system!="Windows" and platform_system!="Darwin")',
-+#            'msoffcrypto-tool; platform_python_implementation!="PyPy" or (python_version>="3" and platform_system!="Windows" and platform_system!="Darwin")',
++            #'msoffcrypto-tool; platform_python_implementation!="PyPy" or (python_version>="3" and platform_system!="Windows" and platform_system!="Darwin")',
              'pcodedmp>=1.2.5',
          ],
-     )
+         extras_require={

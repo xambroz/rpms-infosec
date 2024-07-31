@@ -1,0 +1,116 @@
+From 1ae28071833986e22f02438a19bafdab0c52dfca Mon Sep 17 00:00:00 2001
+From: Sandro <devel@penguinpee.nl>
+Date: Sun, 7 Jul 2024 10:38:59 +0200
+Subject: [PATCH] Python 3.13: Replace deprecated makeSuite()
+
+The function has been deprecated in Python 3.11 and is no longer
+available in Python 3.13.
+---
+ testcfg.py    | 2 +-
+ testgrey.py   | 6 +++---
+ testmime.py   | 4 ++--
+ testpolicy.py | 2 +-
+ testsample.py | 2 +-
+ testutils.py  | 4 ++--
+ 6 files changed, 10 insertions(+), 10 deletions(-)
+
+diff --git a/testcfg.py b/testcfg.py
+index 430a4e0..09f922a 100644
+--- a/testcfg.py
++++ b/testcfg.py
+@@ -11,7 +11,7 @@ def testConfig(self):
+     miltersrs = cp.getboolean('srsmilter','miltersrs')
+     self.assertFalse(miltersrs)
+ 
+-def suite(): return unittest.makeSuite(ConfigTestCase,'test')
++def suite(): return unittest.TestLoader().loadTestsFromTestCase(ConfigTestCase)
+ 
+ if __name__ == '__main__':
+   unittest.main()
+diff --git a/testgrey.py b/testgrey.py
+index 96d402e..1b03c60 100644
+--- a/testgrey.py
++++ b/testgrey.py
+@@ -35,7 +35,7 @@ def testGrey(self):
+     # new one past expire
+     rc = grey.check('1.2.3.5','foo@bar.com','baz@spat.com',timeinc=6*3600)
+     self.assertEqual(rc,0)
+-    # original past retain 
++    # original past retain
+     rc = grey.check('1.2.3.4','foo@bar.com','baz@spat.com',timeinc=37*24*3600)
+     self.assertEqual(rc,0)
+     # new one for testing expire
+@@ -48,8 +48,8 @@ def testGrey(self):
+     self.assertEqual(rc,1)
+     grey.close()
+ 
+-def suite(): 
+-  s = unittest.makeSuite(GreylistTestCase,'test')
++def suite():
++  s = unittest.TestLoader().loadTestsFromTestCase(GreylistTestCase)
+   return s
+ 
+ if __name__ == '__main__':
+diff --git a/testmime.py b/testmime.py
+index 18a9276..a9f7318 100644
+--- a/testmime.py
++++ b/testmime.py
+@@ -71,7 +71,7 @@ def testParse(self,fname='samp1'):
+         self.fail('should get boundary error parsing bad rfc822 attachment')
+     except errors.BoundaryError:
+       pass
+-  
++
+   def testDefang(self,vname='virus1',part=1,
+ 	fname='LOVE-LETTER-FOR-YOU.TXT.vbs'):
+     try:
+@@ -234,7 +234,7 @@ def testHTML(self,fname=""):
+     #print(msg + filter.msg)
+     self.assertTrue(result.getvalue() == msg + filter.msg)
+ 
+-def suite(): return unittest.makeSuite(MimeTestCase,'test')
++def suite(): return unittest.TestLoader().loadTestsFromTestCase(MimeTestCase)
+ 
+ if __name__ == '__main__':
+   if len(sys.argv) < 2:
+diff --git a/testpolicy.py b/testpolicy.py
+index 732b8e0..dbe6638 100644
+--- a/testpolicy.py
++++ b/testpolicy.py
+@@ -42,7 +42,7 @@ def testPolicy(self):
+       pol = p.getPolicy('smtp-test')
+     self.assertEqual(pol,'WILDCARD')
+ 
+-def suite(): return unittest.makeSuite(PolicyTestCase,'test')
++def suite(): return unittest.TestLoader().loadTestsFromTestCase(PolicyTestCase)
+ 
+ if __name__ == '__main__':
+   if len(sys.argv) < 2:
+diff --git a/testsample.py b/testsample.py
+index 70222bf..c86f4d4 100644
+--- a/testsample.py
++++ b/testsample.py
+@@ -142,7 +142,7 @@ def testDefang2(self):
+         f.write(fp.getvalue())
+     milter.close()
+ 
+-def suite(): return unittest.makeSuite(BMSMilterTestCase,'test')
++def suite(): return unittest.TestLoader().loadTestsFromTestCase(BMSMilterTestCase)
+ 
+ if __name__ == '__main__':
+   unittest.main()
+diff --git a/testutils.py b/testutils.py
+index 93e078c..3071473 100644
+--- a/testutils.py
++++ b/testutils.py
+@@ -53,8 +53,8 @@ def testParseAddress(self):
+     s = Milter.utils.parseaddr('a(WRONG)@b')
+     self.assertEqual(s,('WRONG', 'a@b'))
+ 
+-def suite(): 
+-  s = unittest.makeSuite(AddrCacheTestCase,'test')
++def suite():
++  s = unittest.TestLoader().loadTestsFromTestCase(AddrCacheTestCase)
+   s.addTest(doctest.DocTestSuite(Milter.utils))
+   s.addTest(doctest.DocTestSuite(Milter.dynip))
+   s.addTest(doctest.DocTestSuite(Milter.pyip6))

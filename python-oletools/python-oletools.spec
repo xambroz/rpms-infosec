@@ -32,12 +32,12 @@ License:        BSD and MIT and Python
 # with = By default build from git snapshot.
 # If you want to rebuild from a unversioned commit from git do that with
 # rpmbuild --rebuild python-oletools.src.rpm --without release
-%bcond_with  release
+%bcond_without  release
 
 %global         gituser         decalage2
 %global         gitname         oletools
-%global         gitdate         20240425
-%global         commit          78b2d459a33df378a4f69ffc6c33313509cecfe4
+%global         gitdate         20240702
+%global         commit          b565533d6757f3dde2501e946ed6977ebbf2830a
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 # Bootstrap may be needed to break circular dependencies between
@@ -69,7 +69,7 @@ Release:        %{baserelease}%{?dist}
 Source0:        https://github.com/decalage2/oletools/archive/v%{version}/%{srcname}-%{version}.tar.gz
 %else
 Release:        0.%{baserelease}.%{gitdate}git%{shortcommit}%{?dist}
-Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz#/%{name}-%{version}-git%{gitdate}-%{shortcommit}.tar.gz
+Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz#/%{srcname}-%{version}-git%{gitdate}-%{shortcommit}.tar.gz
 %endif
 
 # For now bundle the msoffcrypto-tool for python2 - new requirement for the oletools not used by anything else
@@ -77,15 +77,16 @@ Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{nam
 Source1:        https://github.com/nolze/msoffcrypto-tool/archive/v5.4.0/msoffcrypto-tool-5.4.0.tar.gz
 
 # Remove the bundled libraries from the build. Use the system libraries instead
-Patch0:         %{name}-01-thirdparty.patch
+Patch1:         %{name}-01-thirdparty.patch
 
 # with python2 Bundle the msoffcrypto instead of using one from pip
-Patch1:         %{name}-02-msoffcrypto.patch
+Patch2:         %{name}-02-msoffcrypto.patch
 
+# In release 0.60.2
 # Fix escaping in regexps, reported as syntax error in python 3.12
 # https://github.com/decalage2/oletools/pull/854
 # https://github.com/decalage2/oletools/pull/855
-Patch2:         %{name}-03-python12.patch
+# Patch3:       %%{name}-03-python12.patch
 
 
 BuildArch:      noarch
@@ -224,14 +225,14 @@ Summary:        Documentation files for %{name}
 %autosetup -N -n %{srcname}-%{commit}
 %endif
 
-%autopatch -m 0 -M 0
+%autopatch -m 1 -M 1
 
 # Embed msoffcrypto only when building python2
 %if %{with python2}
-%autopatch -m 1 -M 1
+%autopatch -m 2 -M 1
 %endif
 
-%autopatch -m 2 -p 1
+%autopatch -m 3 -p 1
 
 
 
@@ -501,6 +502,9 @@ PYTHONPATH=%{buildroot}%{python3_sitelib} %{buildroot}%{_bindir}/mraptor-3 cheat
 
 
 %changelog
+* Wed Jul 10 2024 Michal Ambroz <rebus AT_ seznam.cz> - 0.60.2-1
+- bump to release 0.60.2
+
 * Wed Oct 26 2022 Michal Ambroz <rebus AT_ seznam.cz> - 0.60.1-1
 - bump to release 0.60.1
 
