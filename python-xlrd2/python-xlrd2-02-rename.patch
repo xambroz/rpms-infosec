@@ -1,0 +1,12 @@
+diff -ru xlrd2-1.3.4.orig/docs/vulnerabilities.rst xlrd2-1.3.4.new/docs/vulnerabilities.rst
+--- xlrd2-1.3.4.orig/docs/vulnerabilities.rst	2021-06-12 20:52:41.000000000 +0200
++++ xlrd2-1.3.4.new/docs/vulnerabilities.rst	2024-08-01 19:18:09.852638771 +0200
+@@ -43,7 +43,7 @@
+ 
+     import defusedxml
+     from defusedxml.common import EntitiesForbidden
+-    from xlrd import open_workbook
++    from xlrd2 import open_workbook
+     defusedxml.defuse_stdlib()
+ 
+ 
