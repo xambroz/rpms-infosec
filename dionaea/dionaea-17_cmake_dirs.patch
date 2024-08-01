@@ -1,3 +1,8 @@
+Change handling of dirs to be able to configure/install to base system having 
+configuration in /etc/,
+data files in /var
+and rest in /usr,
+while keeping the possibility to install to /opt/dionaea by default
 diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/cmake/InstallConfig.cmake dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/cmake/InstallConfig.cmake
 --- dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/cmake/InstallConfig.cmake	2021-02-08 06:48:52.000000000 +0100
 +++ dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/cmake/InstallConfig.cmake	2024-07-07 16:40:50.457869174 +0200

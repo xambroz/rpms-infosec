@@ -1,3 +1,4 @@
+new versions of python 3.9+ new regex patterns defined as raw strings, otherwise report syntax error for unknown stirng escape sequence like \s
 Only in dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig: 1.orig
 diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/doc/source/conf.py dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/doc/source/conf.py
 --- dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/doc/source/conf.py	2024-07-16 02:09:42.459377247 +0200

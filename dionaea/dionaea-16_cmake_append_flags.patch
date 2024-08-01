@@ -1,3 +1,4 @@
+APPEND adds unwanted ";" character if there are already some CMAKE_C_FLAGS defined
 diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/CMakeLists.txt dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/CMakeLists.txt
 --- dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/CMakeLists.txt	2024-07-04 21:10:43.604959260 +0200
 +++ dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/CMakeLists.txt	2024-07-04 21:10:14.986830427 +0200

@@ -1,6 +1,4 @@
-Only in dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new: .git
-Only in dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig: .gitignore
-Only in dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/include: connection.h.orig
+The PyEval_CallObject API is obsolete in python 3.12, use PyObject_CallObject instead
 diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/modules/python/module.c dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/module.c
 --- dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/modules/python/module.c	2021-02-08 06:48:52.000000000 +0100
 +++ dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/module.c	2024-07-04 15:38:00.956643590 +0200

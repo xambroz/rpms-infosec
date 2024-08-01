@@ -1,3 +1,6 @@
+Migrate setup.py from deprecated distutils to setuptools.
+Handle the building by cmake from setup.py template processed in cmake build directory.
+Newer versions of setuptools complain about using absolute paths in setup.
 diff -ru dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/modules/python/setup.py.in2 dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/setup.py.in2
 --- dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.orig/modules/python/setup.py.in2	2024-07-17 16:08:59.696655429 +0200
 +++ dionaea-4e459f1b672a5b4c1e8335c0bff1b93738019215.new/modules/python/setup.py.in2	2024-07-30 11:32:39.198027455 +0200
