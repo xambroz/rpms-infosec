@@ -69,7 +69,8 @@ Source4:        %{name}.logrotate
 
 # ipv6 structures in <netinet/in.h> are used by the <sys/socket.h>
 # ipv6 structures needs explicit CFLAGS " -D_GNU_SOURCE" to compile on linux
-# just cosmetics - not reported yet to upstream
+# just cosmetics
+# Reported https://github.com/DinoTools/dionaea/pull/343
 Patch3:         dionaea-03_in6_pktinfo.patch
 
 
@@ -90,20 +91,25 @@ Patch3:         dionaea-03_in6_pktinfo.patch
 
 # Python 3.13 compatibility
 # Change PyEval_CallObject to PyObject_CallObject
+# Reported https://github.com/DinoTools/dionaea/pull/343
 Patch15:        dionaea-15_pyeval_callobject.patch
 
 # Cmake list APPEND operation is adding unwanted semicolon to CFLAGS
+# Reported https://github.com/DinoTools/dionaea/pull/343
 Patch16:        dionaea-16_cmake_append_flags.patch
 
 # Cmake dirs
+# Reported https://github.com/DinoTools/dionaea/pull/343
 Patch17:        dionaea-17_cmake_dirs.patch
 
 # A lot of regexes in dionaea project is not declared as raw strings
 # python3 tries to resolve the escape sequences
+# Reported https://github.com/DinoTools/dionaea/pull/343
 Patch18:        dionaea-18_python_regex.patch
 
 # Switch from distutils to setuptools
 # do not install to egg directory
+# Reported https://github.com/DinoTools/dionaea/pull/343
 Patch19:        dionaea-19_setuptools.patch
 
 
@@ -265,8 +271,8 @@ sed -i -e 's|#!/bin/python3|#!/usr/bin/python3|g; s|#!/usr/bin/env python3|#!/us
 # ============= Build ==========================================================
 %build
 export SETUPTOOLS_SCM_PRETEND_VERSION=%{version}
-#%%configure --enable-python --with-python=`which python3` --with-glib=glib --with-nl-include=/usr/include/libnl3 --disable-werror
-#%%make_build CFLAGS="%{optflags} -Wno-error -D_GNU_SOURCE -std=c99"
+# %%configure --enable-python --with-python=`which python3` --with-glib=glib --with-nl-include=/usr/include/libnl3 --disable-werror
+# %%make_build CFLAGS="%%{optflags} -Wno-error -D_GNU_SOURCE -std=c99"
 
 # cmake build with higher parralelism ends up with errors for Fedora
 %cmake3 \
@@ -292,7 +298,7 @@ cd ..
 
 # Use only the sitearch directory, otherwise python will be confused
 # by not having native and python modules in the same directory
-#%%make_install PYTHON_SITELIB=%{python3_sitearch} PYTHON_SITEARCH=%{python3_sitearch}
+# %%make_install PYTHON_SITELIB=%%{python3_sitearch} PYTHON_SITEARCH=%%{python3_sitearch}
 
 # *.a *.la files not allowed for fedora
 find %{buildroot} '(' -name '*.a' -o -name '*.la' ')' -delete
