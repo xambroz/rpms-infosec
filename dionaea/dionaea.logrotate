@@ -2,10 +2,9 @@
 # in this case -p /opt/dionaea/var/run/dionaea.pid
 # adjust the path to your needs
 /var/log/dionaea/dionaea.log /var/log/dionaea/dionaea-errors.log {
-        notifempty
-        missingok
-        rotate 31
         daily
+        rotate 365
+        missingok
         compress
         delaycompress
         su dionaea dionaea
