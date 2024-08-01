@@ -443,6 +443,9 @@ getent passwd dionaea >/dev/null || \
 * Thu Jul 04 2024 Michal Ambroz <rebus at, seznam.cz> 0.11.0-1
 - bump to 0.11.0
 
+* Fri Jun 07 2024 Python Maint <python-maint@redhat.com> - 0.7.0-29
+- Rebuilt for Python 3.13
+
 * Mon Mar 25 2024 Nils Philippsen <nils@tiptoe.de> - 0.7.0-28
 - Revert constraining SQLAlchemy version
 
