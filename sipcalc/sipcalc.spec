@@ -1,6 +1,6 @@
 Name: sipcalc
 Version: 1.1.6
-Release: 26%{?dist}
+Release: 27%{?dist}
 Summary: An "advanced" console based ip subnet calculator
 
 License: BSD-3-Clause
@@ -9,6 +9,8 @@ URL: http://www.routemeister.net/projects/sipcalc
 Source0: http://www.routemeister.net/projects/%{name}/files/%{name}-%{version}.tar.gz
 
 BuildRequires: make
+BuildRequires: autoconf
+BuildRequires: automake
 BuildRequires: gcc
 
 %description
