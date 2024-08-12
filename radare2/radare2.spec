@@ -1,6 +1,6 @@
 Name:           radare2
 Summary:        The reverse engineering framework
-Version:        5.9.2
+Version:        5.9.4
 %global         baserelease     1
 URL:            https://radare.org/
 VCS:            https://github.com/radareorg/radare2
@@ -20,9 +20,8 @@ VCS:            https://github.com/radareorg/radare2
 
 %global         gituser         radareorg
 %global         gitname         radare2
-
-%global         gitdate         20240331
-%global         commit          aea5c93a8f5a6ed360ea21d6a4e36f00accb8b7d
+%global         gitdate         20240808
+%global         commit          b77e3f8ed651b6866175062213158e2b33d2c1e7
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
@@ -377,6 +376,12 @@ mkdir -p %{buildroot}%{_libdir}/%{name}/%{version}
 
 
 %changelog
+* Mon Aug 12 2024 Michal Ambroz <rebus _AT seznam.cz> - 5.9.4-1
+- bump to 5.9.4
+
+* Fri Jul 19 2024 Fedora Release Engineering <releng@fedoraproject.org> - 5.9.2-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_41_Mass_Rebuild
+
 * Wed May 22 2024 Michal Ambroz <rebus _AT seznam.cz> - 5.9.2-1
 - bump to 5.9.2
 
