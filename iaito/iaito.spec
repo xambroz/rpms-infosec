@@ -1,8 +1,8 @@
 Name:           iaito
 Summary:        GUI for radare2 reverse engineering framework
-Version:        5.9.2
+Version:        5.9.4
 %global         baserelease     1
-%global         upversion       %{version}-beta
+# %%global      upversion       %%{version}-beta
 URL:            https://radare.org/n/iaito.html
 VCS:            https://github.com/radareorg/iaito/
 #               https://github.com/radareorg/iaito/releases
@@ -22,9 +22,8 @@ VCS:            https://github.com/radareorg/iaito/
 
 %global         gituser         radareorg
 %global         gitname         iaito
-
-%global         gitdate         20240331
-%global         commit          7656eed6d2c799f2bbc8fc2ddfd4bccbd01bf0dd
+%global         gitdate         20240808
+%global         commit          dc51d5fe1604596d0278bd7cc7d2c589a4ec1671
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 %global         iaito_translations_gitdate      20221114
@@ -34,10 +33,10 @@ VCS:            https://github.com/radareorg/iaito/
 
 %if %{with releasetag}
 Release:        %{baserelease}%{?dist}
-Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
+Source0:        %{vcs}/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
 %else
 Release:        0.%{baserelease}.%{gitdate}git%{shortcommit}%{?dist}
-Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
+Source0:        %{vcs}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 %endif
 
 
@@ -192,6 +191,12 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/*.desktop
 
 
 %changelog
+* Mon Aug 12 2024 Michal Ambroz <rebus _AT seznam.cz> - 5.9.4-1
+- bump to 5.9.4
+
+* Thu Jul 18 2024 Fedora Release Engineering <releng@fedoraproject.org> - 5.9.2-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_41_Mass_Rebuild
+
 * Fri May 24 2024 Michal Ambroz <rebus _AT seznam.cz> - 5.9.2-1
 - bump to 5.9.2
 
