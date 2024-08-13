@@ -127,6 +127,11 @@ information.
 sed -i -e "s|%{version}-git|%{version}|g;" configure configure.acr
 %endif
 
+# RHEL up to 9 do not know uel type of vcs-browser
+%if ( 0%{?rhel} && 0%{?rhel} <= 9 )
+    sed -i -e '/type="vcs-browser"/d;' src/org.radare.iaito.appdata.xml
+%endif
+
 [ -d src/translations ] || mkdir -p src/translations
 tar --strip-component=1 -xvf %{SOURCE1} -C src/translations
 
