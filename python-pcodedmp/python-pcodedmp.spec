@@ -1,7 +1,7 @@
 Name:           python-pcodedmp
 Summary:        VBA p-code disassembler
 Version:        1.2.6
-Release:        17%{?dist}
+Release:        22%{?dist}
 License:        GPL-3.0-or-later
 URL:            https://github.com/bontchev/pcodedmp
 VCS:            https://github.com/bontchev/pcodedmp
@@ -25,8 +25,6 @@ Patch0:         python-pcodedmp-1.2.6-python27.patch
 
 
 
-
-
 %global _description %{expand:
 Macros written in VBA (Visual Basic for Applications; the macro programming
 language used in Microsoft Office) exist in three different executable forms,
@@ -39,14 +37,14 @@ a Python library and command line tool to display it.}
 
 %description %_description
 
-%package -n %{srcname}
+%package -n pcodedmp
 Summary:        %{summary}
-Requires:       python%{python3_pkgversion}-%{srcname} = %{version}-%{release}
+Requires:       python%{python3_pkgversion}-pcodedmp = %{version}-%{release}
 
-%description -n %{srcname} %_description
+%description -n pcodedmp %_description
 
 %if 0%{?rhel} && 0%{?rhel} < 8
-%package -n python2-%{srcname}
+%package -n python2-pcodedmp
 Summary:        %{summary}
 BuildRequires:  python2-devel
 BuildRequires:  python2-setuptools
@@ -57,12 +55,12 @@ BuildRequires:  python2-pypandoc
 BuildRequires:  python2-oletools >= 0.54
 Requires:       python2-oletools >= 0.54
 %endif
-%{?python_provide:%python_provide python2-%{srcname}}
+%{?python_provide:%python_provide python2-pcodedmp}
 
-%description -n python2-%{srcname} %_description
+%description -n python2-pcodedmp %_description
 %endif
 
-%package -n python%{python3_pkgversion}-%{srcname}
+%package -n python%{python3_pkgversion}-pcodedmp
 Summary:        %{summary}
 BuildRequires:  python%{python3_pkgversion}-devel
 BuildRequires:  python%{python3_pkgversion}-setuptools
@@ -74,16 +72,12 @@ BuildRequires:  python%{python3_pkgversion}-lxml
 BuildRequires:  python%{python3_pkgversion}-oletools >= 0.54
 Requires:       python%{python3_pkgversion}-oletools >= 0.54
 %endif
-%if 0%{?fedora}
-Recommends:     %{srcname}
-%endif
+%{?python_provide:%python_provide python%{python3_pkgversion}-pcodedmp}
 
-%{?python_provide:%python_provide python%{python3_pkgversion}-%{srcname}}
-
-%description -n python%{python3_pkgversion}-%{srcname} %_description
+%description -n python%{python3_pkgversion}-pcodedmp %_description
 
 %if 0%{?with_python3_other}
-%package -n python%{python3_other_pkgversion}-%{srcname}
+%package -n python%{python3_other_pkgversion}-pcodedmp
 Summary:        %{summary}
 BuildRequires:  python%{python3_other_pkgversion}-devel
 BuildRequires:  python%{python3_other_pkgversion}-setuptools
@@ -95,13 +89,13 @@ BuildRequires:  python%{python3_other_pkgversion}-lxml
 BuildRequires:  python%{python3_other_pkgversion}-oletools >= 0.54
 Requires:       python%{python3_other_pkgversion}-oletools >= 0.54
 %endif
-%{?python_provide:%python_provide python%{python3_other_pkgversion}-%{srcname}}
+%{?python_provide:%python_provide python%{python3_other_pkgversion}-pcodedmp}
 
-%description -n python%{python3_other_pkgversion}-%{srcname} %_description
+%description -n python%{python3_other_pkgversion}-pcodedmp %_description
 %endif
 
 %prep
-%autosetup -n %{srcname}-%{version}
+%autosetup -n pcodedmp-%{version}
 
 %build
 %if 0%{?rhel} && 0%{?rhel} < 8
@@ -117,86 +111,39 @@ Requires:       python%{python3_other_pkgversion}-oletools >= 0.54
 %py3_install
 %{?with_python3_other:%py3_other_install}
 
+# The check requires oletools, which might not be available during bootstrapping
 %if %{without bootstrap}
 %check
-%{__python3} setup.py test
-%{?with_python3_other:%{__python3_other} setup.py test}
+# There are no pytest tests defined at this moment
+# %%pytest
+# Do at least basic smoke test
+%py3_check_import pcodedmp
 %endif
 
-%files -n %{srcname}
-%{_bindir}/%{srcname}
+%files -n pcodedmp
+%{_bindir}/pcodedmp
 
 %if 0%{?rhel} && 0%{?rhel} < 8
-%files -n python2-%{srcname}
+%files -n python2-pcodedmp
 %license LICENSE
 %doc README.md
-%{python2_sitelib}/%{srcname}/
-%{python2_sitelib}/%{srcname}-*.egg-info
+%{python2_sitelib}/pcodedmp/
+%{python2_sitelib}/pcodedmp-*.egg-info
 %endif
 
-%files -n python%{python3_pkgversion}-%{srcname}
+%files -n python%{python3_pkgversion}-pcodedmp
 %license LICENSE
 %doc README.md
-%{python3_sitelib}/%{srcname}/
-%{python3_sitelib}/%{srcname}-*.egg-info/
+%{python3_sitelib}/pcodedmp/
+%{python3_sitelib}/pcodedmp-*.egg-info/
 
 %if 0%{?with_python3_other}
-%files -n python%{python3_other_pkgversion}-%{srcname}
+%files -n python%{python3_other_pkgversion}-pcodedmp
 %license LICENSE
 %doc README.md
-%{python3_sitelib}/%{srcname}/
-%{python3_sitelib}/%{srcname}-*.egg-info/
+%{python3_sitelib}/pcodedmp/
+%{python3_sitelib}/pcodedmp-*.egg-info/
 %endif
 
 %changelog
-* Fri Jul 21 2023 Fedora Release Engineering <releng@fedoraproject.org> - 1.2.6-17
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_39_Mass_Rebuild
-
-* Thu Jul 06 2023 Python Maint <python-maint@redhat.com> - 1.2.6-16
-- Rebuilt for Python 3.12
-
-* Tue Jun 13 2023 Python Maint <python-maint@redhat.com> - 1.2.6-15
-- Bootstrap for Python 3.12
-
-* Fri Jan 20 2023 Fedora Release Engineering <releng@fedoraproject.org> - 1.2.6-14
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_38_Mass_Rebuild
-
-* Fri Jul 22 2022 Fedora Release Engineering <releng@fedoraproject.org> - 1.2.6-13
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_37_Mass_Rebuild
-
-* Tue Jul 19 2022 Zbigniew Jędrzejewski-Szmek <zbyszek@in.waw.pl> - 1.2.6-12
-- Rebuilt for pyparsing-3.0.9
-
-* Fri Jun 17 2022 Python Maint <python-maint@redhat.com> - 1.2.6-11
-- Rebuilt for Python 3.11
-
-* Fri Jun 17 2022 Python Maint <python-maint@redhat.com> - 1.2.6-10
-- Bootstrap for Python 3.11
-
-* Fri Jan 21 2022 Fedora Release Engineering <releng@fedoraproject.org> - 1.2.6-9
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
-
-* Fri Jul 23 2021 Fedora Release Engineering <releng@fedoraproject.org> - 1.2.6-8
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
-
-* Fri Jun 04 2021 Python Maint <python-maint@redhat.com> - 1.2.6-7
-- Rebuilt for Python 3.10
-
-* Fri Jun 04 2021 Python Maint <python-maint@redhat.com> - 1.2.6-6
-- Bootstrap for Python 3.10
-
-* Wed Jan 27 2021 Fedora Release Engineering <releng@fedoraproject.org> - 1.2.6-5
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
-
-* Wed Jul 29 2020 Fedora Release Engineering <releng@fedoraproject.org> - 1.2.6-4
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
-
-* Mon Jun 29 2020 Robert Scheck <robert@fedoraproject.org> 1.2.6-3
-- Require python-setuptools during build-time explicitly
-
-* Tue May 26 2020 Miro Hrončok <mhroncok@redhat.com> - 1.2.6-2
-- Rebuilt for Python 3.9
-
-* Mon May 04 2020 Robert Scheck <robert@fedoraproject.org> 1.2.6-1
-- Upgrade to 1.2.6 (#1832610)
-- Initial spec file for Fedora and Red Hat Enterprise Linux
+%autochangelog
