@@ -78,13 +78,10 @@ Unatools from the libuna package.
 %prep
 %setup -q -n %{gitname}-%{commit}
 # autopatch missing -m -M options in RHEL7
-# %%autopatch -M 99
-%patch0 -p 1
-%patch1 -p 1
+%autopatch -M 99
 
 %if %{with bootstrap}
-# %%autopatch -m 100
-%patch100 -p 1
+%autopatch -m 100
 %endif
 ./autogen.sh
 
