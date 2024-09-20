@@ -1,44 +1,32 @@
-%global _hardened_build 1
-%global alphatag rc4
+Name: aircrack-ng
+Version: 1.7
+Release: 8%{?dist}
 
-Name:           aircrack-ng
-Version:        1.2
-#Release:        4%{?dist}
-Release:        0.16%{alphatag}%{?dist}
-Summary:        802.11 (wireless) sniffer and WEP/WPA-PSK key cracker
+Summary: Tools for auditing 802.11 (wireless) networks
+License: GPL-2.0-or-later
+URL: https://github.com/%{name}/%{name}
+Source0: %{url}/archive/%{version}/%{name}-%{version}.tar.gz
 
-Group:          Applications/System
+BuildRequires: autoconf
+BuildRequires: automake
+BuildRequires: ethtool
+BuildRequires: gcc
+BuildRequires: gcc-c++
+BuildRequires: hwloc-devel
+BuildRequires: libcmocka-devel
+BuildRequires: libnl3-devel
+BuildRequires: libpcap-devel
+BuildRequires: libtool
+BuildRequires: make
+BuildRequires: openssl-devel
+BuildRequires: pcre-devel
+BuildRequires: pkgconfig
+BuildRequires: sqlite-devel
+BuildRequires: util-linux
+BuildRequires: zlib-devel
 
-License:        GPL-2.0-or-later
-URL:            http://www.aircrack-ng.org/
-Source0:        http://download.aircrack-ng.org/aircrack-ng-%{version}-%{alphatag}.tar.gz
-#Source0:        http://download.aircrack-ng.org/aircrack-ng-%{version}%{alphatag}.tar.gz
-# Created with
-# svn export http://trac.aircrack-ng.org/svn/trunk aircrack-ng-1.1.20130402svn
-# tar cvjf aircrack-ng-1.1.20130402svn.tar.bz2 aircrack-ng-1.1.20130402svn/
-#Source0:        aircrack-ng-%{version}%{alphatag}.tar.bz2
-#Source0:        http://download.aircrack-ng.org/aircrack-ng-%{version}-%{alphatag}.tar.gz
-#Source0:        aircrack-ng-%{version}-%{alphatag}.tar.gz
-#Source1:        %{name}-tarball
-#Source2:        aircrack-ng-ptw.cap
-#Source2:        http://dl.aircrack-ng.org/ptw.cap
-#Source3:        aircrack-ng-test.ivs
-#Source3:       http://download.aircrack-ng.org/wiki-files/other/test.ivs
-# License unclear:
-#Source4:        http://standards.ieee.org/regauth/oui/oui.txt
-
-# from upstream
-Patch1: altarches.patch
-# from upstream
-Patch2: 0001-Fixed-compilation-with-OpenSSL-1.1.0-Closes-1711.patch
-
-BuildRequires:  sqlite-devel openssl-devel libnl3-devel
-BuildRequires:  pcre-devel
-# for besside-ng-crawler
-BuildRequires:  libpcap-devel
-# Used by airmon-ng
-Requires: rfkill
-
+Requires: util-linux%{?_isa}
+Recommends: %{name}-doc
 
 %description
 aircrack-ng is a set of tools for auditing wireless networks. It's an
@@ -47,94 +35,161 @@ packet capture program), aireplay-ng (an 802.11 packet injection program),
 aircrack (static WEP and WPA-PSK cracking), airdecap-ng (decrypts WEP/WPA
 capture files), and some tools to handle capture files (merge, convert, etc.).
 
+%package devel
+Summary: Development files for %{name}
+Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
+
+%description devel
+%{summary}.
+
+%package doc
+Summary: Documentation for %{name}
+Requires: %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
+BuildArch: noarch
+
+%description doc
+%{summary}.
 
 %prep
-%autosetup -p 1 -q -n aircrack-ng-%{version}-%{alphatag}
+%autosetup -p1
+find . -type f -name "*.py" -exec sed -e 's@/usr/bin/env python@%{__python3}@g' -e 's@python2@python3@g' -i "{}" \;
 
 %build
-#grep '(hex') %{SOURCE4} > airodump-ng-oui.txt
-# License unclear
-touch airodump-ng-oui.txt
-#touch --reference %{SOURCE4} airodump-ng-oui.txt
-
-%set_build_flags
-# experimental=true needed for wesside-ng, easside-ng, buddy-ng and tkiptun-ng
-# (also needed in make install)
-%make_build sqlite=true experimental=true pcre=true
-
+autoreconf -fiv
+%configure \
+    --with-experimental \
+    --with-lto \
+    --with-avx512 \
+    --without-opt \
+    --disable-static
+%make_build
 
 %install
-#FIXME: enable scripts, requires python
-#make install DESTDIR=$RPM_BUILD_ROOT prefix=%{_prefix} mandir=%{_mandir}/man1 sqlite=true unstable=true ext_scripts=true
-%make_install DESTDIR=$RPM_BUILD_ROOT prefix=%{_prefix} mandir=%{_mandir}/man1 sqlite=true experimental=true pcre=true
-install -p -m 644 -D airodump-ng-oui.txt  $RPM_BUILD_ROOT%{_sysconfdir}/aircrack-ng/airodump-ng-oui.txt
-
-
-%check
-make check
-
-# WEP checks, that are not wanted by upstream:
-# http://trac.aircrack-ng.org/ticket/533
-#cp %{SOURCE2} test/ptw.cap
-#cp %{SOURCE3} test/test.ivs
-#src/aircrack-ng -K -b 00:11:95:91:78:8C -q test/test.ivs | grep 'KEY FOUND! \[ AE:5B:7F:3A:03:D0:AF:9B:F6:8D:A5:E2:C7 \]'
-#src/aircrack-ng -q -e Appart -z test/ptw.cap | grep 'KEY FOUND! \[ 1F:1F:1F:1F:1F \]'
-
+%make_install
+install -d -m 0755 %{buildroot}%{_datadir}/%{name}
+find %{buildroot} -type f -name '*.la' -delete
 
 %files
-%doc AUTHORS ChangeLog README VERSION
-%doc test/*.cap test/*.pcap test/password.lst test/*.py patches/
+%doc AUTHORS ChangeLog README README.md
 %license LICENSE
-%{_bindir}/aircrack-ng
-%{_bindir}/airdecap-ng
-%{_bindir}/airdecloak-ng
-%{_bindir}/airolib-ng
-%{_bindir}/besside-ng-crawler
-%{_bindir}/buddy-ng
-%{_bindir}/ivstools
-%{_bindir}/kstats
-%{_bindir}/makeivs-ng
-%{_bindir}/packetforge-ng
-%{_bindir}/wpaclean
-%{_sbindir}/airbase-ng
-%{_sbindir}/aireplay-ng
-%{_sbindir}/airmon-ng
-%{_sbindir}/airodump-ng
-%{_sbindir}/airodump-ng-oui-update
-%{_sbindir}/airserv-ng
-%{_sbindir}/airtun-ng
-%{_sbindir}/besside-ng
-%{_sbindir}/easside-ng
-%{_sbindir}/tkiptun-ng
-%{_sbindir}/wesside-ng
-%{_mandir}/man1/aircrack-ng.1*
-%{_mandir}/man1/airdecap-ng.1*
-%{_mandir}/man1/airdecloak-ng.1*
-%{_mandir}/man1/airolib-ng.1*
-%{_mandir}/man1/besside-ng-crawler.1*
-%{_mandir}/man1/buddy-ng.1*
-%{_mandir}/man1/ivstools.1*
-%{_mandir}/man1/kstats.1*
-%{_mandir}/man1/makeivs-ng.1*
-%{_mandir}/man1/packetforge-ng.1*
-%{_mandir}/man1/wpaclean.1*
-%{_mandir}/man8/airbase-ng.8*
-%{_mandir}/man8/aireplay-ng.8*
-%{_mandir}/man8/airmon-ng.8*
-%{_mandir}/man8/airodump-ng.8*
-%{_mandir}/man8/airodump-ng-oui-update.8*
-%{_mandir}/man8/airserv-ng.8*
-%{_mandir}/man8/airtun-ng.8*
-%{_mandir}/man8/besside-ng.8*
-%{_mandir}/man8/easside-ng.8*
-%{_mandir}/man8/tkiptun-ng.8*
-%{_mandir}/man8/wesside-ng.8*
+%{_bindir}/*
+%{_sbindir}/*
+%{_libdir}/lib*.so
+%{_mandir}/man1/*.1*
+%{_mandir}/man8/*.8*
+%dir %{_datadir}/%{name}
 
-%dir %{_sysconfdir}/aircrack-ng
-%config(noreplace) %{_sysconfdir}/aircrack-ng/airodump-ng-oui.txt
+# Special files created in runtime.
+%ghost %{_datadir}/%{name}/airodump-ng-oui.txt
+%ghost %{_datadir}/%{name}/oui.txt
 
+%files devel
+%{_includedir}/%{name}/
+
+%files doc
+%doc test/*.cap test/*.pcap test/password.lst test/*.py
 
 %changelog
+* Wed Jul 17 2024 Fedora Release Engineering <releng@fedoraproject.org> - 1.7-8
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_41_Mass_Rebuild
+
+* Mon Jan 22 2024 Fedora Release Engineering <releng@fedoraproject.org> - 1.7-7
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_40_Mass_Rebuild
+
+* Fri Jan 19 2024 Fedora Release Engineering <releng@fedoraproject.org> - 1.7-6
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_40_Mass_Rebuild
+
+* Wed Jul 19 2023 Fedora Release Engineering <releng@fedoraproject.org> - 1.7-5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_39_Mass_Rebuild
+
+* Wed Jan 18 2023 Fedora Release Engineering <releng@fedoraproject.org> - 1.7-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_38_Mass_Rebuild
+
+* Tue Dec 13 2022 Vitaly Zaitsev <vitaly@easycoding.org> - 1.7-3
+- Converted to SPDX.
+
+* Wed Jul 20 2022 Fedora Release Engineering <releng@fedoraproject.org> - 1.7-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_37_Mass_Rebuild
+
+* Wed May 11 2022 Vitaly Zaitsev <vitaly@easycoding.org> - 1.7-1
+- Updated to version 1.7.
+- Enabled LTO.
+
+* Wed Jan 19 2022 Fedora Release Engineering <releng@fedoraproject.org> - 1.6-11
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
+
+* Tue Sep 14 2021 Sahana Prasad <sahana@redhat.com> - 1.6-10
+- Rebuilt with OpenSSL 3.0.0
+
+* Wed Jul 21 2021 Fedora Release Engineering <releng@fedoraproject.org> - 1.6-9
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
+
+* Mon Jan 25 2021 Fedora Release Engineering <releng@fedoraproject.org> - 1.6-8
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
+
+* Fri Jul 31 2020 Fedora Release Engineering <releng@fedoraproject.org> - 1.6-7
+- Second attempt - Rebuilt for
+  https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
+
+* Mon Jul 27 2020 Fedora Release Engineering <releng@fedoraproject.org> - 1.6-6
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
+
+* Mon Jul 20 2020 Jeff Law <law@redhat.com> - 1.6-5
+- Move LTO disablement so that it impacts the optflags override too
+
+* Wed Jul 08 2020 Jeff Law <law@redhat.com> - 1.6-4
+- Disable LTO
+
+* Wed Jul 01 2020 Vitaly Zaitsev <vitaly@easycoding.org> - 1.6-3
+- Removed useless patches from doc subpackage.
+
+* Thu Apr 09 2020 Vitaly Zaitsev <vitaly@easycoding.org> - 1.6-2
+- Moved libraries to main package.
+- Moved OUI database to data directory.
+
+* Mon Apr 06 2020 Vitaly Zaitsev <vitaly@easycoding.org> - 1.6-1
+- Resurrected package.
+- Updated to version 1.6.
+- Performed SPEC cleanup.
+
+* Tue Jan 28 2020 Fedora Release Engineering <releng@fedoraproject.org> - 1.5.2-9
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
+
+* Sun Aug 25 2019 Zbigniew Jędrzejewski-Szmek <zbyszek@in.waw.pl> - 1.5.2-8
+- Rebuilt for hwloc-2.0
+
+* Sun Aug 11 2019 Filipe Rosset <rosset.filipe@gmail.com> - 1.5.2-7
+- Fix FTBFS on rawhide fixes rhbz#1734928 and rhbz#1735447
+
+* Wed Jul 24 2019 Fedora Release Engineering <releng@fedoraproject.org> - 1.5.2-6
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
+
+* Thu Jan 31 2019 Fedora Release Engineering <releng@fedoraproject.org> - 1.5.2-5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
+
+* Tue Jan 22 2019 Ivan Chavero <ichavero@redhat.com> - 1.5.2-4
+- Fix debuginfo
+- Fix date
+
+* Tue Jan 22 2019 Ivan Chavero <ichavero@redhat.com> - 1.5.2-3
+- Fix directory problem
+- Skip failing tests
+
+* Tue Dec 18 2018 Ivan Chavero <ichavero@redhat.com> - 1.5.2-2
+- Fix package release
+
+* Tue Dec 18 2018 Ivan Chavero <ichavero@redhat.com> - 1.5.2
+- Fix spec file for new versioning from upstream
+- Fix spec file for new autotools build system from upstream
+- Fix spec file for new build requirements
+- Spec file cleanup
+- Added new files installation
+- Removed patch: altarches.patch
+- Removed patch: 0001-Fixed-compilation-with-OpenSSL-1.1.0-Closes-1711.patch
+
+* Thu Jul 12 2018 Fedora Release Engineering <releng@fedoraproject.org> - 1.2-0.17rc4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
+
 * Wed Feb 07 2018 Fedora Release Engineering <releng@fedoraproject.org> - 1.2-0.16rc4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
 
