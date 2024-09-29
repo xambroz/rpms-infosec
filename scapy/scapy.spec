@@ -181,7 +181,7 @@ rm -f %{buildroot}%{python3_sitelib}/*egg-info/requires.txt
 mv -f %{buildroot}%{_bindir}/scapy   %{buildroot}%{_bindir}/scapy3
 
 # Link the default to the python3 version of executables
-ln -s %{_bindir}/scapy3   %{buildroot}%{_bindir}/scapy
+ln -s scapy3   %{buildroot}%{_bindir}/scapy
 %endif
 
 
