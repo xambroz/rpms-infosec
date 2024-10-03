@@ -1,6 +1,0 @@
-Requires:
-
-
-
-Blocks:
-	centos-stream-8-x86_64 - needed for dc3dd

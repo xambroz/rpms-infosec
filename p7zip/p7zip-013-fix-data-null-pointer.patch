@@ -1,3 +1,4 @@
+Originally 0001-fix-data-null-pointer.patch
 diff --git a/CPP/7zip/Archive/LzhHandler.cpp b/CPP/7zip/Archive/LzhHandler.cpp
 index 21631f7..1f14621 100644
 --- a/CPP/7zip/Archive/LzhHandler.cpp

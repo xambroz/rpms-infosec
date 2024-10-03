@@ -1,3 +1,4 @@
+Originally 0001-fix-out-of-mem.patch
 diff --git a/C/Alloc.c b/C/Alloc.c
 index 2706ec0..3178e7a 100644
 --- a/C/Alloc.c

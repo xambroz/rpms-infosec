@@ -1,3 +1,4 @@
+Originally 14-Fix-g++-warning.patch
 From: Robert Luberda <robert@debian.org>
 Date: Sun, 28 Jan 2018 22:19:13 +0100
 Subject: Fix g++ warning

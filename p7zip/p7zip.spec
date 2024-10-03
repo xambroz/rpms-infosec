@@ -21,17 +21,20 @@ URL: http://p7zip.sourceforge.net/
 # rm p7zip_${VERSION}/DOC/unRarLicense.txt
 # tar --numeric-owner -cjvf p7zip_${VERSION}_src_all-norar.tar.bz2 p7zip_${VERSION}
 Source: p7zip_%{version}_src_all-norar.tar.bz2
-Patch0: p7zip_15.14-norar_cmake.patch
+Patch0: p7zip-000-15.14-norar_cmake.patch
 # from Debain
-Patch4: p7zip-manpages.patch
-Patch5: 02-man.patch
-Patch6: CVE-2016-9296.patch
-Patch7: 05-hardening-flags.patch
-Patch10: CVE-2017-17969.patch
-Patch11: 14-Fix-g++-warning.patch
-Patch12: gcc10-conversion.patch
-Patch13: 0001-fix-data-null-pointer.patch
-Patch14: 0001-fix-out-of-mem.patch
+Patch4: p7zip-004-manpages.patch
+Patch5: p7zip-005-man.patch
+Patch6: p7zip-006-CVE-2016-9296.patch
+Patch7: p7zip-007-hardening-flags.patch
+Patch10: p7zip-010-CVE-2017-17969.patch
+Patch11: p7zip-011-Fix-g++-warning.patch
+Patch12: p7zip-012-gcc10-conversion.patch
+Patch13: p7zip-013-fix-data-null-pointer.patch
+Patch14: p7zip-014-fix-out-of-mem.patch
+
+# Issue with hiding the password from the process history
+# reported to upstream https://sourceforge.net/p/p7zip/patches/38/
 Patch15: p7zip-015-hide-passwd.patch
 
 BuildRequires: make
