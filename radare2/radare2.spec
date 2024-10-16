@@ -2,8 +2,10 @@ Name:           radare2
 Summary:        The reverse engineering framework
 Version:        5.9.6
 URL:            https://radare.org/
-VCS:            https://github.com/radareorg/radare2
+%global         vcsurl          https://github.com/radareorg/radare2
+VCS:            git:%{vcsurl}
 #               https://github.com/radareorg/radare2/releases
+
 
 # %%if 0%%{?rhel} && 0%%{?rhel} == 8
 # Radare2 fails to build on EPEL8+s390x
@@ -26,10 +28,10 @@ VCS:            https://github.com/radareorg/radare2
 
 %if %{with releasetag}
 Release:        %autorelease
-Source0:        %{vcs}/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
+Source0:        %{vcsurl}/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
 %else
 Release:        %autorelease -s %{gitdate}git%{shortcommit}
-Source0:        %{vcs}/archive/%{commit}/%{name}-%{commit}.tar.gz#/%{name}-%{version}-git%{gitdate}-%{shortcommit}.tar.gz
+Source0:        %{vcsurl}/archive/%{commit}/%{name}-%{commit}.tar.gz#/%{name}-%{version}-git%{gitdate}-%{shortcommit}.tar.gz
 %endif
 
 # Specific to Fedora - build with system libraries
