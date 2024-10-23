@@ -1,0 +1,12 @@
+diff -ru gzrt-d8ff007856652403b595669a821b0097b60d4854.orig/Makefile gzrt-d8ff007856652403b595669a821b0097b60d4854.new/Makefile
+--- gzrt-d8ff007856652403b595669a821b0097b60d4854.orig/Makefile	2024-10-23 16:56:28.685225814 +0200
++++ gzrt-d8ff007856652403b595669a821b0097b60d4854.new/Makefile	2024-10-23 16:56:52.955358131 +0200
+@@ -1,7 +1,7 @@
+ all: gzrecover
+ 
+ gzrecover: gzrecover.o
+-	cc -Wall -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 gzrecover.c -lz -o gzrecover
++	cc -g -Wall -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 gzrecover.c -lz -o gzrecover
+ 
+ clean:
+ 	rm gzrecover
