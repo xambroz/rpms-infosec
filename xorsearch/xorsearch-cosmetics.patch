@@ -1,0 +1,255 @@
+diff -ru xorsearch-1.11.4.orig/XORSearch.c xorsearch-1.11.4.new/XORSearch.c
+--- xorsearch-1.11.4.orig/XORSearch.c	2020-07-15 22:16:48.000000000 +0200
++++ xorsearch-1.11.4.new/XORSearch.c	2022-06-23 18:04:37.623125758 +0200
+@@ -102,9 +102,9 @@
+ 	unsigned char ucMaskFixed;
+ 	unsigned char ucBitsFixed;
+ 	unsigned char ucMaskVariable1;
+-	char cVariableName1;
++	unsigned char ucVariableName1;
+ 	unsigned char ucMaskVariable2;
+-	char cVariableName2;
++	unsigned char ucVariableName2;
+ 	unsigned char ucJumpBytes;
+ } WILDCARD;
+ 
+@@ -239,9 +239,9 @@
+ 						ucMask = ucMask >> 1;
+ 						ucValue = ucValue >> 1;
+ 					}
+-					if (aiVariables[(int)pSearch->pWildcards[iIter].cVariableName1] == -1)
+-						aiVariables[(int)pSearch->pWildcards[iIter].cVariableName1] = ucValue;
+-					else if (aiVariables[(int)pSearch->pWildcards[iIter].cVariableName1] != ucValue)
++					if (aiVariables[(int)pSearch->pWildcards[iIter].ucVariableName1] == -1)
++						aiVariables[(int)pSearch->pWildcards[iIter].ucVariableName1] = ucValue;
++					else if (aiVariables[(int)pSearch->pWildcards[iIter].ucVariableName1] != ucValue)
+ 						break;
+ 				}
+ 				if (pSearch->pWildcards[iIter].ucMaskVariable2 != 0)
+@@ -253,9 +253,9 @@
+ 						ucMask = ucMask >> 1;
+ 						ucValue = ucValue >> 1;
+ 					}
+-					if (aiVariables[(int)pSearch->pWildcards[iIter].cVariableName2] == -1)
+-						aiVariables[(int)pSearch->pWildcards[iIter].cVariableName2] = ucValue;
+-					else if (aiVariables[(int)pSearch->pWildcards[iIter].cVariableName2] != ucValue)
++					if (aiVariables[(int)pSearch->pWildcards[iIter].ucVariableName2] == -1)
++						aiVariables[(int)pSearch->pWildcards[iIter].ucVariableName2] = ucValue;
++					else if (aiVariables[(int)pSearch->pWildcards[iIter].ucVariableName2] != ucValue)
+ 						break;
+ 				}
+ 				iIter++;
+@@ -327,6 +327,11 @@
+ 	int iFound = 0;
+ 	int iIter;
+ 
++	if ( pSearch == NULL )
++	{
++		return iFound = 0;
++	}
++	
+ 	for (iIter = 0; pSearch[iIter].iSearchType != SEARCHTYPE_STOP; iIter++)
+ 	{
+ 		if (WildcardSearch(&pSearch[iIter], pucBuffer, lSize, sOperation, ucOffset, uiOperand, iMaxLength, piScore))
+@@ -1042,9 +1047,9 @@
+ 	pWildcard->ucMaskFixed = 0;
+ 	pWildcard->ucBitsFixed = 0;
+ 	pWildcard->ucMaskVariable1 = 0;
+-	pWildcard->cVariableName1 = 0;
++	pWildcard->ucVariableName1 = 0;
+ 	pWildcard->ucMaskVariable2 = 0;
+-	pWildcard->cVariableName2 = 0;
++	pWildcard->ucVariableName2 = 0;
+ 
+ 	for (iIter = 0; iIter < 8; iIter++)
+ 	{
+@@ -1069,13 +1074,13 @@
+ 			if (0 == iCountVariable)
+ 			{
+ 				pWildcard->ucMaskVariable1 |= 1 << (7 - iIter);
+-				pWildcard->cVariableName1 = szBits[iIter] - 'A';
++				pWildcard->ucVariableName1 = szBits[iIter] - 'A';
+ 				iCountVariable++;
+ 			}
+ 			else if (1 == iCountVariable)
+ 			{
+ 				pWildcard->ucMaskVariable2 |= 1 << (7 - iIter);
+-				pWildcard->cVariableName2 = szBits[iIter] - 'A';
++				pWildcard->ucVariableName2 = szBits[iIter] - 'A';
+ 				iCountVariable++;
+ 			}
+ 			else
+@@ -1379,7 +1384,7 @@
+ 							{
+ 								if (0 == iVariable1WasPrinted)
+ 								{
+-									printf("%c", pSearch[iIter1].pWildcards[iIter2].cVariableName1 + 'A');
++									printf("%c", pSearch[iIter1].pWildcards[iIter2].ucVariableName1 + 'A');
+ 									iVariable1WasPrinted = 1;
+ 								}
+ 								else
+@@ -1389,7 +1394,7 @@
+ 							{
+ 								if (0 == iVariable2WasPrinted)
+ 								{
+-									printf("%c", pSearch[iIter1].pWildcards[iIter2].cVariableName2 + 'A');
++									printf("%c", pSearch[iIter1].pWildcards[iIter2].ucVariableName2 + 'A');
+ 									iVariable2WasPrinted = 1;
+ 								}
+ 								else
+@@ -1421,7 +1426,12 @@
+ #ifdef _WIN32
+ 		_setmode(_fileno(stdin), _O_BINARY);
+ #else
+-		freopen(NULL, "rb", stdin);
++		fIn = freopen(NULL, "rb", stdin);
++		if (fIn == NULL)
++		{
++			fprintf(stderr, "error reopening stdin in binary mode\n");
++			return -1;
++		}
+ #endif
+ 
+ 		*potFileSize = 100 * 1024 * 1024;
+@@ -1438,7 +1448,7 @@
+ 			return -1;
+ 		}
+ #ifndef __WINNT__
+-		fprintf(stderr, "Number of bytes read from stdin: %lld\n", otSizeRead);
++		fprintf(stderr, "Number of bytes read from stdin: %lld\n", (long long int) otSizeRead);
+ #else
+ 		fprintf(stderr, "Number of bytes read from stdin: %ld\n", otSizeRead);
+ #endif
+@@ -1469,7 +1479,7 @@
+ 		if ((*ppBuffer = malloc(*potFileSize)) == NULL)
+ 		{
+ #ifndef __WINNT__
+-			fprintf(stderr, "file %s is too large %lld\n", pcArgFile, *potFileSize);
++			fprintf(stderr, "file %s is too large %lld\n", pcArgFile, (long long int) *potFileSize);
+ #else
+ 			fprintf(stderr, "file %s is too large %ld\n", pcArgFile, *potFileSize);
+ #endif
+@@ -1723,6 +1733,41 @@
+ 	}
+ }
+ 
++void print_help()
++{
++	fprintf(stderr, "Usage: XORSearch [-siuhkpwWLxrS] [-l length] [-n [-+]length] [-f search-file] [-e byte] [-d encodings] file [string|hex|rule]\n"
++		"XORSearch V1.11.4, search for a XOR, ROL, ROT, SHIFT or ADD encoded string in a file\n"
++		"Use filename - to read from stdin\n"
++		"Use -x when the file to search is a hexdump\n"
++		"Use -s to save the XOR, ROL, ROT, SHIFT or ADD encoded file containing the string\n"
++		"Use -l length to limit the number of printed characters (50 by default, 38 with option -p)\n"
++		"Use -i to ignore the case when searching\n"
++		"Use -u to search for Unicode strings (limited support)\n"
++		"Use -r to reverse the file before searching\n"
++		"Use -f to provide a file with search strings\n"
++		"Use -n [-+]length to print neighbouring characters (before & after the found keyword)\n"
++		"Use -h to search for hex strings\n"
++		"Use -k to decode with embedded keys\n"
++		"Use -S to print all strings\n"
++		"Use -p to search for PE-files\n"
++		"Use -w to search with wildcards\n"
++		"Use -W to search with embedded wildcards\n"
++		"Use -L to list embedded wildcards\n"
++		"Use -e to exclude a particular byte-value from encoding\n"
++		"Use -d to disable encoding(s) 1: XOR 2: ROL 3: ROT 4: SHIFT 5: ADD\n"
++		"Options -l and -n are mutually exclusive\n"
++		"Options -u and -h are mutually exclusive\n"
++		"Options -k and -e are mutually exclusive\n"
++		"Option -p is not compatible with options -i, -u, -h, -n and -r\n"
++		"When using -p, do not provide a search string or use -f\n"
++		"When using -W, do not provide a search string or use -f\n"
++		"Use option -L without arguments or other options\n"
++		"Source code put in the public domain by Didier Stevens, no Copyright\n"
++		"Use at your own risk\n"
++		"https://DidierStevens.com\n");
++}
++
++
+ int main(int argc, char **argv)
+ {
+ 	struct stat statFile;
+@@ -1773,36 +1818,7 @@
+ 
+ 	if (ParseArgs(argc, argv, &iFlagSave, &iMaxLength, &iFlagIgnoreCase, &pcArgFile, &pcArgSearch, &pcArgSearchFile, &iFlagUnicode, &sNUMBERNeighbourLength, &iFlagHex, &iFlagKeys, &iFlagPEFile, &iExcludeByte, &iFlagWildcard, &iFlagWildcardEmbedded, &pcDisable, &iFlagList, &iFlagHexFile, &iFlagReverse, &iFlagStrings))
+ 	{
+-		fprintf(stderr, "Usage: XORSearch [-siuhkpwWLxrS] [-l length] [-n [-+]length] [-f search-file] [-e byte] [-d encodings] file [string|hex|rule]\n"
+-										"XORSearch V1.11.4, search for a XOR, ROL, ROT, SHIFT or ADD encoded string in a file\n"
+-										"Use filename - to read from stdin\n"
+-										"Use -x when the file to search is a hexdump\n"
+-										"Use -s to save the XOR, ROL, ROT, SHIFT or ADD encoded file containing the string\n"
+-										"Use -l length to limit the number of printed characters (50 by default, 38 with option -p)\n"
+-										"Use -i to ignore the case when searching\n"
+-										"Use -u to search for Unicode strings (limited support)\n"
+-										"Use -r to reverse the file before searching\n"
+-										"Use -f to provide a file with search strings\n"
+-										"Use -n [-+]length to print neighbouring characters (before & after the found keyword)\n"
+-										"Use -h to search for hex strings\n"
+-										"Use -k to decode with embedded keys\n"
+-										"Use -S to print all strings\n"
+-										"Use -p to search for PE-files\n"
+-										"Use -w to search with wildcards\n"
+-										"Use -W to search with embedded wildcards\n"
+-										"Use -L to list embedded wildcards\n"
+-										"Use -e to exclude a particular byte-value from encoding\n"
+-										"Use -d to disable encoding(s) 1: XOR 2: ROL 3: ROT 4: SHIFT 5: ADD\n"
+-										"Options -l and -n are mutually exclusive\n"
+-										"Options -u and -h are mutually exclusive\n"
+-										"Options -k and -e are mutually exclusive\n"
+-										"Option -p is not compatible with options -i, -u, -h, -n and -r\n"
+-										"When using -p, do not provide a search string or use -f\n"
+-										"When using -W, do not provide a search string or use -f\n"
+-										"Use option -L without arguments or other options\n"
+-										"Source code put in the public domain by Didier Stevens, no Copyright\n"
+-										"Use at your own risk\n"
+-										"https://DidierStevens.com\n");
++		print_help();
+ 		return -1;
+ 	}
+ 	if (iMaxLength == -1)
+@@ -1813,6 +1829,7 @@
+ 			iMaxLength = 50;
+ 	}
+ 
++	pSearch = NULL;
+ 	if (iFlagList)
+ 	{
+ 		pSearch = InitializeSearch(NULL, NULL, 1);
+@@ -1892,7 +1909,7 @@
+ 	if ((pBufferCopy = malloc(otFileSize)) == NULL)
+ 	{
+ #ifndef __WINNT__
+-		fprintf(stderr, "file %s is too large %lld\n", pcArgFile, otFileSize);
++		fprintf(stderr, "file %s is too large %lld\n", pcArgFile, (long long int) otFileSize);
+ #else
+ 		fprintf(stderr, "file %s is too large %ld\n", pcArgFile, otFileSize);
+ #endif
+@@ -1915,7 +1932,7 @@
+ 		if ((pui32bitKeys = malloc(uiSize32bitKeys * sizeof(unsigned int))) == NULL)
+ 		{
+ #ifndef __WINNT__
+-			fprintf(stderr, "file %s is too large for copy %lld\n", pcArgFile, otFileSize);
++			fprintf(stderr, "file %s is too large for copy %lld\n", pcArgFile, (long long int) otFileSize);
+ #else
+ 			fprintf(stderr, "file %s is too large for copy %ld\n", pcArgFile, otFileSize);
+ #endif
+@@ -1943,7 +1960,7 @@
+ 	if ((piFoundIndex = (int *)malloc(otFileSize * sizeof(int))) == NULL)
+ 	{
+ #ifndef __WINNT__
+-		fprintf(stderr, "file %s is too large %lld\n", pcArgFile, otFileSize);
++		fprintf(stderr, "file %s is too large %lld\n", pcArgFile, (long long int) otFileSize);
+ #else
+ 		fprintf(stderr, "file %s is too large %ld\n", pcArgFile, otFileSize);
+ #endif
+@@ -1957,7 +1974,7 @@
+ 	if ((piFoundSize = (int *)malloc(otFileSize * sizeof(int))) == NULL)
+ 	{
+ #ifndef __WINNT__
+-		fprintf(stderr, "file %s is too large %lld\n", pcArgFile, otFileSize);
++		fprintf(stderr, "file %s is too large %lld\n", pcArgFile, (long long int) otFileSize);
+ #else
+ 		fprintf(stderr, "file %s is too large %ld\n", pcArgFile, otFileSize);
+ #endif
