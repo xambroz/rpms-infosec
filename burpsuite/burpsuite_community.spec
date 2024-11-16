@@ -1,5 +1,5 @@
 Name:           burpsuite_community
-Version:        2023.11.1.3
+Version:        2024.9.5
 Release:        1%{?dist}
 Summary:        Security tool for analyzing web application security
 
@@ -11,12 +11,19 @@ License:        Burp License
 URL:            http://portswigger.net/suite/
 #               http://portswigger.net/burp/burpsuite_free_v1.6.jar
 #               https://portswigger.net/Burp/Releases/Download?productId=100&version=%%{version}6&type=Jar
-# Source0:       http://portswigger.net/burp/burpsuite_free_v%{version}.jar
-# Source0:      https://portswigger.net/Burp/Releases/Download?productId=100&version=2023.11.1.3&type=Jar#/burpsuite_community_2023.11.1.3.jar
+# Source0:      http://portswigger.net/burp/burpsuite_free_v%%{version}.jar
+
+# Download the Source0 automatically during the rebuild of RPM package
+%undefine       _disable_source_fetch
+
+# Source0:      https://portswigger.net/Burp/Releases/Download?productId=100&version=2024.9.5&type=Jar#/burpsuite_community_2024.9.5.jar
 Source0:        https://portswigger.net/Burp/Releases/Download?productId=100&version=%{version}&type=Jar#/burpsuite_community_%{version}.jar
+# Do not copy the Source0 file to the SRPM package
+NoSource:       0
+%define         SHA256SUM0 78c00c8fdbff4f549a65b9159a4ac4896345e388ee83d1694cae0caeeee32af0
+
 
 Source1:        %{name}.in
-NoSource:       0
 BuildArch:      noarch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -39,7 +46,24 @@ Burp suite is extensible via the IBurpExtender interface.
 
 
 %prep
-#%setup -q -n %{name}_v%{version}
+# Do not unpack the jar file
+#%%setup -q -n %%{name}_v%%{version}
+
+# Check that the jar file is present (that it was downloaded)
+if [ ! -f %{SOURCE0} ] ; then
+    echo "ERROR: file %{SOURCE0} missing"
+    exit 1
+fi
+
+# Check the checksum
+echo "%SHA256SUM0  %SOURCE0" | sha256sum -c -
+if [ $? -ne 0 ] ; then
+    echo "ERROR: file %SOURCE0 sha256 checksum is not %SHA256SUM0"
+    exit 2
+fi
+
+
+# Unpack the license file
 jar xvf %{SOURCE0} resources/Legal/EulaCommunity.txt
 
 
@@ -60,10 +84,10 @@ cat > %{buildroot}%{_datadir}/applications/%{name}.desktop <<EOF
 [Desktop Entry]
 Type=Application
 Exec=%{name}
-Name=burpsuite
+Name=Burp Suite Community
 Comment=Security tool for analyzing web application security
 GenericName=Burpsuite Community Edition
-Icon=burpsuite
+Icon=%{name}
 Terminal=false
 Categories=System;Security;
 StartupNotify=true
@@ -103,7 +127,7 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %files
-#%doc readme\ -\ running\ burp.txt
+#%%doc readme\ -\ running\ burp.txt
 %license resources/Legal/EulaCommunity.txt
 %dir %{_datadir}/%{name}
 %{_datadir}/%{name}/*.jar
