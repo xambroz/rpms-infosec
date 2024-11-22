@@ -27,7 +27,7 @@ VCS:            git:%{vcsurl}
 
 # autorelease not available on epel7
 %if ! ( 0%{?rhel} && 0%{?rhel} <= 7 )
-%global         %autorelease    1
+%global         autorelease    1
 %endif
 
 
