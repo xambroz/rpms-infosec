@@ -25,6 +25,11 @@ VCS:            git:%{vcsurl}
 %global         commit          4eb49d5ad8c99eaecc8850a2f10bad407067c898
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
+# autorelease not available on epel7
+%if ! ( 0%{?rhel} && 0%{?rhel} <= 7 )
+%global         %autorelease    1
+%endif
+
 
 %if %{with releasetag}
 Release:        %autorelease
