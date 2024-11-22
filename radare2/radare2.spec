@@ -56,8 +56,10 @@ Patch3:         radare2-5.9.0-use_magic.patch
 # https://github.com/radareorg/radare2/commit/1bdda93e348c160c84e30da3637acef26d0348de
 # Patch6:         radare2-5.8.8-CVE-2023-5686.patch
 
-
-
+# Build reports need for C99 compatibility mode for the index type declaration in the for cycle.
+# As rest of the radare2 is strictly defining all index variables prior to for cycle, it is recommended
+# to change this one as well
+Patch7:           radare2-5.9.8-dec99.patch
 
 
 License:        LGPL-3.0-or-later AND GPL-2.0-or-later AND BSD-2-Clause AND BSD-3-Clause AND MIT AND Apache-2.0 AND MPL-2.0 AND Zlib
