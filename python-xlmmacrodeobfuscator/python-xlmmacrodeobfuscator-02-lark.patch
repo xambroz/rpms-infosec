@@ -1,0 +1,22 @@
+diff -ru XLMMacroDeobfuscator-0.2.7.orig/setup.py XLMMacroDeobfuscator-0.2.7.new/setup.py
+--- XLMMacroDeobfuscator-0.2.7.orig/setup.py	2022-09-21 20:01:40.000000000 +0200
++++ XLMMacroDeobfuscator-0.2.7.new/setup.py	2024-11-25 11:02:39.833821424 +0100
+@@ -35,7 +35,7 @@
+     python_requires='>=3.4',
+     install_requires=[
+         "pyxlsb2",
+-        "lark-parser",
++        "lark",
+         "xlrd2",
+         "untangle==1.2.1",
+         "msoffcrypto-tool",
+diff -ru XLMMacroDeobfuscator-0.2.7.orig/XLMMacroDeobfuscator.egg-info/requires.txt XLMMacroDeobfuscator-0.2.7.new/XLMMacroDeobfuscator.egg-info/requires.txt
+--- XLMMacroDeobfuscator-0.2.7.orig/XLMMacroDeobfuscator.egg-info/requires.txt	2022-09-21 20:03:59.000000000 +0200
++++ XLMMacroDeobfuscator-0.2.7.new/XLMMacroDeobfuscator.egg-info/requires.txt	2024-11-25 11:03:07.660970841 +0100
+@@ -1,5 +1,5 @@
+ pyxlsb2
+-lark-parser
++lark
+ xlrd2
+ untangle==1.2.1
+ msoffcrypto-tool

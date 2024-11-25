@@ -12,7 +12,10 @@ BuildArch:      noarch
 
 # Message about missing pywin32 on stdout is not wanted on Linux as it will be mostly missing
 # and will causing errors when processing output in JSON
-Patch0:         %{name}-01-pywin32.patch
+Patch1:         %{name}-01-pywin32.patch
+
+# The lark-parser python library got renamed to lark only
+Patch2:         %{name}-02-lark.patch
 
 
 BuildRequires:  python%{python3_pkgversion}-devel
@@ -39,7 +42,7 @@ Summary:        %{summary}
 
 
 Requires:       python%{python3_pkgversion}-defusedxml
-Requires:       python%{python3_pkgversion}-lark-parser
+Requires:       python%{python3_pkgversion}-lark
 Requires:       python%{python3_pkgversion}-msoffcrypto
 Requires:       python%{python3_pkgversion}-pyxlsb2
 Requires:       python%{python3_pkgversion}-roman
