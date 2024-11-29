@@ -66,38 +66,39 @@ License:        LGPL-3.0-or-later AND GPL-2.0-or-later AND BSD-2-Clause AND BSD-
 # Radare2 as a package is targeting to be licensed/compiled as LGPLv3+
 # during build for Fedora the GPL code is not omitted so effectively it is GPLv2+
 # some code has originally different license:
-# libr/asm/arch/ - GPLv2+, MIT, GPLv3
+# libr/asm/arch/            - GPLv2+, MIT, GPLv3
 # libr/bin/format/pe/dotnet - Apache License Version 2.0
-# libr/hash/xxhash.c - 2 clause BSD
-# libr/util/qrcode.c - MIT
-# shlr/grub/grubfs.c - LGPL
-# shlr/java - Apache 2.0
-# shlr/sdb/src - MIT
-# shlr/lz4 - 3 clause BSD (system installed shared lz4 is used instead)
-# shlr/squashfs/src - GPLv2+
-# libr/parse/c - LGPLv2+
-# shlr/udis86 - 2 clause BSD
-# shlr/winkd - LGPL v3+
-# shlr/spp - MIT
-# shlr/zip/zlib - zlib/libpng License (system installed shared libzip is used instead)
-# shlr/zip/zip - 3 clause BSD (system installed shared zlib is used instead)
-# shlr/ptrace-wrap - LGPL v3+
-# shlr/tree-sitter - MIT
-# shlr/mpc - 2 clause BSD
-# shlr/yxml - MIT
+# libr/hash/xxhash.c        - 2 clause BSD
+# libr/util/qrcode.c        - MIT
+# shlr/grub/grubfs.c        - LGPL
+# shlr/java                 - Apache 2.0
+# shlr/sdb/src              - MIT
+# shlr/lz4                  - 3 clause BSD (system installed shared lz4 is used instead)
+# shlr/squashfs/src         - GPLv2+
+# libr/parse/c              - LGPLv2+
+# shlr/udis86               - 2 clause BSD
+# shlr/winkd                - LGPL v3+
+# shlr/spp                  - MIT
+# shlr/zip/zlib             - zlib/libpng License (system installed shared libzip is used instead)
+# shlr/zip/zip              - 3 clause BSD (system installed shared zlib is used instead)
+# shlr/ptrace-wrap          - LGPL v3+
+# shlr/tree-sitter          - MIT
+# shlr/mpc                  - 2 clause BSD
+# shlr/yxml                 - MIT
+# shlr/qjs                  - MIT
 
 # Removed from the final package because of the presence of minified JS and
 # absence of the source JS - this should be packaged with radare2-webui
-# shlr/www/m - Apache-2.0
-# shlr/www/enyo/vendors/jquery-ui.min.js - GPL + MIT
+# shlr/www/m                                        - Apache-2.0
+# shlr/www/enyo/vendors/jquery-ui.min.js            - GPL + MIT
 # shlr/www/enyo/vendors/jquery.layout-latest.min.js - GPL + MIT
-# shlr/www/enyo/vendors/jquery.scrollTo.min.js - MIT
-# shlr/www/enyo/vendors/lodash.min.js - lodash license
-# shlr/www/enyo/vendors/joint.* - Mozilla MPL 2.0
-# shlr/www/enyo/vendors/jquery.min.js - Apache License version 2.0
-# shlr/www/p/vendors/jquery* - GPL + MIT
-# shlr/www/p/vendors/dagre*|graphlib* - 3 clause BSD
-# shlr/www/p/vendors/jquery.onoff.min.js - MIT
+# shlr/www/enyo/vendors/jquery.scrollTo.min.js      - MIT
+# shlr/www/enyo/vendors/lodash.min.js               - lodash license
+# shlr/www/enyo/vendors/joint.*                     - Mozilla MPL 2.0
+# shlr/www/enyo/vendors/jquery.min.js               - Apache License version 2.0
+# shlr/www/p/vendors/jquery*                        - GPL + MIT
+# shlr/www/p/vendors/dagre*|graphlib*               - 3 clause BSD
+# shlr/www/p/vendors/jquery.onoff.min.js            - MIT
 
 BuildRequires:  sed
 BuildRequires:  gcc
@@ -216,6 +217,11 @@ Provides:       bundled(mpc) = 0.8.7
 # ./shlr/yxml
 # https://dev.yorhel.nl/yxml
 Provides:       bundled(yxml) = 20201108
+
+# ./shlr/qjs
+# https://github.com/quickjs-ng/quickjs
+# License: MIT
+Provides:       bundled(quickjs-ng) = 0.7.0
 
 # and likely some more in libr/... borrowed from other projects
 
