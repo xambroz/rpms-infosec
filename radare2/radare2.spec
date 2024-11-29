@@ -291,6 +291,8 @@ echo "Available under https://github.com/radare/radare2-webui" >> ./shlr/www/REA
 sed -i -e "s|meson_version : '>=......'|meson_version : '>=0.49.1'|;" meson.build
 %endif
 
+# On RHEL8 the shabeng for "/usr/bin/env -S" is mangled wrongly as "/usr/bin/-S"
+sed -i -e "s|/usr/bin/env -S r2|/usr/bin/r2|" ./scripts/licenses.r2.js
 
 %build
 # Whereever possible use the system-wide libraries instead of bundles
