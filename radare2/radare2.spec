@@ -290,11 +290,9 @@ echo "The radare2 source usually comes with a pre-built version of the web-inter
 echo "This has been removed in the Fedora package to follow the Fedora Packaging Guidelines." >> ./shlr/www/README.Fedora
 echo "Available under https://github.com/radare/radare2-webui" >> ./shlr/www/README.Fedora
 
-%if 0%{?rhel} && 0%{?rhel} == 8
-# Meson on EPEL8 is older than meson on EPEL7 and older than recommended one
-# on EPEL8 downgrade the recommendation in meson.build and pray
-# meson_version : '>=0.50.1' => meson_version : '>=0.49.1'
-sed -i -e "s|meson_version : '>=......'|meson_version : '>=0.49.1'|;" meson.build
+%if 0%{?rhel} && 0%{?rhel} <= 8
+# Meson on EPEL8 / EPEL7 is older than recommended one
+sed -i -e "s|meson_version : '>=......'|meson_version : '>=0.47.2'|;" meson.build
 %endif
 
 # On RHEL8 the shabeng for "/usr/bin/env -S" is mangled wrongly as "/usr/bin/-S"
