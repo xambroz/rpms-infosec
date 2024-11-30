@@ -52,7 +52,7 @@ BuildRequires:  radare2-devel >= 5.6.8
 BuildRequires:  make
 BuildRequires:  gcc-c++
 BuildRequires:  kf5-syntax-highlighting-devel
-BuildRequires:  python3-devel
+# BuildRequires:  python3-devel
 BuildRequires:  qt5-qtsvg-devel
 BuildRequires:  file-devel
 BuildRequires:  desktop-file-utils
@@ -67,11 +67,11 @@ BuildRequires:  qt5-qtwebengine-devel
 # BuildRequires:  doxygen
 # BuildRequires:  /usr/bin/sphinx-build
 
-BuildRequires:  python3-breathe
-BuildRequires:  python3-recommonmark
+# BuildRequires:  python3-breathe
+# BuildRequires:  python3-recommonmark
 
-Requires:       python3-jupyter-client
-Requires:       python3-notebook
+# Requires:       python3-jupyter-client
+# Requires:       python3-notebook
 Requires:       hicolor-icon-theme
 
 # Package iaito was renamed from r2cutter in version 5.2.0
