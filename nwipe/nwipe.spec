@@ -115,4 +115,4 @@ autoreconf -vif
 
 
 %changelog
-%autochangelog
+%{?%autochangelog: %autochangelog }
