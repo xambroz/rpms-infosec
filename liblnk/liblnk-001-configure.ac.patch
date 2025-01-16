@@ -1,0 +1,9 @@
+diff -ru liblnk-00e03ad49fd9610d2941388ebab08ff2dc8affde/configure.ac liblnk-00e03ad49fd9610d2941388ebab08ff2dc8affde.new/configure.ac
+--- liblnk-00e03ad49fd9610d2941388ebab08ff2dc8affde/configure.ac	2024-10-15 06:26:49.000000000 +0200
++++ liblnk-00e03ad49fd9610d2941388ebab08ff2dc8affde.new/configure.ac	2025-01-16 14:17:15.174667453 +0100
+@@ -1,4 +1,4 @@
+-AC_PREREQ([2.71])
++AC_PREREQ([2.69])
+ 
+ AC_INIT(
+   [liblnk],
