@@ -1,0 +1,31 @@
+diff -ru libfole-c6dbb26a2f2a531cd4d1101bbffa88cd110e3f90/configure.ac libfole-c6dbb26a2f2a531cd4d1101bbffa88cd110e3f90.new/configure.ac
+--- libfole-c6dbb26a2f2a531cd4d1101bbffa88cd110e3f90/configure.ac	2024-05-21 05:41:10.000000000 +0200
++++ libfole-c6dbb26a2f2a531cd4d1101bbffa88cd110e3f90.new/configure.ac	2025-01-16 14:28:07.371344556 +0100
+@@ -97,7 +97,7 @@
+ AC_CONFIG_FILES([Makefile])
+ AC_CONFIG_FILES([include/Makefile])
+ AC_CONFIG_FILES([common/Makefile])
+-AC_CONFIG_FILES([libcerror/Makefile])
++dnl AC_CONFIG_FILES([libcerror/Makefile])
+ AC_CONFIG_FILES([libfole/Makefile])
+ AC_CONFIG_FILES([po/Makefile.in])
+ AC_CONFIG_FILES([po/Makevars])
+diff -ru libfole-c6dbb26a2f2a531cd4d1101bbffa88cd110e3f90/Makefile.am libfole-c6dbb26a2f2a531cd4d1101bbffa88cd110e3f90.new/Makefile.am
+--- libfole-c6dbb26a2f2a531cd4d1101bbffa88cd110e3f90/Makefile.am	2024-05-21 05:41:10.000000000 +0200
++++ libfole-c6dbb26a2f2a531cd4d1101bbffa88cd110e3f90.new/Makefile.am	2025-01-16 14:27:41.639160496 +0100
+@@ -3,7 +3,6 @@
+ SUBDIRS = \
+ 	include \
+ 	common \
+-	libcerror \
+ 	libfole \
+ 	po \
+ 	manuals \
+@@ -60,7 +59,6 @@
+ 
+ library:
+ 	(cd $(srcdir)/common && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcerror && $(MAKE) $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/libfole && $(MAKE) $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/po && $(MAKE) $(AM_MAKEFLAGS))
+ 

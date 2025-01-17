@@ -1,0 +1,9 @@
+diff -ru libfole-c6dbb26a2f2a531cd4d1101bbffa88cd110e3f90/configure.ac libfole-c6dbb26a2f2a531cd4d1101bbffa88cd110e3f90.new/configure.ac
+--- libfole-c6dbb26a2f2a531cd4d1101bbffa88cd110e3f90/configure.ac	2025-01-16 14:30:10.014221909 +0100
++++ libfole-c6dbb26a2f2a531cd4d1101bbffa88cd110e3f90.new/configure.ac	2025-01-16 14:31:33.996822688 +0100
+@@ -1,4 +1,4 @@
+-AC_PREREQ([2.71])
++AC_PREREQ([2.69])
+ 
+ AC_INIT(
+  [libfole],
