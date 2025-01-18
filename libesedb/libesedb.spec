@@ -17,7 +17,7 @@ Windows Mail, Exchange, Active Directory, etc.}
 %global         commit          24ae2ff47365adb5f1dcdce315ac7dd16b972836
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
-Release:        %aurorelease
+Release:        %autorelease
 
 # Build with python3 package by default
 %bcond_without  python3
