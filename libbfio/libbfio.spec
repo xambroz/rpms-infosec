@@ -1,6 +1,6 @@
 Name:           libbfio
 Version:        20240414
-Release:        %aurorelease
+Release:        %autorelease
 Summary:        Library to provide basic file input/output abstraction
 Group:          System Environment/Libraries
 License:        LGPL-3.0-or-later
