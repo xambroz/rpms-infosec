@@ -1,6 +1,6 @@
 Name:           libodraw
 Version:        20240505
-Release:        1%{?dist}
+Release:        %aurorelease
 Summary:        Libyal library to access to optical disc (split) RAW image files (bin/cue, iso/cue)
 Group:          System Environment/Libraries
 License:        LGPL-3.0-or-later
@@ -94,21 +94,4 @@ make check
 %{_mandir}/man3/%{name}.3*
 
 %changelog
-* Sat May 18 2024 Michal Ambroz <rebus _AT seznam.cz> - 20240505-1
-- bump to 20240505
-
-* Mon Aug 01 2016 Michal Ambroz <rebus AT seznam.cz> - 20160522-1
-- bump to 20160522
-
-* Tue Jul 7 2015 Michal Ambroz <rebus AT seznam.cz> - 20150629-1
-- 4dfb027dc608dc871bdf3a66c63193c24b189243 tagged as release 20150629
-
-* Tue Jun 30 2015 Michal Ambroz <rebus AT seznam.cz> - 20150105-3
-- fix for build - hmac - 4dfb027dc608dc871bdf3a66c63193c24b189243
-
-* Sat Jun 06 2015 Michal Ambroz <rebus AT seznam.cz> - 20150105-2
-- fix for byacc
-
-* Sat Jun 06 2015 Michal Ambroz <rebus AT seznam.cz> - 20150105-1
-- Initial build for Fedora
-
+%autochangelog
