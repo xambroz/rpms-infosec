@@ -12,7 +12,7 @@ URL:            https://github.com/libyal/libcstring
 %global         commit          9a6461ffcdaaa0cda5dd4736b0298de7b1e99aaa
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
-Release:        1%{?dist}
+Release:        %aurorelease
 Source0:        %{url}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 
 
@@ -71,14 +71,4 @@ make check
 %{_mandir}/man3/%{name}.3*
 
 %changelog
-* Fri Feb 18 2022 Michal Ambroz <rebus AT seznam.cz> - 20180218-1
-- rebuild on bump for libevtx 2017
-
-* Mon Jul 03 2017 Michal Ambroz <rebus AT seznam.cz> - 20160425-3
-- rebuild on bump for libevtx 2017
-
-* Mon Jun 20 2016 Michal Ambroz <rebus AT seznam.cz> - 20160425-2
-- bump for libewf 20160425
-
-* Sat Jun 06 2015 Michal Ambroz <rebus AT seznam.cz> - 20150101-1
-- Initial build for Fedora
+%autochangelog
