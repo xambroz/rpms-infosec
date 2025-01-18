@@ -12,7 +12,7 @@ URL:            https://github.com/libyal/libcthreads
 %global         commit          b80e4921334bfe06eb3ac3a9ea0912e06c6ad31e
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
-Release:        %aurorelease
+Release:        %autorelease
 
 Source0:        %{url}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 # Patch build to use the shared system libraries rather than using embedded ones
