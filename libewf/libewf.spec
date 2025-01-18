@@ -1,6 +1,6 @@
 Name:           libewf
 Version:        20240506
-Release:        %aurorelease
+Release:        %autorelease
 Summary:        Libyal library for the Expert Witness Compression Format (EWF)
 
 Group:          System Environment/Libraries
