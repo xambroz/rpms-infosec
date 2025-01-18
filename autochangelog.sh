@@ -25,7 +25,7 @@ if [ $? -eq 0 ] ; then
 	echo "WARNING: %autorelease already found, not touching that"
 else
 	echo "WARNING: %autorelease not found, switching to %autorelease"
-	sed -i -E 's/(^Release:[ \t]*).*$/\1%aurorelease/'  $PACKAGE/${PACKAGE}.spec
+	sed -i -E 's/(^Release:[ \t]*).*$/\1%autorelease/'  $PACKAGE/${PACKAGE}.spec
 	SPECMODIFIED=1
 fi
 
