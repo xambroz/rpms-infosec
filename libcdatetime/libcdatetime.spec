@@ -12,7 +12,7 @@ URL:            https://github.com/libyal/libcdatetime
 %global         commit          fba481205729a88982764c16f46d9d66cf1fd8c4
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
-Release:        1%{?dist}
+Release:        %aurorelease
 
 Source0:        %{url}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 #Patch build to use the shared system libraries rather than using embedded ones
@@ -79,14 +79,4 @@ make check
 %{_mandir}/man3/%{name}.3*
 
 %changelog
-* Mon May 13 2024 Michal Ambroz <rebus AT seznam.cz> - 20240414-1
-- bump to 20240414
-
-* Tue Jun 27 2023 Michal Ambroz <rebus AT seznam.cz> - 20230115-1
-- bump to 20230115
-
-* Mon Jun 20 2016 Michal Ambroz <rebus AT seznam.cz> - 20160425-1
-- bump to 20160425 - related to libewf release 20160224
-
-* Sat Jun 06 2015 Michal Ambroz <rebus AT seznam.cz> - 20150407-1
-- Initial build for Fedora
+%autochangelog
