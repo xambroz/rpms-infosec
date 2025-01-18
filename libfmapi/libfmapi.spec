@@ -1,6 +1,6 @@
 Name:           libfmapi
 Version:        20240415
-Release:        %aurorelease
+Release:        %autorelease
 Summary:        Libyal library for cross-platform C generic data functions
 Group:          System Environment/Libraries
 License:        LGPL-3.0-or-later
