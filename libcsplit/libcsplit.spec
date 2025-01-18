@@ -12,7 +12,7 @@ URL:            https://github.com/libyal/libcsplit
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
-Release:        1%{?dist}
+Release:        %aurorelease
 Source0:        %{url}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 #Patch build to use the shared system libraries rather than using embedded ones
 Patch0:         %{name}-libs.patch
@@ -73,17 +73,4 @@ make check
 %{_mandir}/man3/%{name}.3*
 
 %changelog
-* Sat May 18 2024 Michal Ambroz <rebus AT seznam.cz> - 20240414-1
-- bump to 20240414
-
-* Sat Oct 28 2023 Michal Ambroz <rebus AT seznam.cz> - 20230612-1
-- bump to 20230612
-
-* Wed Jun 28 2023 Michal Ambroz <rebus AT seznam.cz> - 20220109-1
-- bump to 20220109
-
-* Mon Jun 20 2016 Michal Ambroz <rebus AT seznam.cz> - 20160425-1
-- bump to 20160425
-
-* Sat Jun 06 2015 Michal Ambroz <rebus AT seznam.cz> - 20150104-1
-- Initial build for Fedora
+%autochangelog
