@@ -1,6 +1,6 @@
 Name:           libfguid
 Version:        20240415
-Release:        1%{?dist}
+Release:        %aurorelease
 Summary:        Libyal library for GUID/UUID data types
 Group:          System Environment/Libraries
 License:        LGPL-3.0-or-later
@@ -78,11 +78,4 @@ make check
 %{_mandir}/man3/%{name}.3*
 
 %changelog
-* Mon May 13 2024 Michal Ambroz <rebus AT seznam.cz> - 20240415-1
-- bump to 20240415
-
-* Mon Aug 01 2016 Michal Ambroz <rebus AT seznam.cz> - 20160426-1
-- bump to 20160426
-
-* Sat Jun 06 2015 Michal Ambroz <rebus AT seznam.cz> - 20150104-1
-- Initial build for Fedora
+%autochangelog
