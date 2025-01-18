@@ -97,7 +97,7 @@ rm -f  html/_sources/licenses.rst.txt
 
 
 %files -n python%{python3_pkgversion}-xlrd2
-%license LICENSE docs/licenses.rst
+%license LICENSE
 %doc README.md
 %{_bindir}/runxlrd2.py
 %{python3_sitelib}/xlrd2
