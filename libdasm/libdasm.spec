@@ -103,13 +103,13 @@ Patch3:         libdasm-03_das_futurize.patch
 
 %if %{with releasetag}
 # Build from the targball release
-Release:        %{baserelease}%{?dist}
+Release:        %aurorelease
 Source0:        %{url}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
 %else
 # Build from the git commit snapshot
 # Release is not starting with 0 as usual, because the next release will be 1.6
-Release:        %{baserelease}.%{gitdate}git%{shortcommit}%{?dist}
+Release:        %aurorelease
 Source0:        %{url}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 %endif
 
@@ -306,83 +306,4 @@ find %{buildroot} -name '*.a' -exec rm -f {} ';'
 
 
 %changelog
-* Wed May 15 2024 Michal Ambroz <rebus at, seznam.cz> - 1.6-19
-- modernize the specfile
-
-* Thu Jan 25 2024 Fedora Release Engineering <releng@fedoraproject.org> - 1.6-18
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_40_Mass_Rebuild
-
-* Sun Jan 21 2024 Fedora Release Engineering <releng@fedoraproject.org> - 1.6-17
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_40_Mass_Rebuild
-
-* Thu Jul 20 2023 Fedora Release Engineering <releng@fedoraproject.org> - 1.6-16
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_39_Mass_Rebuild
-
-* Thu Jan 19 2023 Fedora Release Engineering <releng@fedoraproject.org> - 1.6-15
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_38_Mass_Rebuild
-
-* Thu Jul 21 2022 Fedora Release Engineering <releng@fedoraproject.org> - 1.6-14
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_37_Mass_Rebuild
-
-* Thu Jan 20 2022 Fedora Release Engineering <releng@fedoraproject.org> - 1.6-13
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
-
-* Thu Jul 22 2021 Fedora Release Engineering <releng@fedoraproject.org> - 1.6-12
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
-
-* Tue Jan 26 2021 Fedora Release Engineering <releng@fedoraproject.org> - 1.6-11
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
-
-* Tue Jul 28 2020 Fedora Release Engineering <releng@fedoraproject.org> - 1.6-10
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
-
-* Wed Apr 22 2020 Michal Ambroz <rebus at, seznam.cz> - 1.6-9
-- rebuild with gcc10/fc33
-
-* Wed Jan 29 2020 Fedora Release Engineering <releng@fedoraproject.org> - 1.6-8
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
-
-* Wed Oct 23 2019 Michal Ambroz <rebus at, seznam.cz> - 1.6-7
-- remove python2 package for fc32+ rhel8+
-- add python3 support
-
-* Thu Jul 25 2019 Fedora Release Engineering <releng@fedoraproject.org> - 1.6-6
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
-
-* Fri Feb 01 2019 Fedora Release Engineering <releng@fedoraproject.org> - 1.6-5
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
-
-* Tue Jul 17 2018 Miro Hrončok <mhroncok@redhat.com> - 1.6-4
-- Update Python macros to new packaging standards
-  (See https://fedoraproject.org/wiki/Changes/Move_usr_bin_python_into_separate_package)
-- explicit build with python2
-
-* Fri Jul 13 2018 Fedora Release Engineering <releng@fedoraproject.org> - 1.6-3
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
-
-* Tue Apr 17 2018 Michal Ambroz <rebus at, seznam.cz> - 1.6-2
-- patch das to not request write permissions
-
-* Sun Apr 01 2018 Michal Ambroz <rebus at, seznam.cz> - 1.6-1
-- switch to the github release of 1.6
-
-* Fri Mar 30 2018 Michal Ambroz <rebus at, seznam.cz> - 1.5-6.20180328gitc315f8d
-- switch to github snapshot with BSD license
-- use ldconfig_scriptlets instead of ldconfig in post/postun
-
-* Sun Mar 25 2018 Michal Ambroz <rebus at, seznam.cz> - 1.5-5.20151201gitc1afd03
-- switch to github snapshot
-
-* Sun Mar 04 2018 Michal Ambroz <rebus at, seznam.cz> - 1.5-4
-- remove *.a files
-
-* Sat Jul 14 2012 Michal Ambroz <rebus at, seznam.cz> - 1.5-3
-- build for Fedora 17
-- patch the makefiles to fix issue with soname, destdir
-
-* Fri Jun  5 2009 David Malcolm <dmalcolm@redhat.com> - 1.5-2
-- add python-devel to build requirements
-
-* Fri May  8 2009 David Malcolm <dmalcolm@redhat.com> - 1.5-1
-- initial packaging
-
+%autochangelog
