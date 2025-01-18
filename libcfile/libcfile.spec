@@ -12,7 +12,7 @@ URL:            https://github.com/libyal/libcfile
 %global         commit          538ec50e581a3b7e136ab0d1a3731b0475680450
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
-Release:        %aurorelease
+Release:        %autorelease
 Source0:        %{url}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 #Patch build to use the shared system libraries rather than using embedded ones
 Patch0:         %{name}-000-libs.patch
