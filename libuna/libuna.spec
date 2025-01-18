@@ -20,7 +20,7 @@ Library to support Unicode and ASCII (byte string) conversions.
 %global         commit          ee21db63eed2820396cff0a7442e408c028535f2
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
-Release:        %aurorelease
+Release:        %autorelease
 Source0:        %{url}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 
 # dynamically loaded libraries
