@@ -12,7 +12,7 @@ URL:            https://github.com/libyal/libcdatetime
 %global         commit          fba481205729a88982764c16f46d9d66cf1fd8c4
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
-Release:        %aurorelease
+Release:        %autorelease
 
 Source0:        %{url}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 #Patch build to use the shared system libraries rather than using embedded ones
