@@ -2,7 +2,7 @@
 
 Name:           libcsystem
 Version:        20160425
-Release:        1%{?dist}
+Release:        %aurorelease
 Summary:        Libyal library for cross-platform C system functions
 Group:          System Environment/Libraries
 License:        LGPL-3.0-or-later
@@ -79,14 +79,4 @@ make check
 %{_mandir}/man3/%{name}.3*
 
 %changelog
-* Mon Aug 01 2016 Michal Ambroz <rebus AT seznam.cz> - 20160425-1
-- bump to 20160425
-
-* Tue Jul 7 2015 Michal Ambroz <rebus AT seznam.cz> - 20150629-1
-- patch level tagged as release 20150629
-
-* Tue Jun 30 2015 Michal Ambroz <rebus AT seznam.cz> - 20150101-2
-- update to patch level 749d980f5f706d04897d2ae08b77594933a5f7f1 to fix build of libodraw
-
-* Sat Jun 06 2015 Michal Ambroz <rebus AT seznam.cz> - 20150101-1
-- Initial build for Fedora
+%autochangelog
