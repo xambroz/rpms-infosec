@@ -13,7 +13,7 @@ URL:            https://github.com/libyal/libcerror
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
-Release:        %aurorelease
+Release:        %autorelease
 
 Source0:        %{url}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 
