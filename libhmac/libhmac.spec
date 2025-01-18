@@ -1,6 +1,6 @@
 Name:           libhmac
 Version:        20240417
-Release:        1%{?dist}
+Release:        %aurorelease
 Summary:        Libyal library to support various Hash-based Message Authentication Codes (HMAC)
 Group:          System Environment/Libraries
 License:        LGPL-3.0-or-later
@@ -137,20 +137,4 @@ make check || cat tests/test-suite.log
 
 
 %changelog
-* Sat May 18 2024 Michal Ambroz <rebus AT seznam.cz> - 20240417-1
-- bump to 20240417
-
-* Fri Feb 18 2022 Michal Ambroz <rebus AT seznam.cz> - 20200104-1
-- bump to 20200104
-
-* Mon Aug 01 2016 Michal Ambroz <rebus AT seznam.cz> - 20160802-1
-- bump to 20160802 - WINCRYPT
-
-* Mon Aug 01 2016 Michal Ambroz <rebus AT seznam.cz> - 20160731-1
-- bump to 20160731
-
-* Tue Jul 07 2015 Michal Ambroz <rebus AT seznam.cz> - 20150703-1
-- bump to release 20150703
-
-* Sat Jun 06 2015 Michal Ambroz <rebus AT seznam.cz> - 20150104-1
-- Initial build for Fedora
+%autochangelog
