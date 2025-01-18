@@ -83,6 +83,8 @@ make check
 %files
 %doc AUTHORS COPYING NEWS README
 %{_libdir}/*.so.*
+%{_bindir}/lnkinfo
+%{_mandir}/man1/lnkinfo.1*
 
 %files devel
 %{_includedir}/%{name}.h
