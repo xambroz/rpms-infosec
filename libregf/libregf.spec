@@ -1,6 +1,6 @@
 Name:           libregf
 Version:        20240421
-Release:        %aurorelease
+Release:        %autorelease
 Summary:        Libyal library to access the Windows NT Registry File
 Group:          System Environment/Libraries
 License:        LGPL-3.0-or-later
