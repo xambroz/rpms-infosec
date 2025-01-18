@@ -1,6 +1,6 @@
 Name:           libexe
 Version:        20240420
-Release:        1%{?dist}
+Release:        %aurorelease
 Summary:        Libyal library for cross-platform C error functions
 Group:          System Environment/Libraries
 License:        LGPL-3.0-or-later
@@ -141,5 +141,4 @@ make check || cat tests/test-suite.log
 %endif
 
 %changelog
-* Mon Jun 03 2024 Michal Ambroz <rebus _AT seznam.cz> - 20240420-1
-- bump to 20240420
+%autochangelog
