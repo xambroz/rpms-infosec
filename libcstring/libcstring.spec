@@ -12,7 +12,7 @@ URL:            https://github.com/libyal/libcstring
 %global         commit          9a6461ffcdaaa0cda5dd4736b0298de7b1e99aaa
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
-Release:        %aurorelease
+Release:        %autorelease
 Source0:        %{url}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 
 
