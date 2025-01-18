@@ -12,7 +12,7 @@ URL:            https://github.com/libyal/libcfile
 %global         commit          538ec50e581a3b7e136ab0d1a3731b0475680450
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
-Release:        1%{?dist}
+Release:        %aurorelease
 Source0:        %{url}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 #Patch build to use the shared system libraries rather than using embedded ones
 Patch0:         %{name}-000-libs.patch
@@ -83,14 +83,4 @@ make check
 %{_mandir}/man3/%{name}.3*
 
 %changelog
-* Mon May 13 2024 Michal Ambroz <rebus AT seznam.cz> - 20240414-1
-- bump to 20240414
-
-* Fri Oct 27 2023 Michal Ambroz <rebus AT seznam.cz> - 20230608-1
-- bump to 20230608
-
-* Mon Jun 20 2016 Michal Ambroz <rebus AT seznam.cz> - 20160423-1
-- bump to 20160423
-
-* Sat Jun 06 2015 Michal Ambroz <rebus AT seznam.cz> - 20150101-1
-- Initial build for Fedora
+%autochangelog
