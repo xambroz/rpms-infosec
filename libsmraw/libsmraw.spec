@@ -1,6 +1,6 @@
 Name:           libsmraw
 Version:        20240506
-Release:        1%{?dist}
+Release:        %aurorelease
 Summary:        Libyal library and tools to access the (split) RAW image format
 Group:          System Environment/Libraries
 License:        LGPL-3.0-or-later
@@ -147,8 +147,4 @@ make check || tests/test-suite.log
 
 
 %changelog
-* Mon Aug 01 2016 Michal Ambroz <rebus AT seznam.cz> - 20160524-1
-- bump to 20160524
-
-* Sat Jun 06 2015 Michal Ambroz <rebus AT seznam.cz> - 20150105-1
-- Initial build for Fedora
+%autochangelog
