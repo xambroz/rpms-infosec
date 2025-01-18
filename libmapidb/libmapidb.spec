@@ -1,6 +1,6 @@
 Name:           libmapidb
 Version:        20240420
-Release:        1%{?dist}
+Release:        %aurorelease
 Summary:        Libyal library for cross-platform C generic data functions
 Group:          System Environment/Libraries
 License:        LGPL-3.0-or-later
@@ -82,11 +82,4 @@ make check
 %{_mandir}/man3/%{name}.3*
 
 %changelog
-* Sat May 18 2024 Michal Ambroz <rebus _AT seznam.cz> - 20240420-1
-- bump to 20240420
-
-* Wed Aug 03 2016 Michal Ambroz <rebus AT seznam.cz> - 20160508-1
-- bump to 20160508
-
-* Sat Jun 06 2015 Michal Ambroz <rebus AT seznam.cz> - 20150105-1
-- Initial build for Fedora
+%autochangelog
