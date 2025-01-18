@@ -13,7 +13,7 @@ URL:            https://github.com/libyal/libfdata
 %global         commit          c7d92a0ab2dd665fb328e0aa637ca7d04cfcf46c
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
-Release:        %aurorelease
+Release:        %autorelease
 
 Source0:        %{url}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 #Patch build to use the shared system libraries rather than using embedded ones
