@@ -1,6 +1,6 @@
 Name:           libfguid
 Version:        20240415
-Release:        %aurorelease
+Release:        %autorelease
 Summary:        Libyal library for GUID/UUID data types
 Group:          System Environment/Libraries
 License:        LGPL-3.0-or-later
