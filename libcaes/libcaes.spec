@@ -13,7 +13,7 @@ URL:            https://github.com/libyal/libcaes
 %global         commit          a119ec92769277c63f3e54a8f6ec07c8c21ac3e8
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
-Release:        %aurorelease
+Release:        %autorelease
 
 Source0:        %{url}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 #Patch build to use the shared system libraries rather than using embedded ones
