@@ -1,6 +1,6 @@
 Name:           libodraw
 Version:        20240505
-Release:        %aurorelease
+Release:        %autorelease
 Summary:        Libyal library to access to optical disc (split) RAW image files (bin/cue, iso/cue)
 Group:          System Environment/Libraries
 License:        LGPL-3.0-or-later
