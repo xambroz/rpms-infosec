@@ -1,0 +1,24 @@
+* Sun Jul 08 2012 Michal Ambroz <rebus at, seznam.cz> - 0.4.8-0.git20120708.1
+- bump to development version 0.4.8
+
+* Wed Apr 06 2011 Michal Ambroz <rebus at, seznam.cz> - 0.4.7-1
+- bump to version 0.4.7
+
+* Sun Mar 27 2011 Michal Ambroz <rebus at, seznam.cz> - 0.4.6-1
+- bump to version 0.4.6
+- cant be used with the current unpatched version of anemone
+
+* Sat Sep 11 2010 Michal Ambroz <rebus at, seznam.cz> - 0.4.5-2
+- use system-wide rubygems anemone library insted of local anemone copy
+
+* Mon Aug 23 2010 Michal Ambroz <rebus at, seznam.cz> - 0.4.5-1
+- rebuild of new version 0.4.5
+
+* Sun May 30 2010 Michal Ambroz <rebus at, seznam.cz> - 0.4.3-1
+- rebuild of new version
+
+* Sat May 1 2010 Michal Ambroz <rebus at, seznam.cz> - 0.4.2-2
+- add explicit dependency to /usr/bin/ruby
+
+* Sat May 1 2010 Michal Ambroz <rebus at, seznam.cz> - 0.4.2-1
+- initial build for Fedora Project
