@@ -1,6 +1,6 @@
 Name:           libhmac
 Version:        20240417
-Release:        %aurorelease
+Release:        %autorelease
 Summary:        Libyal library to support various Hash-based Message Authentication Codes (HMAC)
 Group:          System Environment/Libraries
 License:        LGPL-3.0-or-later
