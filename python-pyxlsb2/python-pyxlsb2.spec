@@ -1,9 +1,12 @@
 Name:           python-pyxlsb2
 Version:        0.0.9
-%global         baserelease     0.2
+%global         baserelease     0.3
 Summary:        Excel 2007+ Binary Workbook (xlsb) parser
 
-License:        Apache-2.0
+
+# Project is released with the Apache-2.0 license
+# it is based on original project pyxlsb released with MIT license
+License:        Apache-2.0 AND MIT
 URL:            https://github.com/DissectMalware/pyxlsb2
 BuildArch:      noarch
 
@@ -16,11 +19,19 @@ BuildArch:      noarch
 
 %global _description %{expand:
 pyxlsb2 (a variant of pyxlsb - is an Excel 2007+ Binary Workbook (xlsb) parser
-written in Python.pyxslb2 offers the following improvements/changes in
-comparison to pyxlsb:1. By default, keeps all data in memory instead of
+written in Python. The pyxslb2 offers the following improvements/changes in
+comparison to pyxlsb:
+1. By default, keeps all data in memory instead of
 creating temporary files. This is mainly to speed up the processing and also
-not changing the local filesystem during the processing. 2. relies on both
-"xl\\workbook.bin" and...
+not changing the local filesystem during the processing.
+2. relies on both "xl\\workbook.bin" and "xl\_rels\workbook.bin.rels" to load
+locate boundsheets. As a result, it can load all worksheets as well as all
+macrosheets.
+3. it extracts macro formulas:
+- accurately shows the formulas
+- supports A1 addressing
+- supports external addressing (partially implemented))
+4. extracts defined names such as auto_open
 }
 
 %global         gituser         DissectMalware
@@ -101,6 +112,9 @@ FAILING="$FAILING and not formula_test and not worksheet_test"
 %{python3_sitelib}/pyxlsb2-%{version}-py%{python3_version}.egg-info
 
 %changelog
+* Wed Dec 14 2022 Michal Ambroz <rebus@seznam.cz> - 0.0.9-0.3
+- refer also to MIT license
+
 * Wed Dec 14 2022 Michal Ambroz <rebus@seznam.cz> - 0.0.9-0.2
 - fix dependencies for rhel7 - missing build macro pytest
 - fix dependencies for rhel9 - missing python3-mock = do not fail on the pytest result
