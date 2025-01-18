@@ -1,18 +1,19 @@
 Name:           libfwsi
-Version:        20241015
+Version:        20240717
+Release:        %autorelease
 Summary:        Libyal library for cross-platform C file functions
 Group:          System Environment/Libraries
 License:        LGPL-3.0-or-later
 URL:            https://github.com/libyal/libfwsi
+VCS:            git:https://github.com/libyal/libfwsi
 #               https://github.com/libyal/libfwsi/releases
 
 %global         gituser         libyal
 %global         gitname         libfwsi
-%global         gitdate         20240717
+%global         gitdate         %{version}
 %global         commit          3c6c44da191a2903b6a94c9b046d8d28a582c7e8
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
-Release:        %autorelease
 Source0:        %{url}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 #Patch build to use the shared system libraries rather than using embedded ones
 Patch0:         %{name}-000-libs.patch
