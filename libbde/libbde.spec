@@ -1,5 +1,6 @@
 Name:           libbde
 Version:        20240502
+Release:        %autorelease
 Summary:        Library to access the BitLocker Drive Encryption (BDE) format
 Group:          System Environment/Libraries
 License:        LGPL-3.0-or-later
@@ -12,7 +13,6 @@ URL:            https://github.com/libyal/libbde
 %global         commit          a7bf86d0907b84dfb551fdd3f6f548bd687fdcac
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
-Release:        1%{?dist}
 
 Source0:        %{url}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 #Patch build to use the shared system libraries rather than using embedded ones
@@ -110,14 +110,4 @@ make check
 
 
 %changelog
-* Sat May 25 2024 Michal Ambroz <rebus _AT seznam.cz> - 20240502-1
-- bump to 20240502
-
-* Tue Jun 27 2023 Michal Ambroz <rebus AT seznam.cz> - 20221031-1
-- bump to 20221031
-
-* Fri Feb 18 2022 Michal Ambroz <rebus AT seznam.cz> - 20220121-1
-- bump to 20220121
-
-* Mon Jun 20 2016 Michal Ambroz <rebus AT seznam.cz> - 20160418-1
-- Initial build for Fedora
+%autochangelog
