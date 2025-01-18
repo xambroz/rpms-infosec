@@ -1,6 +1,6 @@
 Name:           libfmapi
 Version:        20240415
-Release:        1%{?dist}
+Release:        %aurorelease
 Summary:        Libyal library for cross-platform C generic data functions
 Group:          System Environment/Libraries
 License:        LGPL-3.0-or-later
@@ -87,11 +87,4 @@ make check
 %{_mandir}/man3/%{name}.3*
 
 %changelog
-* Sat May 18 2024 Michal Ambroz <rebus _AT seznam.cz> - 20240415-1
-- bump to 20240415
-
-* Wed Aug 03 2016 Michal Ambroz <rebus AT seznam.cz> - 20160707-1
-- bump to 20160707
-
-* Sat Jun 06 2015 Michal Ambroz <rebus AT seznam.cz> - 20150104-1
-- Initial build for Fedora
+%autochangelog
