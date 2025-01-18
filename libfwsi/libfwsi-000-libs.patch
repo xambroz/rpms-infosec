@@ -1,0 +1,67 @@
+diff -ru libfwsi-3c6c44da191a2903b6a94c9b046d8d28a582c7e8/configure.ac libfwsi-3c6c44da191a2903b6a94c9b046d8d28a582c7e8.new/configure.ac
+--- libfwsi-3c6c44da191a2903b6a94c9b046d8d28a582c7e8/configure.ac	2024-07-17 05:32:49.000000000 +0200
++++ libfwsi-3c6c44da191a2903b6a94c9b046d8d28a582c7e8.new/configure.ac	2025-01-18 12:18:43.470324089 +0100
+@@ -142,16 +142,16 @@
+ AC_CONFIG_FILES([Makefile])
+ AC_CONFIG_FILES([include/Makefile])
+ AC_CONFIG_FILES([common/Makefile])
+-AC_CONFIG_FILES([libcerror/Makefile])
+-AC_CONFIG_FILES([libcthreads/Makefile])
+-AC_CONFIG_FILES([libcdata/Makefile])
+-AC_CONFIG_FILES([libclocale/Makefile])
+-AC_CONFIG_FILES([libcnotify/Makefile])
+-AC_CONFIG_FILES([libuna/Makefile])
+-AC_CONFIG_FILES([libfdatetime/Makefile])
+-AC_CONFIG_FILES([libfguid/Makefile])
+-AC_CONFIG_FILES([libfole/Makefile])
+-AC_CONFIG_FILES([libfwps/Makefile])
++dnl AC_CONFIG_FILES([libcerror/Makefile])
++dnl AC_CONFIG_FILES([libcthreads/Makefile])
++dnl AC_CONFIG_FILES([libcdata/Makefile])
++dnl AC_CONFIG_FILES([libclocale/Makefile])
++dnl AC_CONFIG_FILES([libcnotify/Makefile])
++dnl AC_CONFIG_FILES([libuna/Makefile])
++dnl AC_CONFIG_FILES([libfdatetime/Makefile])
++dnl AC_CONFIG_FILES([libfguid/Makefile])
++dnl AC_CONFIG_FILES([libfole/Makefile])
++dnl AC_CONFIG_FILES([libfwps/Makefile])
+ AC_CONFIG_FILES([libfwsi/Makefile])
+ AC_CONFIG_FILES([pyfwsi/Makefile])
+ AC_CONFIG_FILES([po/Makefile.in])
+diff -ru libfwsi-3c6c44da191a2903b6a94c9b046d8d28a582c7e8/Makefile.am libfwsi-3c6c44da191a2903b6a94c9b046d8d28a582c7e8.new/Makefile.am
+--- libfwsi-3c6c44da191a2903b6a94c9b046d8d28a582c7e8/Makefile.am	2024-07-17 05:32:49.000000000 +0200
++++ libfwsi-3c6c44da191a2903b6a94c9b046d8d28a582c7e8.new/Makefile.am	2025-01-18 12:18:07.429087464 +0100
+@@ -3,16 +3,6 @@
+ SUBDIRS = \
+ 	include \
+ 	common \
+-	libcerror \
+-	libcthreads \
+-	libcdata \
+-	libclocale \
+-	libcnotify \
+-	libuna \
+-	libfdatetime \
+-	libfguid \
+-	libfole \
+-	libfwps \
+ 	libfwsi \
+ 	pyfwsi \
+ 	po \
+@@ -79,16 +69,6 @@
+ 
+ library:
+ 	(cd $(srcdir)/common && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcerror && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcthreads && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcdata && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libclocale && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcnotify && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libuna && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libfdatetime && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libfguid && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libfole && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libfwps && $(MAKE) $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/libfwsi && $(MAKE) $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/po && $(MAKE) $(AM_MAKEFLAGS))
+ 

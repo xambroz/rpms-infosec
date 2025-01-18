@@ -1,0 +1,9 @@
+diff -ru libfwsi-3c6c44da191a2903b6a94c9b046d8d28a582c7e8/configure.ac libfwsi-3c6c44da191a2903b6a94c9b046d8d28a582c7e8.new/configure.ac
+--- libfwsi-3c6c44da191a2903b6a94c9b046d8d28a582c7e8/configure.ac	2025-01-18 12:22:16.327721560 +0100
++++ libfwsi-3c6c44da191a2903b6a94c9b046d8d28a582c7e8.new/configure.ac	2025-01-18 12:23:30.737210084 +0100
+@@ -1,4 +1,4 @@
+-AC_PREREQ([2.71])
++AC_PREREQ([2.69])
+ 
+ AC_INIT(
+  [libfwsi],
