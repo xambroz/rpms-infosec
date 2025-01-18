@@ -1,25 +1,24 @@
 Name:           libcerror
-Version:        20240413
+Version:        20241013
+Release:        %autorelease
 Summary:        Libyal library for cross-platform C error functions
 Group:          System Environment/Libraries
 License:        LGPL-3.0-or-later
 URL:            https://github.com/libyal/libcerror
+VCS:            git:https://github.com/libyal/libcerror
 #               https://github.com/libyal/libcerror/releases
 
 %global         gituser         libyal
 %global         gitname         libcerror
-%global         gitdate         20240413
-%global         commit          9b13d0ca59dcc83f94eef7c6c4e99c46b84550c8
+%global         gitdate         %{version}
+%global         commit          0f0d145fe63f2769ceac76d5425a0bb10d5e304f
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
-
-
-Release:        %autorelease
 
 Source0:        %{url}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 
 # https://github.com/libyal/libcerror/pull/10
 # there are older versions of gettext and autoconf, but still builds well
-Patch0:         libcerror-configure.ac.patch
+Patch1:         libcerror-001-configure.ac.patch
 
 BuildRequires:  gcc
 BuildRequires:  make
