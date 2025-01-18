@@ -42,11 +42,11 @@ Part of Joachim Metz's libyal set of forensics tools and libraries.
 
 # Build from git release version
 %if %{with release}
-Release:       %aurorelease
+Release:       %autorelease
 Source0:       https://github.com/%{gituser}/%{gitname}/releases/download/%{version}/%{name}-alpha-%{version}.tar.gz
 %else
 # Build from git commit baseline
-Release:       %aurorelease
+Release:       %autorelease
 Source0:       https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-git%{gitdate}-%{shortcommit}.tar.gz
 %endif
 
