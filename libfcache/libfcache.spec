@@ -1,6 +1,6 @@
 Name:           libfcache
 Version:        20240414
-Release:        %aurorelease
+Release:        %autorelease
 Summary:        Libyal library to provide generic file data cache functions
 Group:          System Environment/Libraries
 License:        LGPL-3.0-or-later
