@@ -1,6 +1,6 @@
 Name:           libcpath
 Version:        20240414
-Release:        1%{?dist}
+Release:        %aurorelease
 Summary:        Libyal library for cross-platform C path functions
 
 Group:          System Environment/Libraries
@@ -82,11 +82,4 @@ make check
 %{_mandir}/man3/%{name}.3*
 
 %changelog
-* Sat Apr 20 2024 Michal Ambroz <rebus AT seznam.cz> - 20240414-1
-- bump to 20240414
-
-* Mon Aug 01 2016 Michal Ambroz <rebus AT seznam.cz> - 20160425-1
-- bump to 20160425
-
-* Sat Jun 06 2015 Michal Ambroz <rebus AT seznam.cz> - 20150101-1
-- Initial build for Fedora
+%autochangelog
