@@ -1,6 +1,6 @@
 Name:           libsmdev
 Version:        20240505
-Release:        %aurorelease
+Release:        %autorelease
 Summary:        Libyal library to access to storage media devices
 Group:          System Environment/Libraries
 License:        LGPL-3.0-or-later
