@@ -1,6 +1,6 @@
 Name:           libsmraw
 Version:        20240506
-Release:        %aurorelease
+Release:        %autorelease
 Summary:        Libyal library and tools to access the (split) RAW image format
 Group:          System Environment/Libraries
 License:        LGPL-3.0-or-later
