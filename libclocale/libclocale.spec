@@ -11,7 +11,7 @@ URL:            https://github.com/libyal/libclocale
 %global         commit          45b989bec6c5578b762f5b13dbce03aa2e999426
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
-Release:        %aurorelease
+Release:        %autorelease
 Summary:        Libyal library for cross-platform C locale functions
 
 Source0:        %{url}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
