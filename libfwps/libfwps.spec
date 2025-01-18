@@ -1,5 +1,5 @@
 Name:           libfwps
-Version:        20241015
+Version:        20240716
 Release:        %autorelease
 Summary:        Libyal library for cross-platform C file functions
 Group:          System Environment/Libraries
@@ -9,7 +9,7 @@ URL:            https://github.com/libyal/libfwps
 
 %global         gituser         libyal
 %global         gitname         libfwps
-%global         gitdate         20240716
+%global         gitdate         %{version}
 %global         commit          5b86175d8d729c17c30874c5881ee7fedeb748e0
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
