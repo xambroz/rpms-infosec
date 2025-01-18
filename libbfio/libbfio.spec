@@ -1,6 +1,6 @@
 Name:           libbfio
 Version:        20240414
-Release:        1%{?dist}
+Release:        %aurorelease
 Summary:        Library to provide basic file input/output abstraction
 Group:          System Environment/Libraries
 License:        LGPL-3.0-or-later
@@ -85,11 +85,4 @@ make check
 %{_mandir}/man3/%{name}.3*
 
 %changelog
-* Sat Apr 20 2024 Michal Ambroz <rebus AT seznam.cz> - 20240414-1
-- bump to 20240414
-
-* Mon Aug 01 2016 Michal Ambroz <rebus AT seznam.cz> - 20160528-1
-- bump to 20160528
-
-* Sat Jun 06 2015 Michal Ambroz <rebus AT seznam.cz> - 20150102-1
-- Initial build for Fedora
+%autochangelog
