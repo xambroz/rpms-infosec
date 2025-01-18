@@ -1,6 +1,6 @@
 Name:           libscca
 Version:        20240427
-Release:        %aurorelease
+Release:        %autorelease
 Summary:        Libyal libscca is a library to access the Windows Prefetch File (SCCA) format
 URL:            https://github.com/libyal/libscca
 VCS:            https://github.com/libyal/libscca
