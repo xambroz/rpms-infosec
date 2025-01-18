@@ -13,7 +13,7 @@ URL:            https://github.com/libyal/libfdata
 %global         commit          c7d92a0ab2dd665fb328e0aa637ca7d04cfcf46c
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
-Release:        1%{?dist}
+Release:        %aurorelease
 
 Source0:        %{url}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 #Patch build to use the shared system libraries rather than using embedded ones
@@ -83,8 +83,4 @@ make check
 %{_mandir}/man3/%{name}.3*
 
 %changelog
-* Mon Aug 01 2016 Michal Ambroz <rebus AT seznam.cz> - 20160427-1
-- bump to 20160427
-
-* Sat Jun 06 2015 Michal Ambroz <rebus AT seznam.cz> - 20150412-1
-- Initial build for Fedora
+%autochangelog
