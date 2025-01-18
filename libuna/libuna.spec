@@ -20,7 +20,7 @@ Library to support Unicode and ASCII (byte string) conversions.
 %global         commit          ee21db63eed2820396cff0a7442e408c028535f2
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
-Release:        1%{?dist}
+Release:        %aurorelease
 Source0:        %{url}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 
 # dynamically loaded libraries
@@ -124,20 +124,4 @@ make check
 
 
 %changelog
-* Mon May 13 2024 Michal Ambroz <rebus AT seznam.cz> - 20240414-1
-- bump to 20240414
-
-* Mon Oct 30 2023 Michal Ambroz <rebus AT seznam.cz> - 20230710-1
-- bump to 20230710
-
-* Wed Jun 28 2023 Michal Ambroz <rebus AT seznam.cz> - 20220611-1
-- bump to 20220611
-
-* Mon Aug 01 2016 Michal Ambroz <rebus AT seznam.cz> - 20160705-1
-- bump to 20160705
-
-* Mon Jun 20 2016 Michal Ambroz <rebus AT seznam.cz> - 20160501-1
-- bump to 20160501
-
-* Sat Jun 06 2015 Michal Ambroz <rebus AT seznam.cz> - 20150104-1
-- Initial build for Fedora
+%autochangelog
