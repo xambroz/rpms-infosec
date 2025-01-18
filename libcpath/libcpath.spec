@@ -1,6 +1,6 @@
 Name:           libcpath
 Version:        20240414
-Release:        %aurorelease
+Release:        %autorelease
 Summary:        Libyal library for cross-platform C path functions
 
 Group:          System Environment/Libraries
