@@ -12,7 +12,7 @@ URL:            https://github.com/libyal/libfdatetime
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
-Release:        1%{?dist}
+Release:        %aurorelease
 
 Group:          System Environment/Libraries
 Source0:        %{url}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
@@ -80,8 +80,4 @@ make check
 %{_mandir}/man3/%{name}.3*
 
 %changelog
-* Mon Aug 01 2016 Michal Ambroz <rebus AT seznam.cz> - 20160426-1
-- bump to 20160426
-
-* Sat Jun 06 2015 Michal Ambroz <rebus AT seznam.cz> - 20150507-1
-- Initial build for Fedora
+%autochangelog
