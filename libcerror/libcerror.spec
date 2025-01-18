@@ -13,7 +13,7 @@ URL:            https://github.com/libyal/libcerror
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
-Release:        1%{?dist}
+Release:        %aurorelease
 
 Source0:        %{url}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 
@@ -76,23 +76,4 @@ make check
 %{_mandir}/man3/%{name}.3*
 
 %changelog
-* Mon May 13 2024 Michal Ambroz <rebus AT seznam.cz> - 20240413-1
-- bump to 20240413
-
-* Fri Oct 27 2023 Michal Ambroz <rebus AT seznam.cz> - 20231024-2
-- lower build requirements for rhel
-
-* Fri Oct 27 2023 Michal Ambroz <rebus AT seznam.cz> - 20231024-1
-- bump to 20231024
-
-* Tue Jun 27 2023 Michal Ambroz <rebus AT seznam.cz> - 20220101-1
-- bump to 20220101
-
-* Mon Jun 20 2016 Michal Ambroz <rebus AT seznam.cz> - 20160507-1
-- bump to 20160507
-
-* Mon Jun 20 2016 Michal Ambroz <rebus AT seznam.cz> - 20160327-1
-- bump to 20160327
-
-* Sat Jun 06 2015 Michal Ambroz <rebus AT seznam.cz> - 20150407-1
-- Initial build for Fedora
+%autochangelog
