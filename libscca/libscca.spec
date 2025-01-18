@@ -1,6 +1,6 @@
 Name:           libscca
 Version:        20240427
-Release:        1%{?dist}
+Release:        %aurorelease
 Summary:        Libyal libscca is a library to access the Windows Prefetch File (SCCA) format
 URL:            https://github.com/libyal/libscca
 VCS:            https://github.com/libyal/libscca
@@ -103,11 +103,4 @@ make check
 %{_mandir}/man3/%{name}.3*
 
 %changelog
-* Sat May 18 2024 Michal Ambroz <rebus _AT seznam.cz> - 20240427-1
-- bump to 20240427
-
-* Mon Aug 01 2016 Michal Ambroz <rebus AT seznam.cz> - 20160425-1
-- bump to 20160425
-
-* Sat Jun 06 2015 Michal Ambroz <rebus AT seznam.cz> - 20150101-1
-- Initial build for Fedora
+%autochangelog
