@@ -1,0 +1,10 @@
+diff -ru libfwps-5b86175d8d729c17c30874c5881ee7fedeb748e0/configure.ac libfwps-5b86175d8d729c17c30874c5881ee7fedeb748e0.new/configure.ac
+--- libfwps-5b86175d8d729c17c30874c5881ee7fedeb748e0/configure.ac	2024-07-16 05:51:40.000000000 +0200
++++ libfwps-5b86175d8d729c17c30874c5881ee7fedeb748e0.new/configure.ac	2025-01-17 14:10:23.659147687 +0100
+@@ -1,4 +1,4 @@
+-AC_PREREQ([2.71])
++AC_PREREQ([2.69])
+ 
+ AC_INIT(
+  [libfwps],
+Only in libfwps-5b86175d8d729c17c30874c5881ee7fedeb748e0: configure.ac.rej

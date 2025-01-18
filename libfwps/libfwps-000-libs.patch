@@ -1,0 +1,58 @@
+diff -ru libfwps-5b86175d8d729c17c30874c5881ee7fedeb748e0/configure.ac libfwps-5b86175d8d729c17c30874c5881ee7fedeb748e0.new/configure.ac
+--- libfwps-5b86175d8d729c17c30874c5881ee7fedeb748e0/configure.ac	2025-01-17 14:14:19.218700770 +0100
++++ libfwps-5b86175d8d729c17c30874c5881ee7fedeb748e0.new/configure.ac	2025-01-17 14:16:27.589547145 +0100
+@@ -136,14 +136,14 @@
+ AC_CONFIG_FILES([Makefile])
+ AC_CONFIG_FILES([include/Makefile])
+ AC_CONFIG_FILES([common/Makefile])
+-AC_CONFIG_FILES([libcerror/Makefile])
+-AC_CONFIG_FILES([libcthreads/Makefile])
+-AC_CONFIG_FILES([libcdata/Makefile])
+-AC_CONFIG_FILES([libclocale/Makefile])
+-AC_CONFIG_FILES([libcnotify/Makefile])
+-AC_CONFIG_FILES([libuna/Makefile])
+-AC_CONFIG_FILES([libfdatetime/Makefile])
+-AC_CONFIG_FILES([libfguid/Makefile])
++dnl AC_CONFIG_FILES([libcerror/Makefile])
++dnl AC_CONFIG_FILES([libcthreads/Makefile])
++dnl AC_CONFIG_FILES([libcdata/Makefile])
++dnl AC_CONFIG_FILES([libclocale/Makefile])
++dnl AC_CONFIG_FILES([libcnotify/Makefile])
++dnl AC_CONFIG_FILES([libuna/Makefile])
++dnl AC_CONFIG_FILES([libfdatetime/Makefile])
++dnl AC_CONFIG_FILES([libfguid/Makefile])
+ AC_CONFIG_FILES([libfwps/Makefile])
+ AC_CONFIG_FILES([pyfwps/Makefile])
+ AC_CONFIG_FILES([po/Makefile.in])
+diff -ru libfwps-5b86175d8d729c17c30874c5881ee7fedeb748e0/Makefile.am libfwps-5b86175d8d729c17c30874c5881ee7fedeb748e0.new/Makefile.am
+--- libfwps-5b86175d8d729c17c30874c5881ee7fedeb748e0/Makefile.am	2024-07-16 05:51:40.000000000 +0200
++++ libfwps-5b86175d8d729c17c30874c5881ee7fedeb748e0.new/Makefile.am	2025-01-17 14:16:53.181715874 +0100
+@@ -3,14 +3,6 @@
+ SUBDIRS = \
+ 	include \
+ 	common \
+-	libcerror \
+-	libcthreads \
+-	libcdata \
+-	libclocale \
+-	libcnotify \
+-	libuna \
+-	libfdatetime \
+-	libfguid \
+ 	libfwps \
+ 	pyfwps \
+ 	po \
+@@ -77,13 +69,6 @@
+ 
+ library:
+ 	(cd $(srcdir)/common && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcerror && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcthreads && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcdata && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libclocale && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcnotify && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libuna && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libfdatetime && $(MAKE) $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/libfguid && $(MAKE) $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/libfwps && $(MAKE) $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/po && $(MAKE) $(AM_MAKEFLAGS))
