@@ -1,0 +1,20 @@
+* Mon May 13 2024 Michal Ambroz <rebus AT seznam.cz> - 20240413-1
+- bump to 20240413
+
+* Fri Oct 27 2023 Michal Ambroz <rebus AT seznam.cz> - 20231024-2
+- lower build requirements for rhel
+
+* Fri Oct 27 2023 Michal Ambroz <rebus AT seznam.cz> - 20231024-1
+- bump to 20231024
+
+* Tue Jun 27 2023 Michal Ambroz <rebus AT seznam.cz> - 20220101-1
+- bump to 20220101
+
+* Mon Jun 20 2016 Michal Ambroz <rebus AT seznam.cz> - 20160507-1
+- bump to 20160507
+
+* Mon Jun 20 2016 Michal Ambroz <rebus AT seznam.cz> - 20160327-1
+- bump to 20160327
+
+* Sat Jun 06 2015 Michal Ambroz <rebus AT seznam.cz> - 20150407-1
+- Initial build for Fedora

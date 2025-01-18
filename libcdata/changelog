@@ -1,0 +1,17 @@
+* Mon May 13 2024 Michal Ambroz <rebus AT seznam.cz> - 20240414-1
+- bump to 20240414
+
+* Fri Oct 27 2023 Michal Ambroz <rebus AT seznam.cz> - 20230605-1
+- bump to 20230605
+
+* Tue Jun 27 2023 Michal Ambroz <rebus AT seznam.cz> - 20230108-1
+- bump to 20230108
+
+* Mon Jun 20 2016 Michal Ambroz <rebus AT seznam.cz> - 20160425-2
+- add build dependencies
+
+* Mon Jun 20 2016 Michal Ambroz <rebus AT seznam.cz> - 20160425-1
+- bump to libewf release 20160224
+
+* Sat Jun 06 2015 Michal Ambroz <rebus AT seznam.cz> - 20150104-1
+- Initial build for Fedora

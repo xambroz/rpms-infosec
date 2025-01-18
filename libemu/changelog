@@ -1,0 +1,66 @@
+* Tue Apr 20 2021 Michal Ambroz <rebus at, seznam.cz> - 0.2.0-19.20130410gitab48695
+- do not include the realistic shellcode tests to avoid AV trojan detections
+
+* Fri Apr 2 2021 Michal Ambroz <rebus at, seznam.cz> - 0.2.0-18.20130410gitab48695
+- trying to rebuild for F33/F34
+- do not treat the warnings about array-bounds as errors as the structs in emu_list are hitting this
+- remove trailing spaces
+- be more specific about the lib/python files to pack
+- explicit adding BR to gcc and make
+
+* Sat Aug 01 2020 Fedora Release Engineering <releng@fedoraproject.org> - 0.2.0-16.20130410gitab48695
+- Second attempt - Rebuilt for
+  https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
+
+* Tue Jul 28 2020 Fedora Release Engineering <releng@fedoraproject.org> - 0.2.0-15.20130410gitab48695
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
+
+* Wed Jan 29 2020 Fedora Release Engineering <releng@fedoraproject.org> - 0.2.0-14.20130410gitab48695
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
+
+* Wed Oct 16 2019 Michal Ambroz <rebus at, seznam.cz> - 0.2.0-13.20130410gitab48695
+- add back the Group tag for compatibility with EPEL
+
+* Wed Oct 16 2019 Miro Hrončok <mhroncok@redhat.com> - 0.2.0-12.20130410gitab48695
+- Remove Python 2
+
+* Tue Oct 15 2019 Michal Ambroz <rebus at, seznam.cz> - 0.2.0-11.20130410gitab48695
+- Remove Python 2
+
+* Fri Feb 01 2019 Fedora Release Engineering <releng@fedoraproject.org> - 0.2.0-10.20130410gitab48695.1
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
+
+* Tue Sep 04 2018 Michal Ambroz <rebus at, seznam.cz> - 0.2.0-10.20130410gitab48695
+- patch to calling python2 explicitly during build of the python binding
+- fixes FTBS due to missing python binary as part of switching to python3
+
+* Fri Jul 13 2018 Fedora Release Engineering <releng@fedoraproject.org> - 0.2.0-9.20130410gitab48695
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
+
+* Tue Apr 03 2018 Michal Ambroz <rebus at, seznam.cz> - 0.2.0-8.20130410gitab48695
+- use ldconfig_scriptlets
+- fix release version number in the changelog
+- fix obsolete m4 macros
+- Exclude the private libemu in python sitearch dir
+- show all warnings to autoreconf
+- use autosetup+git for troubleshooting the patches
+
+* Mon Apr 02 2018 Michal Ambroz <rebus at, seznam.cz> - 0.2.0-0.7.20130410gitab48695
+- unbundle the libdasm library and use system-installed one
+- disable the python3 build for now
+
+* Mon Mar 26 2018 Michal Ambroz <rebus at, seznam.cz> - 0.2.0-0.6.20130410gitab48695
+- fix ldconfig requirement to align with the glibc provide
+
+* Fri Mar 23 2018 Michal Ambroz <rebus at, seznam.cz> - 0.2.0-0.5.20130410gitab48695
+- added missing dependency to python3-devel
+- use the python{python3_pkgversion}-devel/setuptools to enable EPEL7 build
+
+* Thu Mar 22 2018 Michal Ambroz <rebus at, seznam.cz> - 0.2.0-0.4.20130410gitab48695
+- spec clean-up
+- prepare for the python3 support
+- include patches from buffer github repository
+
+* Sun Mar 04 2018 Michal Ambroz <rebus at, seznam.cz> - 0.2.0-0.1.20130410gitab48695
+- build for Fedora 27
+
