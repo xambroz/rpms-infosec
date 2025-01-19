@@ -83,8 +83,7 @@ make check
 %license COPYING
 %doc AUTHORS NEWS README
 %{_libdir}/*.so.*
-%{_bindir}/agdbinfo
-%{_mandir}/man1/agdbinfo.1*
+%{_bindir}/bfoverlaymount
 
 %files devel
 %{_includedir}/%{name}.h
