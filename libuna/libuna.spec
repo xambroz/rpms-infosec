@@ -124,4 +124,4 @@ make check
 
 
 %changelog
-%autochangelog
+%{?%autochangelog: %autochangelog }

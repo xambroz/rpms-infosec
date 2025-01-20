@@ -201,4 +201,4 @@ use the "simplelog" feature of the "%{crate}" crate.
 %endif
 
 %changelog
-%autochangelog
+%{?%autochangelog: %autochangelog }

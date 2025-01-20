@@ -1,9 +1,9 @@
 Name:           libscca
-Version:        20240427
+Version:        20241227
 Release:        %autorelease
 Summary:        Libyal libscca is a library to access the Windows Prefetch File (SCCA) format
 URL:            https://github.com/libyal/libscca
-VCS:            https://github.com/libyal/libscca
+VCS:            git:https://github.com/libyal/libscca
 Group:          System Environment/Libraries
 License:        LGPL-3.0-or-later
 
@@ -14,8 +14,8 @@ Libyal libscca is a library to access the Windows Prefetch File (SCCA) format.
 
 %global         gituser         libyal
 %global         gitname         libscca
-%global         gitdate         20240427
-%global         commit          691c2140cc18935e0e2d62baaffe992b39773e9e
+%global         gitdate         %{version}
+%global         commit          630cf133f813ba1e02526f81e3ac01e07e16d646
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
@@ -103,4 +103,4 @@ make check
 %{_mandir}/man3/%{name}.3*
 
 %changelog
-%autochangelog
+%{?%autochangelog: %autochangelog }

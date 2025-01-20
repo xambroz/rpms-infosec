@@ -1,6 +1,6 @@
 Name:           liblnk
 Version:        20241015
-Summary:        Libyal library for cross-platform C file functions
+Summary:        Library and tools to access the Windows Shortcut File (LNK) format
 Group:          System Environment/Libraries
 License:        LGPL-3.0-or-later
 URL:            https://github.com/libyal/liblnk
@@ -8,9 +8,13 @@ URL:            https://github.com/libyal/liblnk
 
 %global         gituser         libyal
 %global         gitname         liblnk
-%global         gitdate         20241015
+%global         gitdate         %{version}
 %global         commit          00e03ad49fd9610d2941388ebab08ff2dc8affde
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
+
+%global         common_description %{expand:
+liblnk is a library to access the Windows Shortcut File (LNK) format.}
+
 
 Release:        %autorelease
 Source0:        %{url}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
@@ -45,8 +49,7 @@ BuildRequires:  libfwps-devel
 BuildRequires:  libfwsi-devel
 
 
-%description
-Library for cross-platform C file functions.
+%description %{common_description}
 
 %package        devel
 Summary:        Development files for %{name}
@@ -55,7 +58,7 @@ Requires:       %{name}%{?_isa} = %{version}-%{release}
 Requires:       zlib-devel
 Requires:       pkgconfig
 
-%description    devel
+%description    devel    %{common_description}
 The %{name}-devel package contains libraries and header files for
 developing applications that use %{name}.
 
@@ -94,4 +97,4 @@ make check
 %{_mandir}/man3/%{name}.3*
 
 %changelog
-%autochangelog
+%{?%autochangelog: %autochangelog }

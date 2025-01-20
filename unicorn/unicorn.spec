@@ -89,4 +89,4 @@ rm $RPM_BUILD_ROOT%{_libdir}/libunicorn.a
 %{python3_sitelib}/%{name}/
 
 %changelog
-%autochangelog
+%{?%autochangelog: %autochangelog }

@@ -144,4 +144,4 @@ make check || true
 
 
 %changelog
-%autochangelog
+%{?%autochangelog: %autochangelog }

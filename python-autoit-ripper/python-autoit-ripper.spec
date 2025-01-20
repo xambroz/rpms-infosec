@@ -58,4 +58,4 @@ rm -rf autoit-ripper.egg-info
 %{_bindir}/autoit-ripper
 
 %changelog
-%autochangelog
+%{?%autochangelog: %autochangelog }

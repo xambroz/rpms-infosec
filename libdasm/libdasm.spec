@@ -306,4 +306,4 @@ find %{buildroot} -name '*.a' -exec rm -f {} ';'
 
 
 %changelog
-%autochangelog
+%{?%autochangelog: %autochangelog }

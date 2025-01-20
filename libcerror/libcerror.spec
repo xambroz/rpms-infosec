@@ -14,6 +14,10 @@ VCS:            git:https://github.com/libyal/libcerror
 %global         commit          0f0d145fe63f2769ceac76d5425a0bb10d5e304f
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
+%global         common_description %{expand:
+Library for cross-platform C error functions.}
+
+
 Source0:        %{url}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
 
 # https://github.com/libyal/libcerror/pull/10
@@ -27,8 +31,7 @@ BuildRequires:  automake
 BuildRequires:  libtool
 BuildRequires:  gettext-devel
 
-%description
-Library for cross-platform C error functions.
+%description %{common_description}
 
 %package        devel
 Summary:        Development files for %{name}
@@ -37,7 +40,7 @@ Requires:       %{name}%{?_isa} = %{version}-%{release}
 Requires:       zlib-devel
 Requires:       pkgconfig
 
-%description    devel
+%description    devel    %{common_description}
 The %{name}-devel package contains libraries and header files for
 developing applications that use %{name}.
 
@@ -75,4 +78,4 @@ make check
 %{_mandir}/man3/%{name}.3*
 
 %changelog
-%autochangelog
+%{?%autochangelog: %autochangelog }

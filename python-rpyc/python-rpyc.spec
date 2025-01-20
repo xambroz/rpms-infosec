@@ -76,6 +76,6 @@ mv %{buildroot}%{_bindir}/rpyc_registry.py %{buildroot}%{_bindir}/rpyc_registry
 
 %changelog
 %{?%autochangelog:
-%autochangelog
+%{?%autochangelog: %autochangelog }
 }
 

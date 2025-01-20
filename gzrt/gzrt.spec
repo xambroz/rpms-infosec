@@ -45,4 +45,4 @@ install -D -p -m 644 gzrecover.1 %{buildroot}%{_mandir}/man1/gzrecover.1
 
 
 %changelog
-%autochangelog
+%{?%autochangelog: %autochangelog }

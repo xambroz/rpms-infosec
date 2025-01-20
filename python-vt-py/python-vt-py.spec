@@ -71,5 +71,5 @@ rm -rf vt-py.egg-info
 %doc README.md
 
 %changelog
-%autochangelog
+%{?%autochangelog: %autochangelog }
 

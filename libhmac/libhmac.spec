@@ -137,4 +137,4 @@ make check || cat tests/test-suite.log
 
 
 %changelog
-%autochangelog
+%{?%autochangelog: %autochangelog }

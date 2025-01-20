@@ -45,4 +45,4 @@ Source:         %{gosource}
 %gopkgfiles
 
 %changelog
-%autochangelog
+%{?%autochangelog: %autochangelog }

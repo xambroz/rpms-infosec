@@ -52,4 +52,4 @@ rm -rf colorclass.egg-info
 %{python3_sitelib}/colorclass*
 
 %changelog
-%autochangelog
+%{?%autochangelog: %autochangelog }

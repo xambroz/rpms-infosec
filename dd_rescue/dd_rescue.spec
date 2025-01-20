@@ -105,4 +105,4 @@ popd
 
 
 %changelog
-%autochangelog
+%{?%autochangelog: %autochangelog }

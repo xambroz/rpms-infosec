@@ -228,4 +228,4 @@ ln -s scapy3   %{buildroot}%{_bindir}/scapy
 
 
 %changelog
-%autochangelog
+%{?%autochangelog: %autochangelog }

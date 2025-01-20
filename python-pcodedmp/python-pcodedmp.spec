@@ -146,4 +146,4 @@ Requires:       python%{python3_other_pkgversion}-oletools >= 0.54
 %endif
 
 %changelog
-%autochangelog
+%{?%autochangelog: %autochangelog }

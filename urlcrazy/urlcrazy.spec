@@ -72,4 +72,4 @@ rm -rf %{buildroot}
 
 
 %changelog
-%autochangelog
+%{?%autochangelog: %autochangelog }

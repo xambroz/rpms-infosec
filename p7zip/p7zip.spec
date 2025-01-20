@@ -180,4 +180,4 @@ make test
 
 
 %changelog
-%autochangelog
+%{?%autochangelog: %autochangelog }

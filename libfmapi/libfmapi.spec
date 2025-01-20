@@ -87,4 +87,4 @@ make check
 %{_mandir}/man3/%{name}.3*
 
 %changelog
-%autochangelog
+%{?%autochangelog: %autochangelog }

@@ -158,4 +158,4 @@ find %{buildroot} -name '*.a' -delete
 %endif
 
 %changelog
-%autochangelog
+%{?%autochangelog: %autochangelog }

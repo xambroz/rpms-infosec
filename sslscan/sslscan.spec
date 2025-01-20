@@ -45,4 +45,4 @@ make install DESTDIR=%{buildroot} BINPATH=%{_bindir}/ MANPATH=%{_mandir}/
 %{_mandir}/man1/%{name}.1*
 
 %changelog
-%autochangelog
+%{?%autochangelog: %autochangelog }
