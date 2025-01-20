@@ -1,7 +1,7 @@
-diff -ru libregf-51edeb225ffcaf6f9f3b27248eafc67f6d07ba84.old/configure.ac libregf-51edeb225ffcaf6f9f3b27248eafc67f6d07ba84.new/configure.ac
---- libregf-51edeb225ffcaf6f9f3b27248eafc67f6d07ba84.old/configure.ac	2024-06-03 02:33:10.094052528 +0200
-+++ libregf-51edeb225ffcaf6f9f3b27248eafc67f6d07ba84.new/configure.ac	2024-06-03 02:34:28.413253645 +0200
-@@ -173,20 +173,6 @@
+diff -ru libregf-9f9f9da3d3c9c36af784a07936dee6674bcd198c/configure.ac libregf-9f9f9da3d3c9c36af784a07936dee6674bcd198c.000/configure.ac
+--- libregf-9f9f9da3d3c9c36af784a07936dee6674bcd198c/configure.ac	2024-08-19 06:40:21.000000000 +0200
++++ libregf-9f9f9da3d3c9c36af784a07936dee6674bcd198c.000/configure.ac	2025-01-20 01:51:25.480560007 +0100
+@@ -173,20 +173,20 @@
  AC_CONFIG_FILES([Makefile])
  AC_CONFIG_FILES([include/Makefile])
  AC_CONFIG_FILES([common/Makefile])
@@ -19,12 +19,26 @@ diff -ru libregf-51edeb225ffcaf6f9f3b27248eafc67f6d07ba84.old/configure.ac libre
 -AC_CONFIG_FILES([libfdata/Makefile])
 -AC_CONFIG_FILES([libfdatetime/Makefile])
 -AC_CONFIG_FILES([libfwnt/Makefile])
++dnl AC_CONFIG_FILES([libcerror/Makefile])
++dnl AC_CONFIG_FILES([libcthreads/Makefile])
++dnl AC_CONFIG_FILES([libcdata/Makefile])
++dnl AC_CONFIG_FILES([libclocale/Makefile])
++dnl AC_CONFIG_FILES([libcnotify/Makefile])
++dnl AC_CONFIG_FILES([libcsplit/Makefile])
++dnl AC_CONFIG_FILES([libuna/Makefile])
++dnl AC_CONFIG_FILES([libcfile/Makefile])
++dnl AC_CONFIG_FILES([libcpath/Makefile])
++dnl AC_CONFIG_FILES([libbfio/Makefile])
++dnl AC_CONFIG_FILES([libfcache/Makefile])
++dnl AC_CONFIG_FILES([libfdata/Makefile])
++dnl AC_CONFIG_FILES([libfdatetime/Makefile])
++dnl AC_CONFIG_FILES([libfwnt/Makefile])
  AC_CONFIG_FILES([libregf/Makefile])
  AC_CONFIG_FILES([pyregf/Makefile])
  AC_CONFIG_FILES([regftools/Makefile])
-diff -ru libregf-51edeb225ffcaf6f9f3b27248eafc67f6d07ba84.old/Makefile.am libregf-51edeb225ffcaf6f9f3b27248eafc67f6d07ba84.new/Makefile.am
---- libregf-51edeb225ffcaf6f9f3b27248eafc67f6d07ba84.old/Makefile.am	2024-06-03 02:33:10.091052521 +0200
-+++ libregf-51edeb225ffcaf6f9f3b27248eafc67f6d07ba84.new/Makefile.am	2024-06-03 02:33:39.253127406 +0200
+diff -ru libregf-9f9f9da3d3c9c36af784a07936dee6674bcd198c/Makefile.am libregf-9f9f9da3d3c9c36af784a07936dee6674bcd198c.000/Makefile.am
+--- libregf-9f9f9da3d3c9c36af784a07936dee6674bcd198c/Makefile.am	2024-08-19 06:40:21.000000000 +0200
++++ libregf-9f9f9da3d3c9c36af784a07936dee6674bcd198c.000/Makefile.am	2025-01-20 01:51:25.476559983 +0100
 @@ -3,20 +3,6 @@
  SUBDIRS = \
  	include \

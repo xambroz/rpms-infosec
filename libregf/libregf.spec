@@ -1,5 +1,5 @@
 Name:           libregf
-Version:        20240421
+Version:        20240819
 Release:        %autorelease
 Summary:        Libyal library to access the Windows NT Registry File
 Group:          System Environment/Libraries
@@ -12,7 +12,7 @@ VCS:            git:https://github.com/libyal/libregf
 %global         gituser         libyal
 %global         gitname         libregf
 %global         gitdate         %{version}
-%global         commit          51edeb225ffcaf6f9f3b27248eafc67f6d07ba84
+%global         commit          9f9f9da3d3c9c36af784a07936dee6674bcd198c
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 %global         common_descripton   %{expand:
