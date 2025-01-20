@@ -1,0 +1,28 @@
+diff -urN amap-5.2/Makefile.am amap-5.2.new/Makefile.am
+--- amap-5.2/Makefile.am	2005-09-22 17:39:18.000000000 +0200
++++ amap-5.2.new/Makefile.am	2008-09-18 18:14:01.000000000 +0200
+@@ -34,15 +34,15 @@
+ 	$(CC) $(OPT_DEBUG) -o amapcrap amapcrap.c $(XLIBS) $(XLIBPATHS) $(XIPATHS) $(XDEFINES)
+ 
+ install:	all
+-	@echo Installing to $(PREFIX), change this by running ./configure --prefix=path
+-	-mkdir -vp $(PREFIX)$(BINDIR) 2> /dev/null
+-	-mkdir -vp $(PREFIX)$(DATADIR) 2> /dev/null
+-	-mkdir -vp $(PREFIX)$(MANDIR) 2> /dev/null
+-	-test -e amap.exe || cp -f amap amap6 amapcrap $(PREFIX)$(BINDIR)
+-	-test -e amap.exe && cp -f amap.exe amapcrap.exe $(PREFIX)$(BINDIR) || echo
+-	-cp -f $(SCRIPTS) $(PREFIX)$(DATADIR)
+-	-cp -f $(MANPAGE) $(PREFIX)$(MANDIR)
+-	-test $(PREFIX)$(BINDIR)/amap6 || cd $(PREFIX)$(BINDIR) && ln -s amap amap6
++	@echo Installing to $(DESTDIR)$(PREFIX), change this by running ./configure --prefix=path
++	-mkdir -vp $(DESTDIR)$(PREFIX)$(BINDIR) 2> /dev/null
++	-mkdir -vp $(DESTDIR)$(PREFIX)$(DATADIR) 2> /dev/null
++	-mkdir -vp $(DESTDIR)$(PREFIX)$(MANDIR) 2> /dev/null
++	-test -e amap.exe || cp -f amap amap6 amapcrap $(DESTDIR)$(PREFIX)$(BINDIR)
++	-test -e amap.exe && cp -f amap.exe amapcrap.exe $(DESTDIR)$(PREFIX)$(BINDIR) || echo
++	-cp -f $(SCRIPTS) $(DESTDIR)$(PREFIX)$(DATADIR)
++	-cp -f $(MANPAGE) $(DESTDIR)$(PREFIX)$(MANDIR)
++	-test $(DESTDIR)$(PREFIX)$(BINDIR)/amap6 || cd $(DESTDIR)$(PREFIX)$(BINDIR) && ln -s amap amap6
+ 
+ clean:	
+ 	cd pcre-3.9 && make clean

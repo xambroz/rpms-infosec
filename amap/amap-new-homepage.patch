@@ -1,0 +1,12 @@
+diff -urN amap-5.2/amap.h amap-5.2.new/amap.h
+--- amap-5.2/amap.h	2005-09-08 00:08:57.000000000 +0200
++++ amap-5.2.new/amap.h	2008-09-18 18:52:31.000000000 +0200
+@@ -22,7 +22,7 @@
+ #define AMAP_YEAR      "2005"
+ #define AMAP_AUTHOR    "van Hauser"
+ #define AMAP_EMAIL     "vh@thc.org"
+-#define AMAP_RESOURCE  "www.thc.org/thc-amap"
++#define AMAP_RESOURCE  "freeworld.thc.org/thc-amap"
+ 
+ #ifndef AMAP_PREFIX
+  #ifdef PREFIX

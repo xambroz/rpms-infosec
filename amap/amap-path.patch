@@ -1,0 +1,38 @@
+diff -urN amap-5.2/amap-lib.c amap-5.2.new/amap-lib.c
+--- amap-5.2/amap-lib.c	2005-09-07 23:22:24.000000000 +0200
++++ amap-5.2.new/amap-lib.c	2008-09-18 18:29:01.000000000 +0200
+@@ -306,7 +306,7 @@
+       strcpy(file_name, AMAP_PREFIX);
+       if (file_name[strlen(file_name) - 1] != '/')
+         strcat(file_name, "/");
+-      strcat(file_name, "etc/");
++      strcat(file_name, "share/amap/");
+       strcat(file_name, AMAP_DEFAULT_FILENAME);
+       strcat(file_name, extension);
+       f = fopen(file_name, "r");
+@@ -2032,9 +2032,9 @@
+   if (opt->update) {
+     printf("Running Online Update for fingerprints, connecting to %s\n", AMAP_RESOURCE);
+     if (opt->filename == NULL) {
+-      opt->filename = malloc(strlen(AMAP_PREFIX) + 5 + strlen(AMAP_DEFAULT_FILENAME) + 2);
++      opt->filename = malloc(strlen(AMAP_PREFIX) + 12 + strlen(AMAP_DEFAULT_FILENAME) + 2);
+       strcpy(opt->filename, AMAP_PREFIX);
+-      strcat(opt->filename, "/etc/");
++      strcat(opt->filename, "/share/amap/");
+       strcat(opt->filename, AMAP_DEFAULT_FILENAME);
+     }
+     opt->file_log = malloc(strlen(opt->filename) + 6);
+diff -urN amap-5.2/Makefile.am amap-5.2.new/Makefile.am
+--- amap-5.2/Makefile.am	2005-09-22 17:39:18.000000000 +0200
++++ amap-5.2.new/Makefile.am	2008-09-18 18:32:07.000000000 +0200
+@@ -3,8 +3,8 @@
+ OPT=-O2
+ OPT_DEBUG=-ggdb -Wall -lefence
+ BINDIR=/bin
+-DATADIR=/etc
+-MANDIR=/man/man1
++DATADIR=/share/amap
++MANDIR=/share/man/man1
+ SCRIPTS=appdefs.trig appdefs.resp appdefs.rpc
+ MANPAGE=amap.1
+ all:	pcre strip

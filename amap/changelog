@@ -1,0 +1,26 @@
+* Fri May 23 2014 Michal Ambroz <rebus at, seznam.cz> 5.4-1
+- bump to version 5.4
+
+* Wed Nov 21 2012 Nicolas Chauvet <kwizart@gmail.com> - 5.2-6
+- Rebuilt
+
+* Thu Feb 09 2012 Nicolas Chauvet <kwizart@gmail.com> - 5.2-5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
+
+* Fri Mar 26 2010 Michal Ambroz <rebus at, seznam.cz> 5.2-4
+- more flexible pcre cflags to build also on RHEL4
+
+* Sun Mar 20 2010 Michal Ambroz <rebus at, seznam.cz> 5.2-3
+- License changed to AMAP license to avoid confusion
+- patch makefile to link to amap6 instead of copy
+
+
+* Fri Jan 08 2010 Michal Ambroz <rebus at, seznam.cz> 5.2-2
+- patched makefile & spec to honour RPM_OPT_FLAGS
+- included verbatim copy of licenses
+- RPM_OPT_FLAGS fixed build of debug package as well
+- removed explicit dependency on openssl and pcre
+
+* Tue Jan 05 2010 Michal Ambroz <rebus at, seznam.cz> 5.2-1
+- Initial SPEC for Fedora 12 using SPEC and patches from PLD
+- Original SPEC by luzik qboosh zbyniu baggins glen

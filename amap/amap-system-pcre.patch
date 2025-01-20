@@ -1,0 +1,63 @@
+diff -urN amap-5.2/amap-inc.h amap-5.2.new/amap-inc.h
+--- amap-5.2/amap-inc.h	2003-10-29 23:37:41.000000000 +0100
++++ amap-5.2.new/amap-inc.h	2008-09-18 18:54:40.000000000 +0200
+@@ -20,7 +20,7 @@
+ #include <errno.h>
+ #include <sys/resource.h>
+ #include <sys/wait.h>
+-#include "pcre-3.9/pcre.h"
++#include <pcre.h>
+ #ifdef OPENSSL
+  #include <openssl/ssl.h>
+  #include <openssl/err.h>
+diff -urN amap-5.2/Makefile.am amap-5.2.new/Makefile.am
+--- amap-5.2/Makefile.am	2005-09-22 17:39:18.000000000 +0200
++++ amap-5.2.new/Makefile.am	2008-09-18 18:55:34.000000000 +0200
+@@ -1,5 +1,5 @@
+ CC=gcc
+-LIB=-lpcre -L./pcre-3.9/ -I./pcre-3.9/
++LIB=-lpcre
+ OPT=-O2
+ OPT_DEBUG=-ggdb -Wall -lefence
+ BINDIR=/bin
+@@ -8,6 +8,6 @@
+ SCRIPTS=appdefs.trig appdefs.resp appdefs.rpc
+ MANPAGE=amap.1
+-all:	pcre strip
++all:	amap amapcrap
+ 
+ pcre:
+ 	cd pcre-3.9 && make
+diff -ru amap-5.2.orig/configure amap-5.2/configure
+--- amap-5.2.orig/configure	2010-03-21 14:32:23.000000000 +0100
++++ amap-5.2/configure	2010-03-26 19:02:49.000000000 +0100
+@@ -13,15 +13,13 @@
+   exit 0
+ fi
+ 
+-cd pcre-3.9 || exit 1
+-./configure || exit 1
+-cd ..
+-
+ echo
+ echo
+ echo "Starting amap auto configuration ..."
+ rm -f Makefile.in
+ PREFIX=""
++PCRE_LIBS=`pcre-config --libs`
++PCRE_IPATH=`pcre-config --cflags`
+ SSL_PATH=""
+ SSL_IPATH=""
+ CRYPTO_PATH=""
+@@ -123,9 +121,9 @@
+ 
+ echo
+ XDEFINES=""
+-XLIBS=""
++XLIBS="$PCRE_LIBS"
+ XLIBPATHS=""
+-XIPATHS=""
++XIPATHS="$PCRE_IPATH"
+ 
+ if [ -n "$SSL_PATH" ]; then
+     XDEFINES="$XDEFINES -DOPENSSL"

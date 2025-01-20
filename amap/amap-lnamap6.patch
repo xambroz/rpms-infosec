@@ -1,0 +1,17 @@
+diff -ru amap-5.2.orig/Makefile.am amap-5.2/Makefile.am
+--- amap-5.2.orig/Makefile.am	2010-03-21 14:32:23.000000000 +0100
++++ amap-5.2/Makefile.am	2010-03-21 15:56:37.000000000 +0100
+@@ -38,11 +38,11 @@
+ 	-mkdir -vp $(DESTDIR)$(PREFIX)$(BINDIR) 2> /dev/null
+ 	-mkdir -vp $(DESTDIR)$(PREFIX)$(DATADIR) 2> /dev/null
+ 	-mkdir -vp $(DESTDIR)$(PREFIX)$(MANDIR) 2> /dev/null
+-	-test -e amap.exe || cp -f amap amap6 amapcrap $(DESTDIR)$(PREFIX)$(BINDIR)
++	-test -e amap.exe || cp -f amap amapcrap $(DESTDIR)$(PREFIX)$(BINDIR)
+ 	-test -e amap.exe && cp -f amap.exe amapcrap.exe $(DESTDIR)$(PREFIX)$(BINDIR) || echo
+ 	-cp -f $(SCRIPTS) $(DESTDIR)$(PREFIX)$(DATADIR)
+ 	-cp -f $(MANPAGE) $(DESTDIR)$(PREFIX)$(MANDIR)
+-	-test $(DESTDIR)$(PREFIX)$(BINDIR)/amap6 || cd $(DESTDIR)$(PREFIX)$(BINDIR) && ln -s amap amap6
++	-test -e $(DESTDIR)$(PREFIX)$(BINDIR)/amap6 || ln -s amap $(DESTDIR)$(PREFIX)$(BINDIR)/amap6
+ 
+ clean:	
+ 	cd pcre-3.9 && make clean

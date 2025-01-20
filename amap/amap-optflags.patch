@@ -1,0 +1,11 @@
+diff -ru amap-5.2/Makefile.am amap-5.2.orig/Makefile.am
+--- amap-5.2/Makefile.am	2010-01-08 11:23:46.000000000 +0100
++++ amap-5.2.orig/Makefile.am	2010-01-08 11:23:31.000000000 +0100
+@@ -1,6 +1,6 @@
+ CC=gcc
+ LIB=-lpcre
+-OPT=-O2
++OPT+=-O2
+ OPT_DEBUG=-ggdb -Wall -lefence
+ BINDIR=/bin
+ DATADIR=/share/amap
