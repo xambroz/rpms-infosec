@@ -65,7 +65,7 @@ autoreconf
 # Prerequisite `configure.ac' is newer than target `aclocal.m4'.
 touch --reference aclocal.m4 configure.ac Makefile.in
 
-export CFLAGS="${RPM_OPT_FLAGS} -fcommon" 
+export CFLAGS="${RPM_OPT_FLAGS} -fcommon -D NeedFunctionPrototypes"
 %configure %{?!with_fuse:--disable-fuse} --disable-static
 make %{?_smp_mflags}
 
