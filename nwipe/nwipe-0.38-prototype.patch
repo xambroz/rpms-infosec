@@ -1,0 +1,12 @@
+diff -ru nwipe-0.38.old/src/customers.h nwipe-0.38.new/src/customers.h
+--- nwipe-0.38.old/src/customers.h	2025-01-08 23:26:45.000000000 +0100
++++ nwipe-0.38.new/src/customers.h	2025-02-06 20:19:56.208504811 +0100
+@@ -26,7 +26,7 @@
+ 
+ void customer_processes( int );
+ void select_customers( int, char** );
+-void delete_customer();
++void delete_customer( int, char** );
+ void add_customer();
+ void write_customer_csv_entry( char*, char*, char*, char* );
+ void delete_customer_csv_entry( int* );

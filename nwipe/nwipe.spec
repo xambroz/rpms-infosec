@@ -20,6 +20,8 @@ VCS:            git:https://github.com/martijnvanbrummelen/nwipe
 #Source0:       https://github.com/%%{gituser}/%%{gitname}/archive/%%{commit}/%%{name}-%%{version}-%%{shortcommit}.tar.gz
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
+Patch0:         nwipe-0.38-prototype.patch
+
 BuildRequires:  make
 BuildRequires:  gcc
 BuildRequires:  parted-devel
