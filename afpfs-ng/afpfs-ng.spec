@@ -111,4 +111,4 @@ cp -p include/* %{buildroot}%{_includedir}/afpfs-ng
 %{_libdir}/*.so
 
 %changelog
-%autochangelog
+%{?%autochangelog: %autochangelog }
