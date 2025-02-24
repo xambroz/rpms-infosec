@@ -1,0 +1,18 @@
+Description: Use /usr/bin/hydra path by default in xhydra.
+Forwarded: not-needed
+Author: Julián Moreno Patiño <darkjunix@gmail.com>
+Last-Update: 2022-10-05
+--- a/hydra-gtk/src/main.c
++++ b/hydra-gtk/src/main.c
+@@ -14,9 +14,9 @@
+ #include <gtk/gtk.h>
+ #include <string.h>
+ 
+-char *hydra_path1 = "./hydra";
++char *hydra_path1 = "/usr/bin/hydra";
+ char *hydra_path2 = "/usr/local/bin/hydra";
+-char *hydra_path3 = "/usr/bin/hydra";
++char *hydra_path3 = "./hydra";
+ char *hydra_path4 = "/data/data/com.termux/files/usr/bin/hydra";
+ char *hydra_path5 = "/data/data/com.termux/files/usr/local/bin/hydra";
+ 

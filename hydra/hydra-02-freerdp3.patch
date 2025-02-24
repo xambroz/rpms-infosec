@@ -1,0 +1,92 @@
+From eb7ab3907b97df475c455b0bd187b937e2cfe4aa Mon Sep 17 00:00:00 2001
+From: a12092 <ccchen@aaasec.com.tw>
+Date: Tue, 13 Aug 2024 13:16:22 +0800
+Subject: [PATCH 1/2] Adapt with freerdp changes
+
+FreeRDP/FreeRDP#7738
+use fields under rdpContext instead of freerdp
+
+FreeRDP/FreeRDP@5f8100
+removes reference to MaxTimeInCheckLoop since FreeRDP has dropped this
+field after migrating away from blocking poll loop.
+---
+ hydra-rdp.c | 32 +++++++++++++++++++++-----------
+ 1 file changed, 21 insertions(+), 11 deletions(-)
+
+diff --git a/hydra-rdp.c b/hydra-rdp.c
+index a8a69bcf..dc38b40b 100644
+--- a/hydra-rdp.c
++++ b/hydra-rdp.c
+@@ -16,24 +16,34 @@ void dummy_rdp() { printf("\n"); }
+ #else
+ 
+ #include <freerdp/freerdp.h>
++#include <freerdp/version.h>
+ freerdp *instance = 0;
+ BOOL rdp_connect(char *server, int32_t port, char *domain, char *login, char *password) {
+   int32_t err = 0;
+ 
+-  instance->settings->Username = login;
+-  instance->settings->Password = password;
+-  instance->settings->IgnoreCertificate = TRUE;
++#if FREERDP_VERSION_MAJOR == 3
++  rdpSettings* settings = instance->context->settings;
++#else
++  rdpSettings* settings = instance->settings;
++#endif
++
++  settings->Username = login;
++  settings->Password = password;
++  settings->IgnoreCertificate = TRUE;
+   if (password[0] == 0)
+-    instance->settings->AuthenticationOnly = FALSE;
++    settings->AuthenticationOnly = FALSE;
+   else
+-    instance->settings->AuthenticationOnly = TRUE;
+-  instance->settings->ServerHostname = server;
+-  instance->settings->ServerPort = port;
+-  instance->settings->Domain = domain;
+-  instance->settings->MaxTimeInCheckLoop = 100;
++    settings->AuthenticationOnly = TRUE;
++  settings->ServerHostname = server;
++  settings->ServerPort = port;
++  settings->Domain = domain;
++
++#if FREERDP_VERSION_MAJOR == 2
++  settings->MaxTimeInCheckLoop = 100;
++#endif
+   // freerdp timeout format is microseconds -> default:15000
+-  instance->settings->TcpConnectTimeout = hydra_options.waittime * 1000;
+-  instance->settings->TlsSecLevel = 0;
++  settings->TcpConnectTimeout = hydra_options.waittime * 1000;
++  settings->TlsSecLevel = 0;
+   freerdp_connect(instance);
+   err = freerdp_get_last_error(instance->context);
+   return err;
+
+From 7545077a16b7aec696bbf14c87b4f5a44f0d34fc Mon Sep 17 00:00:00 2001
+From: a12092 <ccchen@aaasec.com.tw>
+Date: Tue, 13 Aug 2024 14:19:14 +0800
+Subject: [PATCH 2/2] Unify settings access between freerdp 2 and 3
+
+use `instance->context->settings` in both versions.
+---
+ hydra-rdp.c | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/hydra-rdp.c b/hydra-rdp.c
+index dc38b40b..0b3c6905 100644
+--- a/hydra-rdp.c
++++ b/hydra-rdp.c
+@@ -21,11 +21,7 @@ freerdp *instance = 0;
+ BOOL rdp_connect(char *server, int32_t port, char *domain, char *login, char *password) {
+   int32_t err = 0;
+ 
+-#if FREERDP_VERSION_MAJOR == 3
+   rdpSettings* settings = instance->context->settings;
+-#else
+-  rdpSettings* settings = instance->settings;
+-#endif
+ 
+   settings->Username = login;
+   settings->Password = password;

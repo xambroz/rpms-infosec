@@ -1,66 +1,62 @@
 Summary:        Very fast network log-on cracker
 Name:           hydra
 Version:        9.5
-Release:        7%{?dist}
-License:        AGPLv3 with exceptions
+Release:        8%{?dist}
+License:        AGPL-3.0-only
 URL:            https://github.com/vanhauser-thc/thc-hydra
-VCS:            https://github.com/vanhauser-thc/thc-hydra
+VCS:            git:https://github.com/vanhauser-thc/thc-hydra
 # Old URL       https://www.thc.org/thc-hydra/
 
-# New versions of Fedora (40+) are having new version of freerdp3,
-# while maintaining the legacy freerdp2 version
-%bcond_without  freerdp_legacy
+Source0:        https://github.com/vanhauser-thc/thc-hydra/archive/v%{version}/%{name}-%{version}.tar.gz
 
-# On older release branches use unversioned freerdp
-%if ( 0%{?fedora} && 0%{?fedora} < 40 ) || ( 0%{?rhel} )
-%bcond_with     freerdp_legacy
-%endif
-
-
-
-Source0:        %{vcs}/archive/v%{version}/%{name}-%{version}.tar.gz
 # Sent upstream via email 20120518
-Patch0:         hydra-use-system-libpq-fe.patch
-Patch1:         hydra-fix-dpl4hydra-dir.patch
+Patch0:         hydra-00-use-system-libpq-fe.patch
 
-BuildRequires:  gcc
-BuildRequires:  make
-BuildRequires:  pkgconfig
-BuildRequires:  desktop-file-utils
+# Paths aligned with the Fedora packaging
+Patch1:         hydra-01-fix-dpl4hydra-dir.patch
+
+# https://patch-diff.githubusercontent.com/raw/vanhauser-thc/thc-hydra/pull/970
+# Migrate to freerdp3
+Patch2:         https://patch-diff.githubusercontent.com/raw/vanhauser-thc/thc-hydra/pull/970.patch#/hydra-02-freerdp3.patch
+
+# From Debian 03_use_bin_path.diff
+# Description: Use /usr/bin/hydra path by default in xhydra.
+# Forwarded: not-needed
+# Author: Julián Moreno Patiño <darkjunix@gmail.com>
+# Last-Update: 2022-10-05
+Patch3:         hydra-03_use_bin_path.diff
+
+
 
 BuildRequires:  afpfs-ng-devel
 BuildRequires:  apr-devel
+BuildRequires:  desktop-file-utils
 BuildRequires:  firebird-devel
-BuildRequires:  libfbclient2-devel
-
-%if %{with freerdp_legacy}
-BuildRequires:  freerdp2-devel
-BuildRequires:  libwinpr2-devel
-%else
+# FreeRDP
 BuildRequires:  freerdp-devel
-BuildRequires:  libwinpr-devel
-%endif
-
-%if (0%{?fedora})
-BuildRequires:  memcached-devel
-%endif
-
+BuildRequires:  gcc
+BuildRequires:  gtk2-devel
 BuildRequires:  gtk2-devel
 BuildRequires:  libbson-devel
+BuildRequires:  libfbclient2-devel
 BuildRequires:  libgcrypt-devel
 BuildRequires:  libidn-devel
 BuildRequires:  libmemcached-devel
+# Postgresql
 BuildRequires:  libpq-devel
 BuildRequires:  libsmbclient-devel
 BuildRequires:  libssh-devel
+# FreeRDP
+BuildRequires:  libwinpr-devel
+BuildRequires:  make
 BuildRequires:  mariadb-connector-c-devel
+BuildRequires:  memcached-devel
 BuildRequires:  mongo-c-driver-devel
 BuildRequires:  ncurses-devel
 BuildRequires:  openssl-devel
 BuildRequires:  pcre2-devel
+BuildRequires:  pkgconfig
 BuildRequires:  subversion-devel
-
-
 
 %description
 Hydra is a parallelized log-in cracker which supports numerous protocols to
@@ -79,6 +75,7 @@ This package includes xhydra, a GTK+ front end for hydra.
 %autosetup -p 1 -n thc-hydra-%{version}
 
 %build
+export CFLAGS="$CFLAGS -Wincompatible-pointer-types -fPIE"
 %configure --nostrip
 %make_build
 
@@ -115,8 +112,11 @@ desktop-file-validate %{buildroot}/%{_datadir}/applications/xhydra.desktop
 %{_mandir}/man1/xhydra.1*
 
 %changelog
-* Wed Jun 12 2024 Michal Ambroz <rebus _at seznam.cz>  9.5-7
-- build for epel
+* Fri Jan 17 2025 Fedora Release Engineering <releng@fedoraproject.org> - 9.5-8
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_42_Mass_Rebuild
+
+* Thu Jul 18 2024 Fedora Release Engineering <releng@fedoraproject.org> - 9.5-7
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_41_Mass_Rebuild
 
 * Fri Feb 09 2024 Simone Caronni <negativo17@gmail.com> - 9.5-6
 - Clean up SPEC file.
