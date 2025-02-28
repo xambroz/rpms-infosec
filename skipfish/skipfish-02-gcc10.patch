@@ -10,7 +10,6 @@ diff -ru skipfish-2.10b/src/signatures.h skipfish-2.10b.new/src/signatures.h
  
  extern u32 slist_max_cnt;          /* Allocated space in the signature lists */
  u32 slist_cnt;                     /* Actual elements in the signature lists */
-Only in skipfish-2.10b.new: skipfish
 diff -ru skipfish-2.10b/src/http_client.c skipfish-2.10b.new/src/http_client.c
 --- skipfish-2.10b/src/http_client.c	2012-12-04 13:27:53.000000000 +0000
 +++ skipfish-2.10b.new/src/http_client.c	2020-04-25 23:16:12.069153357 +0000

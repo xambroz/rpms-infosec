@@ -1,0 +1,140 @@
+diff -ru skipfish-2.10b.orig/src/http_client.c skipfish-2.10b.new/src/http_client.c
+--- skipfish-2.10b.orig/src/http_client.c	2025-02-28 02:18:16.871858148 +0100
++++ skipfish-2.10b.new/src/http_client.c	2025-02-28 02:45:33.420115036 +0100
+@@ -800,10 +800,12 @@
+    There are some good async DNS libraries to consider in the long run. */
+ 
+ u32 maybe_lookup_host(u8* name) {
+-  struct hostent* h;
++  struct addrinfo hints, *res, *p;
+   struct dns_entry *d = dns, *prev = NULL;
+   u32 ret_addr = 0;
+   struct in_addr in;
++  int status;
++  char ipstr[INET6_ADDRSTRLEN];
+ 
+ #ifdef PROXY_SUPPORT
+ 
+@@ -819,15 +821,43 @@
+       if (inet_aton((char*)use_proxy, &in))
+         return (use_proxy_addr = (u32)in.s_addr);
+ 
+-      h = gethostbyname((char*)use_proxy);
++      /* REPLACE: h = gethostbyname((char*)use_proxy); */
++      /* Set up hints for getaddrinfo */
++      memset(&hints, 0, sizeof(hints));
++      hints.ai_family = AF_INET;     /* IPv4 */
++      hints.ai_socktype = SOCK_STREAM; /* TCP */
++
++      /* Get address info */
++      status = getaddrinfo((char*)use_proxy, NULL, &hints, &res);
+ 
+       /* If lookup fails with a transient error, be nice - try again. */
+ 
+-      if (!h && h_errno == TRY_AGAIN) h = gethostbyname((char*)name);
++      if (status != 0) {
++        /* If lookup fails with a transient error, be nice - try again. */
++        if (status == EAI_AGAIN) {
++          status = getaddrinfo((char*)name, NULL, &hints, &res);
++        }
++
++        if (status != 0 || !res) {
++          FATAL("Unable to resolve proxy host name '%s': %s", 
++                use_proxy, gai_strerror(status));
++        }
++      }
++
++      /* Get the first IPv4 address found */
++      for (p = res; p != NULL; p = p->ai_next) {
++        if (p->ai_family == AF_INET) { /* IPv4 */
++          struct sockaddr_in *ipv4 = (struct sockaddr_in *)p->ai_addr;
++          use_proxy_addr = (u32)ipv4->sin_addr.s_addr;
++          break;
++        }
++      }
+ 
+-      if (!h || !(use_proxy_addr = *(u32*)h->h_addr_list[0]))
+-        FATAL("Unable to resolve proxy host name '%s'.", use_proxy);
++      if (!use_proxy_addr) {
++        FATAL("No valid IPv4 address found for proxy '%s'.", use_proxy);
++      }
+ 
++      freeaddrinfo(res); /* Free the linked list */
+     }
+ 
+     return use_proxy_addr;
+@@ -849,35 +879,53 @@
+     d = d->next;
+   }
+ 
+-  h = gethostbyname((char*)name);
+-
+-  /* If lookup fails with a transient error, be nice - try again. */
++  /* REPLACE: h = gethostbyname((char*)name); */
++  /* Set up hints for getaddrinfo */
++  memset(&hints, 0, sizeof(hints));
++  hints.ai_family = AF_INET;     /* IPv4 only */
++  hints.ai_socktype = SOCK_STREAM;
+ 
+-  if (!h && h_errno == TRY_AGAIN) h = gethostbyname((char*)name);
++  /* Get address info */
++  status = getaddrinfo((char*)name, NULL, &hints, &res);
+ 
+-  if (h) {
++  /* If lookup fails with a transient error, be nice - try again. */
++  if (status == EAI_AGAIN) 
++    status = getaddrinfo((char*)name, NULL, &hints, &res);
+ 
+-    u32 i = 0;
++  if (status == 0 && res) {
++    u32 addr_list[64]; /* Store up to 64 addresses */
++    int addr_count = 0;
++
++    /* Build a list of addresses */
++    for (p = res; p != NULL && addr_count < 64; p = p->ai_next) {
++      if (p->ai_family == AF_INET) { /* IPv4 */
++        struct sockaddr_in *ipv4 = (struct sockaddr_in *)p->ai_addr;
++        addr_list[addr_count++] = (u32)ipv4->sin_addr.s_addr;
++      }
++    }
+ 
+-    /* For each address associated with the host, see if we have any
+-       other hosts that resolved to that same IP. If yes, return
+-       that address; otherwise, just return first. This is for HTTP
+-       performance and bookkeeping reasons. */
+-
+-    while (h->h_addr_list[i]) {
+-      d = dns;
+-      while (d) {
+-        if (d->addr == *(u32*)h->h_addr_list[i]) {
+-          ret_addr = d->addr;
+-          goto dns_got_name;
++    if (addr_count > 0) {
++      int i = 0;
++      /* For each address associated with the host, see if we have any
++         other hosts that resolved to that same IP. If yes, return
++         that address; otherwise, just return first. This is for HTTP
++         performance and bookkeeping reasons. */
++      while (i < addr_count) {
++        d = dns;
++        while (d) {
++          if (d->addr == addr_list[i]) {
++            ret_addr = d->addr;
++            goto dns_got_name;
++          }
++          d = d->next;
+         }
+-        d = d->next;
++        i++;
+       }
+-      i++;
+-    }
+ 
+-    ret_addr = *(u32*)h->h_addr_list[0];
++      ret_addr = addr_list[0];
++    }
+ 
++    freeaddrinfo(res); /* Free the linked list */
+   }
+ 
+ dns_got_name:
