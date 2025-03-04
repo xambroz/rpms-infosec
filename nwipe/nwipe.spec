@@ -20,7 +20,7 @@ VCS:            git:https://github.com/martijnvanbrummelen/nwipe
 #Source0:       https://github.com/%%{gituser}/%%{gitname}/archive/%%{commit}/%%{name}-%%{version}-%%{shortcommit}.tar.gz
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
-Patch0:         nwipe-0.38-prototype.patch
+# Patch0:         nwipe-0.38-prototype.patch
 
 BuildRequires:  make
 BuildRequires:  gcc
@@ -70,8 +70,12 @@ a few changes:
 
 # On RHEL7 it is needed to explicitly pregress to c99 compatibility mode
 %if 0%{?rhel} && 0%{?rhel} <= 7
-export CFLAGS="%{optflags} -std=c99 -D_XOPEN_SOURCE=500"
+export CFLAGS="%{optflags} -D_XOPEN_SOURCE=500"
 %endif
+
+# Needed for compatibility with GCC 15
+export CFLAGS="%{optflags} -std=c99"
+
 
 autoreconf -vif
 
@@ -93,4 +97,4 @@ autoreconf -vif
 
 
 %changelog
-%{?%autochangelog: %autochangelog }
+%autochangelog
