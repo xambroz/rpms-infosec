@@ -1,0 +1,47 @@
+From 9c92960f8606be2decf88cdcec7a7ab53ff13b4b Mon Sep 17 00:00:00 2001
+From: tabudz <tanb74653@gmail.com>
+Date: Wed, 19 Feb 2025 23:42:14 +0800
+Subject: [PATCH 1/2] PR/454: Fix memory corruption when the continuation level
+ jumps by more than 20 in a single step.
+
+---
+ libr/magic/funcs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/libr/magic/funcs.c b/libr/magic/funcs.c
+index 7356dc0c93f77..14687bf7be8f0 100644
+--- a/libr/magic/funcs.c
++++ b/libr/magic/funcs.c
+@@ -322,7 +322,7 @@ const char *__magic_file_getbuffer(RMagic *ms) {
+ 
+ int __magic_file_check_mem(RMagic *ms, unsigned int level) {
+ 	if (level >= ms->c.len) {
+-		size_t len = (ms->c.len += 20) * sizeof (*ms->c.li);
++		size_t len = (ms->c.len = 20 + level) * sizeof (*ms->c.li);
+ 		ms->c.li = (!ms->c.li) ? malloc (len) :
+ 		    realloc (ms->c.li, len);
+ 		if (!ms->c.li) {
+
+From 030e74cd136044e28828ab52615ce929693bae7a Mon Sep 17 00:00:00 2001
+From: pancake <pancake@nowsecure.com>
+Date: Wed, 19 Feb 2025 17:32:21 +0100
+Subject: [PATCH 2/2] Update libr/magic/funcs.c
+
+---
+ libr/magic/funcs.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/libr/magic/funcs.c b/libr/magic/funcs.c
+index 14687bf7be8f0..52e3819f0e04e 100644
+--- a/libr/magic/funcs.c
++++ b/libr/magic/funcs.c
+@@ -322,7 +322,8 @@ const char *__magic_file_getbuffer(RMagic *ms) {
+ 
+ int __magic_file_check_mem(RMagic *ms, unsigned int level) {
+ 	if (level >= ms->c.len) {
+-		size_t len = (ms->c.len = 20 + level) * sizeof (*ms->c.li);
++		ms->c.len = level + 20;
++		size_t len = ms->c.len * sizeof (*ms->c.li);
+ 		ms->c.li = (!ms->c.li) ? malloc (len) :
+ 		    realloc (ms->c.li, len);
+ 		if (!ms->c.li) {

@@ -61,6 +61,15 @@ Patch3:         radare2-5.9.0-use_magic.patch
 # to change this one as well
 Patch7:           radare2-5.9.8-dec99.patch
 
+# CVE-2025-1744 - Potential Vulnerability in zlib Library 
+# https://github.com/radareorg/radare2/pull/23969
+Patch8:           https://github.com/radareorg/radare2/pull/23969.patch#/radare2-5.9.8-zlib-cve.patch
+
+# CVE-2025-1864 - Potential Vulnerability in magic Library
+# https://github.com/radareorg/radare2/pull/23981
+Patch9:           https://github.com/radareorg/radare2/pull/23981.patch#/radare2-5.9.8-magic-cve.patch
+
+
 
 License:        LGPL-3.0-or-later AND GPL-2.0-or-later AND BSD-2-Clause AND BSD-3-Clause AND MIT AND Apache-2.0 AND MPL-2.0 AND Zlib
 # Radare2 as a package is targeting to be licensed/compiled as LGPLv3+
