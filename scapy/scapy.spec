@@ -1,5 +1,5 @@
 Name:           scapy
-Version:        2.6.0
+Version:        2.6.1
 Release:        %autorelease
 Summary:        Interactive packet manipulation tool and network scanner
 
@@ -181,7 +181,7 @@ rm -f %{buildroot}%{python3_sitelib}/*egg-info/requires.txt
 mv -f %{buildroot}%{_bindir}/scapy   %{buildroot}%{_bindir}/scapy3
 
 # Link the default to the python3 version of executables
-ln -s scapy3   %{buildroot}%{_bindir}/scapy
+ln -s %{_bindir}/scapy3   %{buildroot}%{_bindir}/scapy
 %endif
 
 
@@ -228,4 +228,4 @@ ln -s scapy3   %{buildroot}%{_bindir}/scapy
 
 
 %changelog
-%{?%autochangelog: %autochangelog }
+%autochangelog
