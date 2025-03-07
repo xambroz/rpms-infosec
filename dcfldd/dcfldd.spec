@@ -49,6 +49,7 @@ and security. dcfldd has the following additional features:
 
 %build
 autoreconf -i
+export CFLAGS="$CFLAGS -std=c99"
 %configure
 %make_build
 
