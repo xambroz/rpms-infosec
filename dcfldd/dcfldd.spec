@@ -49,7 +49,12 @@ and security. dcfldd has the following additional features:
 
 %build
 autoreconf -i
+
+# Needed for GCC 14/15
+%if 0%{fedora} >=39 || 0%{?rhel} >= 10
 export CFLAGS="$CFLAGS -std=c99"
+%endif
+
 %configure
 %make_build
 
