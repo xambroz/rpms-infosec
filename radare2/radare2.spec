@@ -401,6 +401,4 @@ mkdir -p %{buildroot}%{_libdir}/%{name}/%{version}
 
 
 %changelog
-%if ! ( 0%{?rhel} && 0%{?rhel} <= 7 )
-%{?%autochangelog: %autochangelog }
-%endif
+%autochangelog
