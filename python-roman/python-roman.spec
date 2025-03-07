@@ -14,8 +14,9 @@ BuildArch:      noarch
 BuildRequires:  python%{python3_pkgversion}-devel
 BuildRequires:  python%{python3_pkgversion}-setuptools
 
-%global _description\
+%global _description %{expand:
 Integer to Roman numerals converter
+}
 
 %description %_description
 
