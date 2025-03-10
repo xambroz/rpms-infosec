@@ -1,0 +1,14 @@
+diff -ru fcrackzip-1.0.orig/cpmask.c fcrackzip-1.0.new/cpmask.c
+--- fcrackzip-1.0.orig/cpmask.c	2025-03-10 17:56:04.646817328 +0100
++++ fcrackzip-1.0.new/cpmask.c	2025-03-10 17:56:53.306001764 +0100
+@@ -126,8 +126,8 @@
+ 0x03, 0x01, 0x04, 0x19, 0x0c, 0x0f, 0x0e, 0x12, 0x07, 0x0b, 0x18, 0x11, 0x1a
+ };
+ 
+-static cp_table_lu1[MAX_CP_WIDTH];
+-static cp_table_lu2[MAX_CP_WIDTH];
++static UI cp_table_lu1[MAX_CP_WIDTH];
++static UI cp_table_lu2[MAX_CP_WIDTH];
+ 
+ /* this is a bottleneck */
+ static void

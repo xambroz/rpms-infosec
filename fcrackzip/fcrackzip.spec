@@ -9,6 +9,9 @@ License:GPL-2.0-only
 Group:		Applications/Forensics Tools
 Source:		http://oldhome.schmorp.de/marc/data/%{name}-%{version}.tar.gz
 
+# Fix declarations to work in gcc15
+Patch1:         fcrackzip-gcc15-declarations.patch
+
 BuildRoot:	%{_tmppath}/rpm-root-%{name}-v%{version}
 BuildRequires:	automake
 BuildRequires:	autoconf
@@ -26,6 +29,7 @@ the more files you provide, the better.
 %build
 mv configure.in configure.ac
 autoreconf -i
+# export CFLAGS="$CFLAGS -std=c99"
 %configure
 %make_build
 
