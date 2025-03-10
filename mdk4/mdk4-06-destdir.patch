@@ -1,0 +1,36 @@
+diff -ru mdk4-4.2.orig/Makefile mdk4-4.2.new/Makefile
+--- mdk4-4.2.orig/Makefile	2021-07-07 08:57:44.000000000 +0200
++++ mdk4-4.2.new/Makefile	2025-03-10 16:02:10.443928506 +0100
+@@ -1,5 +1,5 @@
+-DESTDIR		= 
+-PREFIX		= /usr/local
++DESTDIR		?= 
++PREFIX		?= /usr/local
+ SBINDIR		= $(PREFIX)/sbin
+ MANDIR		= $(PREFIX)/share/man
+ 
+diff -ru mdk4-4.2.orig/src/Makefile mdk4-4.2.new/src/Makefile
+--- mdk4-4.2.orig/src/Makefile	2025-03-10 15:31:31.994439427 +0100
++++ mdk4-4.2.new/src/Makefile	2025-03-10 16:19:59.454805762 +0100
+@@ -6,8 +6,8 @@
+ CFLAGS		+= -g -O3 -Wall -Wextra -fcommon
+ LINKFLAGS	= -lpthread -lpcap $(LDFLAGS)
+ 
+-SBINDIR		= $(PREFIX)/sbin
+-MANDIR		= $(PREFIX)/share/man
++SBINDIR		= $(DESTDIR)$(PREFIX)/sbin
++MANDIR		= $(DESTDIR)$(PREFIX)/share/man
+ 
+ OSD		= osdep
+ LIBS		+= -lm -L$(OSD) -l$(OSD)
+@@ -44,8 +44,8 @@
+ 	install -D -m 0755 $^ $(SBINDIR)/$^
+ 	$(MAKE) -C $(ATTACKS) install
+ 	$(MAKE) -C $(OSD) install
+-	mkdir -p /usr/local/src/mdk4
+-	cp -r pocs /usr/local/src/mdk4
++	mkdir -p $(DESTDIR)$(PREFIX)/src/mdk4
++	cp -r pocs $(DESTDIR)$(PREFIX)/src/mdk4
+ 
+ .PHONY : clean
+ clean:
