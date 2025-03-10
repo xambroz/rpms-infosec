@@ -2,13 +2,13 @@ Name:           pdf-parser
 Version:        0.7.11
 Release:        %autorelease
 Summary:        Tool for parsing PDF documents
-
-%global         version_under   %(echo %{version} | sed 's/\\./_/g')
-
 License:        CC0-1.0 and MIT
 URL:            https://blog.didierstevens.com/programs/pdf-tools/
 # URL:          https://blog.didierstevens.com/my-software/#pdf-parser
 VCS:            https://github.com/DidierStevens/DidierStevensSuite
+
+%global         version_under   %(echo %{version} | sed 's/\\./_/g')
+
 Source0:        https://didierstevens.com/files/software/pdf-parser_V%{version_under}.zip
 BuildArch:      noarch
 
