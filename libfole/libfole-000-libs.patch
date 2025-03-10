@@ -1,6 +1,6 @@
-diff -ru libfole-c6dbb26a2f2a531cd4d1101bbffa88cd110e3f90/configure.ac libfole-c6dbb26a2f2a531cd4d1101bbffa88cd110e3f90.new/configure.ac
+diff -ru libfole-c6dbb26a2f2a531cd4d1101bbffa88cd110e3f90/configure.ac libfole-c6dbb26a2f2a531cd4d1101bbffa88cd110e3f90.000/configure.ac
 --- libfole-c6dbb26a2f2a531cd4d1101bbffa88cd110e3f90/configure.ac	2024-05-21 05:41:10.000000000 +0200
-+++ libfole-c6dbb26a2f2a531cd4d1101bbffa88cd110e3f90.new/configure.ac	2025-01-16 14:28:07.371344556 +0100
++++ libfole-c6dbb26a2f2a531cd4d1101bbffa88cd110e3f90.000/configure.ac	2025-01-20 13:24:47.884745053 +0100
 @@ -97,7 +97,7 @@
  AC_CONFIG_FILES([Makefile])
  AC_CONFIG_FILES([include/Makefile])
@@ -10,9 +10,9 @@ diff -ru libfole-c6dbb26a2f2a531cd4d1101bbffa88cd110e3f90/configure.ac libfole-c
  AC_CONFIG_FILES([libfole/Makefile])
  AC_CONFIG_FILES([po/Makefile.in])
  AC_CONFIG_FILES([po/Makevars])
-diff -ru libfole-c6dbb26a2f2a531cd4d1101bbffa88cd110e3f90/Makefile.am libfole-c6dbb26a2f2a531cd4d1101bbffa88cd110e3f90.new/Makefile.am
+diff -ru libfole-c6dbb26a2f2a531cd4d1101bbffa88cd110e3f90/Makefile.am libfole-c6dbb26a2f2a531cd4d1101bbffa88cd110e3f90.000/Makefile.am
 --- libfole-c6dbb26a2f2a531cd4d1101bbffa88cd110e3f90/Makefile.am	2024-05-21 05:41:10.000000000 +0200
-+++ libfole-c6dbb26a2f2a531cd4d1101bbffa88cd110e3f90.new/Makefile.am	2025-01-16 14:27:41.639160496 +0100
++++ libfole-c6dbb26a2f2a531cd4d1101bbffa88cd110e3f90.000/Makefile.am	2025-01-20 13:24:47.879745023 +0100
 @@ -3,7 +3,6 @@
  SUBDIRS = \
  	include \

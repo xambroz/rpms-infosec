@@ -1,5 +1,5 @@
 Name:           libfole
-Version:        20241015
+Version:        20240521
 Release:        %autorelease
 Summary:        Libyal library for cross-platform C file functions
 Group:          System Environment/Libraries
