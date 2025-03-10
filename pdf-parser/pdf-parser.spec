@@ -33,15 +33,8 @@ mkdir -p %{buildroot}%{_bindir}
 
 # Install main script
 install -p -m 755 pdf-parser.py %{buildroot}%{_bindir}/
-# Create wrapper script
-cat > %{buildroot}%{_bindir}/%{name} << 'EOF'
-#!/usr/bin/bash
-exec python3 %{_datadir}/%{name}/pdf-parser.py "$@"
-EOF
-chmod 755 %{buildroot}%{_bindir}/%{name}
 
 %files
-%{_bindir}/%{name}
 %{_bindir}/pdf-parser.py
 
 %changelog
