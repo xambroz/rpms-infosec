@@ -51,6 +51,7 @@ Patch06:        mdk4-06-destdir.patch
 BuildRequires:  git
 BuildRequires:  make
 BuildRequires:  gcc
+BuildRequires:  libnl3-devel
 
 
 %description
