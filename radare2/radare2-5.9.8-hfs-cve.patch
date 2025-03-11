@@ -1,0 +1,36 @@
+From 984ad6ae4ebbc3a01cf1209e05377b5d1d6221f4 Mon Sep 17 00:00:00 2001
+From: pancake <pancake@nopcode.org>
+Date: Thu, 2 Jan 2025 13:03:34 +0100
+Subject: [PATCH] CVE-2024-56737 - Fix buffer overflow in the HFS parser from
+ grub2 ##crash
+
+---
+ shlr/grub/fs/hfs.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/shlr/grub/fs/hfs.c b/shlr/grub/fs/hfs.c
+index 33060d5d5fe25..98f717c4c47b4 100644
+--- a/shlr/grub/fs/hfs.c
++++ b/shlr/grub/fs/hfs.c
+@@ -375,7 +375,9 @@ grub_hfs_mount (grub_disk_t disk)
+      volume name.  */
+   key.parent_dir = grub_cpu_to_be32 (1);
+   key.strlen = data->sblock.volname[0];
+-  grub_strcpy ((char *) key.str, (char *) (data->sblock.volname + 1));
++  ///grub_strcpy ((char *) key.str, (char *) (data->sblock.volname + 1));
++  strncpy (key.str, (char *) (data->sblock.volname + 1), sizeof (key.str) - 1);
++  key.str[sizeof (key.str) - 1] = 0;
+ 
+   int depth = 0;
+   if (grub_hfs_find_node (data, (char *) &key, data->cat_root,
+@@ -965,7 +967,9 @@ grub_hfs_find_dir (struct grub_hfs_data *data, const char *path,
+ 
+       key.parent_dir = grub_cpu_to_be32 (inode);
+       key.strlen = grub_strlen (path);
+-      grub_strcpy ((char *) (key.str), path);
++      // grub_strcpy ((char *) (key.str), path);
++      strncpy (key.str, (char *) path, sizeof (key.str) - 1);
++      key.str[sizeof (key.str) - 1] = 0;
+ 
+       /* Lookup this node.  */
+       if (! grub_hfs_find_node (data, (char *) &key, data->cat_root,

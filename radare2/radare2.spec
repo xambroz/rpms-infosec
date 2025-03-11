@@ -69,6 +69,11 @@ Patch8:           https://github.com/radareorg/radare2/pull/23969.patch#/radare2
 # https://github.com/radareorg/radare2/pull/23981
 Patch9:           https://github.com/radareorg/radare2/pull/23981.patch#/radare2-5.9.8-magic-cve.patch
 
+# CVE-2024-56737 - Fix buffer overflow in the HFS parser from grub2
+# https://github.com/radareorg/radare2/commit/984ad6ae4ebbc3a01cf1209e05377b5d1d6221f4.patch#/radare2-5.9.8-hfs-cve.patch
+# https://github.com/advisories/GHSA-9vr3-263w-c6mj
+Patch10:           https://github.com/radareorg/radare2/commit/984ad6ae4ebbc3a01cf1209e05377b5d1d6221f4.patch#/radare2-5.9.8-hfs-cve.patch
+
 
 
 License:        LGPL-3.0-or-later AND GPL-2.0-or-later AND BSD-2-Clause AND BSD-3-Clause AND MIT AND Apache-2.0 AND MPL-2.0 AND Zlib
