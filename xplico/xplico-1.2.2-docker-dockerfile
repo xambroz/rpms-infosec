@@ -1,0 +1,14 @@
+FROM ubuntu:18.04
+
+RUN cat /etc/issue
+
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -yf wget gnupg
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 791C25CE
+RUN DEBIAN_FRONTEND=noninteractive wget --quiet https://sourceforge.net/projects/xplico/files/Xplico%20versions/1.2.2/xplico_1.2.2_amd64.deb/download -O /tmp/xplico_1.2.2_amd64.deb
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -yf /tmp/xplico_1.2.2_amd64.deb && ls -l /tmp/xplico_1.2.2_amd64.deb
+RUN DEBIAN_FRONTEND=noninteractive rm -f /tmp/xplico_1.2.2_amd64.deb
+
+EXPOSE 9876
+
+CMD ["/bin/bash", "-c", "/etc/init.d/apache2 start && sleep 3 && /etc/init.d/xplico start && tail -F /var/log/apache2/*"]
+
