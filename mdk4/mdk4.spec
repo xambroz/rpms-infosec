@@ -52,6 +52,7 @@ BuildRequires:  git
 BuildRequires:  make
 BuildRequires:  gcc
 BuildRequires:  libnl3-devel
+BuildRequires:  libpcap-devel
 
 
 %description
