@@ -1,9 +1,9 @@
 Name:           python-pwntools
-Version:        4.11.1
-Release:        5%{?dist}
+Version:        4.14.1
+Release:        %autorelease
 Summary:        A CTF framework and exploit development library
 URL:            https://github.com/Gallopsled/pwntools/
-VCS:            https://github.com/Gallopsled/pwntools/
+VCS:            git:https://github.com/Gallopsled/pwntools/
 
 # ./LICENSE-pwntools.txt - base project of pwntools is licensed as MIT
 # ./pwnlib/data/includes/LICENSE.txt
@@ -12,25 +12,16 @@ VCS:            https://github.com/Gallopsled/pwntools/
 # ./pwnlib/data/useragents/LICENSE.txt - script `download-useragents.py licensed with BSD 2-clause license
 License:        MIT AND BSD-2-Clause AND GPL-2.0-or-later
 
-%global srcname pwntools
+%global         srcname pwntools
 
 
-# Source0:      https://github.com/Gallopsled/%%{srcname}/archive/%%{srcname}-%%{version}.tar.gz
-Source0:        https://github.com/Gallopsled/%{srcname}/archive/refs/tags/%{version}.tar.gz#/%{srcname}-%{version}.tar.gz
-
-# some modules for the pwn command do have python2 shabeng even though imported from python3 lib
-Patch0:         https://github.com/Gallopsled/pwntools/pull/2301.patch#/%{name}-4.11.1-shabeng.patch
-
-# Regular expressions matching binary need to be escaped in python 3.12
-Patch1:         https://github.com/Gallopsled/pwntools/pull/2302.patch#/%{name}-4.11.1-python3.12.patch
-
-# fix pwn libcdb file [something]
-# libcdb failing on binaries not containing /bin/sh
-Patch2:         https://github.com/Gallopsled/pwntools/pull/2307.patch#/%{name}-4.11.1-binsh_search.patch
+# Source0:      %%{url}/archive/%%{srcname}-%%{version}.tar.gz
+Source0:        %{url}/archive/refs/tags/%{version}.tar.gz#/%{srcname}-%{version}.tar.gz
 
 # Unicorn package currently doesn't build on s390x platform, but it is used ony for resolving plt.
 # Other functionality of pwntools should be still working
-Patch3:         python-pwntools-4.11.1-weak-unicorn.patch
+# https://github.com/Gallopsled/pwntools/pull/2568/
+Patch1:         python-pwntools-4.14.1-weak-unicorn.patch
 
 
 BuildArch:      noarch
@@ -188,110 +179,4 @@ export PYTHONPATH="${PYTHONPATH:-%{buildroot}%{python3_sitearch}:%{buildroot}%{p
 # %%license LICENSE-pwntools.txt
 
 %changelog
-* Sat Nov 25 2023 Michal Ambroz <rebus _AT seznam.cz> - 4.11.1-4
-- fix pwn libcdb file
-
-* Tue Nov 21 2023 Michal Ambroz <rebus _AT seznam.cz> - 4.11.1-3
-- tweak build requirements needed for the tests to run
-- prepare for the epel builds
-
-* Mon Nov 20 2023 Michal Ambroz <rebus _AT seznam.cz> - 4.11.1-1
-- New upstream version 4.11.1
-- change license references to new SPDX format
-- patch python 3.12 regex
-- patch unnecessary shabeng in librery modules
-- add basic check
-
-* Mon Sep 25 2023 W. Michael Petullo <mike@flyn.org> - 4.11.0-2
-- Deal with requirements.txt, which moved.
-
-* Mon Sep 25 2023 W. Michael Petullo <mike@flyn.org> - 4.11.0-1
-- New upstream version
-
-* Sat Sep 09 2023 W. Michael Petullo <mike@flyn.org> - 4.9.0-5
-- Fix BZ #2238038; rename to checksec-pwntools to remove conflict with checksec package
-
-* Fri Jul 21 2023 Fedora Release Engineering <releng@fedoraproject.org> - 4.9.0-4
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_39_Mass_Rebuild
-
-* Tue Jun 13 2023 Python Maint <python-maint@redhat.com> - 4.9.0-3
-- Rebuilt for Python 3.12
-
-* Fri Jan 20 2023 Fedora Release Engineering <releng@fedoraproject.org> - 4.9.0-2
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_38_Mass_Rebuild
-
-* Mon Jan 02 2023 Jonathan Wright <jonathan@almalinux.org> - 4.9.0-1
-- Update to 4.9.0 rhbz#1902526
-- Fix changelog from 4.8.0-4 missing > after email
-
-* Fri Dec 02 2022 W. Michael Petullo <mike@flyn.org> - 4.8.0-4
-- Fix BZ #2149766; backport patch that fixes compatibility with Python 3.11
-
-* Fri Jul 22 2022 Fedora Release Engineering <releng@fedoraproject.org> - 4.8.0-3
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_37_Mass_Rebuild
-
-* Mon Jun 13 2022 Python Maint <python-maint@redhat.com> - 4.8.0-2
-- Rebuilt for Python 3.11
-
-* Fri May 13 2022 W. Michael Petullo <mike@flyn.org> - 4.8.0-1
-- New upstream version
-
-* Fri Mar 04 2022 Karolina Surmao <ksurma@redhat.com> - 4.7.0-3
-- Fix python-pwntools build with setuptools >= 60
-
-* Fri Jan 21 2022 Fedora Release Engineering <releng@fedoraproject.org> - 4.7.0-2
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
-
-* Wed Dec 15 2021 W. Michael Petullo <mike@flyn.org> - 4.7.0-1
-- New upstream version
-
-* Fri Jul 23 2021 Fedora Release Engineering <releng@fedoraproject.org> - 4.3.0-5
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
-
-* Fri Jun 04 2021 Python Maint <python-maint@redhat.com> - 4.3.0-4
-- Rebuilt for Python 3.10
-
-* Wed Jan 27 2021 Fedora Release Engineering <releng@fedoraproject.org> - 4.3.0-3
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
-
-* Fri Nov 06 2020 W. Michael Petullo <mike@flyn.org> - 4.3.0-2
-- Fix BZ #1892888; something did not like setup.py's 'unicorn>=1.0.2rc1,<1.0.2rc4'
-
-* Fri Nov 06 2020 W. Michael Petullo <mike@flyn.org> - 4.3.0-1
-- New upstream version
-
-* Thu Oct 08 2020 W. Michael Petullo <mike@flyn.org> - 4.2.1-1
-- New upstream version
-
-* Wed Jul 29 2020 Fedora Release Engineering <releng@fedoraproject.org> - 4.1.0-3
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
-
-* Tue May 26 2020 Miro Hrončok <mhroncok@redhat.com> - 4.1.0-2
-- Rebuilt for Python 3.9
-
-* Fri May 08 2020 W. Michael Petullo <mike@flyn.org> - 4.1.0-1
-- New upstream version
-
-* Thu Dec 19 2019 W. Michael Petullo <mike@flyn.org> - 4.0.0-0.1.b0
-- New upstream version
-- Migrate to Python 3
-
-* Fri Jul 26 2019 Fedora Release Engineering <releng@fedoraproject.org> - 3.12.2-2
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
-
-* Sat Mar 16 2019 W. Michael Petullo <mike@flyn.org> - 3.12.2-1
-- New upstream version
-- Adjust requires.txt
-
-* Sat Feb 02 2019 Fedora Release Engineering <releng@fedoraproject.org> - 3.12.1-2
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
-
-* Mon Oct 22 2018 W. Michael Petullo <mike@flyn.org> - 3.12.1-1
-- New upstream version
-- Drop python2-pypandoc requirement
-
-* Sat Jul 14 2018 Fedora Release Engineering <releng@fedoraproject.org> - 3.12.0-2
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
-
-* Sat Jun 16 2018 W. Michael Petullo <mike@flyn.org> - 3.12.0-1
-- Initial package
+%autochangelog

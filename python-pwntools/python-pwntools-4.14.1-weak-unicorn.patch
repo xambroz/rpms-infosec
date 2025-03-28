@@ -1,0 +1,29 @@
+diff -ru pwntools-4.14.1.orig/pwnlib/elf/plt.py pwntools-4.14.1.new/pwnlib/elf/plt.py
+--- pwntools-4.14.1.orig/pwnlib/elf/plt.py	2025-03-24 13:01:50.000000000 +0100
++++ pwntools-4.14.1.new/pwnlib/elf/plt.py	2025-03-28 16:53:34.041381909 +0100
+@@ -76,7 +76,11 @@
+ 
+ 
+ def prepare_unicorn_and_context(elf, got, address, data):
+-    import unicorn as U
++    try:
++        import unicorn as U
++    except ImportError:
++        log.warn("Can't import Unicorn engine on this platform. Could not emulate PLT instructions for %r" % elf)
++        return {}
+ 
+     __ensure_memory_to_run_unicorn()
+ 
+@@ -150,7 +154,11 @@
+ 
+ 
+ def emulate_plt_instructions_inner(uc, elf, got, pc, data):
+-    import unicorn as U
++    try:
++        import unicorn as U
++    except ImportError:
++        log.warn("Can't import Unicorn engine on this platform. Could not emulate PLT instructions for %r" % elf)
++        return None
+ 
+     # Hook invalid addresses and any accesses out of the specified address range
+     stopped_addr = []
