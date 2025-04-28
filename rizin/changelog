@@ -1,0 +1,106 @@
+* Wed Feb 19 2025 Peter Oliver <rpm@mavit.org.uk> - 0.7.4-5
+- Rebuild against tree-sitter-0.25.2-3.fc43
+
+* Mon Feb 03 2025 Peter Oliver <rpm@mavit.org.uk> - 0.7.4-4
+- Rebuild against tree-sitter-0.25.1-6.fc42
+
+* Sat Jan 18 2025 Fedora Release Engineering <releng@fedoraproject.org> - 0.7.4-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_42_Mass_Rebuild
+
+* Tue Dec 31 2024 Michal Ambroz <rebus _AT seznam.cz> - 0.7.4-2
+- bump to version 0.7.4
+
+* Sun Sep 01 2024 Yaakov Selkowitz <yselkowi@redhat.com> - 0.7.3-3
+- Rebuilt for tree-sitter 0.23.0
+
+* Fri Jul 19 2024 Fedora Release Engineering <releng@fedoraproject.org> - 0.7.3-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_41_Mass_Rebuild
+
+* Sun Apr 14 2024 Sérgio Basto <sergio@serjux.com> - 0.7.3-1
+- Update rizin to 0.7.3 (#2238987)
+- (#2271957) remove provides of pkgconfig(libzstd)
+
+* Mon Mar 25 2024 Riccardo Schirone <rschirone91@gmail.com> - 0.7.2-2
+- Rebase to upstream version 0.7.2 (fix changelog)
+
+* Fri Jan 26 2024 Fedora Release Engineering <releng@fedoraproject.org> - 0.6.3-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_40_Mass_Rebuild
+
+* Mon Jan 22 2024 Fedora Release Engineering <releng@fedoraproject.org> - 0.6.3-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_40_Mass_Rebuild
+
+* Mon Nov 13 2023 Michal Ambroz <rebus _AT seznam.cz> - 0.6.3-1
+- Rebase to upstream version 0.6.3
+- change license string to comply with the SPDX
+
+* Mon Aug 21 2023 Riccardo Schirone <rschirone91@gmail.com> - 0.6.1-1
+- Rebase to upstream version 0.6.1
+
+* Fri Jul 21 2023 Fedora Release Engineering <releng@fedoraproject.org> - 0.5.2-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_39_Mass_Rebuild
+
+* Wed Jul 12 2023 Michal Ambroz <rebus _AT seznam.cz> - 0.5.2-2
+- cosmetics, remove the excessive .2 in the release
+- use baserelese (recognized by rpmdev-bumpspec used for massrebuilds)
+- prepare to sync for the feature branches
+- fix dependencies for rhel
+
+* Wed May 17 2023 Riccardo Schirone <rschirone91@gmail.com> - 0.5.2-1.2
+- Rebase to upstream version 0.5.2
+
+* Tue Mar 14 2023 Riccardo Schirone <rschirone91@gmail.com> - 0.5.1-1
+- Rebase to upstream version 0.5.1
+
+* Sun Feb 19 2023 Michal Ambroz <rebus _AT seznam.cz> - 0.5.0-1
+- Rebase to upstream version 0.5.0
+
+* Fri Jan 20 2023 Fedora Release Engineering <releng@fedoraproject.org> - 0.4.1-1.2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_38_Mass_Rebuild
+
+* Sat Sep 10 2022 Richard Hughes <richard@hughsie.com> - 0.4.1-1
+- Rebase to upstream version 0.4.1
+- Fixed CVE-2022-36039
+- Fixed CVE-2022-36040
+- Fixed CVE-2022-36041
+- Fixed CVE-2022-36042
+- Fixed CVE-2022-36043
+- Fixed CVE-2022-36044
+
+* Sat Jul 23 2022 Fedora Release Engineering <releng@fedoraproject.org> - 0.4.0-2.1
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_37_Mass_Rebuild
+
+* Tue Jun 28 2022 Riccardo Schirone <rschirone91@gmail.com> - 0.4.0-2
+- Increase release number to put in the side-tag
+
+* Mon Jun 27 2022 Riccardo Schirone <rschirone91@gmail.com> - 0.4.0-1
+- Rebase to upstream version 0.4.0
+
+* Fri Jan 21 2022 Fedora Release Engineering <releng@fedoraproject.org> - 0.3.4-1.1
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
+
+* Tue Jan 11 2022 Riccardo Schirone <rschirone91@gmail.com> - 0.3.4-1
+- Rebase to upstream version 0.3.4
+
+* Mon Jan 3 2022 Riccardo Schirone <rschirone91@gmail.com> - 0.3.2-1
+- Rebase to upstream version 0.3.2
+
+* Mon Nov 29 2021 Riccardo Schirone <rschirone91@gmail.com> - 0.3.1-1
+- Rebase to upstream version 0.3.1
+
+* Mon Sep 27 2021 Riccardo Schirone <rschirone91@gmail.com> - 0.3.0-1
+- Rebase to upstream version 0.3.0
+
+* Tue Sep 14 2021 Sahana Prasad <sahana@redhat.com> - 0.2.0-2.2
+- Rebuilt with OpenSSL 3.0.0
+
+* Fri Jul 23 2021 Fedora Release Engineering <releng@fedoraproject.org> - 0.2.0-2.1
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
+
+* Tue Apr 20 2021 Riccardo Schirone <rschirone91@gmail.com> - 0.2.0-2
+- Apply patch to avoid symbols collision
+
+* Mon Apr 12 2021 Riccardo Schirone <rschirone91@gmail.com> - 0.2.0-1
+- Rebase to upstream version 0.2.0
+
+* Tue Mar 30 2021 Riccardo Schirone <rschirone91@gmail.com> - 0.1.2-1
+- Initial SPEC file
