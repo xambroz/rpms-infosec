@@ -1,60 +1,69 @@
 %global pypi_name roman
 
-Name:           python-roman
-Version:        4.1
-Release:        1%{?dist}
+Name:           python-%{pypi_name}
+Version:        4.2
+Release:        2%{?dist}
 Summary:        Integer to Roman numerals converter
 
-License:        Python
+License:        ZPL-2.1
 URL:            https://pypi.python.org/pypi/roman
-VCS:            https://github.com/zopefoundation/roman
-Source0:        https://github.com/zopefoundation/roman/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
+Source0:        https://github.com/zopefoundation/%{pypi_name}/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
 BuildArch:      noarch
 
-BuildRequires:  python%{python3_pkgversion}-devel
-BuildRequires:  python%{python3_pkgversion}-setuptools
+BuildRequires:  python3-devel
+BuildRequires:  python3-setuptools
 
-%global _description %{expand:
+
+%description
 Integer to Roman numerals converter
-}
 
-%description %_description
-
-%package -n python%{python3_pkgversion}-roman
+%package -n python3-%{pypi_name}
 Summary:        Integer to Roman numerals converter
 
-%description -n python%{python3_pkgversion}-roman
+%description -n python3-%{pypi_name}
 Integer to Roman numerals converter
 
 %prep
-%setup -q -n %{pypi_name}-%{version}
-# Remove bundled egg-info
-rm -rf %{pypi_name}.egg-info
+%autosetup -p1 -n %{pypi_name}-%{version}
+
+%generate_buildrequires
+%pyproject_buildrequires -t
 
 
 %build
-%py3_build
+
+%pyproject_wheel
 
 
 %install
-%py3_install
+%pyproject_install
+%pyproject_save_files -l roman
 
 
-%check
-export PYTHON=%{__python3}
-export PYTHON=%{__python3}
-%{__python3} setup.py test
 
-
-%files -n python%{python3_pkgversion}-roman
+%files -n python3-%{pypi_name} -f %{pyproject_files}
+%doc README.rst
 %{_bindir}/%{pypi_name}
-%{python3_sitelib}/%{pypi_name}.py*
-%{python3_sitelib}/%{pypi_name}-%{version}-py%{python3_version}.egg-info
-%{python3_sitelib}/__pycache__/%{pypi_name}.cpython-*
 
 %changelog
-* Wed Nov 01 2023 Michal Ambroz <rebus _at seznam.cz> - 4.1-1
-- update to 4.1
+* Sat Jan 18 2025 Fedora Release Engineering <releng@fedoraproject.org> - 4.2-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_42_Mass_Rebuild
+
+* Thu Aug 15 2024 Matthias Runge <mrunge@redhat.com> - 4.2-1
+- Rebase to 4.2
+- modernize spec
+
+* Fri Jul 19 2024 Fedora Release Engineering <releng@fedoraproject.org> - 3.1-20
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_41_Mass_Rebuild
+
+* Fri Jun 07 2024 Python Maint <python-maint@redhat.com> - 3.1-19
+- Rebuilt for Python 3.13
+
+* Fri Jan 26 2024 Fedora Release Engineering <releng@fedoraproject.org> - 3.1-18
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_40_Mass_Rebuild
+
+* Mon Jan 22 2024 Fedora Release Engineering <releng@fedoraproject.org> - 3.1-17
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_40_Mass_Rebuild
 
 * Fri Jul 21 2023 Fedora Release Engineering <releng@fedoraproject.org> - 3.1-16
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_39_Mass_Rebuild
