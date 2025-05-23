@@ -1,0 +1,47 @@
+diff --color -c -r -N RegRipper-3.0-original/rip.pl RegRipper-3.0/rip.pl
+*** RegRipper-3.0-original/rip.pl	2020-06-16 09:42:59.000000000 -0400
+--- RegRipper-3.0/rip.pl	2020-07-15 12:25:09.794661011 -0400
+***************
+*** 1,4 ****
+! #! c:\perl\bin\perl.exe
+  #-------------------------------------------------------------------------
+  # Rip - RegRipper, CLI version
+  # Use this utility to run a plugins file or a single plugin against a Reg
+--- 1,4 ----
+! #! /usr/bin/perl
+  #-------------------------------------------------------------------------
+  # Rip - RegRipper, CLI version
+  # Use this utility to run a plugins file or a single plugin against a Reg
+***************
+*** 68,73 ****
+--- 68,85 ----
+                     : ($plugindir = File::Spec->catfile("plugins"));
+  #my $plugindir = $str."plugins/";
+  #my $plugindir = File::Spec->catfile("plugins");
++ my $tdir;
++ my $plugindir;
++ for $tdir (@INC) {
++ 	$plugindir = File::Spec->catfile($tdir, "regripper/plugins");
++ 	if ( opendir(DIR,$plugindir) ) {
++ 		close(DIR);
++ 		last;
++ 	} else {
++ 		close(DIR);
++ 	}
++ }
++ 
+  #print "Plugins Dir = ".$plugindir."\n";
+  # End code update
+  my $VERSION = "3\.0";
+***************
+*** 557,560 ****
+  	my ($sec,$min,$hour,$mday,$mon,$year) = gmtime($epoch);
+  	my $fmt = sprintf("%04d-%02d-%02d %02d:%02d:%02d",(1900 + $year),($mon + 1),$mday,$hour,$min,$sec);
+  	return $fmt;
+! }
+\ No newline at end of file
+--- 569,572 ----
+  	my ($sec,$min,$hour,$mday,$mon,$year) = gmtime($epoch);
+  	my $fmt = sprintf("%04d-%02d-%02d %02d:%02d:%02d",(1900 + $year),($mon + 1),$mday,$hour,$min,$sec);
+  	return $fmt;
+! }

@@ -1,0 +1,20 @@
+diff -c -r -N videosnarf-0.63-original/src/Makefile.in videosnarf-0.63/src/Makefile.in
+*** videosnarf-0.63-original/src/Makefile.in	2010-05-15 13:40:07.000000000 -0400
+--- videosnarf-0.63/src/Makefile.in	2019-05-06 08:33:31.803971039 -0400
+***************
+*** 267,273 ****
+  	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
+  videosnarf$(EXEEXT): $(videosnarf_OBJECTS) $(videosnarf_DEPENDENCIES) 
+  	@rm -f videosnarf$(EXEEXT)
+! 	$(CXXLINK) $(videosnarf_LDFLAGS) $(videosnarf_OBJECTS) $(videosnarf_LDADD) $(LIBS)
+  
+  mostlyclean-compile:
+  	-rm -f *.$(OBJEXT)
+--- 267,273 ----
+  	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
+  videosnarf$(EXEEXT): $(videosnarf_OBJECTS) $(videosnarf_DEPENDENCIES) 
+  	@rm -f videosnarf$(EXEEXT)
+! 	$(CXXLINK) $(videosnarf_OBJECTS) $(videosnarf_LDADD) $(LIBS) $(videosnarf_LDFLAGS) 
+  
+  mostlyclean-compile:
+  	-rm -f *.$(OBJEXT)

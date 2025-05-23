@@ -1,0 +1,83 @@
+diff -ru libagdb-43389aefc12e2cad99a899ad4e8a5598d4f09081/configure.ac libagdb-43389aefc12e2cad99a899ad4e8a5598d4f09081.000/configure.ac
+--- libagdb-43389aefc12e2cad99a899ad4e8a5598d4f09081/configure.ac	2024-06-24 05:15:57.000000000 +0200
++++ libagdb-43389aefc12e2cad99a899ad4e8a5598d4f09081.000/configure.ac	2025-01-19 18:49:25.003788682 +0100
+@@ -147,20 +147,20 @@
+ AC_CONFIG_FILES([Makefile])
+ AC_CONFIG_FILES([include/Makefile])
+ AC_CONFIG_FILES([common/Makefile])
+-AC_CONFIG_FILES([libcerror/Makefile])
+-AC_CONFIG_FILES([libcthreads/Makefile])
+-AC_CONFIG_FILES([libcdata/Makefile])
+-AC_CONFIG_FILES([libclocale/Makefile])
+-AC_CONFIG_FILES([libcnotify/Makefile])
+-AC_CONFIG_FILES([libcsplit/Makefile])
+-AC_CONFIG_FILES([libuna/Makefile])
+-AC_CONFIG_FILES([libcfile/Makefile])
+-AC_CONFIG_FILES([libcpath/Makefile])
+-AC_CONFIG_FILES([libbfio/Makefile])
+-AC_CONFIG_FILES([libfcache/Makefile])
+-AC_CONFIG_FILES([libfdata/Makefile])
+-AC_CONFIG_FILES([libfdatetime/Makefile])
+-AC_CONFIG_FILES([libfwnt/Makefile])
++dnl AC_CONFIG_FILES([libcerror/Makefile])
++dnl AC_CONFIG_FILES([libcthreads/Makefile])
++dnl AC_CONFIG_FILES([libcdata/Makefile])
++dnl AC_CONFIG_FILES([libclocale/Makefile])
++dnl AC_CONFIG_FILES([libcnotify/Makefile])
++dnl AC_CONFIG_FILES([libcsplit/Makefile])
++dnl AC_CONFIG_FILES([libuna/Makefile])
++dnl AC_CONFIG_FILES([libcfile/Makefile])
++dnl AC_CONFIG_FILES([libcpath/Makefile])
++dnl AC_CONFIG_FILES([libbfio/Makefile])
++dnl AC_CONFIG_FILES([libfcache/Makefile])
++dnl AC_CONFIG_FILES([libfdata/Makefile])
++dnl AC_CONFIG_FILES([libfdatetime/Makefile])
++dnl AC_CONFIG_FILES([libfwnt/Makefile])
+ AC_CONFIG_FILES([libagdb/Makefile])
+ AC_CONFIG_FILES([agdbtools/Makefile])
+ AC_CONFIG_FILES([po/Makefile.in])
+diff -ru libagdb-43389aefc12e2cad99a899ad4e8a5598d4f09081/Makefile.am libagdb-43389aefc12e2cad99a899ad4e8a5598d4f09081.000/Makefile.am
+--- libagdb-43389aefc12e2cad99a899ad4e8a5598d4f09081/Makefile.am	2024-06-24 05:15:57.000000000 +0200
++++ libagdb-43389aefc12e2cad99a899ad4e8a5598d4f09081.000/Makefile.am	2025-01-19 18:49:24.951788377 +0100
+@@ -3,20 +3,6 @@
+ SUBDIRS = \
+ 	include \
+ 	common \
+-	libcerror \
+-	libcthreads \
+-	libcdata \
+-	libclocale \
+-	libcnotify \
+-	libcsplit \
+-	libuna \
+-	libcfile \
+-	libcpath \
+-	libbfio \
+-	libfcache \
+-	libfdata \
+-	libfdatetime \
+-	libfwnt \
+ 	libagdb \
+ 	agdbtools \
+ 	po \
+@@ -76,20 +62,6 @@
+ 
+ library:
+ 	(cd $(srcdir)/common && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcerror && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcthreads && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcdata && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libclocale && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcnotify && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcsplit && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libuna && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcfile && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcpath && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libbfio && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libfcache && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libfdata && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libfdatetime && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libfwnt && $(MAKE) $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/libagdb && $(MAKE) $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/po && $(MAKE) $(AM_MAKEFLAGS))
+ 

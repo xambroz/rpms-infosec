@@ -1,0 +1,13 @@
+diff -c -r -N rifiuti2-0.7.0-original/configure.ac rifiuti2-0.7.0/configure.ac
+*** rifiuti2-0.7.0-original/configure.ac	2019-07-04 13:13:29.880834040 -0400
+--- rifiuti2-0.7.0/configure.ac	2019-11-03 11:26:02.758856310 -0500
+***************
+*** 25,30 ****
+--- 25,31 ----
+  dnl I18N
+  AM_GNU_GETTEXT([external])
+  AM_GNU_GETTEXT_VERSION([0.19])
++ AM_GNU_GETTEXT_REQUIRE_VERSION([0.19])
+  LOCALEDIR_PORTABLE="${PACKAGE}-l10n"
+  AC_SUBST([LOCALEDIR_PORTABLE])
+  

@@ -1,0 +1,30 @@
+From: Jeff Mahoney <jeffm@suse.com>
+Subject: vmfs-tools: libuuid-devel places uuid.h at uuid/uuid.h
+
+---
+ libvmfs/utils.c |    2 +-
+ libvmfs/utils.h |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+--- a/libvmfs/utils.c
++++ b/libvmfs/utils.c
+@@ -27,7 +27,7 @@
+ #include <time.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+-#include <uuid.h>
++#include <uuid/uuid.h>
+ #include <libgen.h>
+ #ifdef NO_POSIX_MEMALIGN
+ #include <malloc.h>
+--- a/libvmfs/utils.h
++++ b/libvmfs/utils.h
+@@ -20,7 +20,7 @@
+ 
+ #include <stdio.h>
+ #include <string.h>
+-#include <uuid.h>
++#include <uuid/uuid.h>
+ #include <inttypes.h>
+ 
+ /* Max and min macro */

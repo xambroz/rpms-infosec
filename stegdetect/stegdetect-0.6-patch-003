@@ -1,0 +1,20 @@
+diff -c -r -N stegdetect-0.6-original/file/file.c stegdetect-0.6/file/file.c
+*** stegdetect-0.6-original/file/file.c	2004-08-29 19:11:06.000000000 -0400
+--- stegdetect-0.6/file/file.c	2020-05-02 10:55:41.849745894 -0400
+***************
+*** 93,99 ****
+  const char *magicfile = 0;	/* where the magic is		*/
+  const char *default_magicfile = MAGIC;
+  
+! char *progname;		/* used throughout 			*/
+  int lineno;		/* line number in the magic file	*/
+  
+  
+--- 93,99 ----
+  const char *magicfile = 0;	/* where the magic is		*/
+  const char *default_magicfile = MAGIC;
+  
+! extern char *progname;	/* used throughout 			*/
+  int lineno;		/* line number in the magic file	*/
+  
+  

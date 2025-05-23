@@ -1,0 +1,222 @@
+diff -c -r -N tln_tools-original/bodyfile.pl tln_tools/bodyfile.pl
+*** tln_tools-original/bodyfile.pl	2010-08-09 10:15:54.000000000 -0400
+--- tln_tools/bodyfile.pl	2011-08-17 10:28:31.000000000 -0400
+***************
+*** 63,73 ****
+    -s server......add a server name to the output           
+    -h ............Help (print this information)
+    
+! Ex: C:\\>bodyfile.pl -f bodyfile.txt > events.txt
+!     C:\\>bodyfile.pl -f bodyfile.txt -s SERVER
+  
+  **All times printed as GMT/UTC
+  
+  copyright 2010 Quantum Analytics Research, LLC
+  EOT
+! }
+\ No newline at end of file
+--- 63,73 ----
+    -s server......add a server name to the output           
+    -h ............Help (print this information)
+    
+! Ex: bodyfile -f bodyfile.txt > events.txt
+!     bodyfile -f bodyfile.txt -s SERVER
+  
+  **All times printed as GMT/UTC
+  
+  copyright 2010 Quantum Analytics Research, LLC
+  EOT
+! }
+diff -c -r -N tln_tools-original/evtparse.pl tln_tools/evtparse.pl
+*** tln_tools-original/evtparse.pl	2010-06-07 13:57:10.000000000 -0400
+--- tln_tools/evtparse.pl	2011-08-17 10:28:52.000000000 -0400
+***************
+*** 206,216 ****
+    -t ............TLN output (default .csv)                      
+    -h ............Help (print this information)
+    
+! Ex: C:\\>evtparse -e secevent.evt -t > timeline.txt
+!     C:\\>evtparse -e sysevent.evt -s
+  
+  **All times printed as GMT/UTC
+  
+  copyright 2010 Quantum Analytics Research, LLC
+  EOT
+! }
+\ No newline at end of file
+--- 206,216 ----
+    -t ............TLN output (default .csv)                      
+    -h ............Help (print this information)
+    
+! Ex: evtparse -e secevent.evt -t > timeline.txt
+!     evtparse -e sysevent.evt -s
+  
+  **All times printed as GMT/UTC
+  
+  copyright 2010 Quantum Analytics Research, LLC
+  EOT
+! }
+diff -c -r -N tln_tools-original/evtxparse.pl tln_tools/evtxparse.pl
+*** tln_tools-original/evtxparse.pl	2010-08-17 12:17:58.000000000 -0400
+--- tln_tools/evtxparse.pl	2011-08-17 10:29:15.000000000 -0400
+***************
+*** 107,114 ****
+  Ex: 
+    After running \"logparser -i:evt -o:csv \"Select * from Security.evtx\" 
+                   > security.csv\"
+! 		C:\\>evtxparse -f secevent.csv -t > sec_events.txt
+!     C:\\>evtxparse -f sysevent.csv -s
+  
+  **All times printed as GMT/UTC
+  
+--- 107,114 ----
+  Ex: 
+    After running \"logparser -i:evt -o:csv \"Select * from Security.evtx\" 
+                   > security.csv\"
+! 		evtxparse -f secevent.csv -t > sec_events.txt
+!     evtxparse -f sysevent.csv -s
+  
+  **All times printed as GMT/UTC
+  
+***************
+*** 120,123 ****
+  #	my ($sec,$min,$hr,$day,$mon,$yr) = $@;
+  	my $epoch = timegm($_[0],$_[1],$_[2],$_[3],($_[4] - 1),$_[5]);
+  	return $epoch;
+! }
+\ No newline at end of file
+--- 120,123 ----
+  #	my ($sec,$min,$hr,$day,$mon,$yr) = $@;
+  	my $epoch = timegm($_[0],$_[1],$_[2],$_[3],($_[4] - 1),$_[5]);
+  	return $epoch;
+! }
+diff -c -r -N tln_tools-original/parse.pl tln_tools/parse.pl
+*** tln_tools-original/parse.pl	2011-06-08 13:13:40.000000000 -0400
+--- tln_tools/parse.pl	2011-08-17 10:29:32.000000000 -0400
+***************
+*** 132,143 ****
+                   23:59:59 is automatically added to the second date.                         
+    -h ............Help (print this information)
+    
+! Ex: C:\\>parse -f events.txt > timeline.txt
+!     C:\\>parse -f events.txt -r 02/12/2008-03/16/2008
+!     C:\\>parse -f events.txt -c > timeline.csv
+  
+  **All times printed as GMT/UTC
+  
+  copyright 2011 Quantum Analytics Research, LLC
+  EOT
+! }
+\ No newline at end of file
+--- 132,143 ----
+                   23:59:59 is automatically added to the second date.                         
+    -h ............Help (print this information)
+    
+! Ex: parse -f events.txt > timeline.txt
+!     parse -f events.txt -r 02/12/2008-03/16/2008
+!     parse -f events.txt -c > timeline.csv
+  
+  **All times printed as GMT/UTC
+  
+  copyright 2011 Quantum Analytics Research, LLC
+  EOT
+! }
+diff -c -r -N tln_tools-original/pref.pl tln_tools/pref.pl
+*** tln_tools-original/pref.pl	2009-12-16 10:08:46.000000000 -0500
+--- tln_tools/pref.pl	2011-08-17 10:30:06.000000000 -0400
+***************
+*** 250,260 ****
+    -s server......add name of server to TLN ouput            
+    -h ............Help (print this information)
+    
+! Ex: C:\\>pref -v -f <path_to_Pretch_file>
+!     C:\\>pref -d C:\\Windows\\Prefetch -c
+  
+  **All times printed as GMT/UTC
+  
+  copyright 2009 H. Carvey
+  EOT
+! }
+\ No newline at end of file
+--- 250,260 ----
+    -s server......add name of server to TLN ouput            
+    -h ............Help (print this information)
+    
+! Ex: pref -v -f <path_to_Pretch_file>
+!     pref -d /media/evidence/Windows/Prefetch -c
+  
+  **All times printed as GMT/UTC
+  
+  copyright 2009 H. Carvey
+  EOT
+! }
+diff -c -r -N tln_tools-original/recbin.pl tln_tools/recbin.pl
+*** tln_tools-original/recbin.pl	2009-07-23 14:00:40.000000000 -0400
+--- tln_tools/recbin.pl	2011-08-17 10:30:12.000000000 -0400
+***************
+*** 133,141 ****
+    -u user..................add user (or SID) to appropriate field in tln file
+    -h.......................Help (print this information)
+    
+! Ex: C:\\>recbin -i INFO2 
+!     C:\\>recbin -i INFO2 -t
+    
+  copyright 2009 H. Carvey
+  EOT
+! }
+\ No newline at end of file
+--- 133,141 ----
+    -u user..................add user (or SID) to appropriate field in tln file
+    -h.......................Help (print this information)
+    
+! Ex: recbin -i INFO2 
+!     recbin -i INFO2 -t
+    
+  copyright 2009 H. Carvey
+  EOT
+! }
+diff -c -r -N tln_tools-original/regtime.pl tln_tools/regtime.pl
+*** tln_tools-original/regtime.pl	2011-05-23 10:51:14.000000000 -0400
+--- tln_tools/regtime.pl	2011-08-17 10:30:51.000000000 -0400
+***************
+*** 80,87 ****
+    -u name.........User name
+    -h..............Help (print this information)
+    
+! Ex: C:\>regtime -m HKEY_USER -r NTUSER.DAT
+!     C:\>regtime -m HKLM/System -r system    
+      
+  copyright 2011 Quantum Analytics Research, LLC    
+  USAGE
+--- 80,87 ----
+    -u name.........User name
+    -h..............Help (print this information)
+    
+! Ex: regtime -m HKEY_USER -r NTUSER.DAT
+!     regtime -m HKLM/System -r system    
+      
+  copyright 2011 Quantum Analytics Research, LLC    
+  USAGE
+diff -c -r -N tln_tools-original/urlcache.pl tln_tools/urlcache.pl
+*** tln_tools-original/urlcache.pl	2010-08-03 14:48:58.000000000 -0400
+--- tln_tools/urlcache.pl	2011-08-17 10:31:29.000000000 -0400
+***************
+*** 81,88 ****
+    -u user..................add user (or SID) to appropriate field in tln file
+    -h.......................Help (print this information)
+    
+! Ex: C:\\>urlcache.pl -f index.dat -u user -s system -l
+      
+  copyright 2010 Quantum Analytics Research, LLC
+  EOT
+! }
+\ No newline at end of file
+--- 81,88 ----
+    -u user..................add user (or SID) to appropriate field in tln file
+    -h.......................Help (print this information)
+    
+! Ex: urlcache -f index.dat -u user -s system -l
+      
+  copyright 2010 Quantum Analytics Research, LLC
+  EOT
+! }
