@@ -1,6 +1,5 @@
 Name:           yara
-Version:        4.5.2
-%global         baserelease 1
+Version:        4.5.3
 Summary:        Pattern matching Swiss knife for malware researchers
 URL:            https://VirusTotal.github.io/yara/
 VCS:            git:https://github.com/VirusTotal/yara/
@@ -21,9 +20,9 @@ and a Boolean expression which determine its logic.}
 
 %global         gituser         VirusTotal
 %global         gitname         yara
-# Commit of version 4.5.2
-%global         gitdate         20240910
-%global         commit          688268d83983a0d61bb68ef3d8dfd28102b7d1b4
+# Commit of version 4.5.3
+%global         gitdate         20250522
+%global         commit          2e64b4c12d3ecc9accedb066bd9b77f97e20be38
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 %bcond_without  release
@@ -31,12 +30,12 @@ and a Boolean expression which determine its logic.}
 
 # Build from git release version
 %if %{with release}
-Release:       %autorelease -b %{baserelease}
+Release:       %autorelease
 # Source0:     https://github.com/%%{gituser}/%%{gitname}/archive/v%%{upversion}.tar.gz#/%%{name}-%%{upversion}.tar.gz
 Source0:       https://github.com/%{gituser}/%{gitname}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 %else
 # Build from git commit baseline
-Release:       %autorelease -b %{baserelease} -s %{gitdate}git%{shortcommit}
+Release:       %autorelease -s %{gitdate}git%{shortcommit}
 Source0:       https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-git%{gitdate}-%{shortcommit}.tar.gz
 %endif
 
@@ -58,7 +57,6 @@ BuildRequires:  sed
 BuildRequires:  gawk
 BuildRequires:  gzip
 BuildRequires:  xz
-BuildRequires:  pcre
 BuildRequires:  bison
 BuildRequires:  flex
 BuildRequires:  libtool
@@ -189,4 +187,4 @@ make check || (
 
 
 %changelog
-%{?%autochangelog: %autochangelog }
+%autochangelog
