@@ -33,8 +33,8 @@ the object oriented API makes it simple to work with deep protocol hierarchies.}
 
 %global         gituser         fortra
 %global         gitname         impacket
-%global         commit          5af85c240076444d631d5f504e294daff065796b
-%global         gitdate         20230731
+%global         commit          db53482dc864fec69156898d52c1b595a777ca9a
+%global         gitdate         20240916
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 # By defualt build with python3
@@ -135,8 +135,8 @@ sed -i -e 's/\r//g' impacket/examples/mssqlshell.py
 
 # Clean-up
 
-# Use explicit python3 shabeng instead of generic env python
-%py3_shebang_fix impacket examples
+# Use explicit python3 shebeng instead of generic env python
+# %%py3_shebang_fix impacket examples
 
 
 # Rename split.py to splitpcap.py due to generic name colliding with DiderStevensSuite
