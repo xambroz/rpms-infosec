@@ -1,3 +1,6 @@
+* Sat Sep 27 2025 Zephyr Lykos <fedora@mochaa.ws> - 0.8.1-1
+- new version
+
 * Wed Feb 19 2025 Peter Oliver <rpm@mavit.org.uk> - 0.7.4-5
 - Rebuild against tree-sitter-0.25.2-3.fc43
 
