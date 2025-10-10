@@ -1,6 +1,6 @@
 Name:           burpsuite_community
-Version:        2024.9.5
-Release:        1%{?dist}
+Version:        2025.8.7
+Release:        %autorelease
 Summary:        Security tool for analyzing web application security
 
 Group:          Applications/System
@@ -9,18 +9,20 @@ Group:          Applications/System
 License:        Burp License
 
 URL:            http://portswigger.net/suite/
-#               http://portswigger.net/burp/burpsuite_free_v1.6.jar
-#               https://portswigger.net/Burp/Releases/Download?productId=100&version=%%{version}6&type=Jar
-# Source0:      http://portswigger.net/burp/burpsuite_free_v%%{version}.jar
 
 # Download the Source0 automatically during the rebuild of RPM package
 %undefine       _disable_source_fetch
 
-# Source0:      https://portswigger.net/Burp/Releases/Download?productId=100&version=2024.9.5&type=Jar#/burpsuite_community_2024.9.5.jar
+# Source0:      http://portswigger.net/burp/burpsuite_free_v%%{version}.jar
+# Source0:      https://portswigger.net/Burp/Releases/Download?productId=100&version=2025.8.7&type=Jar#/burpsuite_community_2025.8.7.jar
 Source0:        https://portswigger.net/Burp/Releases/Download?productId=100&version=%{version}&type=Jar#/burpsuite_community_%{version}.jar
+
 # Do not copy the Source0 file to the SRPM package
+# Comment this out when doing spectool download
 NoSource:       0
-%define         SHA256SUM0 78c00c8fdbff4f549a65b9159a4ac4896345e388ee83d1694cae0caeeee32af0
+
+
+%define         SHA256SUM0 0f1bd8799e3a95f5be6b63ed507762d8846f5cfc1dcdf319225147ee63ce7b6c
 
 
 Source1:        %{name}.in
@@ -29,7 +31,7 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  sed
 BuildRequires:  java
-Requires:       java
+Requires:       java >= 21.0.0
 
 %description
 
@@ -142,14 +144,4 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
-* Tue Feb 12 2019 Michal Ambroz <rebus at, seznam.cz> 1.7.36-1
-- bump to 1.7.36
-
-* Wed Apr 04 2018 Michal Ambroz <rebus at, seznam.cz> 1.7.33-1
-- bump to 1.7.33
-
-* Tue Jun 07 2016 Michal Ambroz <rebus at, seznam.cz> 1.7.03-1
-- bump to 1.7.03
-
-* Fri Jan 15 2010 Michal Ambroz <rebus at, seznam.cz> 1.3-1
-- Initial burpsuite package for Fedora
+%autochangelog

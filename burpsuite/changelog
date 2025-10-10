@@ -1,0 +1,20 @@
+* Fri Oct 10 2025 Michal Ambroz <rebus at, seznam.cz> 2025.8.7-1
+- bump to 2025.8.7
+
+* Sat Nov 16 2024 Michal Ambroz <rebus at, seznam.cz> 2024.9.5-1
+- bump to 2024.9.5
+
+* Tue Dec 12 2023 Michal Ambroz <rebus at, seznam.cz> 2023.11.1.3-1
+- bump to 2023.11.1.3
+
+* Tue Feb 12 2019 Michal Ambroz <rebus at, seznam.cz> 1.7.36-1
+- bump to 1.7.36
+
+* Wed Apr 04 2018 Michal Ambroz <rebus at, seznam.cz> 1.7.33-1
+- bump to 1.7.33
+
+* Tue Jun 07 2016 Michal Ambroz <rebus at, seznam.cz> 1.7.03-1
+- bump to 1.7.03
+
+* Fri Jan 15 2010 Michal Ambroz <rebus at, seznam.cz> 1.3-1
+- Initial burpsuite package for Fedora
