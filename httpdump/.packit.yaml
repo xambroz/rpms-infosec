@@ -1,0 +1,35 @@
+specfile_path: httpdump.spec
+
+upstream_package_name: httpdump
+upstream_project_url: https://github.com/hsiafan/httpdump
+downstream_package_name: httpdump
+
+upstream_tag_template: v{version}
+
+jobs:
+
+- job: pull_from_upstream
+  trigger: release
+  dist_git_branches:
+    - rawhide
+
+- job: koji_build
+  trigger: commit
+  dist_git_branches:
+    - rawhide
+
+actions:
+  post-modifications:
+    # https://fedora.gitlab.io/sigs/go/go-vendor-tools/scenarios/#manual-update
+    - |
+      sh -xeuc "
+        cd $PACKIT_DOWNSTREAM_REPO
+        export GOTOOLCHAIN=auto
+        go_vendor_archive create --config go-vendor-tools.toml httpdump.spec
+        go_vendor_license \
+          --config go-vendor-tools.toml \
+          --path httpdump.spec \
+          report \
+          --verify-spec
+      "
+create_sync_note: false
