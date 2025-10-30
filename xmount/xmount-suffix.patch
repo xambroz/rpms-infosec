@@ -1,0 +1,159 @@
+From 257d1aa10816988dd60a4c69efe6a60bb43722d6 Mon Sep 17 00:00:00 2001
+From: Nicolas Chauvet <kwizart@gmail.com>
+Date: Tue, 26 Aug 2025 11:05:33 +0200
+Subject: [PATCH 1/2] Add LIB_SUFFIX to library path
+
+This is needed in order to install the libraries into the appropriate
+path for libraries
+
+Signed-off-by: Nicolas Chauvet <kwizart@gmail.com>
+---
+ libxmount_input/libxmount_input_aaff/CMakeLists.txt             | 2 +-
+ libxmount_input/libxmount_input_aewf/CMakeLists.txt             | 2 +-
+ libxmount_input/libxmount_input_aff/CMakeLists.txt              | 2 +-
+ libxmount_input/libxmount_input_aff4/CMakeLists.txt             | 2 +-
+ libxmount_input/libxmount_input_ewf/CMakeLists.txt              | 2 +-
+ libxmount_input/libxmount_input_qcow/CMakeLists.txt             | 2 +-
+ libxmount_input/libxmount_input_raw/CMakeLists.txt              | 2 +-
+ libxmount_input/libxmount_input_vdi/CMakeLists.txt              | 2 +-
+ libxmount_morphing/libxmount_morphing_combine/CMakeLists.txt    | 2 +-
+ libxmount_morphing/libxmount_morphing_raid/CMakeLists.txt       | 2 +-
+ .../libxmount_morphing_unallocated/CMakeLists.txt               | 2 +-
+ src/CMakeLists.txt                                              | 2 +-
+ 12 files changed, 12 insertions(+), 12 deletions(-)
+
+diff --git a/libxmount_input/libxmount_input_aaff/CMakeLists.txt b/libxmount_input/libxmount_input_aaff/CMakeLists.txt
+index ec438d50a97f..cf59bcb16374 100644
+--- a/libxmount_input/libxmount_input_aaff/CMakeLists.txt
++++ b/libxmount_input/libxmount_input_aaff/CMakeLists.txt
+@@ -22,5 +22,5 @@ endif(NOT STATIC)
+ 
+ target_link_libraries(xmount_input_aaff ${LIBS})
+ 
+-install(TARGETS xmount_input_aaff DESTINATION lib/xmount)
++install(TARGETS xmount_input_aaff DESTINATION lib${LIB_SUFFIX}/xmount)
+ 
+diff --git a/libxmount_input/libxmount_input_aewf/CMakeLists.txt b/libxmount_input/libxmount_input_aewf/CMakeLists.txt
+index 05d03116af59..e49da30649a8 100644
+--- a/libxmount_input/libxmount_input_aewf/CMakeLists.txt
++++ b/libxmount_input/libxmount_input_aewf/CMakeLists.txt
+@@ -30,5 +30,5 @@ endif(NOT STATIC)
+ 
+ target_link_libraries(xmount_input_aewf ${LIBS})
+ 
+-install(TARGETS xmount_input_aewf DESTINATION lib/xmount)
++install(TARGETS xmount_input_aewf DESTINATION lib${LIB_SUFFIX}/xmount)
+ 
+diff --git a/libxmount_input/libxmount_input_aff/CMakeLists.txt b/libxmount_input/libxmount_input_aff/CMakeLists.txt
+index 207d5d4c4d66..049c3ef5a9ad 100644
+--- a/libxmount_input/libxmount_input_aff/CMakeLists.txt
++++ b/libxmount_input/libxmount_input_aff/CMakeLists.txt
+@@ -70,4 +70,4 @@ add_library(xmount_input_aff SHARED libxmount_input_aff.c)
+ 
+ target_link_libraries(xmount_input_aff ${LIBS})
+ 
+-install(TARGETS xmount_input_aff DESTINATION lib/xmount)
++install(TARGETS xmount_input_aff DESTINATION lib${LIB_SUFFIX}/xmount)
+diff --git a/libxmount_input/libxmount_input_aff4/CMakeLists.txt b/libxmount_input/libxmount_input_aff4/CMakeLists.txt
+index b8bdc5b81c25..139e13dd6a5b 100644
+--- a/libxmount_input/libxmount_input_aff4/CMakeLists.txt
++++ b/libxmount_input/libxmount_input_aff4/CMakeLists.txt
+@@ -33,5 +33,5 @@ add_library(xmount_input_aff4 SHARED libxmount_input_aff4.c)
+ 
+ target_link_libraries(xmount_input_aff4 ${LIBS})
+ 
+-install(TARGETS xmount_input_aff4 DESTINATION lib/xmount)
++install(TARGETS xmount_input_aff4 DESTINATION lib${LIB_SUFFIX}/xmount)
+ 
+diff --git a/libxmount_input/libxmount_input_ewf/CMakeLists.txt b/libxmount_input/libxmount_input_ewf/CMakeLists.txt
+index 75620009f07e..8f4bc1f653bf 100644
+--- a/libxmount_input/libxmount_input_ewf/CMakeLists.txt
++++ b/libxmount_input/libxmount_input_ewf/CMakeLists.txt
+@@ -24,5 +24,5 @@ endif(NOT STATIC_EWF)
+ 
+ target_link_libraries(xmount_input_ewf ${LIBS})
+ 
+-install(TARGETS xmount_input_ewf DESTINATION lib/xmount)
++install(TARGETS xmount_input_ewf DESTINATION lib${LIB_SUFFIX}/xmount)
+ 
+diff --git a/libxmount_input/libxmount_input_qcow/CMakeLists.txt b/libxmount_input/libxmount_input_qcow/CMakeLists.txt
+index 7e38241eee74..c2629856674d 100644
+--- a/libxmount_input/libxmount_input_qcow/CMakeLists.txt
++++ b/libxmount_input/libxmount_input_qcow/CMakeLists.txt
+@@ -22,4 +22,4 @@ endif(NOT STATIC)
+ 
+ target_link_libraries(xmount_input_qcow ${LIBS})
+ 
+-install(TARGETS xmount_input_qcow DESTINATION lib/xmount)
++install(TARGETS xmount_input_qcow DESTINATION lib${LIB_SUFFIX}/xmount)
+diff --git a/libxmount_input/libxmount_input_raw/CMakeLists.txt b/libxmount_input/libxmount_input_raw/CMakeLists.txt
+index 0bd6b42551d0..1b9b0fb8c6de 100644
+--- a/libxmount_input/libxmount_input_raw/CMakeLists.txt
++++ b/libxmount_input/libxmount_input_raw/CMakeLists.txt
+@@ -6,5 +6,5 @@ project(libxmount_input_raw C)
+ 
+ add_library(xmount_input_raw SHARED libxmount_input_raw.c ../../libxmount/libxmount.c)
+ 
+-install(TARGETS xmount_input_raw DESTINATION lib/xmount)
++install(TARGETS xmount_input_raw DESTINATION lib${LIB_SUFFIX}/xmount)
+ 
+diff --git a/libxmount_input/libxmount_input_vdi/CMakeLists.txt b/libxmount_input/libxmount_input_vdi/CMakeLists.txt
+index e17cf26422fc..40bec3a788a8 100644
+--- a/libxmount_input/libxmount_input_vdi/CMakeLists.txt
++++ b/libxmount_input/libxmount_input_vdi/CMakeLists.txt
+@@ -6,5 +6,5 @@ project(libxmount_input_vdi C)
+ 
+ add_library(xmount_input_vdi SHARED libxmount_input_vdi.c ../../libxmount/libxmount.c)
+ 
+-install(TARGETS xmount_input_vdi DESTINATION lib/xmount)
++install(TARGETS xmount_input_vdi DESTINATION lib${LIB_SUFFIX}/xmount)
+ 
+diff --git a/libxmount_morphing/libxmount_morphing_combine/CMakeLists.txt b/libxmount_morphing/libxmount_morphing_combine/CMakeLists.txt
+index f85ebff79fdb..2ba7123057b3 100644
+--- a/libxmount_morphing/libxmount_morphing_combine/CMakeLists.txt
++++ b/libxmount_morphing/libxmount_morphing_combine/CMakeLists.txt
+@@ -6,5 +6,5 @@ project(libxmount_morphing_combine C)
+ 
+ add_library(xmount_morphing_combine SHARED libxmount_morphing_combine.c ../../libxmount/libxmount.c)
+ 
+-install(TARGETS xmount_morphing_combine DESTINATION lib/xmount)
++install(TARGETS xmount_morphing_combine DESTINATION lib${LIB_SUFFIX}/xmount)
+ 
+diff --git a/libxmount_morphing/libxmount_morphing_raid/CMakeLists.txt b/libxmount_morphing/libxmount_morphing_raid/CMakeLists.txt
+index 69e976a5072c..3f07b819720c 100644
+--- a/libxmount_morphing/libxmount_morphing_raid/CMakeLists.txt
++++ b/libxmount_morphing/libxmount_morphing_raid/CMakeLists.txt
+@@ -6,5 +6,5 @@ project(libxmount_morphing_raid C)
+ 
+ add_library(xmount_morphing_raid SHARED libxmount_morphing_raid.c ../../libxmount/libxmount.c)
+ 
+-install(TARGETS xmount_morphing_raid DESTINATION lib/xmount)
++install(TARGETS xmount_morphing_raid DESTINATION lib${LIB_SUFFIX}/xmount)
+ 
+diff --git a/libxmount_morphing/libxmount_morphing_unallocated/CMakeLists.txt b/libxmount_morphing/libxmount_morphing_unallocated/CMakeLists.txt
+index a90805f26c65..be41ea672501 100644
+--- a/libxmount_morphing/libxmount_morphing_unallocated/CMakeLists.txt
++++ b/libxmount_morphing/libxmount_morphing_unallocated/CMakeLists.txt
+@@ -6,5 +6,5 @@ project(libxmount_morphing_unallocated C)
+ 
+ add_library(xmount_morphing_unallocated SHARED libxmount_morphing_unallocated.c hfs_functions.c fat_functions.c ../../libxmount/libxmount.c)
+ 
+-install(TARGETS xmount_morphing_unallocated DESTINATION lib/xmount)
++install(TARGETS xmount_morphing_unallocated DESTINATION lib${LIB_SUFFIX}/xmount)
+ 
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index 92d9b8ffa9a5..96fd71c2c95b 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -17,7 +17,7 @@ endif(CMAKE_THREAD_LIBS_INIT)
+ 
+ set(LIBS ${LIBS} "dl")
+ 
+-add_definitions(-DXMOUNT_LIBRARY_PATH="${CMAKE_INSTALL_PREFIX}/lib/xmount")
++add_definitions(-DXMOUNT_LIBRARY_PATH="${CMAKE_INSTALL_PREFIX}/lib${LIB_SUFFIX}/xmount")
+ 
+ add_executable(xmount xmount.c md5.c ../libxmount/libxmount.c)
+ 
+-- 
+2.51.0
+

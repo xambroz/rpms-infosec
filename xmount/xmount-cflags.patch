@@ -1,0 +1,27 @@
+From 7ea54293aea783e88545662d807bb5efc527d58d Mon Sep 17 00:00:00 2001
+From: Nicolas Chauvet <kwizart@gmail.com>
+Date: Tue, 26 Aug 2025 11:10:25 +0200
+Subject: [PATCH 2/2] Drop C_FLAGS tweaks
+
+Signed-off-by: Nicolas Chauvet <kwizart@gmail.com>
+---
+ CMakeLists.txt | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 7369014065b5..e0064598f406 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -87,9 +87,6 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
+ add_definitions(-D_LARGEFILE64_SOURCE)
+ add_definitions(-D_FILE_OFFSET_BITS=64)
+ add_definitions(-D_GNU_SOURCE)
+-set(CMAKE_C_FLAGS "-fno-strict-aliasing -std=c99 -Wall")
+-set(CMAKE_C_FLAGS_RELEASE "-O2 ${CMAKE_C_FLAGS}")
+-set(CMAKE_C_FLAGS_DEBUG "-ggdb -O0 ${CMAKE_C_FLAGS}")
+ 
+ # Compile stuff in sub dirs
+ add_subdirectory(libxmount_input)
+-- 
+2.51.0
+

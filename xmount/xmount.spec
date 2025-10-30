@@ -1,17 +1,20 @@
 Name:           xmount
-Version:        0.6.0
-Release:        1%{?dist}
+Version:        1.2.0
+Release:        %autorelease
 Summary:        A on-the-fly convert for multiple hard disk image types
 
-Group:          Applications/Multimedia
 License:        GPL-3.0-or-later
-URL:            https://www.pinguin.lu/index.php
-Source0:        http://files.pinguin.lu/projects/%{name}-%{version}.tar.gz
-Patch1:         %{name}-ewf.patch
+URL:            https://www.sits.lu/xmount
+Source0:        https://code.sits.lu/foss/xmount/-/archive/%{version}/xmount-%{version}.tar.bz2
+Patch0:         xmount-suffix.patch
+Patch1:         xmount-cflags.patch
 
-BuildRequires:  fuse-devel
+BuildRequires:  gcc-c++
+BuildRequires:  fuse3-devel
 BuildRequires:  libewf-devel
 BuildRequires:  afflib-devel
+BuildRequires:  zlib-devel
+BuildRequires:  cmake
 
 Provides:       bundled(md5-deutsch)
 
@@ -28,62 +31,36 @@ files that is redirected to a cache file. This makes it possible
 to boot acquired hard disk images using QEMU, KVM, VirtualBox,
 VmWare, or alike.
 
+
 %prep
 %setup -q
-%patch1 -p 1
-%if 0%{?rhel} != 5
-autoreconf
-%endif
+%patch -P0 -p1 -b .suffix
+%patch -P1 -p1 -b .cflags
+# Fix perm
+chmod -x src/xmount.*
 
 
 %build
-%configure
-make %{?_smp_mflags} CFLAGS="%{optflags}"
+%cmake \
+    -DCMAKE_C_FLAGS="%{optflags} -fno-strict-aliasing" \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_SKIP_RPATH=ON \
+    %{nil}
+
+%cmake_build
+
 
 %install
-make install DESTDIR=%{buildroot} INSTALL="install -p"
+%cmake_install
+
 
 %files
-%doc AUTHORS ChangeLog COPYING NEWS README ROADMAP
+%doc AUTHORS ChangeLog NEWS README ROADMAP TODO
+%license COPYING
 %{_mandir}/man*/%{name}*.*
 %{_bindir}/%{name}
+%{_libdir}/xmount
+
 
 %changelog
-* Tue Aug 19 2014 Michal Ambroz <rebus _AT seznam.cz> - 0.6.0-1
-- Update for new upstream version 0.6.0
-- enable build with newer ewf library
-
-* Sun Aug 04 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.5.0-5
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
-
-* Fri Mar 01 2013 Nicolas Chauvet <kwizart@gmail.com> - 0.5.0-4
-- Rebuilt for libewf
-
-* Fri Feb 15 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.5.0-3
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
-
-* Sun Sep 02 2012 Fabian Affolter <mail@fabian-affolter.ch> - 0.5.0-2
-- Clean section removed
-- BR updated
-
-* Mon Aug 06 2012 Fabian Affolter <mail@fabian-affolter.ch> - 0.5.0-1
-- Added a provide
-- Permissions were fixed upstream 
-- Updated to new upstream version 0.5.0
-
-* Sat Jun 30 2012 Fabian Affolter <mail@fabian-affolter.ch> - 0.4.7-2
-- Leave md5 implementation in place
-
-* Fri Apr 13 2012 Fabian Affolter <mail@fabian-affolter.ch> - 0.4.7-1
-- Updated to new upstream version 0.4.7
-
-* Tue Oct 18 2011 Fabian Affolter <mail@fabian-affolter.ch> - 0.4.6-1
-- Updated to new upstream version 0.4.6
-
-* Wed Sep 01 2010 Fabian Affolter <mail@fabian-affolter.ch> - 0.4.2-2
-- Added patch from #606073
-- Fixed permission
-- Added needed BRs
-
-* Mon Mar 15 2010 Fabian Affolter <mail@fabian-affolter.ch> - 0.4.2-1
-- Initial package for Fedora
+%autochangelog
