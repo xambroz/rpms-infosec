@@ -1,0 +1,28 @@
+--- orig/build.xml	2017-12-17 13:46:10.000000000 +0000
++++ new/build.xml	2018-02-16 15:21:58.054000000 +0000
+@@ -33,6 +33,7 @@
+         <format property="time.year" pattern="yyyy"/>
+     </tstamp>
+ 
++<!--
+     <path id="ant-deb-cp">
+         <fileset dir="./lib" includes="ant-deb-*.jar"/>
+     </path>
+@@ -41,6 +42,7 @@
+         <fileset dir="./lib" includes="nsisant-*.jar"/>
+     </path>
+     <taskdef name="nsis" classname="com.danielreese.nsisant.Task" classpathref="nsisant-cp"/>
++ -->
+ 
+     <target name="init">
+         <mkdir dir="${build.classesdir}"/>
+@@ -96,7 +98,8 @@
+         <delete file="./lib/openstego.jar"/>
+     </target>
+ 
+-    <target name="package" depends="package-bin,package-src,package-nsi,package-deb"
++<!--    <target name="package" depends="package-bin,package-src,package-nsi,package-deb" -->
++    <target name="package" depends="package-bin"
+         description="Generates the various binary and source packages for release">
+     </target>
+ 
