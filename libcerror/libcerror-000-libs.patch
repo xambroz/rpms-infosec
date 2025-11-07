@@ -1,39 +1,68 @@
-diff -ru libcerror-99cd8c5cde340ee87c636e67e7599ca873fcc2ca.orig/configure.ac libcerror-99cd8c5cde340ee87c636e67e7599ca873fcc2ca.new/configure.ac
---- libcerror-99cd8c5cde340ee87c636e67e7599ca873fcc2ca.orig/configure.ac	2015-04-07 06:34:43.000000000 +0200
-+++ libcerror-99cd8c5cde340ee87c636e67e7599ca873fcc2ca.new/configure.ac	2015-06-07 10:32:24.962480206 +0200
-@@ -118,7 +118,7 @@
- AC_CONFIG_FILES([Makefile])
- AC_CONFIG_FILES([include/Makefile])
- AC_CONFIG_FILES([common/Makefile])
--AC_CONFIG_FILES([libcstring/Makefile])
-+dnl AC_CONFIG_FILES([libcstring/Makefile])
- AC_CONFIG_FILES([libcerror/Makefile])
- AC_CONFIG_FILES([po/Makefile.in])
- AC_CONFIG_FILES([po/Makevars])
-diff -ru libcerror-99cd8c5cde340ee87c636e67e7599ca873fcc2ca.orig/Makefile.am libcerror-99cd8c5cde340ee87c636e67e7599ca873fcc2ca.new/Makefile.am
---- libcerror-99cd8c5cde340ee87c636e67e7599ca873fcc2ca.orig/Makefile.am	2015-04-07 06:34:43.000000000 +0200
-+++ libcerror-99cd8c5cde340ee87c636e67e7599ca873fcc2ca.new/Makefile.am	2015-06-07 10:27:34.308690742 +0200
-@@ -3,7 +3,6 @@
- SUBDIRS = \
- 	include \
- 	common \
--	libcstring \
- 	libcerror \
- 	po \
- 	manuals \
-@@ -54,7 +53,6 @@
- 
- library:
- 	cd $(srcdir)/common && $(MAKE) $(AM_MAKEFLAGS)
--	cd $(srcdir)/libcstring && $(MAKE) $(AM_MAKEFLAGS)
- 	cd $(srcdir)/libcerror && $(MAKE) $(AM_MAKEFLAGS)
- 	cd $(srcdir)/po && $(MAKE) $(AM_MAKEFLAGS)
- 
-@@ -71,7 +69,6 @@
- 	done && test -z "$$fail"
- 
- splint:
--	(cd $(srcdir)/libcstring && $(MAKE) splint $(AM_MAKEFLAGS))
- 	(cd $(srcdir)/libcerror && $(MAKE) splint $(AM_MAKEFLAGS))
- 	(cd $(srcdir)/po && $(MAKE) splint $(AM_MAKEFLAGS))
- 	(cd $(srcdir)/tests && $(MAKE) splint $(AM_MAKEFLAGS))
+diff -ru libcerror-0f0d145fe63f2769ceac76d5425a0bb10d5e304f/Makefile.am libcerror-0f0d145fe63f2769ceac76d5425a0bb10d5e304f.000/Makefile.am
+--- libcerror-0f0d145fe63f2769ceac76d5425a0bb10d5e304f/Makefile.am	2024-10-13 08:07:51.000000000 +0200
++++ libcerror-0f0d145fe63f2769ceac76d5425a0bb10d5e304f.000/Makefile.am	2025-01-20 09:40:43.378809852 +0100
+@@ -1,64 +0,0 @@
+-ACLOCAL_AMFLAGS = -I m4
+-
+-SUBDIRS = \
+-	include \
+-	common \
+-	libcerror \
+-	po \
+-	manuals \
+-	tests \
+-	msvscpp
+-
+-DPKG_FILES = \
+-	dpkg/changelog \
+-	dpkg/changelog.in \
+-	dpkg/compat \
+-	dpkg/control \
+-	dpkg/copyright \
+-	dpkg/rules \
+-	dpkg/libcerror-dev.install \
+-	dpkg/libcerror.install \
+-	dpkg/source/format
+-
+-GETTEXT_FILES = \
+-	config.rpath \
+-	po/Makevars.in
+-
+-PKGCONFIG_FILES = \
+-	libcerror.pc.in
+-
+-SPEC_FILES = \
+-	libcerror.spec \
+-	libcerror.spec.in
+-
+-EXTRA_DIST = \
+-	$(DPKG_FILES) \
+-	$(GETTEXT_FILES) \
+-	$(PKGCONFIG_FILES) \
+-	$(SPEC_FILES)
+-
+-DISTCLEANFILES = \
+-	config.status \
+-	config.cache \
+-	config.log \
+-	libcerror.pc \
+-	libcerror.spec \
+-	Makefile \
+-	Makefile.in \
+-	po/Makevars
+-
+-pkgconfigdir = $(libdir)/pkgconfig
+-
+-pkgconfig_DATA = \
+-	libcerror.pc
+-
+-libtool: @LIBTOOL_DEPS@
+-	cd $(srcdir) && $(SHELL) ./config.status --recheck
+-
+-lib: library
+-
+-library:
+-	cd $(srcdir)/common && $(MAKE) $(AM_MAKEFLAGS)
+-	cd $(srcdir)/libcerror && $(MAKE) $(AM_MAKEFLAGS)
+-	cd $(srcdir)/po && $(MAKE) $(AM_MAKEFLAGS)
+-
