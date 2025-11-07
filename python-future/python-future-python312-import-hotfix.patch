@@ -1,0 +1,60 @@
+From 515227fdd67c3769384e4b0a5f4286087e252a29 Mon Sep 17 00:00:00 2001
+From: Lumir Balhar <lbalhar@redhat.com>
+Date: Thu, 29 Jun 2023 12:54:57 +0200
+Subject: [PATCH] Hotfix for Python 3.12 for import machinery
+
+---
+ src/past/translation/__init__.py | 33 +++++++++++++++++++++++++++-----
+ 1 file changed, 28 insertions(+), 5 deletions(-)
+
+diff --git a/src/past/translation/__init__.py b/src/past/translation/__init__.py
+index 7c67886..75586c9 100644
+--- a/src/past/translation/__init__.py
++++ b/src/past/translation/__init__.py
+@@ -273,15 +273,38 @@ class Py2Fixer(object):
+         # thing = importlib.machinery.PathFinder.find_module(fullname, path)
+         try:
+             self.found = imp.find_module(fullname, path)
++
++            self.kind = self.found[-1][-1]
++            if self.kind == imp.PKG_DIRECTORY:
++                self.pathname = os.path.join(self.found[1], '__init__.py')
++            elif self.kind == imp.PY_SOURCE:
++                self.pathname = self.found[1]
++
++            # This si a copy of conditions from load_module.
++            # Returning None will cause the rest of the import machinery
++            # to find and load modules if they are not meant to be
++            # converted here by Py2Fixer.
++            if self.kind in (imp.PY_COMPILED, imp.C_EXTENSION, imp.C_BUILTIN,
++                             imp.PY_FROZEN):
++                return None
++            elif any([fullname.startswith(path) for path in self.exclude_paths]):
++                return None
++            elif any([fullname.startswith(path) for path in self.include_paths]):
++                self.name = fullname
++            else:
++                return None
++
+         except Exception as e:
+             logger.debug('Py2Fixer could not find {0}')
+             logger.debug('Exception was: {0})'.format(fullname, e))
+             return None
+-        self.kind = self.found[-1][-1]
+-        if self.kind == imp.PKG_DIRECTORY:
+-            self.pathname = os.path.join(self.found[1], '__init__.py')
+-        elif self.kind == imp.PY_SOURCE:
+-            self.pathname = self.found[1]
++        return self
++
++    def find_spec(self, fullname, path=None, target=None):
++        return self.find_module(fullname, path)
++
++    @property
++    def loader(self):
+         return self
+ 
+     def transform(self, source):
+-- 
+2.41.0
+
