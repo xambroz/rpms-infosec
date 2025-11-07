@@ -1,0 +1,45 @@
+Unicornscan and PostgreSQL
+--------------------------
+
+1.  Follow the /usr/share/doc/unicornscan-0.*/README.fedora file, so that the
+    PostgreSQL service is up and running already.
+
+2.  Start (or restart) the Apache HTTP webserver, to ensure that configuration
+    file for Apache gets active.
+
+    [root@tux ~]# service httpd start
+    Starting httpd:                                            [  OK  ]
+    [root@tux ~]# 
+
+3.  Create the required tables for unicornscan inside of PostgreSQL database,
+    there will be some error messages displayed after entering the password for
+    psql. These error messages are normal and expected, because the SQL dump
+    contains a SQL DROP of all tables before the SQL CREATE is performed.
+
+    [root@tux ~]# psql --username unicornscan --password unicornscan < /usr/share/doc/unicornscan-web-0.*/session.sql
+    Password for user unicornscan:
+    [...]
+    [root@tux ~]#
+
+4.  If you've got SELinux enabled, make sure, that SELinux allows Apache/PHP to
+    connect to the PostgreSQL database. If you don't have SELinux enabled, just
+    skip this step.
+
+    setsebool -P httpd_can_network_connect_db=1
+
+5.  Edit the unicornscan configuration file /etc/unicornscan/web.php and check
+    or correct the PostgreSQL database connection settings.
+
+    $PHPLIB["database_name"]="unicornscan";
+    $PHPLIB["database_username"]="unicornscan";
+    $PHPLIB["database_password"]="scanit!";
+    $PHPLIB["database_host"]="127.0.0.1";
+
+6.  Perform a small sample scan and write the output to PostgreSQL database.
+
+    [root@tux ~]# unicornscan www.google.com -e pgsqldb
+    TCP open                    http[   80]         from 209.85.129.104  ttl 52
+    TCP open                   https[  443]         from 209.85.129.104  ttl 52
+    [root@tux ~]#
+
+7.  Open a webbrowser and switch to: http://localhost/unicornscan/

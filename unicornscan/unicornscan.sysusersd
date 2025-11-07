@@ -1,0 +1,2 @@
+#Type  Name         ID  GECOS                   Home directory        Shell
+u      unicornscan  -   "Unicornscan listener"  /var/lib/unicornscan  /sbin/nologin

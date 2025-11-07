@@ -1,0 +1,75 @@
+Avoid calling an undeclared exit function.  Implicit function
+declarations have not been part of the C language since 1999.
+
+Submitted upstream: <https://sourceforge.net/p/osace/bugs/4/>
+
+diff --git a/aclocal.m4 b/aclocal.m4
+index bca969d2cbbe9fb5..cfb80c045ae52d24 100644
+--- a/aclocal.m4
++++ b/aclocal.m4
+@@ -827,7 +827,7 @@ int main ()
+       /* dlclose (self); */
+     }
+ 
+-    exit (status);
++    return status;
+ }]
+ EOF
+   if AC_TRY_EVAL(ac_link) && test -s conftest${ac_exeext} 2>/dev/null; then
+diff --git a/configure b/configure
+index e2d528010154cd25..9f54927c265cd834 100755
+--- a/configure
++++ b/configure
+@@ -9575,7 +9575,7 @@ int main ()
+       /* dlclose (self); */
+     }
+ 
+-    exit (status);
++    return status;
+ }
+ EOF
+   if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+@@ -9673,7 +9673,7 @@ int main ()
+       /* dlclose (self); */
+     }
+ 
+-    exit (status);
++    return status;
+ }
+ EOF
+   if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+@@ -26064,7 +26064,7 @@ int main(int argc, char ** argv) {
+         void *bs[50]; int sz=0;
+         sz=backtrace(bs, 50);
+         backtrace_symbols_fd(bs, sz, 2);
+-        exit(0);
++        return 0;
+ }
+ 
+ _ACEOF
+diff --git a/configure.ac b/configure.ac
+index 92a0384ad8a2ee8f..207eb50a1e000435 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -149,7 +149,7 @@ int main(int argc, char ** argv) {
+         void *bs[[50]]; int sz=0;
+         sz=backtrace(bs, 50);
+         backtrace_symbols_fd(bs, sz, 2);
+-        exit(0);
++        return 0;
+ }
+ ], [AC_MSG_RESULT(yes)
+ AC_DEFINE(WITH_BACKTRACE)], [AC_MSG_RESULT(no)])
+diff --git a/m4/libtool.m4 b/m4/libtool.m4
+index 71dae456a52ed373..c955a57a412550bd 100644
+--- a/m4/libtool.m4
++++ b/m4/libtool.m4
+@@ -797,7 +797,7 @@ int main ()
+       /* dlclose (self); */
+     }
+ 
+-    exit (status);
++    return status;
+ }]
+ EOF
+   if AC_TRY_EVAL(ac_link) && test -s conftest${ac_exeext} 2>/dev/null; then

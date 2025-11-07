@@ -1,0 +1,81 @@
+Unicornscan and PostgreSQL
+--------------------------
+
+1.  The PostgreSQL service has to be up and running. Depending on the exact
+    version of Fedora or Red Hat Enterprise Linux, on the first PostgreSQL
+    startup, a "service postgresql initdb" is maybe required for initializing.
+
+    [root@tux ~]# service postgresql start
+    Starting postgresql service:                               [  OK  ]
+    [root@tux ~]# 
+
+2.  Switch to the PostgreSQL user.
+
+    [root@tux ~]# su - postgres
+    -bash-4.0$ 
+
+3.  Create an own PostgreSQL database user for unicornscan. Don't forget to set
+    a password, e.g. "scanit!" as it is used in all examples.
+
+    -bash-4.0$ createuser --no-superuser --no-createrole --no-createdb --pwprompt unicornscan
+    Enter password for new role:
+    Enter it again:
+    -bash-4.0$ 
+
+4.  Create an own PostgreSQL database for unicornscan linked with the previous
+    generated database user for unicornscan.
+
+    -bash-4.0$ createdb --owner unicornscan unicornscan
+    -bash-4.0$ 
+
+5.  Switch back to the root user.
+
+    -bash-4.0$ exit
+    exit
+    [root@tux ~]#
+
+6.  Edit PostgreSQL client authentication file /var/lib/pgsql/data/pg_hba.conf
+    file with a text editor, insert the following lines before the other already
+    existing rules.
+
+    # TYPE  DATABASE    USER        CIDR-ADDRESS          METHOD
+    local   unicornscan unicornscan                       md5
+    host    unicornscan unicornscan 127.0.0.1/32          md5
+    host    unicornscan unicornscan ::1/128               md5
+
+7.  Edit PostgreSQL server configuration in /var/lib/pgsql/data/postgresql.conf
+    and set the configuration variable as follows:
+
+    escape_string_warning = off
+
+8.  Restart the PostgreSQL service to enable the previous performed changes.
+
+    [root@tux ~]# service postgresql restart
+    Stopping postgresql service:                               [  OK  ]
+    Starting postgresql service:                               [  OK  ]
+    [root@tux ~]# 
+
+9.  Create the required tables for unicornscan inside of PostgreSQL database,
+    there will be some error messages displayed after entering the password for
+    psql. These error messages are normal and expected, because the SQL dump
+    contains a SQL DROP of all tables before the SQL CREATE is performed.
+
+    [root@tux ~]# psql --username unicornscan --password unicornscan < /usr/share/doc/unicornscan-0.*/pgsql_schema.sql
+    Password for user unicornscan:
+    [...]
+    [root@tux ~]# 
+
+10. Edit the unicornscan configuration file /etc/unicornscan/modules.conf and
+    check or correct the PostgreSQL database connection settings.
+
+    module "pgsqldb" {
+            dbconf:         "user=unicornscan password=scanit! host=localhost dbname=unicornscan";
+            logpacket:      "true";
+    };
+
+11. Perform a small sample scan and write the output to PostgreSQL database.
+
+    [root@tux ~]# unicornscan www.google.com -e pgsqldb
+    TCP open                    http[   80]         from 209.85.129.104  ttl 52
+    TCP open                   https[  443]         from 209.85.129.104  ttl 52
+    [root@tux ~]#

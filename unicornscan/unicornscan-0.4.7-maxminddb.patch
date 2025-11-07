@@ -1,0 +1,395 @@
+Patch by Robert Scheck <robert@fedoraproject.org> for unicornscan >= 0.4.7, which adds support for
+MaxMind GeoIP2 and GeoLite2 databases because GeoIP Legacy has been retired by MaxMind as upstream
+in May 2022.
+
+Unicornscan upstream expects /etc/unicornscan/GeoIP.dat rather system-wide GeoIP Legacy, GeoIP2 or
+GeoLite2 databases, thus this patch extends the lookups to /usr/share/GeoIP while keeping backward
+compatibility.
+
+To avoid "undefined reference to `GeoIP_open'" build time errors, the missing linking with -lGeoIP
+or -lmaxminddb is added as well.
+
+When applying this patch, do not run autoconf > 2.6.3 as it will break, because the whole autotools
+stuff from upstream is unfortunately very old and partially maybe even simply broken.
+
+--- unicornscan-0.4.7/configure					2007-12-18 16:26:12.000000000 +0100
++++ unicornscan-0.4.7/configure.maxminddb			2022-05-06 03:29:54.050661427 +0200
+@@ -26472,92 +26472,149 @@
+ fi
+ 
+ 
+-{ echo "$as_me:$LINENO: checking for GeoIP_open in -lGeoIP" >&5
+-echo $ECHO_N "checking for GeoIP_open in -lGeoIP... $ECHO_C" >&6; }
+-if test "${ac_cv_lib_GeoIP_GeoIP_open+set}" = set; then
+-  echo $ECHO_N "(cached) $ECHO_C" >&6
+-else
++# as_fn_set_status STATUS
++# -----------------------
++# Set $? to STATUS, without forking.
++as_fn_set_status ()
++{
++  return $1
++} # as_fn_set_status
++
++# ac_fn_c_try_link LINENO
++# -----------------------
++# Try to link conftest.$ac_ext, and return whether this succeeded.
++ac_fn_c_try_link ()
++{
++  as_lineno=${as_lineno-"$1"} as_lineno_stack=as_lineno_stack=$as_lineno_stack
++  rm -f conftest.$ac_objext conftest.beam conftest$ac_exeext
++  if { { ac_try="$ac_link"
++case "(($ac_try" in
++  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
++  *) ac_try_echo=$ac_try;;
++esac
++eval ac_try_echo="\"\$as_me:${as_lineno-$LINENO}: $ac_try_echo\""
++printf "%s\n" "$ac_try_echo"; } >&5
++  (eval "$ac_link") 2>conftest.err
++  ac_status=$?
++  if test -s conftest.err; then
++    grep -v '^ *+' conftest.err >conftest.er1
++    cat conftest.er1 >&5
++    mv -f conftest.er1 conftest.err
++  fi
++  printf "%s\n" "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
++  test $ac_status = 0; } && {
++         test -z "$ac_c_werror_flag" ||
++         test ! -s conftest.err
++       } && test -s conftest$ac_exeext && {
++         test "$cross_compiling" = yes ||
++         test -x conftest$ac_exeext
++       }
++then : 
++  ac_retval=0
++else $as_nop
++  printf "%s\n" "$as_me: failed program was:" >&5
++sed 's/^/| /' conftest.$ac_ext >&5
++
++        ac_retval=1
++fi
++  # Delete the IPA/IPO (Inter Procedural Analysis/Optimization) information
++  # created by the PGI compiler (conftest_ipa8_conftest.oo), as it would
++  # interfere with the next link command; also delete a directory that is
++  # left behind by Apple's compiler.  We do this before executing the actions.
++  rm -rf conftest.dSYM conftest_ipa8_conftest.oo
++  eval $as_lineno_stack; ${as_lineno_stack:+:} unset as_lineno
++  as_fn_set_status $ac_retval
++
++} # ac_fn_c_try_link
++
++{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for MMDB_open in -lmaxminddb" >&5
++printf %s "checking for MMDB_open in -lmaxminddb... " >&6; }
++if test ${ac_cv_lib_maxminddb_MMDB_open+y}
++then :
++  printf %s "(cached) " >&6
++else $as_nop
+   ac_check_lib_save_LIBS=$LIBS
+-LIBS="-lGeoIP  $LIBS"
+-cat >conftest.$ac_ext <<_ACEOF
+-/* confdefs.h.  */
++LIBS="-lmaxminddb  $LIBS"
++cat confdefs.h - <<_ACEOF >conftest.$ac_ext
++/* end confdefs.h.  */
++
++/* Override any GCC internal prototype to avoid an error.  
++   Use char because int might match the return type of a GCC
++   builtin and then its argument prototype would still apply.  */
++char MMDB_open ();
++int
++main (void)
++{
++return MMDB_open ();
++  ;
++  return 0;
++}
+ _ACEOF
+-cat confdefs.h >>conftest.$ac_ext
+-cat >>conftest.$ac_ext <<_ACEOF
++if ac_fn_c_try_link "$LINENO"
++then :
++  ac_cv_lib_maxminddb_MMDB_open=yes
++else $as_nop
++  ac_cv_lib_maxminddb_MMDB_open=no
++fi
++rm -f core conftest.err conftest.$ac_objext conftest.beam \
++    conftest$ac_exeext conftest.$ac_ext
++LIBS=$ac_check_lib_save_LIBS
++fi
++{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_maxminddb_MMDB_open" >&5
++printf "%s\n" "$ac_cv_lib_maxminddb_MMDB_open" >&6; }
++if test "x$ac_cv_lib_maxminddb_MMDB_open" = xyes
++then :
++  printf "%s\n" "#define HAVE_LIBMAXMINDDB 1" >>confdefs.h
++
++  LIBS="-lmaxminddb $LIBS"
++
++else $as_nop
++
++  { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for GeoIP_open in -lGeoIP" >&5
++printf %s "checking for GeoIP_open in -lGeoIP... " >&6; }
++if test ${ac_cv_lib_GeoIP_GeoIP_open+y}
++then :
++  printf %s "(cached) " >&6
++else $as_nop
++  ac_check_lib_save_LIBS=$LIBS
++LIBS="-lGeoIP  $LIBS"
++cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+ /* end confdefs.h.  */
+ 
+ /* Override any GCC internal prototype to avoid an error.
+    Use char because int might match the return type of a GCC
+    builtin and then its argument prototype would still apply.  */
+-#ifdef __cplusplus
+-extern "C"
+-#endif
+-char GeoIP_open ();
++char GeoIP_open ();  
+ int
+-main ()
++main (void)
+ {
+ return GeoIP_open ();
+   ;
+   return 0;
+ }
+ _ACEOF
+-rm -f conftest.$ac_objext conftest$ac_exeext
+-if { (ac_try="$ac_link"
+-case "(($ac_try" in
+-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+-  *) ac_try_echo=$ac_try;;
+-esac
+-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+-  (eval "$ac_link") 2>conftest.er1
+-  ac_status=$?
+-  grep -v '^ *+' conftest.er1 >conftest.err
+-  rm -f conftest.er1
+-  cat conftest.err >&5
+-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+-  (exit $ac_status); } &&
+-	 { ac_try='test -z "$ac_c_werror_flag" || test ! -s conftest.err'
+-  { (case "(($ac_try" in
+-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+-  *) ac_try_echo=$ac_try;;
+-esac
+-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+-  (eval "$ac_try") 2>&5
+-  ac_status=$?
+-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+-  (exit $ac_status); }; } &&
+-	 { ac_try='test -s conftest$ac_exeext'
+-  { (case "(($ac_try" in
+-  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
+-  *) ac_try_echo=$ac_try;;
+-esac
+-eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
+-  (eval "$ac_try") 2>&5
+-  ac_status=$?
+-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+-  (exit $ac_status); }; }; then
++if ac_fn_c_try_link "$LINENO"
++then :
+   ac_cv_lib_GeoIP_GeoIP_open=yes
+-else
+-  echo "$as_me: failed program was:" >&5
+-sed 's/^/| /' conftest.$ac_ext >&5
+-
+-	ac_cv_lib_GeoIP_GeoIP_open=no
++else $as_nop
++  ac_cv_lib_GeoIP_GeoIP_open=no
+ fi
+-
+-rm -f core conftest.err conftest.$ac_objext \
+-      conftest$ac_exeext conftest.$ac_ext
++rm -f core conftest.err conftest.$ac_objext conftest.beam \
++    conftest$ac_exeext conftest.$ac_ext
+ LIBS=$ac_check_lib_save_LIBS
+ fi
+-{ echo "$as_me:$LINENO: result: $ac_cv_lib_GeoIP_GeoIP_open" >&5
+-echo "${ECHO_T}$ac_cv_lib_GeoIP_GeoIP_open" >&6; }
+-if test $ac_cv_lib_GeoIP_GeoIP_open = yes; then
+-  cat >>confdefs.h <<_ACEOF
+-#define HAVE_LIBGEOIP 1
+-_ACEOF
++{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_GeoIP_GeoIP_open" >&5
++printf "%s\n" "$ac_cv_lib_GeoIP_GeoIP_open" >&6; }
++if test "x$ac_cv_lib_GeoIP_GeoIP_open" = xyes
++then :
++  printf "%s\n" "#define HAVE_LIBGEOIP 1" >>confdefs.h
+ 
+   LIBS="-lGeoIP $LIBS"
+ 
+ fi
+ 
++fi
++
+ 
+ 
+ 
+@@ -28164,7 +28221,8 @@
+ echo "prefix:                           ${prefix}"
+ echo "PostgreSQL Support:               $pgsql"
+ echo "MySQL Support:                    $mysql"
+-echo "GeoIP support:                    $ac_cv_lib_GeoIP_GeoIP_open"
++echo "MaxMind DB support:               ${ac_cv_lib_maxminddb_MMDB_open:-no}"
++echo "GeoIP Legacy support:             ${ac_cv_lib_GeoIP_GeoIP_open:-no}"
+ echo "SELinux Support:                  $selinux"
+ echo "Listen User: (non-selinux)        $listen_user"
+ echo "libraries missing that will be built:  \`$NEED_AUX_LIBS'"
+--- unicornscan-0.4.7/configure.ac				2007-11-29 15:51:20.000000000 +0100
++++ unicornscan-0.4.7/configure.ac.maxminddb			2022-05-06 03:28:44.532146008 +0200
+@@ -357,7 +357,8 @@
+   fi
+ fi
+ 
+-AC_CHECK_LIB([GeoIP], [GeoIP_open], [], [], [])
++AC_CHECK_LIB([maxminddb], [MMDB_open], [], [
++  AC_CHECK_LIB([GeoIP], [GeoIP_open], [], [], [])], [])
+ 
+ AC_SUBST(DESTDIR)
+ AC_SUBST(DBTYPES)
+@@ -433,7 +434,8 @@
+ echo "prefix:                           ${prefix}"
+ echo "PostgreSQL Support:               $pgsql"
+ echo "MySQL Support:                    $mysql"
+-echo "GeoIP support:                    $ac_cv_lib_GeoIP_GeoIP_open"
++echo "MaxMind DB support:               ${ac_cv_lib_maxminddb_MMDB_open:-no}"
++echo "GeoIP Legacy support:             ${ac_cv_lib_GeoIP_GeoIP_open:-no}"
+ echo "SELinux Support:                  $selinux"
+ echo "Listen User: (non-selinux)        $listen_user"
+ echo "libraries missing that will be built:  \`$NEED_AUX_LIBS'"
+--- unicornscan-0.4.7/src/config.h.in				2006-10-18 18:57:05.000000000 +0200
++++ unicornscan-0.4.7/src/config.h.in.maxminddb			2022-05-06 03:00:23.957528819 +0200
+@@ -59,6 +59,7 @@
+ /* XXX */
+ #undef CPU_BIGENDIAN
+ #undef CPU_LITTLEENDIAN
++#undef HAVE_LIBMAXMINDDB
+ #undef HAVE_LIBGEOIP
+ 
+ #undef STDC_HEADERS
+--- unicornscan-0.4.7/src/FMTCAT_ARGS				2006-10-18 18:57:05.000000000 +0200
++++ unicornscan-0.4.7/src/FMTCAT_ARGS.maxminddb			2022-05-06 01:26:54.505694783 +0200
+@@ -1,5 +1,5 @@
+ %% = %
+-%C = Country ( Via GeoIP )
++%C = Country (via MaxMind DB or GeoIP Legacy)
+ %h or %hn ip or hostname
+ %L or %Ln local port or local service name
+ %M link address
+--- unicornscan-0.4.7/src/scan_progs/Makefile.in		2007-12-18 17:02:36.000000000 +0100
++++ unicornscan-0.4.7/src/scan_progs/Makefile.in.maxminddb	2022-05-06 01:10:27.444543726 +0200
+@@ -23,7 +23,7 @@
+ all: $(L_LIBNAME) @sendername@ @listenername@
+ 
+ $(LS_LIBNAME): $(LS_OBJS) $(LS_HDRS)
+-	$(LIBTOOL) --mode=link $(CC) $(CFLAGS) -o $(LS_LIBNAME) $(LS_OBJS)
++	$(LIBTOOL) --mode=link $(CC) $(CFLAGS) -o $(LS_LIBNAME) $(LS_OBJS) $(LDFLAGS)
+ 
+ @sendername@: $(S_OBJS) $(LS_LIBNAME) $(S_HDRS) ../unilib/libunilib.la ../parse/libparse.la $(ENTRY)
+ 	$(LIBTOOL) --mode=clean rm -f $(ENTRY:.c=.lo)
+--- unicornscan-0.4.7/src/scan_progs/report.c			2006-10-18 18:57:05.000000000 +0200
++++ unicornscan-0.4.7/src/scan_progs/report.c.maxminddb		2022-05-06 01:32:15.801075983 +0200
+@@ -39,7 +39,12 @@
+ 
+ #include <scan_progs/master.h>
+ 
+-#ifdef HAVE_LIBGEOIP
++#if defined(HAVE_LIBMAXMINDDB)
++#include <maxminddb.h>
++
++MMDB_s m_mmdb;
++
++#elif defined(HAVE_LIBGEOIP)
+ #include <GeoIP.h>
+ 
+ static GeoIP *gi=NULL;
+@@ -67,10 +72,45 @@
+ 
+ 	report_t=rbinit(123);
+ 
+-#ifdef HAVE_LIBGEOIP
+-	gi=GeoIP_open(CONF_DIR "/GeoIP.dat", GEOIP_MEMORY_CACHE);
+-	if (gi == NULL) {
+-		ERR("error opening geoip database `%s/%s': %s", CONF_DIR, "/GeoIP.dat", strerror(errno));
++#if defined(HAVE_LIBMAXMINDDB)
++	int status;
++	if (access("/usr/share/GeoIP/GeoIP2-Country.mmdb", F_OK) == 0) {
++		status=MMDB_open("/usr/share/GeoIP/GeoIP2-Country.mmdb", MMDB_MODE_MMAP, &m_mmdb);
++		if (status != MMDB_SUCCESS) {
++			ERR("error opening MaxMind GeoIP2 standard database `/usr/share/GeoIP/GeoIP2-Country.mmdb': %s", strerror(errno));
++		}
++	}
++	else if (access(CONF_DIR "/GeoIP2-Country.mmdb", F_OK) == 0) {
++		status=MMDB_open(CONF_DIR "/GeoIP2-Country.mmdb", MMDB_MODE_MMAP, &m_mmdb);
++		if (status != MMDB_SUCCESS) {
++			ERR("error opening MaxMind GeoIP2 database `%s/%s': %s", CONF_DIR, "/GeoIP2-Country.mmdb", strerror(errno));
++		}
++	}
++	else if (access("/usr/share/GeoIP/GeoLite2-Country.mmdb", F_OK) == 0) {
++		status=MMDB_open("/usr/share/GeoIP/GeoLite2-Country.mmdb", MMDB_MODE_MMAP, &m_mmdb);
++		if (status != MMDB_SUCCESS) {
++			ERR("error opening MaxMind GeoLite2 standard database `/usr/share/GeoIP/GeoLite2-Country.mmdb': %s", strerror(errno));
++		}
++	}
++	else {
++		status=MMDB_open(CONF_DIR "/GeoLite2-Country.mmdb", MMDB_MODE_MMAP, &m_mmdb);
++		if (status != MMDB_SUCCESS) {
++			ERR("error opening MaxMind GeoLite2 database `%s/%s': %s", CONF_DIR, "/GeoLite2-Country.mmdb", strerror(errno));
++		}
++	}
++
++#elif defined(HAVE_LIBGEOIP)
++	if (access("/usr/share/GeoIP/GeoIP.dat", F_OK) == 0) {
++		gi=GeoIP_open("/usr/share/GeoIP/GeoIP.dat", GEOIP_MEMORY_CACHE);
++		if (gi == NULL) {
++			ERR("error opening GeoIP Legacy standard database `/usr/share/GeoIP/GeoIP.dat': %s", strerror(errno));
++		}
++	}
++	else {
++		gi=GeoIP_open(CONF_DIR "/GeoIP.dat", GEOIP_MEMORY_CACHE);
++		if (gi == NULL) {
++			ERR("error opening GeoIP Legacy database `%s/%s': %s", CONF_DIR, "/GeoIP.dat", strerror(errno));
++		}
+ 	}
+ 
+ #endif
+@@ -104,7 +144,9 @@
+ 
+ 	report_t=NULL;
+ 
+-#ifdef HAVE_LIBGEOIP
++#if defined(HAVE_LIBMAXMINDDB)
++	MMDB_close(&m_mmdb);
++#elif defined(HAVE_LIBGEOIP)
+ 	if (gi != NULL) {
+ 		GeoIP_delete(gi);
+ 	}
+@@ -517,12 +559,24 @@
+ 						break;
+ 					}
+ 					strcat(ofmt, "s");
+-#ifdef HAVE_LIBGEOIP
++#if defined(HAVE_LIBMAXMINDDB)
++					int gai_error, mmdb_error, status;
++					MMDB_lookup_result_s result=MMDB_lookup_string(&m_mmdb, inet_ntoa(ia), &gai_error, &mmdb_error);
++					if (gai_error == 0 && mmdb_error == MMDB_SUCCESS) {
++						MMDB_entry_data_s entry_data;
++						status=MMDB_get_value(&result.entry, &entry_data, "country", "iso_code", NULL);
++						if (status == MMDB_SUCCESS && entry_data.has_data) {
++							tptr=strndup(entry_data.utf8_string, entry_data.data_size);
++						}
++					}
++					snprintf(tmp, sizeof(tmp) -1, ofmt, tptr != NULL ? tptr : "??");
++					KEHSTR(tmp);
++#elif defined(HAVE_LIBGEOIP)
+ 					tptr=GeoIP_country_code_by_addr(gi, inet_ntoa(ia));
+ 					snprintf(tmp, sizeof(tmp) -1, ofmt, tptr != NULL ? tptr : "??");
+ 					KEHSTR(tmp);
+ #else
+-					ERR("no GeoIP support compiled in!");
++					ERR("no MaxMind DB and no GeoIP Legacy support compiled in!");
+ #endif
+ 
+ 					break;
