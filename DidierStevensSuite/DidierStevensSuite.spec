@@ -1,43 +1,41 @@
 Name:           DidierStevensSuite
-Version:        20231016
-%global         baserelease 1
+Version:        20250306
 Summary:        Forensics tools from Didier Stevens Lab
 
-License:        free as beer
+License:        CC0-1.0
 URL:            https://blog.didierstevens.com/didier-stevens-suite/
-VCS:            https://github.com/DidierStevens/DidierStevensSuite
+VCS:            git:https://github.com/DidierStevens/DidierStevensSuite
 
 %global         gituser         DidierStevens
 %global         gitname         DidierStevensSuite
 %global         gitdate         %{version}
-%global         commit          41b01df75c8bb332f37d2e9eb4c8279583164d0e
+%global         commit          104bb4fe77e24f0891a954af349449227d06f77d
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 # Build by default from the git snapshot as Didier doesn't do any releases
-%bcond_with     release
+%bcond_without  release
 
 # Build from git release version
 %if %{with release}
-Release:       %{baserelease}%{?dist}
+Release:       %autorelease
 # Source0:     https://github.com/%%{gituser}/%%{gitname}/archive/v%%{upversion}.tar.gz#/%%{name}-%%{upversion}.tar.gz
-Source0:       https://github.com/%{gituser}/%{gitname}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
+Source0:       https://didierstevens.com/files/software/DidierStevensSuite.zip#/%{name}-%{version}.zip
 %else
 # Build from git commit baseline
-Release:       %{baserelease}.git%{shortcommit}%{?dist}
-Source0:       https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
+Release:       %autorelease -s %{gitdate}git%{shortcommit}
+Source0:       https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{name}-%{version}-%{gitdate}git%{shortcommit}.tar.gz
 %endif
 
 # use shared directory in linux for the data files
 Patch0:        DidierStevensSuite-20231016-1768-json.patch
-
-# die gracefully on broken pipe for xmldump.py
-Patch1:        DidierStevensSuite-20231016-brokenpipe.patch
 
 BuildArch: noarch
 #BuildRequires:  
 
 # Require the utilities packaged separately
 Requires:       xorsearch
+Requires:       pdf-parser
+Requires:       pdfid
 
 # ssdeep.py requires python3-ppdeep
 Requires:       python3-ppdeep
@@ -49,7 +47,7 @@ Forensics tools from Didier Stevens Lab
 
 %prep
 %if %{with release}
-    %autosetup -n %{gitname}-%{version} -p 1
+    %autosetup -n %{gitname} -p 1
 %else
     %autosetup -n %{gitname}-%{commit} -p 1
 %endif
@@ -60,11 +58,21 @@ rm -rf Linux OSX
 # remove Windows binaries
 rm *.exe *.dll
 
-# be explicit about python to use
-sed -i -e 's%/usr/bin/env python$%/usr/bin/python3%g;' \
-       -e 's%/usr/bin/python$%/usr/bin/python3%g;' *.py
+# Remove files tracked separately
+rm \
+    pdf-parser.py \
+    pdfid.py
 
 
+# be explicit about python to use, dos2unix
+sed -i \
+    -e 's/\r//g' \
+    -e 's%/usr/bin/env python$%/usr/bin/python3%g;' \
+    -e 's%/usr/bin/python$%/usr/bin/python3%g;' \
+     *.py
+
+# dos2unix
+sed -i -e 's/\r//g' *.yara
 
 %build
 
@@ -91,10 +99,9 @@ cp -r *.py %{buildroot}/usr/bin/
 
 %files
 %doc
-/usr/bin/*.py
-/usr/share/%{name}
+%{_bindir}/*.py
+%{_datadir}/%{name}
 
 
 %changelog
-* Wed Feb  3 2016 Michal Ambroz <rebus at, seznam.cz>
-- initial package for Fedora
+%autochangelog
