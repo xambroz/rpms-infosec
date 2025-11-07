@@ -1,0 +1,17 @@
+From e68237a20a0f064191d2e3a591d25f614de468ce Mon Sep 17 00:00:00 2001
+From: Michal Ambroz <723625+xambroz@users.noreply.github.com>
+Date: Wed, 12 Mar 2025 13:07:01 +0100
+Subject: [PATCH] Update version.py
+
+Code released as version 0.2.4 is still presenting itself as 0.2.3
+---
+ evtxtract/version.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/evtxtract/version.py b/evtxtract/version.py
+index d93b5b2..a6587ae 100644
+--- a/evtxtract/version.py
++++ b/evtxtract/version.py
+@@ -1 +1 @@
+-__version__ = '0.2.3'
++__version__ = '0.2.4'
