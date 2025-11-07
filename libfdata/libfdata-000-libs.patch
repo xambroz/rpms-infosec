@@ -1,7 +1,7 @@
-diff -ru libfdata-1d2e7f0edff9d676ccc3e96d40926d83d63af1e5.orig/configure.ac libfdata-1d2e7f0edff9d676ccc3e96d40926d83d63af1e5.new/configure.ac
---- libfdata-1d2e7f0edff9d676ccc3e96d40926d83d63af1e5.orig/configure.ac	2015-04-12 16:28:39.000000000 +0200
-+++ libfdata-1d2e7f0edff9d676ccc3e96d40926d83d63af1e5.new/configure.ac	2015-06-08 01:49:04.330893351 +0200
-@@ -139,11 +139,6 @@
+diff -ru libfdata-46dd9838aa2ef9974f92210bc2bbcd24b340ff37/configure.ac libfdata-46dd9838aa2ef9974f92210bc2bbcd24b340ff37.000/configure.ac
+--- libfdata-46dd9838aa2ef9974f92210bc2bbcd24b340ff37/configure.ac	2024-09-27 04:24:02.000000000 +0200
++++ libfdata-46dd9838aa2ef9974f92210bc2bbcd24b340ff37.000/configure.ac	2025-01-20 01:05:31.478924404 +0100
+@@ -109,11 +109,11 @@
  AC_CONFIG_FILES([Makefile])
  AC_CONFIG_FILES([include/Makefile])
  AC_CONFIG_FILES([common/Makefile])
@@ -10,12 +10,17 @@ diff -ru libfdata-1d2e7f0edff9d676ccc3e96d40926d83d63af1e5.orig/configure.ac lib
 -AC_CONFIG_FILES([libcdata/Makefile])
 -AC_CONFIG_FILES([libcnotify/Makefile])
 -AC_CONFIG_FILES([libfcache/Makefile])
++dnl AC_CONFIG_FILES([libcerror/Makefile])
++dnl AC_CONFIG_FILES([libcthreads/Makefile])
++dnl AC_CONFIG_FILES([libcdata/Makefile])
++dnl AC_CONFIG_FILES([libcnotify/Makefile])
++dnl AC_CONFIG_FILES([libfcache/Makefile])
  AC_CONFIG_FILES([libfdata/Makefile])
  AC_CONFIG_FILES([po/Makefile.in])
  AC_CONFIG_FILES([po/Makevars])
-diff -ru libfdata-1d2e7f0edff9d676ccc3e96d40926d83d63af1e5.orig/Makefile.am libfdata-1d2e7f0edff9d676ccc3e96d40926d83d63af1e5.new/Makefile.am
---- libfdata-1d2e7f0edff9d676ccc3e96d40926d83d63af1e5.orig/Makefile.am	2015-04-12 16:28:39.000000000 +0200
-+++ libfdata-1d2e7f0edff9d676ccc3e96d40926d83d63af1e5.new/Makefile.am	2015-06-08 01:48:12.062726493 +0200
+diff -ru libfdata-46dd9838aa2ef9974f92210bc2bbcd24b340ff37/Makefile.am libfdata-46dd9838aa2ef9974f92210bc2bbcd24b340ff37.000/Makefile.am
+--- libfdata-46dd9838aa2ef9974f92210bc2bbcd24b340ff37/Makefile.am	2024-09-27 04:24:02.000000000 +0200
++++ libfdata-46dd9838aa2ef9974f92210bc2bbcd24b340ff37.000/Makefile.am	2025-01-20 01:05:31.475924385 +0100
 @@ -3,11 +3,6 @@
  SUBDIRS = \
  	include \
@@ -28,7 +33,7 @@ diff -ru libfdata-1d2e7f0edff9d676ccc3e96d40926d83d63af1e5.orig/Makefile.am libf
  	libfdata \
  	po \
  	manuals \
-@@ -59,11 +53,6 @@
+@@ -64,11 +59,6 @@
  
  library:
  	(cd $(srcdir)/common && $(MAKE) $(AM_MAKEFLAGS))
