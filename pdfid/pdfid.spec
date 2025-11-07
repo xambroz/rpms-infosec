@@ -1,13 +1,15 @@
 Name:           pdfid
-Version:        0.0.10
+Version:        0.2.10
 Release:        %autorelease
 Summary:        PDF triage program
-
 License:        CC0-1.0
 URL:            https://blog.didierstevens.com/programs/pdf-tools/
-# URL:          https://blog.didierstevens.com/my-software/#pdf-parser
+# URL:          https://blog.didierstevens.com/my-software/#pdfid
 VCS:            https://github.com/DidierStevens/DidierStevensSuite
-Source0:        https://didierstevens.com/files/software/pdf-parser_V0_7_11.zip
+
+%global         version_under   %(echo %{version} | sed 's/\\./_/g')
+
+Source0:        https://didierstevens.com/files/software/pdfid_v%{version_under}.zip
 BuildArch:      noarch
 
 BuildRequires:  unzip
@@ -33,15 +35,8 @@ mkdir -p %{buildroot}%{_bindir}
 
 # Install main script
 install -p -m 755 pdfid.py %{buildroot}%{_bindir}/
-# Create wrapper script
-cat > %{buildroot}%{_bindir}/%{name} << 'EOF'
-#!/usr/bin/bash
-exec python3 %{_bindata}/pdf-parser.py "$@"
-EOF
-chmod 755 %{buildroot}%{_bindir}/%{name}
 
 %files
-%{_bindir}/%{name}
 %{_bindir}/pdfid.py
 
 %changelog
