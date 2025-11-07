@@ -1,0 +1,98 @@
+diff -ru libwrc-b4b358785237344d9dbad8b338cc3d7d1ac74a12/configure.ac libwrc-b4b358785237344d9dbad8b338cc3d7d1ac74a12.new/configure.ac
+--- libwrc-b4b358785237344d9dbad8b338cc3d7d1ac74a12/configure.ac	2024-06-10 06:09:07.000000000 +0200
++++ libwrc-b4b358785237344d9dbad8b338cc3d7d1ac74a12.new/configure.ac	2025-11-07 21:35:55.014297307 +0100
+@@ -179,25 +179,25 @@
+ AC_CONFIG_FILES([Makefile])
+ AC_CONFIG_FILES([include/Makefile])
+ AC_CONFIG_FILES([common/Makefile])
+-AC_CONFIG_FILES([libcerror/Makefile])
+-AC_CONFIG_FILES([libcthreads/Makefile])
+-AC_CONFIG_FILES([libcdata/Makefile])
+-AC_CONFIG_FILES([libclocale/Makefile])
+-AC_CONFIG_FILES([libcnotify/Makefile])
+-AC_CONFIG_FILES([libcsplit/Makefile])
+-AC_CONFIG_FILES([libuna/Makefile])
+-AC_CONFIG_FILES([libcfile/Makefile])
+-AC_CONFIG_FILES([libcpath/Makefile])
+-AC_CONFIG_FILES([libbfio/Makefile])
+-AC_CONFIG_FILES([libfcache/Makefile])
+-AC_CONFIG_FILES([libfdata/Makefile])
+-AC_CONFIG_FILES([libfdatetime/Makefile])
+-AC_CONFIG_FILES([libfguid/Makefile])
+-AC_CONFIG_FILES([libfvalue/Makefile])
+-AC_CONFIG_FILES([libfwnt/Makefile])
++dnl AC_CONFIG_FILES([libcerror/Makefile])
++dnl AC_CONFIG_FILES([libcthreads/Makefile])
++dnl AC_CONFIG_FILES([libcdata/Makefile])
++dnl AC_CONFIG_FILES([libclocale/Makefile])
++dnl AC_CONFIG_FILES([libcnotify/Makefile])
++dnl AC_CONFIG_FILES([libcsplit/Makefile])
++dnl AC_CONFIG_FILES([libuna/Makefile])
++dnl AC_CONFIG_FILES([libcfile/Makefile])
++dnl AC_CONFIG_FILES([libcpath/Makefile])
++dnl AC_CONFIG_FILES([libbfio/Makefile])
++dnl AC_CONFIG_FILES([libfcache/Makefile])
++dnl AC_CONFIG_FILES([libfdata/Makefile])
++dnl AC_CONFIG_FILES([libfdatetime/Makefile])
++dnl AC_CONFIG_FILES([libfguid/Makefile])
++dnl AC_CONFIG_FILES([libfvalue/Makefile])
++dnl AC_CONFIG_FILES([libfwnt/Makefile])
+ AC_CONFIG_FILES([libwrc/Makefile])
+ AC_CONFIG_FILES([pywrc/Makefile])
+-AC_CONFIG_FILES([libexe/Makefile])
++dnl AC_CONFIG_FILES([libexe/Makefile])
+ AC_CONFIG_FILES([wrctools/Makefile])
+ AC_CONFIG_FILES([po/Makefile.in])
+ AC_CONFIG_FILES([po/Makevars])
+Only in libwrc-b4b358785237344d9dbad8b338cc3d7d1ac74a12: configure.ac.rej
+diff -ru libwrc-b4b358785237344d9dbad8b338cc3d7d1ac74a12/Makefile.am libwrc-b4b358785237344d9dbad8b338cc3d7d1ac74a12.new/Makefile.am
+--- libwrc-b4b358785237344d9dbad8b338cc3d7d1ac74a12/Makefile.am	2024-06-10 06:09:07.000000000 +0200
++++ libwrc-b4b358785237344d9dbad8b338cc3d7d1ac74a12.new/Makefile.am	2025-11-07 21:35:02.678339704 +0100
+@@ -3,24 +3,7 @@
+ SUBDIRS = \
+ 	include \
+ 	common \
+-	libcerror \
+-	libcthreads \
+-	libcdata \
+-	libclocale \
+-	libcnotify \
+-	libcsplit \
+-	libuna \
+-	libcfile \
+-	libcpath \
+-	libbfio \
+-	libfcache \
+-	libfdata \
+-	libfdatetime \
+-	libfguid \
+-	libfvalue \
+-	libfwnt \
+ 	libwrc \
+-	libexe \
+ 	wrctools \
+ 	pywrc \
+ 	po \
+@@ -88,21 +71,6 @@
+ 
+ library:
+ 	(cd $(srcdir)/common && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcerror && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcthreads && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcdata && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libclocale && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcnotify && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcsplit && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libuna && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcfile && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libcpath && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libbfio && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libfcache && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libfdata && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libfdatetime && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libfvalue && $(MAKE) $(AM_MAKEFLAGS))
+-	(cd $(srcdir)/libfwnt && $(MAKE) $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/libwrc && $(MAKE) $(AM_MAKEFLAGS))
+ 	(cd $(srcdir)/po && $(MAKE) $(AM_MAKEFLAGS))
+ 
+Only in libwrc-b4b358785237344d9dbad8b338cc3d7d1ac74a12: Makefile.am.rej
