@@ -1,0 +1,115 @@
+# sudo p0f -i any -u root -d -o /var/log/p0f.log
+--- p0f 3.09b by Michal Zalewski <lcamtuf@coredump.cx> ---
+
+[+] Closed 1 file descriptor.
+[+] Loaded 322 signatures from '/etc/p0f/p0f.fp'.
+[+] Intercepting traffic on interface 'any'.
+[+] Default packet filtering configured.
+[+] Log file '/var/log/p0f.log' opened for writing.
+[-] PROGRAM ABORT : User 'root' must be non-root.
+         Location : drop_privs(), p0f.c:636
+
+# id p0f
+id: ‘p0f’: no such user
+
+# useradd -r p0f
+# id p0f
+uid=462(p0f) gid=462(p0f) groups=462(p0f)
+
+# p0f -i any -u p0f -d -o /var/log/p0f.log
+--- p0f 3.09b by Michal Zalewski <lcamtuf@coredump.cx> ---
+
+[+] Closed 3 file descriptors.
+[+] Loaded 322 signatures from '/etc/p0f/p0f.fp'.
+[+] Intercepting traffic on interface 'any'.
+[+] Default packet filtering configured.
+[+] Log file '/var/log/p0f.log' opened for writing.
+[-] SYSTEM ERROR : chdir('/home/p0f') failed.
+        Location : drop_privs(), p0f.c:642
+      OS message : No such file or directory
+
+
+# mkdir /home/p0f
+
+# p0f -i any -u p0f -d -o /var/log/p0f.log
+--- p0f 3.09b by Michal Zalewski <lcamtuf@coredump.cx> ---
+
+[+] Closed 3 file descriptors.
+[+] Loaded 322 signatures from '/etc/p0f/p0f.fp'.
+[+] Intercepting traffic on interface 'any'.
+[+] Default packet filtering configured.
+[+] Log file '/var/log/p0f.log' opened for writing.
+[+] Privileges dropped: uid 462, gid 462, root '/home/p0f'.
+[+] Daemon process created, PID 7105 (stderr not kept).
+
+Good luck, you're on your own now!
+
+# p0f -i any -u p0f -o /var/log/p0f.log -s /var/run/p0f.sock -d
+--- p0f 3.09b by Michal Zalewski <lcamtuf@coredump.cx> ---
+
+[+] Closed 3 file descriptors.
+[+] Loaded 322 signatures from '/etc/p0f/p0f.fp'.
+[+] Intercepting traffic on interface 'any'.
+[+] Default packet filtering configured.
+[+] Log file '/var/log/p0f.log' opened for writing.
+[+] Listening on API socket '/var/run/p0f.sock' (max 20 clients).
+[+] Privileges dropped: uid 462, gid 462, root '/home/p0f'.
+[+] Daemon process created, PID 12943 (stderr not kept).
+
+
+# ps aux|grep p0f
+root       12945  0.0  0.0   3876  2124 pts/2    S+   17:28   0:00 grep --color=auto p0f
+
+
+# p0f -i any -u p0f -o /var/log/p0f.log -s /var/run/p0f.sock 
+--- p0f 3.09b by Michal Zalewski <lcamtuf@coredump.cx> ---
+
+[+] Closed 3 file descriptors.
+[+] Loaded 322 signatures from '/etc/p0f/p0f.fp'.
+[+] Intercepting traffic on interface 'any'.
+[+] Default packet filtering configured.
+[+] Log file '/var/log/p0f.log' opened for writing.
+[+] Listening on API socket '/var/run/p0f.sock' (max 20 clients).
+[+] Privileges dropped: uid 462, gid 462, root '/home/p0f'.
+[+] Entered main event loop.
+
+
+.-[ 2.181.32.77/48352 -> 165.72.12.90/443 (syn) ]-
+|
+| client   = 2.181.32.77/48352
+| os       = Linux 2.2.x-3.x
+| dist     = 0
+| params   = generic
+| raw_sig  = 4:64+0:0:1460:mss*44,7:mss,sok,ts,nop,ws:df,id+:0
+|
+`----
+
+.-[ 2.181.32.77/48352 -> 165.72.12.90/443 (mtu) ]-
+|
+| client   = 2.181.32.77/48352
+| link     = Ethernet or modem
+| raw_mtu  = 1500
+|
+`----
+
+.-[ 2.181.32.77/48352 -> 165.72.12.90/443 (syn+ack) ]-
+|
+| server   = 165.72.12.90/443
+| os       = ???
+| dist     = 9
+| params   = none
+| raw_sig  = 4:246+9:0:1460:mss*10,0:mss,nop,ws,sok,ts:df,id+:0
+|
+`----
+
+.-[ 2.181.32.77/48352 -> 165.72.12.90/443 (mtu) ]-
+|
+| server   = 165.72.12.90/443
+| link     = Ethernet or modem
+| raw_mtu  = 1500
+|
+`----
+
+
+
+
