@@ -49,6 +49,10 @@ BuildRequires:  libfdatetime-devel
 BuildRequires:  libfdatetime-devel
 BuildRequires:  libfvalue-devel
 BuildRequires:  libfwnt-devel
+BuildRequires:  libfguid-devel
+BuildRequires:  libexe-devel
+
+
 
 
 %description    %{common_description}
@@ -70,7 +74,7 @@ developing applications that use %{name}.
 
 
 %build
-%configure --disable-static --enable-wide-character-type
+%configure --disable-static --enable-wide-character-type --enable-python
 %make_build
 
 
