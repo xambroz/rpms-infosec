@@ -1,5 +1,5 @@
 Name:           libcdatetime
-Version:        20240414
+Version:        20241016
 Summary:        Libyal library for cross-platform C date and time functions
 Group:          System Environment/Libraries
 License:        LGPL-3.0-or-later
@@ -8,8 +8,8 @@ URL:            https://github.com/libyal/libcdatetime
 
 %global         gituser         libyal
 %global         gitname         libcdatetime
-%global         gitdate         20240414
-%global         commit          fba481205729a88982764c16f46d9d66cf1fd8c4
+%global         gitdate         20241016
+%global         commit          c9b2f18bbc5def025dd869c963a3420439b323b0
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 Release:        %autorelease
