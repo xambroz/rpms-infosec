@@ -1,5 +1,5 @@
 Name:           libcpath
-Version:        20240414
+Version:        20240920
 Release:        %autorelease
 Summary:        Libyal library for cross-platform C path functions
 
@@ -10,9 +10,9 @@ VCS:            https://github.com/libyal/libcpath
 
 %global         gituser         libyal
 %global         gitname         libcpath
-%global         gitdate         20240414
+%global         gitdate         20240920
 #20240414
-%global         commit          fcc7645b094e904cfb57ce5eb9e7515ad12b420f
+%global         commit          bcd821042bedbc9cd3a226e765c303797a50c066
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
