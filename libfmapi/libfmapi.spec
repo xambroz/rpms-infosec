@@ -1,5 +1,5 @@
 Name:           libfmapi
-Version:        20240415
+Version:        20241004
 Release:        %autorelease
 Summary:        Libyal library for cross-platform C generic data functions
 Group:          System Environment/Libraries
@@ -11,8 +11,8 @@ VCS:            https://github.com/libyal/libfmapi
 
 %global         gituser         libyal
 %global         gitname         libfmapi
-%global         gitdate         20240415
-%global         commit          a35168bc8695fac44d5dc665926848bfc8d58ca6
+%global         gitdate         20241004
+%global         commit          345e1c6082e8cde40a4de7fd4b8d46ff8f83b61b
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
