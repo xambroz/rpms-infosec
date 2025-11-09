@@ -1,5 +1,5 @@
 Name:           libfvalue
-Version:        20240415
+Version:        20240621
 Summary:        Libyal library for generic file value functions
 Group:          System Environment/Libraries
 License:        LGPL-3.0-or-later
@@ -10,8 +10,8 @@ VCS:            https://github.com/libyal/libfvalue
 
 %global         gituser         libyal
 %global         gitname         libfvalue
-%global         gitdate         20240415
-%global         commit          7357315fa55d5a30273aa78d98ca8e9c62d2cd8a
+%global         gitdate         20240621
+%global         commit          2c3189c4ffe28fe97932b6cb5fe553fba08f9fc5
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
