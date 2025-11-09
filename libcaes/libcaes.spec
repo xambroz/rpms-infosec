@@ -1,5 +1,5 @@
 Name:           libcaes
-Version:        20240413
+Version:        20240922
 Summary:        Libyal library to support cross-platform AES encryption 
 Group:          System Environment/Libraries
 License:        LGPL-3.0-or-later
@@ -9,8 +9,8 @@ URL:            https://github.com/libyal/libcaes
 
 %global         gituser         libyal
 %global         gitname         libcaes
-%global         gitdate         20240413
-%global         commit          a119ec92769277c63f3e54a8f6ec07c8c21ac3e8
+%global         gitdate         20240922
+%global         commit          3ed36e5ef7ba2b4e2eb3950ea713d5cc9f93e303
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 Release:        %autorelease
@@ -52,7 +52,7 @@ developing applications that use %{name}.
 
 
 %build
-%configure --disable-static --enable-wide-character-type
+%configure --disable-static --enable-wide-character-type --enable-python
 %make_build
 
 
@@ -79,4 +79,4 @@ make check
 %{_mandir}/man3/%{name}.3*
 
 %changelog
-%{?%autochangelog: %autochangelog }
+%autochangelog
