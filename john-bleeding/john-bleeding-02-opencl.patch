@@ -1,0 +1,25 @@
+From 4f5f6fc8dca0102da7e307e44d5600af04c00ca9 Mon Sep 17 00:00:00 2001
+From: magnum <john.magnum@hushmail.com>
+Date: Wed, 2 Sep 2020 12:27:46 +0200
+Subject: [PATCH] opencl_common.h: Handle systems that already defined
+ CL_DEVICE_TOPOLOGY_AMD but not CL_DEVICE_TOPOLOGY_TYPE_PCIE_AMD and
+ corresponding typedef. Closes #4331
+
+---
+ src/opencl_common.h | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/src/opencl_common.h b/src/opencl_common.h
+index 50428ce9768..264825d48b3 100644
+--- a/src/opencl_common.h
++++ b/src/opencl_common.h
+@@ -81,6 +81,9 @@
+ 
+ #ifndef CL_DEVICE_TOPOLOGY_AMD
+ #define CL_DEVICE_TOPOLOGY_AMD                      0x4037
++#endif
++
++#ifndef CL_DEVICE_TOPOLOGY_TYPE_PCIE_AMD
+ typedef union {
+ 	struct {
+ 		cl_uint type;

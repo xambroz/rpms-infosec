@@ -1,0 +1,21 @@
+This patch fixes build issue, which results in following error message:
+dynamic_fmt.o: In function `DynamicFunc__crypt_md5_to_input_raw_Overwrite_NoLen':
+.../BUILD/john-1.8.0-jumbo-1/src/dynamic_fmt.c:4989: undefined reference to `MD5_body_for_thread'
+
+
+https://github.com/magnumripper/JohnTheRipper/issues/1093
+
+diff --git a/src/MD5_std.c b/src/MD5_std.c
+index 40bf79e..3c1f4ca 100644
+--- a/src/MD5_std.c
++++ b/src/MD5_std.c
+@@ -480,7 +480,8 @@ extern void MD5_body(MD5_word x[15], MD5_word out[4]);
+  * is large enough.
+  */
+ #ifdef __x86_64__
+-#define MAYBE_INLINE_BODY MAYBE_INLINE
++//#define MAYBE_INLINE_BODY MAYBE_INLINE
++#define MAYBE_INLINE_BODY
+ #else
+ #define MAYBE_INLINE_BODY
+ #endif

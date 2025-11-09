@@ -1,0 +1,70 @@
+diff -ru john-bleeding-1.9.0-build/john-73baa17cee62c4da9b01fb89554d2e5c76f5ac4e/src/packaging/build.sh john-bleeding-1.9.0-build.new/john-73baa17cee62c4da9b01fb89554d2e5c76f5ac4e/src/packaging/build.sh
+--- john-73baa17cee62c4da9b01fb89554d2e5c76f5ac4e/src/packaging/build.sh	2025-04-01 03:20:23.000000000 +0200
++++ john-73baa17cee62c4da9b01fb89554d2e5c76f5ac4e.new/src/packaging/build.sh	2025-04-08 16:04:22.291493875 +0200
+@@ -12,7 +12,11 @@
+ #!/bin/bash
+ 
+ # Build options (system wide, disable checks, etc.)
+-SYSTEM_WIDE='--with-systemwide --enable-rexgen'
++OPTFLAGS=${OPTFLAGS:-}
++MAKEFLAGS=${MAKEFLAGS:-"-sj4"}
++
++
++SYSTEM_WIDE='--with-systemwide '
+ X86_REGULAR="--disable-native-tests --disable-opencl $SYSTEM_WIDE"
+ X86_NO_OPENMP="--disable-native-tests --disable-opencl $SYSTEM_WIDE --disable-openmp"
+ 
+@@ -26,9 +30,9 @@
+     set -e
+ 
+     if [[ -n "$1" ]]; then
+-        make -s clean && make -sj4 && mv ../run/john "$1"
++        make -s clean && make $MAKEFLAGS && mv ../run/john "$1"
+     else
+-        make -s clean && make -sj4
++        make -s clean && make $MAKEFLAGS
+     fi
+     set +e
+ }
+@@ -40,18 +44,18 @@
+     # For all intents and purposes, 32 bits X86 is deprecated these days
+     if [[ "$arch" == "x86_64" || "$arch" == "i386" || "$arch" == "i686" ]]; then
+         # x86_64 CPU (OMP and SIMD fallback)
+-        ./configure $X86_NO_OPENMP --enable-simd=sse2   CPPFLAGS="-D_BOXED" && do_build ../run/john-sse2
+-        ./configure $X86_REGULAR   --enable-simd=sse2   CPPFLAGS="-D_BOXED -DOMP_FALLBACK -DOMP_FALLBACK_BINARY=\"\\\"john-sse2\\\"\"" && do_build ../run/john-sse2-omp
+-        ./configure $X86_NO_OPENMP --enable-simd=avx    CPPFLAGS="-D_BOXED" && do_build ../run/john-avx
+-        ./configure $X86_REGULAR   --enable-simd=avx    CPPFLAGS="-D_BOXED -DOMP_FALLBACK -DOMP_FALLBACK_BINARY=\"\\\"john-avx\\\"\" -DCPU_FALLBACK -DCPU_FALLBACK_BINARY=\"\\\"john-sse2-omp\\\"\"" && do_build ../run/john-avx-omp
+-        ./configure $X86_NO_OPENMP --enable-simd=xop    CPPFLAGS="-D_BOXED" && do_build ../run/john-xop
+-        ./configure $X86_REGULAR   --enable-simd=xop    CPPFLAGS="-D_BOXED -DOMP_FALLBACK -DOMP_FALLBACK_BINARY=\"\\\"john-xop\\\"\" -DCPU_FALLBACK -DCPU_FALLBACK_BINARY=\"\\\"john-avx-omp\\\"\"" && do_build ../run/john-xop-omp
+-        ./configure $X86_NO_OPENMP --enable-simd=avx2   CPPFLAGS="-D_BOXED" && do_build ../run/john-avx2
+-        ./configure $X86_REGULAR   --enable-simd=avx2   CPPFLAGS="-D_BOXED -DOMP_FALLBACK -DOMP_FALLBACK_BINARY=\"\\\"john-avx2\\\"\" -DCPU_FALLBACK -DCPU_FALLBACK_BINARY=\"\\\"john-xop-omp\\\"\"" && do_build ../run/john-avx2-omp
+-        ./configure $X86_NO_OPENMP --enable-simd=avx512f  CPPFLAGS="-D_BOXED" && do_build ../run/john-avx512f
+-        ./configure $X86_REGULAR   --enable-simd=avx512f  CPPFLAGS="-D_BOXED -DOMP_FALLBACK -DOMP_FALLBACK_BINARY=\"\\\"john-avx512f\\\"\" -DCPU_FALLBACK -DCPU_FALLBACK_BINARY=\"\\\"john-avx2-omp\\\"\"" && do_build ../run/john-avx512f-omp
+-        ./configure $X86_NO_OPENMP --enable-simd=avx512bw CPPFLAGS="-D_BOXED" && do_build ../run/john-avx512bw
+-        ./configure $X86_REGULAR   --enable-simd=avx512bw CPPFLAGS="-D_BOXED -DOMP_FALLBACK -DOMP_FALLBACK_BINARY=\"\\\"john-avx512bw\\\"\" -DCPU_FALLBACK -DCPU_FALLBACK_BINARY=\"\\\"john-avx512f-omp\\\"\"" && do_build ../run/john-avx512bw-omp
++        ./configure $X86_NO_OPENMP --enable-simd=sse2   CPPFLAGS="$OPTFLAGS -D_BOXED" && do_build ../run/john-sse2
++        ./configure $X86_REGULAR   --enable-simd=sse2   CPPFLAGS="$OPTFLAGS -D_BOXED -DOMP_FALLBACK -DOMP_FALLBACK_BINARY=\"\\\"john-sse2\\\"\"" && do_build ../run/john-sse2-omp
++        ./configure $X86_NO_OPENMP --enable-simd=avx    CPPFLAGS="$OPTFLAGS -D_BOXED" && do_build ../run/john-avx
++        ./configure $X86_REGULAR   --enable-simd=avx    CPPFLAGS="$OPTFLAGS -D_BOXED -DOMP_FALLBACK -DOMP_FALLBACK_BINARY=\"\\\"john-avx\\\"\" -DCPU_FALLBACK -DCPU_FALLBACK_BINARY=\"\\\"john-sse2-omp\\\"\"" && do_build ../run/john-avx-omp
++        ./configure $X86_NO_OPENMP --enable-simd=xop    CPPFLAGS="$OPTFLAGS -D_BOXED" && do_build ../run/john-xop
++        ./configure $X86_REGULAR   --enable-simd=xop    CPPFLAGS="$OPTFLAGS -D_BOXED -DOMP_FALLBACK -DOMP_FALLBACK_BINARY=\"\\\"john-xop\\\"\" -DCPU_FALLBACK -DCPU_FALLBACK_BINARY=\"\\\"john-avx-omp\\\"\"" && do_build ../run/john-xop-omp
++        ./configure $X86_NO_OPENMP --enable-simd=avx2   CPPFLAGS="$OPTFLAGS -D_BOXED" && do_build ../run/john-avx2
++        ./configure $X86_REGULAR   --enable-simd=avx2   CPPFLAGS="$OPTFLAGS -D_BOXED -DOMP_FALLBACK -DOMP_FALLBACK_BINARY=\"\\\"john-avx2\\\"\" -DCPU_FALLBACK -DCPU_FALLBACK_BINARY=\"\\\"john-xop-omp\\\"\"" && do_build ../run/john-avx2-omp
++        ./configure $X86_NO_OPENMP --enable-simd=avx512f  CPPFLAGS="$OPTFLAGS -D_BOXED" && do_build ../run/john-avx512f
++        ./configure $X86_REGULAR   --enable-simd=avx512f  CPPFLAGS="$OPTFLAGS -D_BOXED -DOMP_FALLBACK -DOMP_FALLBACK_BINARY=\"\\\"john-avx512f\\\"\" -DCPU_FALLBACK -DCPU_FALLBACK_BINARY=\"\\\"john-avx2-omp\\\"\"" && do_build ../run/john-avx512f-omp
++        ./configure $X86_NO_OPENMP --enable-simd=avx512bw CPPFLAGS="$OPTFLAGS -D_BOXED" && do_build ../run/john-avx512bw
++        ./configure $X86_REGULAR   --enable-simd=avx512bw CPPFLAGS="$OPTFLAGS -D_BOXED -DOMP_FALLBACK -DOMP_FALLBACK_BINARY=\"\\\"john-avx512bw\\\"\" -DCPU_FALLBACK -DCPU_FALLBACK_BINARY=\"\\\"john-avx512f-omp\\\"\"" && do_build ../run/john-avx512bw-omp
+ 
+         #Create a 'john' executable
+         ln -s ../run/john-avx512bw-omp ../run/john
+@@ -59,8 +63,8 @@
+         # Non X86 CPU (OMP fallback)
+         # Use $arch in the name (avoid to use "no" as in "john-no-omp")
+         # Note that "john" is an alias for john-omp
+-        ./configure $OTHER_NO_OPENMP   CPPFLAGS="-D_BOXED" && do_build "../run/john-$arch"
+-        ./configure $OTHER_REGULAR     CPPFLAGS="-D_BOXED -DOMP_FALLBACK -DOMP_FALLBACK_BINARY=\"\\\"john-$arch\\\"\"" && do_build ../run/john-omp
++        ./configure $OTHER_NO_OPENMP   CPPFLAGS="$OPTFLAGS -D_BOXED" && do_build "../run/john-$arch"
++        ./configure $OTHER_REGULAR     CPPFLAGS="$OPTFLAGS -D_BOXED -DOMP_FALLBACK -DOMP_FALLBACK_BINARY=\"\\\"john-$arch\\\"\"" && do_build ../run/john-omp
+ 
+         #Create a 'john' executable
+         ln -s ../run/john-omp ../run/john
