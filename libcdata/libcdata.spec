@@ -1,5 +1,5 @@
 Name:           libcdata
-Version:        20240414
+Version:        20241015
 Summary:        Libyal library for cross-platform C generic data functions
 Group:          System Environment/Libraries
 License:        LGPL-3.0-or-later
@@ -8,8 +8,8 @@ URL:            https://github.com/libyal/libcdata
 
 %global         gituser         libyal
 %global         gitname         libcdata
-%global         gitdate         20240414
-%global         commit          ed66801e97c516c405486508d280fda3e8114e9d
+%global         gitdate         20241015
+%global         commit          0bcf88b472719188f570efb38ed7b27520e63b1a
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 Release:        %autorelease
