@@ -1,5 +1,5 @@
 Name:           libewf
-Version:        20240506
+Version:        20251106
 Release:        %autorelease
 Summary:        Libyal library for the Expert Witness Compression Format (EWF)
 
@@ -11,8 +11,8 @@ URL:            https://github.com/libyal/libewf
 
 %global         gituser         libyal
 %global         gitname         libewf
-%global         gitdate         20240506
-%global         commit          817797ca167b1ca43e1f2eace0d74b7eb2388f49
+%global         gitdate         20251106
+%global         commit          87a4ea137581cdac474376dfe7db1eb8ee1df2d8
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
