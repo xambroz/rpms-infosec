@@ -1,5 +1,5 @@
 Name:           libfcache
-Version:        20240414
+Version:        20240924
 Release:        %autorelease
 Summary:        Libyal library to provide generic file data cache functions
 Group:          System Environment/Libraries
@@ -8,8 +8,8 @@ URL:            https://github.com/libyal/libfcache
 
 %global         gituser         libyal
 %global         gitname         libfcache
-%global         gitdate         20240414
-%global         commit          4a4743abe3dd4b71ab1e456ee52e2c25a3320fe1
+%global         gitdate         20240924
+%global         commit          f5c480f00be521e77ee2b23c8854036c73b77e20
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 Source0:        %{url}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
