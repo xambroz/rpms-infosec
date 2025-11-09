@@ -1,5 +1,5 @@
 Name:           libesedb
-Version:        20240420
+Version:        20240627
 Summary:        Library to access the Extensible Storage Engine (ESE) Database File (EDB) format
 License:        LGPL-3.0-or-later
 URL:            https://github.com/libyal/libesedb
@@ -13,8 +13,8 @@ Windows Mail, Exchange, Active Directory, etc.}
 
 %global         gituser         libyal
 %global         gitname         libesedb
-%global         gitdate         20240420
-%global         commit          24ae2ff47365adb5f1dcdce315ac7dd16b972836
+%global         gitdate         20240627
+%global         commit          d959e1e037635c72f07f08e2ac741036268f4e3c
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 Release:        %autorelease
