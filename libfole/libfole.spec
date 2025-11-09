@@ -1,5 +1,5 @@
 Name:           libfole
-Version:        20240521
+Version:        20240416
 Release:        %autorelease
 Summary:        Libyal library for cross-platform C file functions
 Group:          System Environment/Libraries
@@ -9,8 +9,8 @@ URL:            https://github.com/libyal/libfole
 
 %global         gituser         libyal
 %global         gitname         libfole
-%global         gitdate         20240521
-%global         commit          c6dbb26a2f2a531cd4d1101bbffa88cd110e3f90
+%global         gitdate         20240416
+%global         commit          ea62ecf9e94e4607ffe458311485fe577a8bffc1
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 Source0:        %{url}/archive/%{commit}/%{name}-%{version}-%{shortcommit}.tar.gz
@@ -78,4 +78,7 @@ make check
 %{_mandir}/man3/%{name}.3*
 
 %changelog
+* Sun Nov 09 2025 Michal Ambroz <rebus _AT seznam.cz> - 20240416-1
+- bump to 20240416
+
 %{?%autochangelog: %autochangelog }
