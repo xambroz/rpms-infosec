@@ -1,5 +1,5 @@
 Name:           libfguid
-Version:        20240415
+Version:        20240518
 Release:        %autorelease
 Summary:        Libyal library for GUID/UUID data types
 Group:          System Environment/Libraries
@@ -8,8 +8,8 @@ URL:            https://github.com/libyal/libfguid
 
 %global         gituser         libyal
 %global         gitname         libfguid
-%global         gitdate         20240415
-%global         commit          c79feddbafec7d24df8c661e8c9be1417d4dedf4
+%global         gitdate         20240518
+%global         commit          89513352efdf36b42b2b8b03c6e25fd022e5b301
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
