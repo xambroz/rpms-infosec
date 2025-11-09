@@ -1,5 +1,5 @@
 Name:           libfdatetime
-Version:        20240415
+Version:        20241214
 Summary:        Libyal library for date and time data types
 License:        LGPL-3.0-or-later
 URL:            https://github.com/libyal/libfdatetime
@@ -7,8 +7,8 @@ URL:            https://github.com/libyal/libfdatetime
 
 %global         gituser         libyal
 %global         gitname         libfdatetime
-%global         gitdate         20240415
-%global         commit          133ca426176073d54f4e5eb1f7f61a39e0050fe2
+%global         gitdate         20241214
+%global         commit          f1a852adcbbf1d54893c3b8d6d3e5dadf9f433f8
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
