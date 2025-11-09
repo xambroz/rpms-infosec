@@ -1,5 +1,5 @@
 Name:           libfwnt
-Version:        20240415
+Version:        20240715
 Summary:        Libyal library for Windows NT data types
 License:        LGPL-3.0-or-later
 Group:          System Environment/Libraries
@@ -9,8 +9,8 @@ URL:            https://github.com/libyal/libfwnt
 
 %global         gituser         libyal
 %global         gitname         libfwnt
-%global         gitdate         20240415
-%global         commit          24d81387a2c8bbabad5e787e75967039e8bfae29
+%global         gitdate         20240715
+%global         commit          6eca74ea9877d2902871e9a3c0ec677589c5f385
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
