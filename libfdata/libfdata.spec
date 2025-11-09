@@ -1,5 +1,5 @@
 Name:           libfdata
-Version:        20240927
+Version:        20240415
 Summary:        Libyal library to provide generic file data functions
 Group:          System Environment/Libraries
 License:        LGPL-3.0-or-later
@@ -10,7 +10,7 @@ URL:            https://github.com/libyal/libfdata
 %global         gituser         libyal
 %global         gitname         libfdata
 %global         gitdate         20240415
-%global         commit          46dd9838aa2ef9974f92210bc2bbcd24b340ff37
+%global         commit          c7d92a0ab2dd665fb328e0aa637ca7d04cfcf46c
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 %global         common_description %{expand:
@@ -85,4 +85,4 @@ make check
 %{_mandir}/man3/%{name}.3*
 
 %changelog
-%{?%autochangelog: %autochangelog }
+%autochangelog
