@@ -1,9 +1,18 @@
 #!/bin/bash
 
+# CHROOT="all"
+# CHROOT="fedora-42-x86_64"
+CHROOT=${CHROOT:-"all"}
+
 SEQUENCEFILE="sequence.txt"
 SEQUENCE=$(cat "$SEQUENCEFILE" | sed -e 's/[ ]*#.*$//' | grep -v -e '^$')
 
-LASTGOODFILE="last_good.txt"
+if [ "$CHROOT" = "all" ] ; then
+    LASTGOODFILE=${LASTGOODFILE:-"last_good.txt"}
+else
+    LASTGOODFILE=${LASTGOODFILE:-"last_good_${CHROOT}.txt"}
+fi
+
 LASTGOOD=$(cat "$LASTGOODFILE")
 SKIP=1
 if [ "x${LASTGOOD}" == "x" ] ; then
@@ -24,10 +33,24 @@ echo "$SEQUENCE" | while read P DEPARGS ; do
     DEPS=$( echo "$DEPARGS" | cut -d '|' -f 1 )
     ARGS=$( echo "$DEPARGS" | cut -d '|' -f 2 )
 
-    echo "=== Building package $P"
-    echo "copr build-package rebus/infosec --name \"$P\" $ARGS"
-    MSG=$( proxychains copr build-package rebus/infosec --name "$P" $ARGS )
-    RESULT=$?
+    if [ "$CHROOT" = "all" ] ; then
+        echo "=== Building package $P"
+        echo "copr build-package rebus/infosec --name \"$P\" $ARGS"
+        MSG=$( proxychains copr build-package rebus/infosec --name "$P" $ARGS )
+        RESULT=$((RESULT + $?))
+    else
+	for C in "$CHROOT" ; do
+            echo "=== Building package $P for ${C}"
+            echo "copr build-package rebus/infosec --chroot "$C" --name \"$P\" $ARGS"
+            MSG=$( proxychains copr build-package rebus/infosec --chroot "$C" --name "$P" $ARGS )
+            RESULT=$(($RESULT + $?))
+	done
+    fi
+
+
+
+
+
     if [ "$RESULT" -ne 0 ] ; then
         echo "==== ERROR: failed package $P "
         exit
