@@ -1,5 +1,5 @@
 Name:           libuna
-Version:        20240414
+Version:        20251108
 Summary:        Libyal library to support Unicode and ASCII (byte string) conversions
 Group:          System Environment/Libraries
 License:        LGPL-3.0-or-later
@@ -16,8 +16,8 @@ Library to support Unicode and ASCII (byte string) conversions.
 
 %global         gituser         libyal
 %global         gitname         libuna
-%global         gitdate         20240414
-%global         commit          ee21db63eed2820396cff0a7442e408c028535f2
+%global         gitdate         20251108
+%global         commit          85e9a613e78bcc5a61fa5c79e676fd280fcd840a
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 Release:        %autorelease
