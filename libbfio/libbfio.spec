@@ -1,5 +1,5 @@
 Name:           libbfio
-Version:        20240414
+Version:        20241015
 Release:        %autorelease
 Summary:        Library to provide basic file input/output abstraction
 Group:          System Environment/Libraries
@@ -8,8 +8,8 @@ URL:            https://github.com/libyal/libbfio
 
 %global         gituser         libyal
 %global         gitname         libbfio
-%global         gitdate         20240414
-%global         commit          2bde498a8fbe0155fc7fbcd9c56de7cadc2dcb8d
+%global         gitdate         20241015
+%global         commit          5b07d0701d4a19136ca0e84f91004e8592104ed7
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
