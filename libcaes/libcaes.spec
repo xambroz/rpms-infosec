@@ -59,6 +59,8 @@ Requires:       python3
 BuildRequires:  python3
 BuildRequires:  python3-devel
 BuildRequires:  python3-setuptools
+# needed for tests
+BuildRequires:  /usr/bin/python
 
 %description -n python3-%{name}
 Python 3 bindings for %{name}
@@ -72,7 +74,9 @@ Python 3 bindings for %{name}
 
 
 %build
-%configure --disable-static --enable-wide-character-type --enable-python
+%configure --enable-shared --disable-static \
+    --with-openssl --enable-openssl-evp-cipher --enable-openssl-evp-md \
+    --enable-python
 %make_build
 
 
