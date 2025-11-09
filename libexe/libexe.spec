@@ -1,5 +1,5 @@
 Name:           libexe
-Version:        20240420
+Version:        20240630
 Release:        %autorelease
 Summary:        Libyal library for cross-platform C error functions
 Group:          System Environment/Libraries
@@ -11,8 +11,8 @@ VCS:            https://github.com/libyal/libexe
 
 %global         gituser         libyal
 %global         gitname         libexe
-%global         gitdate         20240420
-%global         commit          cab97184be54abde56fbaaddbe2c9147c9f9510c
+%global         gitdate         20240630
+%global         commit          54e083ae780131d8bd0eaad58de7141d49a5e25a
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 %bcond_without  python3
