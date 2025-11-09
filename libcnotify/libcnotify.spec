@@ -1,5 +1,5 @@
 Name:           libcnotify
-Version:        20240414
+Version:        20240919
 Group:          System Environment/Libraries
 License:        LGPL-3.0-or-later
 URL:            https://github.com/libyal/libcnotify
@@ -8,8 +8,8 @@ Summary:        Libyal library for cross-platform C generic data functions
 
 %global         gituser         libyal
 %global         gitname         libcnotify
-%global         gitdate         20240414
-%global         commit          d1bd4e920356ecd29c66f4d21bb36fa2834dbf31
+%global         gitdate         20240919
+%global         commit          d6006204ebe8c462b4763708346295556c82ad7a
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
