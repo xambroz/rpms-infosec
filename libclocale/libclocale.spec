@@ -1,5 +1,5 @@
 Name:           libclocale
-Version:        20240414
+Version:        20240918
 Group:          System Environment/Libraries
 License:        LGPL-3.0-or-later
 URL:            https://github.com/libyal/libclocale
@@ -7,8 +7,8 @@ URL:            https://github.com/libyal/libclocale
 
 %global         gituser         libyal
 %global         gitname         libclocale
-%global         gitdate         20240414
-%global         commit          45b989bec6c5578b762f5b13dbce03aa2e999426
+%global         gitdate         20240918
+%global         commit          1cf15c1c1e9c10e0b44da3c3cd68f582367ec084
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 Release:        %autorelease
