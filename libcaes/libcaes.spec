@@ -32,6 +32,7 @@ BuildRequires:  pkgconfig
 BuildRequires:  automake
 BuildRequires:  libtool
 BuildRequires:  gettext-devel
+BuildRequires:  openssl-devel
 BuildRequires:  libcerror-devel
 
 %description
