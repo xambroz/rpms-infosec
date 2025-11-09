@@ -1,5 +1,5 @@
 Name:           libhmac
-Version:        20240417
+Version:        20241028
 Release:        %autorelease
 Summary:        Libyal library to support various Hash-based Message Authentication Codes (HMAC)
 Group:          System Environment/Libraries
@@ -11,8 +11,8 @@ VCS:            https://github.com/libyal/libhmac
 
 %global         gituser         libyal
 %global         gitname         libhmac
-%global         gitdate         20240417
-%global         commit          7ce99ac975e27be8e19eea9accf5ffce0304fe8a
+%global         gitdate         20241028
+%global         commit          8628d575037c126b8e46fae0085f50658faa0967
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 %bcond_without  python3
