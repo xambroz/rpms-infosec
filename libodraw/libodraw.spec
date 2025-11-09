@@ -1,16 +1,17 @@
 Name:           libodraw
-Version:        20240505
+Version:        20240619
 Release:        %autorelease
 Summary:        Libyal library to access to optical disc (split) RAW image files (bin/cue, iso/cue)
 Group:          System Environment/Libraries
 License:        LGPL-3.0-or-later
 URL:            https://github.com/libyal/libodraw
+VCS:            git:https://github.com/libyal/libodraw
 # Releases      https://github.com/libyal/libodraw/releases
 
 %global         gituser         libyal
 %global         gitname         libodraw
-%global         gitdate         20240505
-%global         commit          9460a81cb2d7ce7b9a221cab8f97885d001801fb
+%global         gitdate         20240619
+%global         commit          f3d9b6b33a2c160514d8f56c60c3a47c4322f8ad
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
