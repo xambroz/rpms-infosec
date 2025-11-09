@@ -1,5 +1,5 @@
 Name:           libsmdev
-Version:        20240505
+Version:        20240617
 Release:        %autorelease
 Summary:        Libyal library to access to storage media devices
 Group:          System Environment/Libraries
@@ -11,8 +11,8 @@ VCS:            https://github.com/libyal/libsmdev
 
 %global         gituser         libyal
 %global         gitname         libsmdev
-%global         gitdate         20240505
-%global         commit          9b9c94244a9d0df752fbb0cbee20207a2ee0c7e1
+%global         gitdate         20240617
+%global         commit          8005ba25f67d863f6947cc8fa3730f6956b16980
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 %bcond_without  python3
