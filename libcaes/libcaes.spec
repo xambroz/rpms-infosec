@@ -6,6 +6,9 @@ License:        LGPL-3.0-or-later
 URL:            https://github.com/libyal/libcaes
 # Releases      https://github.com/libyal/libcaes/releases
 
+%global         common_description %{expand:
+Library to support cross-platform AES encryption.
+}
 
 %global         gituser         libyal
 %global         gitname         libcaes
@@ -32,7 +35,7 @@ BuildRequires:  gettext-devel
 BuildRequires:  libcerror-devel
 
 %description
-Library to support cross-platform AES encryption.
+%{common_description}
 
 %package        devel
 Summary:        Development files for %{name}
@@ -44,6 +47,21 @@ Requires:       pkgconfig
 %description    devel
 The %{name}-devel package contains libraries and header files for
 developing applications that use %{name}.
+%{common_description}
+
+
+%package     -n python3-%{name}
+Summary:        Python3 package for %{name}
+Group:          System Environment/Libraries
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+Requires:       python3
+BuildRequires:  python3-devel
+BuildRequires:  python3-setuptools
+
+%description -n python3-%{name}
+Python 3 bindings for %{name}
+%{common_description}
+
 
 %prep
 %autosetup -n %{gitname}-%{commit}
