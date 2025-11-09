@@ -1,5 +1,5 @@
 Name:           libcfile
-Version:        20240414
+Version:        20240917
 Summary:        Libyal library for cross-platform C file functions
 Group:          System Environment/Libraries
 License:        LGPL-3.0-or-later
@@ -8,8 +8,8 @@ URL:            https://github.com/libyal/libcfile
 
 %global         gituser         libyal
 %global         gitname         libcfile
-%global         gitdate         20240414
-%global         commit          538ec50e581a3b7e136ab0d1a3731b0475680450
+%global         gitdate         20240917
+%global         commit          c572b325ea393ad6a7508fbf5d1c3f247994ed3c
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 Release:        %autorelease
