@@ -55,6 +55,7 @@ Summary:        Python3 package for %{name}
 Group:          System Environment/Libraries
 Requires:       %{name}%{?_isa} = %{version}-%{release}
 Requires:       python3
+BuildRequires:  python3
 BuildRequires:  python3-devel
 BuildRequires:  python3-setuptools
 
