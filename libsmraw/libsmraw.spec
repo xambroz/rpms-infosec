@@ -1,5 +1,5 @@
 Name:           libsmraw
-Version:        20240506
+Version:        20240816
 Release:        %autorelease
 Summary:        Libyal library and tools to access the (split) RAW image format
 Group:          System Environment/Libraries
@@ -11,8 +11,8 @@ VCS:            https://github.com/libyal/libsmraw
 
 %global         gituser         libyal
 %global         gitname         libsmraw
-%global         gitdate         20240506
-%global         commit          995b9e200ae8c836439f14741253143803fecb0c
+%global         gitdate         20240816
+%global         commit          a66fdaf364841c5ef429518abf7dc6a6046f1604
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 %bcond_without  python3
