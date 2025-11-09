@@ -1,5 +1,5 @@
 Name:           libmapidb
-Version:        20240420
+Version:        20240609
 Release:        %autorelease
 Summary:        Libyal library for cross-platform C generic data functions
 Group:          System Environment/Libraries
@@ -11,8 +11,8 @@ VCS:            https://github.com/libyal/libmapidb
 
 %global         gituser         libyal
 %global         gitname         libmapidb
-%global         gitdate         20240420
-%global         commit          79f64a6dce94de6b2e73220ebfa548e3fa0f8a01
+%global         gitdate         20240609
+%global         commit          1404dad46e368e44a95f0cbb75f1012f6e68810c
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
