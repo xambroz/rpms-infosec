@@ -86,7 +86,8 @@ make check
 
 
 %files
-%doc AUTHORS COPYING NEWS README
+%doc AUTHORS NEWS README
+%license COPYING COPYING.LESSER
 %{_libdir}/*.so.*
 
 %files devel
@@ -95,6 +96,10 @@ make check
 %{_libdir}/*.so
 %{_libdir}/pkgconfig/%{name}.pc
 %{_mandir}/man3/%{name}.3*
+
+%files -n python3-%{name}
+%doc AUTHORS README
+%{_libdir}/python3*/site-packages/*.so
 
 %changelog
 %autochangelog
