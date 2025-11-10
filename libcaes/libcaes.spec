@@ -51,18 +51,18 @@ developing applications that use %{name}.
 %{common_description}
 
 
-%package     -n python3-%{name}
+%package     -n python%{python3_pkgversion}-%{name}
 Summary:        Python3 package for %{name}
 Group:          System Environment/Libraries
 Requires:       %{name}%{?_isa} = %{version}-%{release}
-Requires:       python3
-BuildRequires:  python3
-BuildRequires:  python3-devel
-BuildRequires:  python3-setuptools
+Requires:       python%{python3_pkgversion}
+BuildRequires:  python%{python3_pkgversion}
+BuildRequires:  python%{python3_pkgversion}-devel
+BuildRequires:  python%{python3_pkgversion}-setuptools
 # needed for tests
 BuildRequires:  /usr/bin/python
 
-%description -n python3-%{name}
+%description -n python%{python3_pkgversion}-%{name}
 Python 3 bindings for %{name}
 %{common_description}
 
@@ -103,7 +103,7 @@ make check
 %{_libdir}/pkgconfig/%{name}.pc
 %{_mandir}/man3/%{name}.3*
 
-%files -n python3-%{name}
+%files -n python%{python3_pkgversion}-%{name}
 %doc AUTHORS README
 %{_libdir}/python3*/site-packages/*.so
 
