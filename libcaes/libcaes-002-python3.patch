@@ -1,0 +1,119 @@
+From a6c8fa65d02e69edffa8ddd89c89dea8d2acf220 Mon Sep 17 00:00:00 2001
+From: rpmbuild <rpmbuild>
+Date: Tue, 11 Nov 2025 01:08:02 +0100
+Subject: [PATCH] switch from unversioned python to python3
+
+---
+ tests/pycaes_test_context.py         | 2 +-
+ tests/pycaes_test_crypt_cbc.py       | 2 +-
+ tests/pycaes_test_crypt_ccm.py       | 2 +-
+ tests/pycaes_test_crypt_ecb.py       | 2 +-
+ tests/pycaes_test_crypt_xts.py       | 2 +-
+ tests/pycaes_test_support.py         | 2 +-
+ tests/pycaes_test_tweaked_context.py | 2 +-
+ tests/runtests.py                    | 2 +-
+ tests/test_runner.sh                 | 4 ++--
+ 9 files changed, 10 insertions(+), 10 deletions(-)
+
+diff --git a/tests/pycaes_test_context.py b/tests/pycaes_test_context.py
+index ae9ab54..b8ff724 100644
+--- a/tests/pycaes_test_context.py
++++ b/tests/pycaes_test_context.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/env python3
+ #
+ # Python-bindings context type test script
+ #
+diff --git a/tests/pycaes_test_crypt_cbc.py b/tests/pycaes_test_crypt_cbc.py
+index 86cf7f1..d9951c2 100644
+--- a/tests/pycaes_test_crypt_cbc.py
++++ b/tests/pycaes_test_crypt_cbc.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/env python3
+ #
+ # Python-bindings AES-CBC de/encryption testing program
+ #
+diff --git a/tests/pycaes_test_crypt_ccm.py b/tests/pycaes_test_crypt_ccm.py
+index 034f2f9..608baff 100644
+--- a/tests/pycaes_test_crypt_ccm.py
++++ b/tests/pycaes_test_crypt_ccm.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/env python3
+ #
+ # Python-bindings AES-CCM de/encryption testing program
+ #
+diff --git a/tests/pycaes_test_crypt_ecb.py b/tests/pycaes_test_crypt_ecb.py
+index 66f3f59..d26dcca 100644
+--- a/tests/pycaes_test_crypt_ecb.py
++++ b/tests/pycaes_test_crypt_ecb.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/env python3
+ #
+ # Python-bindings AES-ECB de/encryption testing program
+ #
+diff --git a/tests/pycaes_test_crypt_xts.py b/tests/pycaes_test_crypt_xts.py
+index 343c390..246cc40 100644
+--- a/tests/pycaes_test_crypt_xts.py
++++ b/tests/pycaes_test_crypt_xts.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/env python3
+ #
+ # Python-bindings AES-XTS de/encryption testing program
+ #
+diff --git a/tests/pycaes_test_support.py b/tests/pycaes_test_support.py
+index a07a0f7..819cda2 100644
+--- a/tests/pycaes_test_support.py
++++ b/tests/pycaes_test_support.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/env python3
+ #
+ # Python-bindings support functions test script
+ #
+diff --git a/tests/pycaes_test_tweaked_context.py b/tests/pycaes_test_tweaked_context.py
+index 5f44bcf..7156d7d 100644
+--- a/tests/pycaes_test_tweaked_context.py
++++ b/tests/pycaes_test_tweaked_context.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/env python3
+ #
+ # Python-bindings tweaked_context type test script
+ #
+diff --git a/tests/runtests.py b/tests/runtests.py
+index 16a6ed6..db9dccf 100755
+--- a/tests/runtests.py
++++ b/tests/runtests.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/env python
++#!/usr/bin/env python3
+ #
+ # Script to run Python test scripts.
+ #
+diff --git a/tests/test_runner.sh b/tests/test_runner.sh
+index 3144c9d..4e36626 100644
+--- a/tests/test_runner.sh
++++ b/tests/test_runner.sh
+@@ -445,7 +445,7 @@ run_test_with_arguments()
+ 
+ 	if test ${IS_PYTHON_SCRIPT} -eq 0 && test -z ${PYTHON};
+ 	then
+-		local PYTHON=`which python 2> /dev/null`;
++		local PYTHON=`which python3 2> /dev/null`;
+ 
+ 		if ! test -x ${PYTHON};
+ 		then
+@@ -765,7 +765,7 @@ run_test_with_input_and_arguments()
+ 
+ 	if test ${IS_PYTHON_SCRIPT} -eq 0 && test -z ${PYTHON};
+ 	then
+-		local PYTHON=`which python 2> /dev/null`;
++		local PYTHON=`which python3 2> /dev/null`;
+ 
+ 		if ! test -x ${PYTHON};
+ 		then

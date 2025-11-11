@@ -25,6 +25,9 @@ Patch0:         %{name}-000-libs.patch
 # Allow older autotools for EPEL builds
 Patch1:         %{name}-001-configure.ac.patch
 
+# Testsuite to use python3 instead of unversioned python in scripts
+Patch2:         https://github.com/libyal/libcaes/pull/20.patch#/%{name}-002-python3.patch
+
 
 BuildRequires:  gcc
 BuildRequires:  make
@@ -68,7 +71,7 @@ Python 3 bindings for %{name}
 
 
 %prep
-%autosetup -n %{gitname}-%{commit}
+%autosetup -p 1 -n %{gitname}-%{commit}
 #%%patch0 -p 1 -b .libs
 ./autogen.sh
 
