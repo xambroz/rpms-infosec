@@ -62,8 +62,6 @@ Requires:       python%{python3_pkgversion}
 BuildRequires:  python%{python3_pkgversion}
 BuildRequires:  python%{python3_pkgversion}-devel
 BuildRequires:  python%{python3_pkgversion}-setuptools
-# needed for tests
-BuildRequires:  /usr/bin/python
 
 %description -n python%{python3_pkgversion}-%{name}
 Python 3 bindings for %{name}
