@@ -1,7 +1,7 @@
 Name:           skipfish
 Epoch:          2
 Version:        2.10
-Release:        %autorelease -p -b 24 -e b
+Release:        %autorelease -p -b 25 -e b
 Summary:        Web application security scanner
 
 
@@ -45,12 +45,16 @@ Patch5:         https://gitlab.com/kalilinux/packages/skipfish/-/raw/0f290396a86
 # Replace obsolete gethostbyname with getaddrinfo as suggested by rpmlint
 Patch6:         skipfish-06-gethostbyname.patch
 
+# Migrate from pcre to pcre2
+# Patch7:         skipfish-07-pcre2.patch
+
+
 
 BuildRequires:  openssl-devel
 BuildRequires:  gcc
 BuildRequires:  libidn-devel
 BuildRequires:  make
-BuildRequires:  pcre-devel
+BuildRequires:  pcre2-devel
 BuildRequires:  zlib-devel
 
 %description
@@ -84,7 +88,8 @@ rm -f doc/skipfish.1
 
 
 %files
-%doc COPYING ChangeLog README 
+%license COPYING
+%doc ChangeLog README
 %doc doc/
 %dir %{_datadir}/%{name}
 %dir %{_datadir}/%{name}/assets
@@ -100,7 +105,7 @@ rm -f doc/skipfish.1
 
 
 #Icons are licensed as LGPLv3 http://www.everaldo.com/crystal/
-%doc COPYING.icons
+%license COPYING.icons
 %{_datadir}/%{name}/assets/*.png
 
 
