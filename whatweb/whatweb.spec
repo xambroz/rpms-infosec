@@ -1,10 +1,9 @@
 Name:           whatweb
-Version:        0.6.1
+Version:        0.6.3
 Release:        %autorelease
 Summary:        Web scanner to identify what are the websites running
 License:        GPL-2.0-or-later
 URL:            http://www.morningstarsecurity.com/research/whatweb
-VCS:            https://github.com/urbanadventurer/WhatWeb
 #               https://github.com/urbanadventurer/WhatWeb/releases
 
 
@@ -17,15 +16,17 @@ VCS:            https://github.com/urbanadventurer/WhatWeb
 
 %global         gituser         urbanadventurer
 %global         gitname         WhatWeb
-%global         gitdate         20210115
-%global         commit          1b3516975571c3f59d686f82a6d2dbf6f1011029
+%global         gitdate         20251018
+%global         commit          4dceb388015909e97567bcf58a7edaf7eda61593
+%global         giturl          https://github.com/%{gituser}/%{gitname}
+VCS:            git:%{giturl}
 
 %if 0%{?rhel}
 Group:          Applications/Internet
 %endif
 
 
-Source0:        %{vcs}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
+Source0:        %{giturl}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
 BuildArch:      noarch
 
@@ -35,7 +36,6 @@ Buildrequires:  sed
 # Requires:     ruby(abi) >= 2.0
 Requires:       /usr/bin/ruby
 Requires:       rubygem-addressable
-Requires:       rubygem-json
 
 # On RHEL7 the Recommends statement is not available
 %if 0%{?rhel} && 0%{?rhel} <= 8
