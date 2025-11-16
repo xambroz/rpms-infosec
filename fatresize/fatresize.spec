@@ -49,7 +49,7 @@ The FAT16/FAT32 non-destructive resizer.
 # Build from git release version
 %autosetup -n %{gitname}-%{version} -p1
 %else
-%autosetup -n %%{gitname}-%%{commit} -p1
+%autosetup -n %{gitname}-%{commit} -p1
 %endif
 
 #docbook-to-man not available in Fedora
