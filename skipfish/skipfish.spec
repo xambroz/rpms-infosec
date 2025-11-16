@@ -1,16 +1,17 @@
 Name:           skipfish
 Epoch:          2
 Version:        2.10
-Release:        %autorelease -p -e b
+Release:        %autorelease -p -b 24 -e b
 Summary:        Web application security scanner
 
 
-# Whole package licensed with ASL 2.0 license except 
+# Whole package licensed with ASL 2.0 license except
 # string-inl.h which has BSD type license
 # icons which are licensed under LGPLv3
-License:        ASL 2.0 and BSD and LGPLv3
+License:        Apache-2.0 and BSD-3-Clause and LGPL-3.0-only
 
-URL:            http://code.google.com/p/skipfish/
+URL:            https://code.google.com/archive/p/skipfish/
+# was:          http://code.google.com/p/skipfish/
 Source0:        https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/skipfish/%{name}-%{version}b.tgz
 # was:          http://%%{name}.googlecode.com/files/%%{name}-%%{version}b.tgz
 
@@ -45,8 +46,6 @@ Patch5:         https://gitlab.com/kalilinux/packages/skipfish/-/raw/0f290396a86
 Patch6:         skipfish-06-gethostbyname.patch
 
 
-
-
 BuildRequires:  openssl-devel
 BuildRequires:  gcc
 BuildRequires:  libidn-devel
@@ -61,6 +60,7 @@ detection of obscure Web frameworks, and advanced, differential security
 checks capable of detecting blind injection vulnerabilities, stored XSS,
 and so forth.
 
+
 %prep
 %autosetup -p 1 -n %{name}-%{version}b
 cp -p assets/COPYING COPYING.icons
@@ -71,12 +71,16 @@ sed -i 's|^// #define PROXY_SUPPORT|#define PROXY_SUPPORT|' src/config.h
 %make_build CFLAGS="%{optflags} -fno-common"
 
 
-
 %install
 make install DESTDIR=%{buildroot}
 
 rm -f %{buildroot}%{_datadir}/%{name}/assets/COPYING
 rm -f doc/skipfish.1
+
+
+%check
+# Dummy check
+./skipfish --help | grep -e "Send comments and complaints to" > /dev/null
 
 
 %files
