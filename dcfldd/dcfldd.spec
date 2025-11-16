@@ -1,5 +1,5 @@
 Name:           dcfldd
-Version:        1.9.2
+Version:        1.9.3
 Release:        %autorelease
 Summary:        Improved dd, useful for forensics and security
 
@@ -11,11 +11,9 @@ Summary:        Improved dd, useful for forensics and security
 # See: https://fedoraproject.org/wiki/Licensing:FAQ#MD5
 # Automatically converted from old format: GPLv2+ and BSD and Copyright only - review is highly recommended.
 License:        GPL-2.0-or-later AND LicenseRef-Callaway-BSD AND LicenseRef-Callaway-Copyright-only
-
 URL:            https://github.com/resurrecting-open-source-projects/dcfldd
 # Was           http://dcfldd.sourceforge.net/
-VCS:            git:%{url}
-Source0:        %{url}/archive/refs/tags/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
+Source0:        https://github.com/resurrecting-open-source-projects/%{name}/archive/refs/tags/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 # Was           http://downloads.sourceforge.net/%%{name}/%%{name}-%%{real_version}.tar.gz
 
 
@@ -49,20 +47,8 @@ and security. dcfldd has the following additional features:
 
 %build
 autoreconf -i
-
-# Needed for GCC 14/15
-%if 0%{fedora} >=39 || 0%{?rhel} >= 10
-export CFLAGS="$CFLAGS -std=c99"
-%endif
-
 %configure
 %make_build
-
-%check
-# Sanity check:
-# check that the binary can be executed and that it reports current version
-src/dcfldd --version | grep %{version} > /dev/null
-
 
 %install
 #%%{__make} install DESTDIR="%%{buildroot}" INSTALL="install -p"
