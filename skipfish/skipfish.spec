@@ -54,7 +54,7 @@ BuildRequires:  openssl-devel
 BuildRequires:  gcc
 BuildRequires:  libidn-devel
 BuildRequires:  make
-BuildRequires:  pcre2-devel
+BuildRequires:  pcre-devel
 BuildRequires:  zlib-devel
 
 %description
