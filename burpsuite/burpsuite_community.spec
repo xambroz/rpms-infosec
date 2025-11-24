@@ -1,5 +1,5 @@
 Name:           burpsuite_community
-Version:        2025.8.7
+Version:        2025.10.6
 Release:        %autorelease
 Summary:        Security tool for analyzing web application security
 
@@ -8,13 +8,13 @@ Group:          Applications/System
 #               Proprietary Free to Use
 License:        Burp License
 
-URL:            http://portswigger.net/suite/
+URL:            https://portswigger.net/burp/communitydownload
 
 # Download the Source0 automatically during the rebuild of RPM package
 %undefine       _disable_source_fetch
 
 # Source0:      http://portswigger.net/burp/burpsuite_free_v%%{version}.jar
-# Source0:      https://portswigger.net/Burp/Releases/Download?productId=100&version=2025.8.7&type=Jar#/burpsuite_community_2025.8.7.jar
+# Source0:      https://portswigger.net/Burp/Releases/Download?productId=100&version=2025.10.6&type=Jar#/burpsuite_community_2025.10.6.jar
 Source0:        https://portswigger.net/Burp/Releases/Download?productId=100&version=%{version}&type=Jar#/burpsuite_community_%{version}.jar
 
 # Do not copy the Source0 file to the SRPM package
