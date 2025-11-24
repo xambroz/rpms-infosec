@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Exec=burpsuite_community
+Name=Burp Suite Community
+Comment=Security tool for analyzing web application security
+GenericName=Burpsuite Community Edition
+Icon=burpsuite_community
+Terminal=false
+Categories=System;Security;
+StartupNotify=true
