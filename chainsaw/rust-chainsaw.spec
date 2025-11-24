@@ -4,7 +4,7 @@
 %global crate chainsaw
 
 Name:           rust-chainsaw
-Version:        2.5.0
+Version:        2.13.1
 Release:        %autorelease
 Summary:        Rapidly Search and Hunt through Windows Forensic Artefacts
 
@@ -113,4 +113,4 @@ use the "default" feature of the "%{crate}" crate.
 %endif
 
 %changelog
-%{?%autochangelog: %autochangelog }
+%autochangelog
