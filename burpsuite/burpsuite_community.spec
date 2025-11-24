@@ -14,15 +14,15 @@ URL:            https://portswigger.net/burp/communitydownload
 %undefine       _disable_source_fetch
 
 # Source0:      http://portswigger.net/burp/burpsuite_free_v%%{version}.jar
-# Source0:      https://portswigger.net/Burp/Releases/Download?productId=100&version=2025.10.6&type=Jar#/burpsuite_community_2025.10.6.jar
-Source0:        https://portswigger.net/Burp/Releases/Download?productId=100&version=%{version}&type=Jar#/burpsuite_community_%{version}.jar
+# Source0:      https://portswigger.net/Burp/Releases/Download?productId=100&version=2025.10.6&type=Jar#/burpsuite_community_v2025.10.6.jar
+Source0:        https://portswigger.net/Burp/Releases/Download?productId=100&version=%{version}&type=Jar#/burpsuite_community_v%{version}.jar
 
 # Do not copy the Source0 file to the SRPM package
 # Comment this out when doing spectool download
 NoSource:       0
 
 
-%define         SHA256SUM0 0f1bd8799e3a95f5be6b63ed507762d8846f5cfc1dcdf319225147ee63ce7b6c
+%define         SHA256SUM0 fe46541d1b7f10073a8be4f8a4ef7b65d314c12d0ff323653de147322bea197c
 
 
 Source1:        %{name}.in
@@ -30,7 +30,8 @@ BuildArch:      noarch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  sed
-BuildRequires:  java
+# jar tool is in the java-devel
+BuildRequires:  java-devel
 Requires:       java >= 21.0.0
 
 %description
