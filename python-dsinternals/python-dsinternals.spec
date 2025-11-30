@@ -1,6 +1,6 @@
 Name:           python-dsinternals
 Version:        1.2.4
-Release:        2%{?dist}
+Release:        %autorelease
 Summary:        Directory Services Internals Library for python
 License:        GPL-2.0-only
 URL:            http://github.com/p0dalirius/pydsinternals
@@ -30,7 +30,7 @@ BuildRequires:  python%{python3_pkgversion}-setuptools
 
 
 # deps bellow should be added by generate_buildrequires on newer platforms
-%if 0%{?rhel} && 0%{?rhel} < 9
+%if 0%{?rhel} && 0%{?rhel} < 8
 BuildRequires:  python%{python3_pkgversion}-pip
 BuildRequires:  python%{python3_pkgversion}-wheel
 
@@ -40,7 +40,7 @@ BuildRequires:  python%{python3_pkgversion}-pycryptodomex
 %endif
 
 
-%if 0%{?fedora} || ( 0%{?rhel} && 0%{?rhel} >= 9 )
+%if 0%{?fedora} || ( 0%{?rhel} && 0%{?rhel} >= 8 )
 BuildRequires:  python%{python3_pkgversion}-tox-current-env
 %endif
 
@@ -77,7 +77,7 @@ chmod +x setup.py
 
 
 # Generating of build requirements doesn't work on epel7, has problems on epel8
-%if 0%{?fedora} || ( 0%{?rhel} && 0%{?rhel} >= 9 )
+%if 0%{?fedora} || ( 0%{?rhel} && 0%{?rhel} >= 8 )
 %generate_buildrequires
 %pyproject_buildrequires -t
 %endif
@@ -94,7 +94,7 @@ chmod +x setup.py
 
 %check
 # rhel7 missing tox and pyproject macros
-%if 0%{?fedora} || ( 0%{?rhel} && 0%{?rhel} >= 9 )
+%if 0%{?fedora} || ( 0%{?rhel} && 0%{?rhel} >= 8 )
 python3 -m unittest discover -v
 %tox
 %endif
@@ -106,8 +106,4 @@ python3 -m unittest discover -v
 
 
 %changelog
-* Tue Jan 23 2024 Michal Ambroz <rebus@seznam.cz> - 1.2.4-2
-- conditionalized pyproject_buildrequires
-
-* Mon Jan 30 2023 Michal Ambroz <rebus@seznam.cz> - 1.2.4-1
-- Initial package
+%autochangelog
