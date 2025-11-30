@@ -1,5 +1,5 @@
 * Sun Nov 30 2025 Michal Ambroz <rebus@seznam.cz> - 1.2.4-3
-- attempt to rebuild with EPEL8
+- attempt to rebuild with EPEL8, remove EPEL7 support
 
 * Tue Jan 23 2024 Michal Ambroz <rebus@seznam.cz> - 1.2.4-2
 - conditionalized pyproject_buildrequires

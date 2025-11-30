@@ -18,11 +18,7 @@ Patch0:         dsinternals-1.2.4-build.patch
 BuildArch:      noarch
 
 BuildRequires:  python3-rpm-macros
-
-# pyproject-rpm-macros missing on EPEL7
-%if 0%{?fedora} || ( 0%{?rhel} && 0%{?rhel} >= 8 )
 BuildRequires:  pyproject-rpm-macros
-%endif
 
 # Planning the compatibility with EPEL, hence using the pkgversion
 BuildRequires:  python%{python3_pkgversion}-devel
@@ -39,8 +35,9 @@ BuildRequires:  python%{python3_pkgversion}-pyOpenSSL
 BuildRequires:  python%{python3_pkgversion}-pycryptodomex
 %endif
 
-
-%if 0%{?fedora} || ( 0%{?rhel} && 0%{?rhel} >= 8 )
+# python3-tox-current-env package is not available on EPEL8
+# https://src.fedoraproject.org/rpms/python-tox-current-env
+%if 0%{?fedora} || ( 0%{?rhel} && 0%{?rhel} >= 9 )
 BuildRequires:  python%{python3_pkgversion}-tox-current-env
 %endif
 
@@ -76,10 +73,14 @@ chmod +x setup.py
 %py3_shebang_fix tests
 
 
-# Generating of build requirements doesn't work on epel7, has problems on epel8
-%if 0%{?fedora} || ( 0%{?rhel} && 0%{?rhel} >= 8 )
 %generate_buildrequires
+%if 0%{?fedora} || ( 0%{?rhel} && 0%{?rhel} >= 9 )
 %pyproject_buildrequires -t
+%endif
+
+# Generating of build requirements on epel8 generates dependency on nonexisting python3-tox-current-env package
+%if ( 0%{?rhel} && 0%{?rhel} == 8 )
+%pyproject_buildrequires -t -x tox
 %endif
 
 
@@ -93,8 +94,8 @@ chmod +x setup.py
 
 
 %check
-# rhel7 missing tox and pyproject macros
-%if 0%{?fedora} || ( 0%{?rhel} && 0%{?rhel} >= 8 )
+# rhel8 missing tox 
+%if 0%{?fedora} || ( 0%{?rhel} && 0%{?rhel} >= 9 )
 python3 -m unittest discover -v
 %tox
 %endif
