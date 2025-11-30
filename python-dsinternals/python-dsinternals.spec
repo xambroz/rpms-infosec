@@ -1,6 +1,6 @@
 Name:           python-dsinternals
 Version:        1.2.4
-Release:        %autorelease
+Release:        %autorelease -b 3
 Summary:        Directory Services Internals Library for python
 License:        GPL-2.0-only
 URL:            http://github.com/p0dalirius/pydsinternals
@@ -26,7 +26,7 @@ BuildRequires:  python%{python3_pkgversion}-setuptools
 
 
 # deps bellow should be added by generate_buildrequires on newer platforms
-%if 0%{?rhel} && 0%{?rhel} < 8
+%if 0%{?rhel} && 0%{?rhel} <= 8
 BuildRequires:  python%{python3_pkgversion}-pip
 BuildRequires:  python%{python3_pkgversion}-wheel
 
@@ -72,15 +72,10 @@ chmod +x setup.py
 %py3_shebang_fix dsinternals
 %py3_shebang_fix tests
 
-
-%generate_buildrequires
+# Generating of build requirements doesn't work on EPEL8
 %if 0%{?fedora} || ( 0%{?rhel} && 0%{?rhel} >= 9 )
+%generate_buildrequires
 %pyproject_buildrequires -t
-%endif
-
-# Generating of build requirements on epel8 generates dependency on nonexisting python3-tox-current-env package
-%if ( 0%{?rhel} && 0%{?rhel} == 8 )
-%pyproject_buildrequires -t -x tox
 %endif
 
 
@@ -94,7 +89,7 @@ chmod +x setup.py
 
 
 %check
-# rhel8 missing tox 
+# EPEL8 missing tox dependency used for tests
 %if 0%{?fedora} || ( 0%{?rhel} && 0%{?rhel} >= 9 )
 python3 -m unittest discover -v
 %tox
