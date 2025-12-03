@@ -1,19 +1,22 @@
 Name:           python-dsinternals
 Version:        1.2.4
-Release:        %autorelease -b 3
+Release:        %autorelease -b 5
 Summary:        Directory Services Internals Library for python
-License:        GPL-2.0-only
 URL:            http://github.com/p0dalirius/pydsinternals
 
-%global pypi_name dsinternals
-%global pypi_version 1.2.4
+# contained LICESNE file has old FSF address
+# reported to upstream - https://github.com/p0dalirius/pydsinternals/issues/14
+License:        GPL-2.0-only
+
+%global         pypi_name dsinternals
+%global         pypi_version 1.2.4
 
 Source0:        %{pypi_source}
+Source1:        %{name}.rpmlintrc
 
 # Build related stuff
 # https://github.com/p0dalirius/pydsinternals/pull/8.patch
 Patch0:         dsinternals-1.2.4-build.patch
-
 
 BuildArch:      noarch
 
@@ -25,21 +28,28 @@ BuildRequires:  python%{python3_pkgversion}-devel
 BuildRequires:  python%{python3_pkgversion}-setuptools
 
 
-# deps bellow should be added by generate_buildrequires on newer platforms
-%if 0%{?rhel} && 0%{?rhel} <= 8
+%if 0%{?fedora} || ( 0%{?rhel} && 0%{?rhel} >= 9 )
+# Needed for tests
+BuildRequires:  python%{python3_pkgversion}-pyOpenSSL
+BuildRequires:  python%{python3_pkgversion}-pycryptodomex
+
+# python3-tox-current-env package is not available on EPEL8
+# https://src.fedoraproject.org/rpms/python-tox-current-env
+BuildRequires:  python%{python3_pkgversion}-tox-current-env
+
+%else
+# RHEL8 - deps bellow should are for RHEL8
+# This should be added by generate_buildrequires on newer platforms
 BuildRequires:  python%{python3_pkgversion}-pip
 BuildRequires:  python%{python3_pkgversion}-wheel
 
 # Needed for tests
-BuildRequires:  python%{python3_pkgversion}-pyOpenSSL
-BuildRequires:  python%{python3_pkgversion}-pycryptodomex
+# RHEL8 - only the python3 versions of these pkgs available
+BuildRequires:  python3-pyOpenSSL
+BuildRequires:  python3-pycryptodomex
+
 %endif
 
-# python3-tox-current-env package is not available on EPEL8
-# https://src.fedoraproject.org/rpms/python-tox-current-env
-%if 0%{?fedora} || ( 0%{?rhel} && 0%{?rhel} >= 9 )
-BuildRequires:  python%{python3_pkgversion}-tox-current-env
-%endif
 
 %global _description %{expand:
 Directory Services Internals Library.
@@ -69,8 +79,9 @@ rm -rf .egg-info
 find ./ -type f -exec chmod -x '{}' ';'
 chmod +x setup.py
 
-%py3_shebang_fix dsinternals
-%py3_shebang_fix tests
+# Remove shebangs from Python library modules (they shouldn't be executable)
+find dsinternals -type f -name "*.py" -exec sed -i -e '1{\@^#!/usr/bin/env python@d; \@^#!/usr/bin/python@d}' {} \;
+
 
 # Generating of build requirements doesn't work on EPEL8
 %if 0%{?fedora} || ( 0%{?rhel} && 0%{?rhel} >= 9 )
@@ -89,10 +100,12 @@ chmod +x setup.py
 
 
 %check
-# EPEL8 missing tox dependency used for tests
 %if 0%{?fedora} || ( 0%{?rhel} && 0%{?rhel} >= 9 )
-python3 -m unittest discover -v
 %tox
+
+%else
+# RHEL8 - Tox not available on RHEL8
+python3 -m unittest discover -v
 %endif
 
 

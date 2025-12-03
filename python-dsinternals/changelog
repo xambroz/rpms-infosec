@@ -1,3 +1,9 @@
+* Wed Dec 03 2025 Michal Ambroz <rebus@seznam.cz> - 1.2.4-5
+- build on rhel8
+
+* Tue Dec 02 2025 Michal Ambroz <rebus@seznam.cz> - 1.2.4-4
+- BuildRequires for the EPEL8
+
 * Sun Nov 30 2025 Michal Ambroz <rebus@seznam.cz> - 1.2.4-3
 - attempt to rebuild with EPEL8, remove EPEL7 support
 

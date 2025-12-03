@@ -1,0 +1,8 @@
+from Config import addFilter
+
+# License files should not be modified per Fedora guidelines
+# Reported upstream in https://github.com/p0dalirius/pydsinternals/issues/14
+addFilter("E: incorrect-fsf-address")
+
+# ignore duplicate init files
+addFilter("W: files-duplicate.*__init__.py")
