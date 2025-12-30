@@ -1,10 +1,13 @@
 Name:           radare2
 Summary:        The reverse engineering framework
-Version:        5.9.8
+Version:        6.0.8
 URL:            https://radare.org/
 %global         vcsurl          https://github.com/radareorg/radare2
 VCS:            git:%{vcsurl}
 #               https://github.com/radareorg/radare2/releases
+#               https://github.com/radareorg/radare2/blob/master/subprojects/sdb.wrap
+#               https://github.com/radareorg/sdb/releases
+#               https://github.com/quickjs-ng/quickjs/releases
 
 
 # %%if 0%%{?rhel} && 0%%{?rhel} == 8
@@ -21,9 +24,29 @@ VCS:            git:%{vcsurl}
 
 %global         gituser         radareorg
 %global         gitname         radare2
-%global         gitdate         20241119
-%global         commit          4eb49d5ad8c99eaecc8850a2f10bad407067c898
+%global         gitdate         20251230
+%global         commit          151a020573abca7b926f71a801484dee830627d1
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
+
+%global         sdbver          2.3.0
+%global         sdbname         sdb
+%global         sdbdate         20251219
+%global         sdbcommit       92009d6d7de28e238d993836a0797ea095e497d2
+%global         sdbshortcommit  %(c=%{commit}; echo ${c:0:7})
+%global         sdburl          https://www.github.com/%{gituser}/sdb
+
+%global         qjsver          0.11.0
+%global         qjsuser         quickjs-ng
+%global         qjsname         quickjs
+%global         qjsdate         20251219
+%global         qjscommit       d405777f7eefa22c17c12970317ef3d6e7658f5a
+%global         qjsshortcommit  %(c=%{commit}; echo ${c:0:7})
+%global         qjsurl          https://www.github.com/%{qjsuser}/%{qjsname}
+
+
+
+
+
 
 # autorelease not available on epel7
 %if ( 0%{?rhel} && 0%{?rhel} <= 7 )
@@ -34,13 +57,28 @@ VCS:            git:%{vcsurl}
 %if %{with releasetag}
 Release:        %autorelease
 Source0:        %{vcsurl}/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
+Source1:        %{sdburl}/archive/%{sdbver}.tar.gz#/%{sdbname}-%{sdbver}.tar.gz
+Source2:        %{qjsurl}/archive/%{qjscommit}/%{qjsname}-%{qjscommit}.tar.gz#/%{qjsname}-%{qjsver}-git%{qjsdate}-%{qjsshortcommit}.tar.gz
 %else
 Release:        %autorelease -s %{gitdate}git%{shortcommit}
 Source0:        %{vcsurl}/archive/%{commit}/%{name}-%{commit}.tar.gz#/%{name}-%{version}-git%{gitdate}-%{shortcommit}.tar.gz
+Source1:        %{sdburl}/archive/%{sdbver}.tar.gz#/%{sdbname}-%{sdbver}.tar.gz
 %endif
 
+# QJS Subproject obtained with commands:
+# cd subprojects/
+# cat qjs.mk
+# # make qjs_all
+# git clone --no-checkout  https://github.com/quickjs-ng/quickjs qjs
+# cd qjs && git fetch  origin 7238ee64dbc2fbdea044555cda8cda78785a93ed
+# cd qjs && git checkout FETCH_HEAD
+# cp -rf packagefiles/qjs/* qjs
+# cd ..
+# tar czvf radare2_subproject_qjs_7238ee64.tgz subprojects/qjs
+# Source2:        radare2_subproject_qjs_7238ee64.tgz
+
 # Specific to Fedora - build with system libraries
-Patch1:         radare2-5.6.6-use_openssl.patch
+# Patch1:         radare2-5.6.6-use_openssl.patch
 Patch3:         radare2-5.9.0-use_magic.patch
 
 # using system-wide LZ4 should be done using conditionals
@@ -59,20 +97,24 @@ Patch3:         radare2-5.9.0-use_magic.patch
 # Build reports need for C99 compatibility mode for the index type declaration in the for cycle.
 # As rest of the radare2 is strictly defining all index variables prior to for cycle, it is recommended
 # to change this one as well
-Patch7:           radare2-5.9.8-dec99.patch
+# not needed since 6.0.0
+# Patch7:           radare2-5.9.8-dec99.patch
 
 # CVE-2025-1744 - Potential Vulnerability in zlib Library 
 # https://github.com/radareorg/radare2/pull/23969
-Patch8:           https://github.com/radareorg/radare2/pull/23969.patch#/radare2-5.9.8-zlib-cve.patch
+# not needed since 6.0.0
+# Patch8:           https://github.com/radareorg/radare2/pull/23969.patch#/radare2-5.9.8-zlib-cve.patch
 
 # CVE-2025-1864 - Potential Vulnerability in magic Library
 # https://github.com/radareorg/radare2/pull/23981
-Patch9:           https://github.com/radareorg/radare2/pull/23981.patch#/radare2-5.9.8-magic-cve.patch
+# not needed since 6.0.0
+# Patch9:           https://github.com/radareorg/radare2/pull/23981.patch#/radare2-5.9.8-magic-cve.patch
 
 # CVE-2024-56737 - Fix buffer overflow in the HFS parser from grub2
 # https://github.com/radareorg/radare2/commit/984ad6ae4ebbc3a01cf1209e05377b5d1d6221f4.patch#/radare2-5.9.8-hfs-cve.patch
 # https://github.com/advisories/GHSA-9vr3-263w-c6mj
-Patch10:           https://github.com/radareorg/radare2/commit/984ad6ae4ebbc3a01cf1209e05377b5d1d6221f4.patch#/radare2-5.9.8-hfs-cve.patch
+# not needed since 6.0.0
+# Patch10:           https://github.com/radareorg/radare2/commit/984ad6ae4ebbc3a01cf1209e05377b5d1d6221f4.patch#/radare2-5.9.8-hfs-cve.patch
 
 
 
@@ -129,7 +171,7 @@ BuildRequires:  pkgconfig(libzip)
 
 BuildRequires:  pkgconfig(zlib)
 BuildRequires:  pkgconfig(liblz4)
-BuildRequires:  pkgconfig(capstone) >= 3.0.4
+BuildRequires:  pkgconfig(capstone) >= 4.0.0
 BuildRequires:  pkgconfig(libuv)
 BuildRequires:  pkgconfig(openssl)
 
@@ -272,12 +314,19 @@ information
 %if %{with releasetag}
 # Build from git release version
 %autosetup -p 1 -n %{gitname}-%{version}
+mkdir -p subprojects/sdb
+tar -C subprojects/sdb -xzf %{SOURCE1} --strip-components=1
+mkdir -p subprojects/qjs
+tar -C subprojects/qjs -xzf %{SOURCE2} --strip-components=1
+
+
 %else
 # Build from git commit
 %autosetup -p 1 -n %{gitname}-%{commit}
 # Rename internal "version-git" to "version"
 sed -i -e "s|%{version}-git|%{version}|g;" configure configure.acr
 %endif
+
 # Removing zip/lzip files because we use system dependencies
 # version of libzip on rhel7 is too old, use the embedded one instead
 %if 0%{?fedora} || 0%{?rhel} >= 8
