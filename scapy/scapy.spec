@@ -33,8 +33,7 @@ BuildArch:      noarch
 
 BuildRequires:  make
 BuildRequires:  sed
-
-
+BuildRequires:  pyproject-rpm-macros
 BuildRequires:  python%{python3_pkgversion}-devel
 BuildRequires:  python%{python3_pkgversion}-setuptools
 %if %{with doc}
@@ -118,7 +117,10 @@ ln -s %{_bindir}/scapy3   %{buildroot}%{_bindir}/scapy
 
 
 
-# check
+%check
+# Dummy import check
+%pyproject_check_import
+
 # TODO: Need to fix/remove slow/failed test
 # cd test/
 # ./run_tests_py2 || true
