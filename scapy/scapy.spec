@@ -53,11 +53,9 @@ Summary:        Interactive packet manipulation tool and network scanner
 %{?python_provide:%python_provide python%{python3_pkgversion}-%{name}}
 Provides:       %{name} = %{version}-%{release}
 
-%if (0%{?fedora}) || ( 0%{?rhel} && 0%{?rhel} >= 8 )
 Recommends:     PyX
 Recommends:     python%{python3_pkgversion}-matplotlib
 Recommends:     ipython3
-%endif
 
 %description -n python%{python3_pkgversion}-%{name}
 %{common_desc}
@@ -91,7 +89,7 @@ done
 
 
 %build
-%py3_build
+%pyproject_wheel
 
 %if %{with doc}
 make -C doc/scapy html BUILDDIR=_build_doc SPHINXBUILD=sphinx-build-%python3_version
@@ -106,20 +104,20 @@ rm -f doc/scapy/_build_doc/html/_static/_dummy
 install -dp -m0755 %{buildroot}%{_mandir}/man1
 install -Dp -m0644 doc/scapy.1* %{buildroot}%{_mandir}/man1/
 
-%py3_install
-rm -f %{buildroot}%{python3_sitelib}/*egg-info/requires.txt
+%pyproject_install
+%pyproject_save_files scapy
 
 # Rename the executables
 mv -f %{buildroot}%{_bindir}/scapy   %{buildroot}%{_bindir}/scapy3
 
 # Link the default to the python3 version of executables
-ln -s %{_bindir}/scapy3   %{buildroot}%{_bindir}/scapy
+ln -s scapy3 %{buildroot}%{_bindir}/scapy
 
 
 
 %check
 # Dummy import check
-%pyproject_check_import
+%pyproject_check_import -e 'scapy.arch.bpf.core' -e 'scapy.arch.bpf.supersocket' -e 'scapy.arch.windows' -e 'scapy.arch.windows.native' -e 'scapy.arch.windows.structures' -e 'scapy.contrib.cansocket_python_can' -e 'scapy.tools.generate_bluetooth' -e 'scapy.tools.generate_ethertypes' -e 'scapy.tools.generate_manuf' -e 'scapy.tools.scapy_pyannotate'
 
 # TODO: Need to fix/remove slow/failed test
 # cd test/
@@ -128,14 +126,11 @@ ln -s %{_bindir}/scapy3   %{buildroot}%{_bindir}/scapy
 
 
 
-%files -n python%{python3_pkgversion}-%{name}
+%files -n python%{python3_pkgversion}-%{name} -f %{pyproject_files}
 %license LICENSE
 %doc %{_mandir}/man1/scapy.1*
 %{_bindir}/scapy
 %{_bindir}/scapy3
-%{python3_sitelib}/scapy/
-%{python3_sitelib}/scapy-*.egg-info
-%exclude %{python3_sitelib}/test/
 
 
 %if %{with doc}
