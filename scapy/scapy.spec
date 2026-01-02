@@ -48,6 +48,10 @@ BuildRequires:  python%{python3_pkgversion}-wheel
 BuildRequires:  pyproject-rpm-macros
 %endif
 
+# Check Tests
+BuildRequires:  python%{python3_pkgversion}-cryptography
+
+
 Recommends:     tcpdump
 # Using database of manufactures /usr/share/wireshark/manuf
 Recommends:     wireshark-cli
