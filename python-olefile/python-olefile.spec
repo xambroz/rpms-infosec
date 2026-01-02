@@ -40,6 +40,7 @@ BuildRequires:  /usr/bin/find
 # This should be added by generate_buildrequires on newer platforms
 BuildRequires:  python%{python3_pkgversion}-pip
 BuildRequires:  python%{python3_pkgversion}-wheel
+BuildRequires:  pyproject-rpm-macros
 %endif
 
 
