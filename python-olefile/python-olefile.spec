@@ -35,6 +35,14 @@ BuildRequires:  make
 BuildRequires:  dos2unix
 BuildRequires:  /usr/bin/find
 
+%if ( 0%{?rhel} && 0%{?rhel} == 8 )
+# RHEL8 - deps bellow are for RHEL8
+# This should be added by generate_buildrequires on newer platforms
+BuildRequires:  python%{python3_pkgversion}-pip
+BuildRequires:  python%{python3_pkgversion}-wheel
+%endif
+
+
 %description %{_description}
 
 %package doc
