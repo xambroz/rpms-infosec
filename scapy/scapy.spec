@@ -40,6 +40,14 @@ BuildRequires:  python%{python3_pkgversion}-setuptools
 BuildRequires:  python%{python3_pkgversion}-tox
 %endif
 
+%if ( 0%{?rhel} && 0%{?rhel} == 8 )
+# RHEL8 - deps bellow are for RHEL8
+# This should be added by generate_buildrequires on newer platforms
+BuildRequires:  python%{python3_pkgversion}-pip
+BuildRequires:  python%{python3_pkgversion}-wheel
+BuildRequires:  pyproject-rpm-macros
+%endif
+
 Recommends:     tcpdump
 # Using database of manufactures /usr/share/wireshark/manuf
 Recommends:     wireshark-cli
@@ -86,6 +94,11 @@ for FILE in $SHEBANGS ; do
     rm "${FILE}.orig"
 done
 
+
+%if (0%{?fedora} && 0%{?fedora} > 33 ) || ( 0%{?rhel} && 0%{?rhel} > 8 ) || 0%{?flatpak}
+%generate_buildrequires
+%pyproject_buildrequires
+%endif
 
 
 %build
