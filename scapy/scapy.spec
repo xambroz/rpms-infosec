@@ -1,21 +1,23 @@
 Name:           scapy
-Version:        2.6.1
+Version:        2.7.0
 Release:        %autorelease
 Summary:        Interactive packet manipulation tool and network scanner
 
 %global         gituser         secdev
 %global         gitname         scapy
-%global         commit          9473f77d8b548c8e478e52838bdd4c12f5d4f4ff
+%global         gitdate         20251225
+%global         commit          40fc5ecf9e69e9bd76664d63ae133d4973fcf81b
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
+%global         giturl          https://github.com/%{gituser}/%{gitname}
 
 License:        GPL-2.0-only
 URL:            https://scapy.net/
 #was            http://www.secdev.org/projects/scapy/
-VCS:            https://github.com/secdev/scapy
+VCS:            git:%{giturl}
 #               https://github.com/secdev/scapy/releases
 #               https://bitbucket.org/secdev/scapy/pull-request/80
 #               https://scapy.readthedocs.io/en/latest/introduction.html
-Source0:        %{vcs}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
+Source0:        %{giturl}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
 %global         common_desc %{expand:
 Scapy is a powerful interactive packet manipulation program built on top
@@ -34,14 +36,8 @@ requests and replies, and much more.}
 %bcond_with        python2
 %endif
 
-# By default build the documentation only on Fedora due to cc-by-nc-sa license
-%if 0%{?fedora}
-%bcond_without     doc
-%else
+# By default do not build documentation because of not allowed cc-by-nc-sa license
 %bcond_with        doc
-%endif
-
-
 
 
 BuildArch:      noarch
