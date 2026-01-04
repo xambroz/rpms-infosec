@@ -134,11 +134,14 @@ ln -s scapy3 %{buildroot}%{_bindir}/scapy
 
 
 %check
-# Dummy import check
-%pyproject_check_import -e 'scapy.arch.bpf.core' -e 'scapy.arch.bpf.supersocket' \
+%global         check_exclude %{expand:
+    -e 'scapy.arch.bpf.core' -e 'scapy.arch.bpf.supersocket' \
     -e 'scapy.arch.windows' -e 'scapy.arch.windows.native' -e 'scapy.arch.windows.structures' \
     -e 'scapy.contrib.cansocket_python_can' -e 'scapy.tools.generate_bluetooth' \
     -e 'scapy.tools.generate_ethertypes' -e 'scapy.tools.generate_manuf' -e 'scapy.tools.scapy_pyannotate'
+}
+
+%pyproject_check_import %{check_exclude}
 
 # TODO: Need to fix/remove slow/failed test
 # cd test/
