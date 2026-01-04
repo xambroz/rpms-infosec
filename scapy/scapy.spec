@@ -138,7 +138,8 @@ ln -s scapy3 %{buildroot}%{_bindir}/scapy
     -e 'scapy.arch.bpf.core' -e 'scapy.arch.bpf.supersocket' \
     -e 'scapy.arch.windows' -e 'scapy.arch.windows.native' -e 'scapy.arch.windows.structures' \
     -e 'scapy.contrib.cansocket_python_can' -e 'scapy.tools.generate_bluetooth' \
-    -e 'scapy.tools.generate_ethertypes' -e 'scapy.tools.generate_manuf' -e 'scapy.tools.scapy_pyannotate'
+    -e 'scapy.tools.generate_ethertypes' -e 'scapy.tools.generate_manuf' -e 'scapy.tools.scapy_pyannotate' \
+    -e 'scapy.libs.winpcapy'
 }
 
 %pyproject_check_import %{check_exclude}
