@@ -19,6 +19,9 @@ VCS:            git:%{giturl}
 #               https://scapy.readthedocs.io/en/latest/introduction.html
 Source0:        %{giturl}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
 
+# Allow build with older setuptools for EPEL9
+Patch0:         scapy-2.7.0-rhel9.patch
+
 %global         common_desc %{expand:
 Scapy is a powerful interactive packet manipulation program built on top
 of the Python interpreter. It can be used to forge or decode packets of
@@ -99,9 +102,6 @@ for FILE in $SHEBANGS ; do
     rm "${FILE}.orig"
 done
 
-# Allow EPEL9 version of setuptools
-# requires = [ "setuptools>=62.0.0" ]
-sed -i -e 's/setuptools>=[0-9][0-9]/setuptools>=53/' pyproject.toml
 
 
 %if (0%{?fedora} && 0%{?fedora} > 33 ) || ( 0%{?rhel} && 0%{?rhel} > 8 ) || 0%{?flatpak}
