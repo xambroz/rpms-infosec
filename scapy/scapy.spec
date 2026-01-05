@@ -99,6 +99,10 @@ for FILE in $SHEBANGS ; do
     rm "${FILE}.orig"
 done
 
+# Allow EPEL9 version of setuptools
+# requires = [ "setuptools>=62.0.0" ]
+sed -i -e 's/setuptools>=[0-9][0-9]/setuptools>=53/' pyproject.toml
+
 
 %if (0%{?fedora} && 0%{?fedora} > 33 ) || ( 0%{?rhel} && 0%{?rhel} > 8 ) || 0%{?flatpak}
 %generate_buildrequires
