@@ -97,9 +97,8 @@ cd src
 %license COPYING
 %doc AUTHORS CHANGELOG README.md TODO
 %exclude %{_prefix}/src/%{name}/pocs/*
-%{_sbindir}/%{name}
-%{_mandir}/man8/%{name}.*
-
+/usr/sbin/mdk4
+/usr/share/man/man8/mdk4.8*
 
 
 
