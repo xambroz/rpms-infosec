@@ -9,17 +9,17 @@
 Summary:        Compression and decompression program rar
 Summary(de):    Kompressions- und Dekompressionsprogramm rar
 Name:           rar
-Version:        5.4.0
+Version:        7.12
+%global         rarversion 712
 Release:        1%{?dist}
 License:        see license.txt
 Group:          Productivity/Archiving/Compression
 URL:            http://www.rarsoft.com
 
-Source0:        rarlinux-%{version}.tar.gz
-Source1:        rarlinux-x64-%{version}.tar.gz
+Source0:        https://www.rarlab.com/rar/rarlinux-x64-%{rarversion}.tar.gz
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
-ExclusiveArch:  i386 i686 i586 x86_64
+ExclusiveArch:  x86_64
 
 %description
 Compression and decompression program.
@@ -32,11 +32,7 @@ Enthält Version 2.7.1 und %{version}
 %prep
 
 %setup -q -c -T
-%ifarch x86_64
-  tar xfz %{SOURCE1}
-%else
-  tar xfz %{SOURCE0}
-%endif
+tar xfz %{SOURCE0}
 
 %build
 
