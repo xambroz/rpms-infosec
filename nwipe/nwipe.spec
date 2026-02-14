@@ -1,13 +1,13 @@
 Name:           nwipe
-Version:        0.38
+Version:        0.40
 Release:        %autorelease
 Summary:        Securely erase disks using a variety of recognized methods
 
 
 %global         gituser         martijnvanbrummelen
 %global         gitname         nwipe
-%global         commit          28271712db2609eee7f842fc67a6654b5a87140b
-%global         gitdate         20240510
+%global         commit          316b7073089fc705dda8d8b0d6bcc948818deacb
+%global         gitdate         20250910
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 
@@ -19,8 +19,6 @@ VCS:            git:https://github.com/martijnvanbrummelen/nwipe
 
 #Source0:       https://github.com/%%{gituser}/%%{gitname}/archive/%%{commit}/%%{name}-%%{version}-%%{shortcommit}.tar.gz
 Source0:        https://github.com/%{gituser}/%{gitname}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
-
-# Patch0:         nwipe-0.38-prototype.patch
 
 BuildRequires:  make
 BuildRequires:  gcc
