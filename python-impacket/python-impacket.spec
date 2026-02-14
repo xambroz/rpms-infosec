@@ -1,11 +1,12 @@
 Name:           python-impacket
 Summary:        Collection of Python classes providing access to network packets
-Version:        0.12.0
+Version:        0.13.0
 
 License:        Apache-1.1 AND Zlib
 URL:            https://github.com/fortra/impacket
 # was           https://github.com/SecureAuthCorp/impacket
 # was           https://github.com/CoreSecurity/impacket
+VCS:            git:%{url}
 
 # During re-add of the python2-impacket we found about dependency to ldapdomaindump
 # feature can be avoided by option --no-dump to ntlmrelay.py
@@ -33,8 +34,8 @@ the object oriented API makes it simple to work with deep protocol hierarchies.}
 
 %global         gituser         fortra
 %global         gitname         impacket
-%global         commit          db53482dc864fec69156898d52c1b595a777ca9a
-%global         gitdate         20240916
+%global         commit          d843881fb8464e9725a843ec4c8d6acdc6370ecf
+%global         gitdate         20251022
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 # By defualt build with python3
@@ -135,8 +136,8 @@ sed -i -e 's/\r//g' impacket/examples/mssqlshell.py
 
 # Clean-up
 
-# Use explicit python3 shebeng instead of generic env python
-# %%py3_shebang_fix impacket examples
+# Use explicit python3 shabeng instead of generic env python
+%py3_shebang_fix impacket examples
 
 
 # Rename split.py to splitpcap.py due to generic name colliding with DiderStevensSuite
