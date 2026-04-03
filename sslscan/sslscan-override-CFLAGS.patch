@@ -42,4 +42,4 @@ diff -ru sslscan-2.1.5.orig/Makefile sslscan-2.1.5.new/Makefile
 +override CFLAGS    += -I/usr/local/include -I/usr/local/ssl/include -I/usr/local/ssl/include/openssl -I/usr/local/opt/openssl/include -I/opt/local/include -I/opt/local/include/openssl
  endif
  
- # Find the number of processors on the system (used in -j option in building OpenSSL).
+ # If -j wasn't passed to make, find the number of processors on the system.
