@@ -1,5 +1,5 @@
 Name:           libcerror
-Version:        20240413
+Version:        20251126
 Release:        %autorelease
 Summary:        Libyal library for cross-platform C error functions
 Group:          System Environment/Libraries
@@ -11,7 +11,7 @@ VCS:            git:https://github.com/libyal/libcerror
 %global         gituser         libyal
 %global         gitname         libcerror
 %global         gitdate         %{version}
-%global         commit          9b13d0ca59dcc83f94eef7c6c4e99c46b84550c8
+%global         commit          155c367a71baf3bbbec3639de35e763095c804bf
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 %global         common_description %{expand:
