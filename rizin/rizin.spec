@@ -1,6 +1,6 @@
 Name:           rizin
 Summary:        UNIX-like reverse engineering framework and command-line tool-set
-Version:        0.8.1
+Version:        0.8.2
 
 %global forgeurl https://github.com/rizinorg/rizin
 %forgemeta
