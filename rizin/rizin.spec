@@ -16,6 +16,9 @@ Patch:          rizin-0001-Add-option-to-use-system-BLAKE3.patch
 # https://github.com/rizinorg/rizin/pull/5417
 Patch:          rizin-0002-Fix-using-system-libpcre2.patch
 
+# 
+Patch:          rizin-0003-s390x-debug-stubs.patch
+
 # see .reuse/dep5 for license breakdown
 License:        LGPL-3.0-only AND LGPL-2.1-or-later AND LGPL-2.1-only AND LGPL-2.0-or-later AND GPL-3.0-or-later AND GPL-2.0-or-later AND GPL-2.0-only AND GPL-1.0-or-later AND MIT AND Apache-2.0 AND NCSA AND BSD-3-Clause AND BSD-2-Clause AND CC-BY-SA-4.0 AND CC0-1.0 AND CC-PDDC
 
@@ -26,6 +29,7 @@ BuildRequires:  meson
 BuildRequires:  ninja-build
 BuildRequires:  pkgconfig
 BuildRequires:  python3-pyyaml
+
 
 BuildRequires:  pkgconfig(capstone) >= 3.0.4
 %if 0%{?rhel}
