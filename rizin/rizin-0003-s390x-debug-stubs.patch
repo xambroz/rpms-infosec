@@ -1,0 +1,33 @@
+https://src.fedoraproject.org/rpms/rizin/pull-request/12
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Andreas Schneider <asn@cryptomilk.org>
+Date: Wed, 23 Apr 2026 11:35:00 +0200
+Subject: [PATCH] Fix s390x link error when debugger is disabled
+
+When the debugger is disabled (-Ddebugger=false), debug_native.c is not
+compiled, so rz_debug_get_tls() and rz_debug_native_threads() are never
+defined. However, linux_heap_glibc.c (part of librz_core) calls both
+functions unconditionally, causing a link failure on s390x.
+
+Add stub implementations in debug.c guarded by #if !DEBUGGER so the
+symbols are always present in librz_debug regardless of the debugger
+option.
+---
+diff -ru rizin-v0.8.2/librz/debug/debug.c rizin-v0.8.2.new/librz/debug/debug.c
+--- rizin-v0.8.2/librz/debug/debug.c	2026-02-01 18:52:21.000000000 +0100
++++ rizin-v0.8.2.new/librz/debug/debug.c	2026-05-05 14:45:25.433926207 +0200
+@@ -1793,3 +1793,14 @@
+ 	}
+ 	return (RzDebugPid *)rz_list_iter_get_data(it);
+ }
++
++#if !DEBUGGER
++// Empty stubs are needed for compilation on s390x platform when debugger is disabled
++RZ_API ut64 rz_debug_get_tls(RZ_NONNULL RzDebug *dbg, int tid) {
++       return 0;
++}
++
++RZ_API RZ_OWN RzList /*<RzDebugPid *>*/ *rz_debug_native_threads(RzDebug *dbg, int pid) {
++       return rz_list_new();
++}
++#endif
