@@ -16,7 +16,7 @@ Patch:          rizin-0001-Add-option-to-use-system-BLAKE3.patch
 # https://github.com/rizinorg/rizin/pull/5417
 Patch:          rizin-0002-Fix-using-system-libpcre2.patch
 
-# 
+# https://github.com/rizinorg/rizin/pull/6316
 Patch:          rizin-0003-s390x-debug-stubs.patch
 
 # see .reuse/dep5 for license breakdown
