@@ -11,13 +11,16 @@ URL:            https://rizin.re/
 Source0:        %{forgeurl}/releases/download/v%{version}/%{name}-src-v%{version}.tar.xz
 
 # https://github.com/rizinorg/rizin/pull/5414
-Patch:          rizin-0001-Add-option-to-use-system-BLAKE3.patch
+Patch0:          rizin-0001-Add-option-to-use-system-BLAKE3.patch
 
 # https://github.com/rizinorg/rizin/pull/5417
-Patch:          rizin-0002-Fix-using-system-libpcre2.patch
+Patch1:          rizin-0002-Fix-using-system-libpcre2.patch
 
 # https://github.com/rizinorg/rizin/pull/6316
-Patch:          rizin-0003-s390x-debug-stubs.patch
+Patch2:          rizin-0003-s390x-debug-stubs.patch
+
+# RHEL8 has old version of PCRE2, which is missing PCRE2_MATCH_INVALID_UTF
+Patch3:          rizin-0004-rhel8-old-pcre2.patch
 
 # see .reuse/dep5 for license breakdown
 License:        LGPL-3.0-only AND LGPL-2.1-or-later AND LGPL-2.1-only AND LGPL-2.0-or-later AND GPL-3.0-or-later AND GPL-2.0-or-later AND GPL-2.0-only AND GPL-1.0-or-later AND MIT AND Apache-2.0 AND NCSA AND BSD-3-Clause AND BSD-2-Clause AND CC-BY-SA-4.0 AND CC0-1.0 AND CC-PDDC

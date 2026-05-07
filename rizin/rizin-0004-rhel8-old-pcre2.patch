@@ -1,0 +1,15 @@
+diff -ru rizin-v0.8.2/librz/util/regex.c rizin-v0.8.2.new/librz/util/regex.c
+--- rizin-v0.8.2/librz/util/regex.c	2026-02-01 17:52:21.000000000 +0000
++++ rizin-v0.8.2.new/librz/util/regex.c	2026-05-07 18:36:39.078170104 +0000
+@@ -72,7 +72,11 @@
+ 	RzRegex *regex = pcre2_compile(
+ 		(PCRE2_SPTR)pat,
+ 		PCRE2_ZERO_TERMINATED,
++#if PCRE2_MAJOR > 10 || (PCRE2_MAJOR == 10 && PCRE2_MINOR >= 36)
+ 		cflags | PCRE2_UTF | PCRE2_MATCH_INVALID_UTF,
++#else
++		cflags | PCRE2_UTF,
++#endif
+ 		&err_num,
+ 		&err_off,
+ 		ccontext);
