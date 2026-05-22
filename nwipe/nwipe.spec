@@ -23,6 +23,7 @@ Source0:        https://github.com/%{gituser}/%{gitname}/archive/v%{version}.tar
 BuildRequires:  autoconf
 BuildRequires:  automake
 BuildRequires:  gcc
+BuildRequires:  gcc-c++
 BuildRequires:  libconfig-devel
 BuildRequires:  make
 BuildRequires:  ncurses-devel
