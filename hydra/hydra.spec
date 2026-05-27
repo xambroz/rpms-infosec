@@ -26,12 +26,17 @@ Patch2:         https://patch-diff.githubusercontent.com/raw/vanhauser-thc/thc-h
 # Last-Update: 2022-10-05
 Patch3:         hydra-03_use_bin_path.diff
 
-# Upstream fixes for gtk3 support
-Patch5:       hydra-05-port-xhydra-gtk3.patch
-Patch6:       hydra-06-more-hydra-gtk.patch
-Patch7:       hydra-07-gtk-last.patch
+# Upstream fixes for gtk3 support - merged in in v9.7
+# https://github.com/vanhauser-thc/thc-hydra/commit/30e6291be7f222530dbd4b6bb7460c9e2a8a5e82
+# Patch5:         hydra-05-port-xhydra-gtk3.patch
+# https://github.com/vanhauser-thc/thc-hydra/commit/ae1a9087023e6683b0b62b1d96651401e88ad8ad
+# Patch6:       hydra-06-more-hydra-gtk.patch
+# https://github.com/vanhauser-thc/thc-hydra/commit/31c9b1188b69da372f638b93d48e2322046e3f16
+# Patch7:       hydra-07-gtk-last.patch
+
 # Upstream Fix for libbson2/libmongc2
-Patch8:       hydra-08-libmongoc2.patch
+# merged in v9.7 - https://github.com/vanhauser-thc/thc-hydra/commit/e5729446de04b5e65f3c673f0e0fbe5995976573
+# Patch8:       hydra-08-libmongoc2.patch
 
 BuildRequires:  afpfs-ng-devel
 BuildRequires:  apr-devel
@@ -39,7 +44,7 @@ BuildRequires:  automake
 BuildRequires:  desktop-file-utils
 BuildRequires:  firebird-devel
 # FreeRDP
-BuildRequires:  freerdp2-devel
+BuildRequires:  freerdp-devel
 BuildRequires:  gcc
 BuildRequires:  gtk3-devel
 BuildRequires:  libbson-devel
@@ -52,7 +57,7 @@ BuildRequires:  libpq-devel
 BuildRequires:  libsmbclient-devel
 BuildRequires:  libssh-devel
 # FreeRDP
-BuildRequires:  libwinpr2-devel
+BuildRequires:  libwinpr-devel
 BuildRequires:  make
 BuildRequires:  mariadb-connector-c-devel
 BuildRequires:  memcached-devel
@@ -80,7 +85,6 @@ This package includes xhydra, a GTK+ front end for hydra.
 %autosetup -p 1 -n thc-hydra-%{version}
 
 %build
-export CFLAGS="$CFLAGS -Wincompatible-pointer-types -fPIE"
 %configure --nostrip
 %make_build
 
