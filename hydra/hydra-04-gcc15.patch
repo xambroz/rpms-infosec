@@ -1,0 +1,12 @@
+diff -ru thc-hydra-9.5.old/hydra-mod.c thc-hydra-9.5.new/hydra-mod.c
+--- thc-hydra-9.5.old/hydra-mod.c	2023-06-12 10:05:41.000000000 +0200
++++ thc-hydra-9.5.new/hydra-mod.c	2025-02-24 17:44:54.545296081 +0100
+@@ -60,7 +60,7 @@
+ int32_t my_select(int32_t fd, fd_set *fdread, fd_set *fdwrite, fd_set *fdex, long sec, long usec);
+ 
+ /* ----------------- alarming functions ---------------- */
+-void alarming() {
++void alarming(int signal) {
+   fail++;
+   alarm_went_off++;
+ 
