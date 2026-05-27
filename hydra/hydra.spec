@@ -17,7 +17,7 @@ Patch1:         hydra-01-fix-dpl4hydra-dir.patch
 
 # https://patch-diff.githubusercontent.com/raw/vanhauser-thc/thc-hydra/pull/970
 # Migrate to freerdp3
-Patch2:         https://patch-diff.githubusercontent.com/raw/vanhauser-thc/thc-hydra/pull/970.patch#/hydra-02-freerdp3.patch
+# Patch2:         https://patch-diff.githubusercontent.com/raw/vanhauser-thc/thc-hydra/pull/970.patch#/hydra-02-freerdp3.patch
 
 # From Debian 03_use_bin_path.diff
 # Description: Use /usr/bin/hydra path by default in xhydra.
