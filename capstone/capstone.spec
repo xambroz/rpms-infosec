@@ -1,5 +1,5 @@
 Name:           capstone
-Version:        5.0.6
+Version:        5.0.9
 Release:        %autorelease
 Summary:        A lightweight multi-platform, multi-architecture disassembly framework
 License:        BSD-3-Clause AND BSD-4-Clause AND APSL-2.0 AND NCSA AND MIT
@@ -17,9 +17,9 @@ disasm engine for binary analysis and reversing in the security community.}
 
 %global         gituser         capstone-engine
 %global         gitname         capstone
-# 5.0.5 release
-%global         gitdate         20250323
-%global         commit          accf4df62f1fba6f92cae692985d27063552601c
+# 5.0.9 release
+%global         gitdate         20260528
+%global         commit          022575848782a4801fd150fdbc927effcbca0864
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 # Source0:      https://github.com/%%{gituser}/%%{gitname}/archive/%%{commit}/%%{name}-%%{version}-%%{shortcommit}.tar.gz
@@ -80,7 +80,6 @@ BuildRequires:  python%{python3_pkgversion}
 BuildRequires:  python%{python3_pkgversion}-devel
 BuildRequires:  python%{python3_pkgversion}-pip
 BuildRequires:  python%{python3_pkgversion}-setuptools
-BuildRequires:  python%{python3_pkgversion}-wheel
 BuildRequires:  python%{python3_pkgversion}-pytest
 %endif
 
