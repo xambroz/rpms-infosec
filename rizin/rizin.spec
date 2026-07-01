@@ -1,6 +1,6 @@
 Name:           rizin
 Summary:        UNIX-like reverse engineering framework and command-line tool-set
-Version:        0.8.2
+Version:        0.9.1
 
 %global forgeurl https://github.com/rizinorg/rizin
 %forgemeta
@@ -11,13 +11,16 @@ URL:            https://rizin.re/
 Source0:        %{forgeurl}/releases/download/v%{version}/%{name}-src-v%{version}.tar.xz
 
 # https://github.com/rizinorg/rizin/pull/5414
-Patch:          rizin-0001-Add-option-to-use-system-BLAKE3.patch
+# already in 0.9.1
+# Patch:          rizin-0001-Add-option-to-use-system-BLAKE3.patch
 
 # https://github.com/rizinorg/rizin/pull/5417
-Patch:          rizin-0002-Fix-using-system-libpcre2.patch
+# already in 0.9.1
+# Patch:          rizin-0002-Fix-using-system-libpcre2.patch
 
 # https://github.com/rizinorg/rizin/pull/6316
-Patch:          rizin-0003-s390x-debug-stubs.patch
+# already in 0.9.1
+# Patch:          rizin-0003-s390x-debug-stubs.patch
 
 # see .reuse/dep5 for license breakdown
 License:        LGPL-3.0-only AND LGPL-2.1-or-later AND LGPL-2.1-only AND LGPL-2.0-or-later AND GPL-3.0-or-later AND GPL-2.0-or-later AND GPL-2.0-only AND GPL-1.0-or-later AND MIT AND Apache-2.0 AND NCSA AND BSD-3-Clause AND BSD-2-Clause AND CC-BY-SA-4.0 AND CC0-1.0 AND CC-PDDC
@@ -144,7 +147,7 @@ information
 %license COPYING COPYING.LESSER
 %{_bindir}/r*
 %{_libdir}/librz_*.so.%{version}*
-%{_libdir}/librz_*.so.0.8
+%{_libdir}/librz_*.so.0.9
 %{_mandir}/man1/rizin.1.*
 %{_mandir}/man1/rz*.1.*
 %{_mandir}/man7/rz-esil.7.*
