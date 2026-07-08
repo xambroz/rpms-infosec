@@ -8,6 +8,9 @@ Version:        0.9.1
 Release:        %autorelease
 URL:            https://rizin.re/
 
+# see .reuse/dep5 for license breakdown
+License:        LGPL-3.0-only AND LGPL-2.1-or-later AND LGPL-2.1-only AND LGPL-2.0-or-later AND GPL-3.0-or-later AND GPL-2.0-or-later AND GPL-2.0-only AND GPL-1.0-or-later AND MIT AND Apache-2.0 AND NCSA AND BSD-3-Clause AND BSD-2-Clause AND CC-BY-SA-4.0 AND CC0-1.0 AND CC-PDDC
+
 Source0:        %{forgeurl}/releases/download/v%{version}/%{name}-src-v%{version}.tar.xz
 
 # https://github.com/rizinorg/rizin/pull/5414
@@ -22,9 +25,9 @@ Source0:        %{forgeurl}/releases/download/v%{version}/%{name}-src-v%{version
 # already in 0.9.1
 # Patch:          rizin-0003-s390x-debug-stubs.patch
 
-# see .reuse/dep5 for license breakdown
-License:        LGPL-3.0-only AND LGPL-2.1-or-later AND LGPL-2.1-only AND LGPL-2.0-or-later AND GPL-3.0-or-later AND GPL-2.0-or-later AND GPL-2.0-only AND GPL-1.0-or-later AND MIT AND Apache-2.0 AND NCSA AND BSD-3-Clause AND BSD-2-Clause AND CC-BY-SA-4.0 AND CC0-1.0 AND CC-PDDC
-
+# https://github.com/rizinorg/rizin/issues/6586
+# https://patch-diff.githubusercontent.com/raw/rizinorg/rizin/pull/6605
+Patch:            https://patch-diff.githubusercontent.com/raw/rizinorg/rizin/pull/6605.patch#rizin-0005-openssl-evp-sm3.patch
 
 BuildRequires:  gcc
 BuildRequires:  gcc-c++

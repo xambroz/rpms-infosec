@@ -1,0 +1,65 @@
+From 0d1cb9e374b1dcf5b099bdd3559224ec627251b8 Mon Sep 17 00:00:00 2001
+From: wargio <deroad@kumo.xn--q9jyb4c>
+Date: Mon, 6 Jul 2026 09:36:00 +0800
+Subject: [PATCH] Verify that EVP_sm3 is enabled.
+
+---
+ librz/hash/p/algo_sm3.c        | 4 ++--
+ librz/include/rz_userconf.h.in | 1 +
+ meson.build                    | 9 ++++++++-
+ 3 files changed, 11 insertions(+), 3 deletions(-)
+
+diff --git a/librz/hash/p/algo_sm3.c b/librz/hash/p/algo_sm3.c
+index dd6a5654412..bd95f38de9a 100644
+--- a/librz/hash/p/algo_sm3.c
++++ b/librz/hash/p/algo_sm3.c
+@@ -4,7 +4,7 @@
+ #include <rz_hash.h>
+ #include <rz_util/rz_assert.h>
+ 
+-#if HAVE_LIB_SSL
++#if HAVE_LIB_SSL && HAVE_LIB_SSL_SM3
+ /**
+  * Use OpenSSL lib, not the Rizin implementation
+  */
+@@ -12,7 +12,7 @@
+ #include "../algorithms/openssl_common.h"
+ rz_openssl_plugin_define_hash_cfg(sm3, EVP_sm3, true);
+ 
+-#else /* HAVE_LIB_SSL */
++#else /* HAVE_LIB_SSL && HAVE_LIB_SSL_SM3 */
+ /**
+  * Use Rizin implementation, not OpenSSL lib
+  */
+diff --git a/librz/include/rz_userconf.h.in b/librz/include/rz_userconf.h.in
+index 988905829a4..c038774b582 100644
+--- a/librz/include/rz_userconf.h.in
++++ b/librz/include/rz_userconf.h.in
+@@ -37,6 +37,7 @@
+ #define USE_LIB_XXHASH              @USE_LIB_XXHASH@
+ #define USE_SYS_ZYDIS               @USE_SYS_ZYDIS@
+ #define HAVE_LIB_SSL                @HAVE_OPENSSL@
++#define HAVE_LIB_SSL_SM3            @HAVE_OPENSSL_SM3@
+ #define HAVE_PTRACE                 @HAVE_PTRACE@
+ #define USE_PTRACE_WRAP             @USE_PTRACE_WRAP@
+ #define HAVE_FORK                   @HAVE_FORK@
+diff --git a/meson.build b/meson.build
+index 2a27af7126a..973be5c792e 100644
+--- a/meson.build
++++ b/meson.build
+@@ -483,7 +483,14 @@ foreach it : ccs
+   it_userconf.set('HUD', rizin_hud)
+   it_userconf.set('PLUGINS', rizin_plugins)
+   it_userconf.set('BINDINGS', rizin_bindings)
+-  it_userconf.set10('HAVE_OPENSSL', sys_openssl.found())
++  if sys_openssl.found()
++    it_userconf.set10('HAVE_OPENSSL', true)
++    ok = it_cc.has_function('EVP_sm3', prefix: '#include <openssl/evp.h>', dependencies: [sys_openssl])
++    it_userconf.set10('HAVE_OPENSSL_SM3', ok)
++  else
++    it_userconf.set10('HAVE_OPENSSL', false)
++    it_userconf.set10('HAVE_OPENSSL_SM3', false)
++  endif
+   it_userconf.set10('WANT_DYLINK', true)
+   it_userconf.set10('HAVE_PTRACE', have_ptrace)
+   it_userconf.set10('USE_PTRACE_WRAP', use_ptrace_wrap)
