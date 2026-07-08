@@ -25,9 +25,11 @@ Source0:        %{forgeurl}/releases/download/v%{version}/%{name}-src-v%{version
 # already in 0.9.1
 # Patch:          rizin-0003-s390x-debug-stubs.patch
 
+# In Fedora rawhide (fc45) the sm3 is disabled in the openssl
 # https://github.com/rizinorg/rizin/issues/6586
 # https://patch-diff.githubusercontent.com/raw/rizinorg/rizin/pull/6605
-Patch:            https://patch-diff.githubusercontent.com/raw/rizinorg/rizin/pull/6605.patch#rizin-0005-openssl-evp-sm3.patch
+# https://patch-diff.githubusercontent.com/raw/rizinorg/rizin/pull/6605.patch
+Patch:            rizin-0005-openssl-evp-sm3.patch
 
 BuildRequires:  gcc
 BuildRequires:  gcc-c++
