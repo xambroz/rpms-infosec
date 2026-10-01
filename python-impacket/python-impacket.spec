@@ -1,6 +1,6 @@
 Name:           python-impacket
 Summary:        Collection of Python classes providing access to network packets
-Version:        0.13.0
+Version:        0.13.1
 
 License:        Apache-1.1 AND Zlib
 URL:            https://github.com/fortra/impacket
@@ -34,8 +34,8 @@ the object oriented API makes it simple to work with deep protocol hierarchies.}
 
 %global         gituser         fortra
 %global         gitname         impacket
-%global         commit          d843881fb8464e9725a843ec4c8d6acdc6370ecf
-%global         gitdate         20251022
+%global         commit          c456746d7a0f0bb25e8968a59f25aae1ad519935
+%global         gitdate         20260515
 %global         shortcommit     %(c=%{commit}; echo ${c:0:7})
 
 # By defualt build with python3
@@ -61,7 +61,8 @@ Source0:        https://github.com/%{gituser}/%{gitname}/archive/%{commit}/%{nam
 Patch0:         python-impacket-0.12.0-cleanup.patch
 
 # relax the strict requirement for version ==24.0.0
-Patch1:         python-impacket-0.12.0-pyopenssl.patch
+# not needed in 0.13.1
+# Patch1:         python-impacket-0.12.0-pyopenssl.patch
 
 BuildArch:      noarch
 
