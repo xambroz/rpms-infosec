@@ -1,24 +1,18 @@
 Name:           nwipe
-Version:        0.41
+Version:        0.43
 Release:        %autorelease
 Summary:        Securely erase disks using a variety of recognized methods
 
 
-%global         gituser         martijnvanbrummelen
-%global         gitname         nwipe
-%global         commit          7fe250480a2f49ab6686dbd3665c8039eca7e998
-%global         gitdate         20260515
-%global         shortcommit     %(c=%{commit}; echo ${c:0:7})
-
+%global forgeurl https://github.com/martijnvanbrummelen/nwipe
+%forgemeta
 
 License:        GPL-2.0-only
 # used to be    http://nwipe.sourceforge.net
-URL:            https://github.com/martijnvanbrummelen/nwipe
-VCS:            git:https://github.com/martijnvanbrummelen/nwipe
+URL:            %{forgeurl}
 # Releases      https://github.com/martijnvanbrummelen/nwipe/releases
 
-#Source0:       https://github.com/%%{gituser}/%%{gitname}/archive/%%{commit}/%%{name}-%%{version}-%%{shortcommit}.tar.gz
-Source0:        https://github.com/%{gituser}/%{gitname}/archive/v%{version}.tar.gz#/%{name}-%{version}.tar.gz
+Source0:        %{forgesource}
 
 BuildRequires:  autoconf
 BuildRequires:  automake
@@ -30,18 +24,11 @@ BuildRequires:  ncurses-devel
 BuildRequires:  parted-devel
 
 # Runtime dependencies
+Requires:       coreutils
+Requires:       dmidecode
 Requires:       hdparm
-Requires:       /usr/bin/readlink
-Requires:       /usr/sbin/dmidecode
-Requires:       /usr/sbin/modprobe
-Requires:       /usr/sbin/smartctl
-
-
-# Recommends only supported on fedora and rhel8+
-# used to provide serial number of drive over supported USB to SATA interface
-Recommends:     smartmontools
-# provide SMBIOS/DMI host data to log file
-Recommends:     dmidecode
+Requires:       kmod
+Requires:       smartmontools
 
 
 %description
@@ -59,8 +46,7 @@ a few changes:
 - DmiDecode is used to provide host info to nwipes log 
 
 %prep
-#autosetup -n %%{gitname}-%%{commit} -p 1
-%autosetup -n %{gitname}-%{version} -p 1
+%autosetup -n %{archivename} -p 1
 
 
 %build
@@ -74,7 +60,7 @@ autoreconf -vif
 
 
 %check
-make check
+%make_build check
 
 
 %files
