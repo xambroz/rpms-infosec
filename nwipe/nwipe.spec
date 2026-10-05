@@ -22,6 +22,7 @@ BuildRequires:  libconfig-devel
 BuildRequires:  make
 BuildRequires:  ncurses-devel
 BuildRequires:  parted-devel
+BuildRequires:  libnvme-devel
 
 # Runtime dependencies
 Requires:       coreutils
