@@ -1,6 +1,6 @@
 Name:           nikto
 Epoch:          1
-Version:        2.5.0
+Version:        2.6.1
 Release:        1%{?dist}
 Summary:        Web server scanner
 URL:            https://www.cirt.net/Nikto2
@@ -25,7 +25,7 @@ Source1:        nikto-database-license.txt
 # Patch0:         nikto-2.5.0-libwhisker2.patch
 
 # Update obsolete FSF address in the license text
-Patch1:         https://github.com/sullo/nikto/pull/805.patch#/nikto-2.5.0-fsf-address.patch
+# Patch1:         https://github.com/sullo/nikto/pull/805.patch#/nikto-2.5.0-fsf-address.patch
 
 
 BuildArch:      noarch
@@ -102,8 +102,7 @@ cp -p %{SOURCE1} ./
 
 %install
 install -pD program/nikto.pl %{buildroot}%{_bindir}/nikto
-install -pD program/replay.pl %{buildroot}%{_bindir}/nikto-replay
-install -m 0644 -pD program/docs/nikto.1 %{buildroot}%{_mandir}/man1/nikto.1
+install -m 0644 -pD documentation/nikto.1 %{buildroot}%{_mandir}/man1/nikto.1
 mkdir -p %{buildroot}%{_datadir}/nikto/databases/
 install -m 0644 -p program/databases/* %{buildroot}%{_datadir}/nikto/databases/
 mkdir -p %{buildroot}%{_datadir}/nikto/plugins/
@@ -119,7 +118,7 @@ install -m 0644 -pD program/nikto.conf.default %{buildroot}%{_sysconfdir}/nikto/
 %files
 %license COPYING
 %license nikto-database-license.txt
-%doc README.md Dockerfile program/docs/nikto.dtd program/docs/nikto_schema.sql
+%doc README.md Dockerfile documentation/nikto_schema_*.sql documentation/manpage.xml documentation/alienlogo_vectorized.png
 %{_bindir}/nikto*
 %config(noreplace) %{_sysconfdir}/nikto
 %{_datadir}/nikto
