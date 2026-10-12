@@ -22,7 +22,11 @@ BuildRequires:  libconfig-devel
 BuildRequires:  make
 BuildRequires:  ncurses-devel
 BuildRequires:  parted-devel
+
+# there is no libnvme in rhel8
+%if 0%{?fedora} || 0%{?rhel} >= 9
 BuildRequires:  libnvme-devel
+%endif
 
 # Runtime dependencies
 Requires:       coreutils
@@ -52,7 +56,14 @@ a few changes:
 
 %build
 autoreconf -vif
+
+%if 0%{?fedora} || 0%{?rhel} >= 9
 %configure
+%else
+# there is no libnvme in rhel8
+%configure --without-libnvme
+%endif
+
 %make_build
 
 
